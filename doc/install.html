@@ -5,7 +5,7 @@
 <H1>Installing lcc</H1>
 
 <b><a href="ftp://netlib.att.com/netlib/att/cs/home/cwfraser.html">Christopher W. Fraser</a><br>
-AT&T Bell Laboratories Rm. 2C-464,
+AT&T Bell Laboratories Rm. 2C-300,
 600 Mountain Ave.,
 P.O. Box 636,
 Murray Hill, NJ 07974-0636<p>
@@ -62,10 +62,8 @@ see <a href="#driver">Sec. 3</a>.<p>
 see <a href="#rcc">Sec. 4</a>.<p>
 </ol>
 
-The constant <tt>VERSION</tt>,
-defined in <tt>src/c.h</tt>, identifies the version of the distribution
-as <tt>((<i>x</i>&lt;&lt;8)|<i>y</i>)</tt>
-for version <tt><i>x</i>.<i>y</i></tt>.
+The value of the variable <tt>rcsid</tt> in <tt>src/main.c</tt>
+identifies the version of the distribution.
 If the file <tt>LOG</tt> appears, it
 describes the changes from the previous version.<p>
 
@@ -131,7 +129,7 @@ commands it would execute, but not to execute them.<p>
 
 Here's <tt>etc/hart.c</tt>, which we'll use as an example
 in describing how to edit a host-specific part.
-This example illustrates all of the important features.
+This example illustrates all the important features.
 <pre>/* DECStations running ULTRIX at Princeton University */
 
 #include &lt;string.h&gt;
@@ -255,7 +253,7 @@ where <tt>hart</tt> is replaced by <i>yourhostname</i>.
 Run the resulting <tt>a.out</tt> with the options <tt>-v -v</tt>
 to display the commands that would be executed, e.g.,
 <pre>% a.out -v -v foo.c baz.c mylib.a -lX11
-a.out version 3.0
+a.out $Revision$ $Date$
 foo.c:
 /usr/gnu/lib/gcc-cpp -undef -DLANGUAGE_C -D_LANGUAGE_C -D__LANGUAGE_C
    -D_unix -D__unix -Dultrix -D_ultrix -D__ultrix -Dmips -D_mips
@@ -318,7 +316,7 @@ of the startup code and add the name of the profiling library. Note that
 <tt>option</tt> has been written to support simultaneous use
 of <tt>-g</tt> and <tt>-p</tt>, e.g.,
 <pre>% a.out -v -v -g -p foo.s baz.o -o myfoo
-a.out version 3.0
+a.out $Revision$ $Date$
 /bin/as -o foo.o -g -nocpp -EL foo.s
 /usr/bin/ld -o myfoo /usr/lib/mcrt0.o foo.o baz.o
    /usr/lib/libprof1.a -lm -lc
@@ -596,7 +594,7 @@ adapted from the instructions in Chapter 1 of
 <ol>
 <li>If you don't have a source file that displays the error, create one.
 Most errors are exposed when programmers try to compile
-a program that they think valid, so you probably have a
+a program they think is valid, so you probably have a
 demonstration program already.<p>
 
 <li>Preprocess the source file and capture the preprocessor output.
@@ -607,20 +605,20 @@ sending the error into hiding.
 We prune most error demonstrations to fewer than five lines.<p>
 
 <li>Confirm that the source file displays the error with the
-<em>distributed</em> version of <tt>lcc</tt>. If you've changed <tt>lcc</tt>,
-and if the error appears only in your version, then you'll have to chase the error
+<em>distributed</em> version of <tt>lcc</tt>. If you've changed <tt>lcc</tt>
+and the error appears only in your version, then you'll have to chase the error
 yourself, even if it turns out to be our fault, because we
 can't work on your code.<p>
 
 <li>Annotate your code with comments that explain why you think that
 <tt>lcc</tt> is wrong. If <tt>lcc</tt> dies with an assertion failure, please tell us
 where it died. If <tt>lcc</tt> crashes, please report the last part of the
-call chain if you can. If <tt>lcc</tt> is rejecting a program that you think
-valid, please tell us why you think it's valid, and include
+call chain if you can. If <tt>lcc</tt> is rejecting a program you think
+is valid, please tell us why you think it's valid, and include
 supporting page numbers in the ANSI Standard, Appendix A in
 <cite>The C Programming Language</cite>, 2nd edition
 by B. W. Kernighan and D. M. Ritchie (Prentice Hall, 1988),
-or the appropriate section in <cite>C, A Reference Manual</cite>, 3rd edition
+or the appropriate section in <cite>C: A Reference Manual</cite>, 3rd edition
 by S. B. Harbison and G. L. Steele, Jr. (Prentice Hall, 1991).
 If <tt>lcc</tt> silently generates incorrect code for some
 construct, please include the corrupt assembly code in the comments
@@ -640,13 +638,13 @@ you might get a canned reply.<p>
 <li>Send your program by electronic mail to
 <tt>lcc-bugs@cs.princeton.edu</tt>. Please send only valid C programs;
 put all remarks in C comments so that we can process reports
-semi-automatically.<p>
+semiautomatically.<p>
 
 </ol>
 
 <h2><a name="mailinglist">6. Keeping in Touch</a></h2>
 
-There is an <tt>lcc</tt> mailing list.
+There is an <tt>lcc</tt> mailing list for general information about <tt>lcc</tt>.
 To be added to the list, send a message with the 1-line body 
 <pre>subscribe lcc
 </pre>
@@ -657,8 +655,15 @@ To learn more about mailing lists served by <tt>majordomo</tt>,
 send a message with the 1-word body <tt>`help'</tt>
 to <tt>majordomo@cs.princeton.edu</tt>.
 
-Mail sent to <tt>lcc@cs.princeton.edu</tt> and to <tt>lcc-bugs@cs.princeton.edu</tt>
+Mail sent to <tt>lcc@cs.princeton.edu</tt>
 is forwarded to everyone on the mailing list.<p>
+There is also an <tt>lcc-bugs</tt> mailing list for
+reporting bugs; subscribe to it by sending a message with the 1-line body
+<pre>subscribe lcc-bugs
+</pre>
+to <tt>majordomo@cs.princeton.edu</tt>. Mail addressed to
+<var>lcc-bugs@cs.princeton.edu</var> is forwarded to everyone on
+this list.<p>
 
 <hr>
 
@@ -670,6 +675,6 @@ is forwarded to everyone on the mailing list.<p>
 <a href="/faculty/drh">David Hanson</a> / drh@cs.princeton.edu
 </address>
 <address>
-Fri Aug 26 06:52:16 EDT 1994
+Tue Sep 20 13:26:08 EDT 1994
 </address>
 </BODY>
