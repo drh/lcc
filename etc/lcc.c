@@ -24,7 +24,7 @@ struct list {		/* circular list nodes: */
 
 static void *alloc(int);
 static List append(char *,List);
-extern char *basename(char *);
+extern char *basename(const char *);
 static int callsys(char *[]);
 extern char *concat(char *, char *);
 static int compile(char *, char *);
@@ -193,7 +193,7 @@ static List append(char *str, List list) {
 }
 
 /* basename - return base name for name, e.g. /usr/drh/foo.c => foo */
-char *basename(char *name) {
+char *basename(const char *name) {
 	char *s, *b, *t = 0;
 
 	for (b = s = name; *s; s++)
