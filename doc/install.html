@@ -4,7 +4,7 @@
 
 <H1>Installing lcc</H1>
 
-<b><a href="ftp://netlib.att.com/netlib/bibnet/people/f/fraser-chris.html">Christopher W. Fraser</a><br>
+<b><a href="ftp://netlib.att.com/netlib/att/cs/home/cwfraser.html">Christopher W. Fraser</a><br>
 AT&T Bell Laboratories Rm. 2C-464,
 600 Mountain Ave.,
 P.O. Box 636,
@@ -45,7 +45,6 @@ The distribution holds the following subdirectories.
 <dt><tt>mips-* mips-*/tst</tt>	<dd>MIPS build area, test output
 <dt><tt>sparc-* sparc-*/tst</tt><dd>SPARC build area directory, test output
 <dt><tt>x86-dos x86-dos/tst</tt><dd>x86 build area, test output
-<dt><tt>vax-bsd vax-bsd/tst</tt><dd>symbolic test output
 </dl>
 Distributions include code generators for the MIPS, SPARC,
 and the Intel 386 and its successors.<p>
@@ -98,10 +97,7 @@ the meaningful combinations are
 <dt><tt>sparc-sun</tt>		<dd>SunOS 4.1
 <dt><tt>sparc-solaris</tt>	<dd>Solaris 2.3
 <dt><tt>x86-dos</tt>		<dd>DOS 6.0, Windows 3.1
-<dt><tt>vax-bsd</tt>
 </dl>
-The <tt>vax-bsd</tt> combination exists only to test a symbolic
-code generator; there is no VAX code generator.
 Choose the include files that are appropriate for your system,
 or make a copy of a closely related set and edit them.<p>
 
@@ -524,61 +520,70 @@ the <tt>make</tt> commands described above can be done with a single command:
 <tt>make clean</tt> cleans up, but does not remove <tt>rcc</tt>, and
 <tt>make clobber</tt> cleans up and removes <tt>rcc</tt>.<p>
 
-Setting <tt>TARGET</tt> equal to <tt>vax-bsd</tt> causes <tt>rcc</tt>
-to generate code for a `symbolic' target.
-This target is used routinely in front-end development, and
-its output is a printable representation of the input program,
-e.g., the dags constructed by the front end are printed,
-and other interface functions print their arguments.<p>
-
-You can test the symbolic target by running <tt>make</tt>
-from the <tt>vax-bsd</tt> directory and setting some
+The code generators for the other targets can be tested by running
+<tt>make</tt> from the appropriate target-specific directory and setting some
 environment variables to control what <tt>src/run</tt> does.
-For example, if you built <tt>mips-ultrix/rcc</tt>, you can
-test the symbolic target as follows.
+For example, if you built <tt>mips-ultrix/rcc</tt> and installed
+it in <tt>/usr/local/lib/rcc</tt>, you can
+test the SPARC code generator for the SunOS operating system as follows.
 <pre>% setenv REMOTEHOST noexecute
 % setenv BUILDDIR /usr/local/lib/
-% cd vax-bsd
-% make -f ../src/makefile RCC= TARGET=vax-bsd test
-/usr/local/lib/rcc vax-bsd 8q:
-/usr/local/lib/rcc vax-bsd array:
-/usr/local/lib/rcc vax-bsd cf:
-/usr/local/lib/rcc vax-bsd cq:
-/usr/local/lib/rcc vax-bsd cvt:
-/usr/local/lib/rcc vax-bsd fields:
-/usr/local/lib/rcc vax-bsd front:
-/usr/local/lib/rcc vax-bsd incr:
-/usr/local/lib/rcc vax-bsd init:
-/usr/local/lib/rcc vax-bsd limits:
-/usr/local/lib/rcc vax-bsd paranoia:
-/usr/local/lib/rcc vax-bsd sort:
-/usr/local/lib/rcc vax-bsd spill:
-/usr/local/lib/rcc vax-bsd stdarg:
-/usr/local/lib/rcc vax-bsd struct:
-/usr/local/lib/rcc vax-bsd switch:
-/usr/local/lib/rcc vax-bsd wf1:
-/usr/local/lib/rcc vax-bsd yacc:
+% cd sparc-sun
+% make -f ../src/makefile RCC= TARGET=sparc-sun test
+/usr/local/lib/rcc sparc-sun 8q:
+/usr/local/lib/rcc sparc-sun array:
+/usr/local/lib/rcc sparc-sun cf:
+/usr/local/lib/rcc sparc-sun cq:
+/usr/local/lib/rcc sparc-sun cvt:
+/usr/local/lib/rcc sparc-sun fields:
+/usr/local/lib/rcc sparc-sun front:
+/usr/local/lib/rcc sparc-sun incr:
+/usr/local/lib/rcc sparc-sun init:
+/usr/local/lib/rcc sparc-sun limits:
+/usr/local/lib/rcc sparc-sun paranoia:
+/usr/local/lib/rcc sparc-sun sort:
+/usr/local/lib/rcc sparc-sun spill:
+/usr/local/lib/rcc sparc-sun stdarg:
+/usr/local/lib/rcc sparc-sun struct:
+/usr/local/lib/rcc sparc-sun switch:
+/usr/local/lib/rcc sparc-sun wf1:
+/usr/local/lib/rcc sparc-sun yacc:
 </pre>
 As above, <tt>src/run</tt> compares the
-symbolic code generated with what's expected.
+SPARC code generated with what's expected.
 There should be no differences.
 Setting <tt>REMOTEHOST</tt> to <tt>noexecute</tt> suppresses
 the assembly and execution of the generated code.
 <tt>BUILDDIR</tt> gives the directory that holds <tt>rcc</tt>,
 and specifying <tt>RCC=</tt> to <tt>make</tt> insures that
-<tt>rcc</tt> is not rebuilt in the <tt>vax-bsd</tt> directory.<p>
+<tt>rcc</tt> is not rebuilt in the <tt>sparc-sun</tt> directory.<p>
 
-Similar commands can be used to test the other code generators.
-For example,
-<pre>% setenv REMOTEHOST noexecute
-% setenv BUILDDIR /usr/local/lib/
-% cd sparc-sun
-% make -f ../src/makefile RCC= TARGET=sparc-sun test
-</pre>
-tests the SPARC code generator for SunOS. If you set <tt>REMOTEHOST</tt>
+If you set <tt>REMOTEHOST</tt>
 to the name of a SPARC machine to which you can <tt>rlogin</tt>,
 <tt>src/run</tt> will <tt>rcp</tt> the generated code to that machine
 and execute it there, if necessary. See <tt>src/run</tt> for the details.<p>
+
+Once everything is installed, you can use <tt>lcc</tt> as a cross compiler.
+The options <tt>-S</tt> and <tt>-Wf-target=</tt><i>target-system</i>
+generate assembly code for the specified target, which
+is any of those listed in <a href="#paths">Sec. 2</a>.
+For example,
+<pre>% lcc -Wf-target=sparc-sun -S tst/8q.c
+</pre>
+generates SPARC code for <tt>tst/8q.c</tt> in <tt>8q.s</tt>.<p>
+<tt>lcc</tt> can also generate code for a `symbolic' target.
+This target is used routinely in front-end development, and
+its output is a printable representation of the input program,
+e.g., the dags constructed by the front end are printed,
+and other interface functions print their arguments.
+You can specify this target with the
+option <tt>-Wf-target=symbolic</tt>. For example,
+<pre>% lcc -Wf-target=symbolic -S tst/8q.c
+</pre>
+generates symbolic output for <tt>tst/8q.c</tt> in <tt>8q.s</tt>.
+Finally, the option <tt>-Wf-target=null</tt> specifies the `null'
+target for which <tt>lcc</tt> emits nothing and thus only checks
+the syntax and semantics of its inputs files.<p>
 
 <h2><a name="bugs">5. Reporting Bugs</a></h2>
 
@@ -658,13 +663,13 @@ is forwarded to everyone on the mailing list.<p>
 <hr>
 
 <address>
-<a href="ftp://netlib.att.com/netlib/bibnet/people/f/fraser-chris.html">Chris Fraser</a>
+<a href="ftp://netlib.att.com/netlib/att/cs/home/cwfraser.html">Chris Fraser</a>
 / cwf@research.att.com</a>
 </address>
 <address>
 <a href="/faculty/drh">David Hanson</a> / drh@cs.princeton.edu
 </address>
 <address>
-Mon Aug  8 10:30:52 EDT 1994
+Fri Aug 26 06:52:16 EDT 1994
 </address>
 </BODY>
