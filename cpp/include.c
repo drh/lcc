@@ -27,7 +27,7 @@ doinclude(Tokenrow *trp)
 			len = sizeof(fname) - 1;
 		strncpy(fname, (char*)trp->tp->t+1, len);
 		angled = 0;
-	} else {
+	} else if (trp->tp->type==LT) {
 		len = 0;
 		trp->tp++;
 		while (trp->tp->type!=GT) {
@@ -38,7 +38,8 @@ doinclude(Tokenrow *trp)
 			trp->tp++;
 		}
 		angled = 1;
-	}
+	} else
+		goto syntax;
 	trp->tp += 2;
 	if (trp->tp < trp->lp || len==0)
 		goto syntax;
