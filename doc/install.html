@@ -6,10 +6,8 @@ HREF="mailto:drh@cs.princeton.edu" REV="made" TITLE="David R. Hanson">
 <BODY>
 <H1>Installing lcc</H1>
 <P ALIGN="LEFT"><B><A HREF="http://www.research.microsoft.com/~cwfraser/">Christopher
-W. Fraser</A>,  <A HREF="http%3A://www.research.microsoft.com/">Microsoft
-Research</A></B><BR><B><A HREF="http://www.cs.princeton.edu/~drh/">David R.
-Hanson</A>,  <A HREF="http://www.cs.princeton.edu/">Department of Computer
-Science</A>, <A HREF="http%3A://www.princeton.edu/">Princeton University</A></B></P>
+W. Fraser</A> and <A HREF="http://www.research.microsoft.com/~drh/">David R.
+Hanson</A>,<BR><A HREF="http://www.research.microsoft.com/">Microsoft Research</A></B></P>
 <H2>Contents</H2>
 <OL>
 <LI><A HREF="#intro">Introduction</A>
@@ -40,6 +38,10 @@ subdirectories.</P>
 <TD></TD>
 <TD>driver, accessories</TD></TR>
 <TR>
+<TD><A HREF="pkg/lib"><TT>lib</TT></A></TD>
+<TD></TD>
+<TD>runtime library source code</TD></TR>
+<TR>
 <TD><A HREF="pkg/cpp"><TT>cpp</TT></A></TD>
 <TD></TD>
 <TD>preprocessor source code</TD></TR>
@@ -59,6 +61,10 @@ subdirectories.</P>
 <TD><A HREF="pkg/tst"><TT>tst</TT></A></TD>
 <TD></TD>
 <TD>test suite</TD></TR>
+<TR>
+<TD><A HREF="pkg/alpha"><TT>alpha</TT></A><TT>/*/tst</TT></TD>
+<TD></TD>
+<TD>ALPHA test outputs</TD></TR>
 <TR>
 <TD><A HREF="pkg/mips"><TT>mips</TT></A><TT>/*/tst</TT></TD>
 <TD></TD>
@@ -81,8 +87,8 @@ multi-platform systems supported by a central file server, it's common to store
 the build directory in a location specific to the platform and to the version of
 lcc, and to point a symbolic link to this location. For example,</P>
 <BLOCKQUOTE>
-<PRE>% ln -s /usr/local/lib/lcc-3.6/sparc/solaris /usr/local/lib/lcc</PRE></BLOCKQUOTE>
-<P>points <TT>/usr/local/lib/lcc</TT> to a build directory for lcc version 3.6
+<PRE>% ln -s /usr/local/lib/lcc-4.0/sparc-solaris /usr/local/lib/lcc</PRE></BLOCKQUOTE>
+<P>points <TT>/usr/local/lib/lcc</TT> to a build directory for lcc version 4.0
 on the SPARC under Solaris. Links into <TT>/usr/local/lib</TT> are created for
 the programs <TT>lcc</TT> and <TT>bprint</TT>. Thus, a new distribution can be
 installed by building it in its own build directory and changing one symbolic
@@ -97,7 +103,7 @@ existing ANSI/ISO C compiler to install lcc.</STRONG></P>
 convention as suggested above, and record the name of this directory in the
 <TT>BUILDDIR</TT> environment variable:
 <BLOCKQUOTE>
-<PRE>% setenv BUILDDIR /usr/local/lib/lcc-3.6/sparc/solaris
+<PRE>% setenv BUILDDIR /usr/local/lib/lcc-4.0/sparc-solaris
 % mkdir -p $BUILDDIR</PRE></BLOCKQUOTE>Here and below, commands assume the C
 shell. Also, you'll need a version of <TT>mkdir</TT> that supports the <TT>-p</TT>
 option, which creates intermediate directories as necessary.</LI>
@@ -114,16 +120,16 @@ directory in the build directory,  and copy the include files for your platform
 to this directory, e.g.,
 <BLOCKQUOTE>
 <PRE>% mkdir $BUILDDIR/include
-% rcp -p include/sparc/solaris/*.h $BUILDDIR/include</PRE></BLOCKQUOTE>Some
-users create a symbolic link to the appropriate directory in the distribution
-instead of copying the include files. For example, at Princeton, the
-distributions are stored under <TT>/proj/pkg/lcc</TT>, so the included files
-are &quot;installed&quot; by creating one symbolic link:
+% rcp -p include/sparc/solaris/*.h $BUILDDIR/include</PRE></BLOCKQUOTE>Again,
+some users create a symbolic link to the appropriate directory in the
+distribution instead of copying the include files. For example, at Princeton,
+the distributions are stored under <TT>/proj/pkg/lcc</TT>, so the included
+files are &quot;installed&quot; by creating one symbolic link:
 <BLOCKQUOTE>
-<PRE>% ln -s /proj/pkg/lcc/3.6/include/sparc/solaris $BUILDDIR/include</PRE></BLOCKQUOTE></LI>
+<PRE>% ln -s /proj/pkg/lcc/4.0/include/sparc/solaris $BUILDDIR/include</PRE></BLOCKQUOTE></LI>
 <LI>Build the host-specific driver, creating a custom host-specific part, if
 necessary. See <A HREF="#driver">Sec. 2</A>.</LI>
-<LI>Build the preprocessor, compiler proper, and other accessories. See
+<LI>Build the preprocessor, compiler proper, libary, and other accessories. See
 <A HREF="#rcc">Sec. 3</A>.</LI>
 <LI>Plant symbolic links to the build directory and to the installed programs,
 e.g.,
@@ -135,8 +141,8 @@ copy
 creating symbolic links. The advantange of creating the links for <TT>lcc</TT>
 and <TT>bprint</TT> as shown is that, once established, they point indirectly
 to whatever  <TT>/usr/local/lib/lcc</TT> points to; installing a new version of
-lcc, say, 3.7, can be done by changing <TT>/usr/local/lib/lcc</TT> to point to
-the 3.7 build directory.</LI></OL>
+lcc, say, 4.1, can be done by changing <TT>/usr/local/lib/lcc</TT> to point to
+the 4.1 build directory.</LI></OL>
 <H2><A NAME="driver">2. Building the Driver</A></H2>
 <P>The preprocessor, compiler, assembler, and loader are invoked by a driver
 program, <TT>lcc</TT>, which is similar to <TT>cc</TT> on most systems. It's
@@ -155,9 +161,9 @@ all the important features. Make sure you have the environment variable <TT>BUIL
 set correctly, and build the driver with a <TT>make</TT> command, e.g.,</P>
 <BLOCKQUOTE>
 <PRE>% make HOSTFILE=etc/solaris.c lcc
-cc -c  -o /usr/local/lib/lcc-3.6/sparc-solaris/lcc.o etc/lcc.c
-cc -c  -o /usr/local/lib/lcc-3.6/sparc-solaris/host.o etc/solaris.c
-cc -o /usr/local/lib/lcc-3.6/sparc-solaris/lcc  /usr/local/lib/lcc-3.6/sparc-solaris/lcc.o /usr/local/lib/lcc-3.6/sparc-solaris/host.o</PRE></BLOCKQUOTE>
+cc -c -g -o /usr/local/lib/lcc-4.0/lcc.o etc/lcc.c
+cc -c -g -o /usr/local/lib/lcc-4.0/host.o etc/solaris.c
+cc -o /usr/local/lib/lcc-4.0/lcc -g /usr/local/lib/lcc-4.0/lcc.o /usr/local/lib/lcc-4.0/host.o</PRE></BLOCKQUOTE>
 <P>The symbolic name <TT>HOSTFILE</TT> specifies the path to the host-specific
 part, either one in the distribution or <I>whatever</I><TT>.c</TT>. Some
 versions of make may require the <TT>-e</TT> option in order to read the
@@ -168,6 +174,8 @@ environment.</P>
 
 #include &lt;string.h&gt;
 
+static char rcsid[] = &quot; Id: solaris.c,v 1.9 1997/05/27 23:03:45 drh Exp $&quot;;
+
 #ifndef LCCDIR
 #define LCCDIR &quot;/usr/local/lib/lcc/&quot;
 #endif
@@ -175,8 +183,10 @@ environment.</P>
 #define SUNDIR &quot;/opt/SUNWspro/SC4.0/lib/&quot;
 #endif
 
+char *suffixes[] = { &quot;.c&quot;, &quot;.i&quot;, &quot;.s&quot;, &quot;.o&quot;, &quot;.out&quot;, 0 };
+char inputs[256] = &quot;&quot;;
 char *cpp[] = { LCCDIR &quot;cpp&quot;,
-	&quot;-D__STDC__=1&quot;, &quot;-Dsparc&quot;, &quot;-D__sparc__&quot;, &quot;-Dsun&quot;, &quot;-D__sun__&quot;,
+	&quot;-D__STDC__=1&quot;, &quot;-Dsparc&quot;, &quot;-D__sparc__&quot;, &quot;-Dsun&quot;, &quot;-D__sun__&quot;, &quot;-Dunix&quot;,
 	&quot;$1&quot;, &quot;$2&quot;, &quot;$3&quot;, 0 };
 char *include[] = { &quot;-I&quot; LCCDIR &quot;include&quot;, &quot;-I/usr/local/include&quot;,
 	&quot;-I/usr/include&quot;, 0 };
@@ -187,26 +197,26 @@ char *ld[] = { &quot;/usr/ccs/bin/ld&quot;, &quot;-o&quot;, &quot;$3&quot;, &quo
 	SUNDIR &quot;crti.o&quot;, SUNDIR &quot;crt1.o&quot;,
 	SUNDIR &quot;values-xa.o&quot;, &quot;$2&quot;, &quot;&quot;,
 	&quot;-Y&quot;, &quot;P,&quot; SUNDIR &quot;:/usr/ccs/lib:/usr/lib&quot;, &quot;-Qy&quot;,
-	&quot;-lm&quot;, &quot;-lc&quot;, &quot;&quot;, SUNDIR &quot;crtn.o&quot;, 0 };
-static char *bbexit = LCCDIR &quot;bbexit.o&quot;;
+	&quot;-L&quot; LCCDIR, &quot;-llcc&quot;, &quot;-lm&quot;, &quot;-lc&quot;, SUNDIR &quot;crtn.o&quot;, 0 };
 
 extern char *concat(char *, char *);
-extern int access(const char *, int);
 
 int option(char *arg) {
 	if (strncmp(arg, &quot;-lccdir=&quot;, 8) == 0) {
 		cpp[0] = concat(&amp;arg[8], &quot;/cpp&quot;);
 		include[0] = concat(&quot;-I&quot;, concat(&amp;arg[8], &quot;/include&quot;));
+		ld[12] = concat(&quot;-L&quot;, &amp;arg[8]);
 		com[0] = concat(&amp;arg[8], &quot;/rcc&quot;);
-		bbexit = concat(&amp;arg[8], &quot;/bbexit.o&quot;);
 	} else if (strcmp(arg, &quot;-g&quot;) == 0)
 		;
 	else if (strcmp(arg, &quot;-p&quot;) == 0) {
 		ld[5] = SUNDIR &quot;mcrt1.o&quot;;
 		ld[10] = &quot;P,&quot; SUNDIR &quot;libp:/usr/ccs/lib/libp:/usr/lib/libp:&quot;
 			 SUNDIR &quot;:/usr/ccs/lib:/usr/lib&quot;;
-	} else if (strcmp(arg, &quot;-b&quot;) == 0 &amp;&amp; access(bbexit, 4) == 0)
-		ld[8] = bbexit;
+	} else if (strcmp(arg, &quot;-b&quot;) == 0)
+		;
+	else if (strncmp(arg, &quot;-ld=&quot;, 4) == 0)
+		ld[0] = &amp;arg[4];
 	else
 		return 0;
 	return 1;
@@ -216,15 +226,34 @@ unless it's defined by a <TT>-D</TT> option as part of <TT>CFLAGS</TT> in the
 make command, e.g.,</P>
 <BLOCKQUOTE>
 <PRE>% make HOSTFILE=etc/solaris.c CFLAGS='-DLCCDIR=\&quot;/v/lib/lcc/\&quot;' lcc</PRE></BLOCKQUOTE>
-<P>Note the trailing slash. <TT>SUNDIR</TT> is provided so you can use
+<P>Note the trailing slash; <TT>SUNDIR</TT> is provided so you can use
 <TT>etc/solaris.c</TT> even if you have a different version of the Sun Pro
 compiler suite. If you're using the gcc compiler tools instead of the Sun Pro
 tools, see <A HREF="pkg/etc/gcc-solaris.c"><TT>etc/gcc-solaris.c</TT></A>.</P>
-<P>Most of the host-specific code is data that gives templates for the commands
-that invoke the preprocessor, compiler, assembler, and loader. Each command
-template is an array of pointers to strings terminated with a null pointer; the
-first string is the full path name of the command and the others are the
-arguments or argument placeholders, which are described below.</P>
+<P>Most of the host-specific code is platform-specific data and templates for
+the commands that invoke the preprocessor, compiler, assembler, and loader. The
+<TT>suffixes</TT> array lists the file name suffixes for C source files,
+preprocessed source files, assembly language source files, object files, and
+executable files. <TT>suffixes</TT> must be terminated with a null pointer, as
+shown above. The initialization of <TT>suffixes</TT> in <TT><A
+HREF="pkg/etc/solaris.c">etc/solaris</A></TT> are the typical ones for UNIX
+systems. Each element of <TT>suffixes</TT> is actually a list of suffixes,
+seperated by semicolons; <TT><A HREF="pkg/etc/win32.c">etc/win32.c</A></TT>
+holds an example:</P>
+<BLOCKQUOTE>
+<PRE>char *suffixes[] = { &quot;.c;.C&quot;, &quot;.i;.I&quot;, &quot;.asm;.ASM;.s;.S&quot;, &quot;.obj;.OBJ&quot;, &quot;.exe&quot;, 0 };
+</PRE></BLOCKQUOTE>
+<P>When a list is given, the first suffix is used whenever lcc needs to
+generate a file name. For example, with <TT><A HREF="pkg/etc/win32.c">etc/win32.c</A></TT>,
+lcc emits the generated assembly code into <TT>.asm</TT> files.</P>
+<P>The <TT>inputs</TT> array holds a null-terminated string of directories
+separated by colons or semicolons. These are used as the default value of <TT>LCCINPUTS</TT>,
+if the environment variable <TT>LCCINPUTS</TT> is not set; see the
+<A HREF="http://www.cs.princeton.edu/software/lcc/cgi-bin/man2html.cgi?lcc+1">man
+page</A>.</P>
+<P>Each command template is an array of pointers to strings terminated with a
+null pointer; the first string is the full path name of the command and the
+others are the arguments or argument placeholders, which are described below.</P>
 <P>The <TT>cpp</TT> array gives the command for running lcc's preprocessor,
 <TT>cpp</TT>. Literal arguments specified in templates, e.g., <TT>&quot;-Dsparc&quot;</TT>
 in the <TT>cpp</TT> command above, are passed to the command as given.</P>
@@ -262,29 +291,26 @@ commands, the list <TT>$2</TT> contains a single file; for <TT>ld</TT>, <TT>$2</
 contains all &quot;.o&quot; files and libraries, and
 <TT>$3</TT> is <TT>a.out</TT>, unless the <TT>-o</TT> option is specified. As
 suggested in the code above, <TT>ld</TT> must also specify the appropriate
-startup code and default libraries.</P>
+startup code and default libraries, including the lcc library, <TT>liblcc.a</TT>.</P>
 <P>The <TT>option</TT> function is described below; the minimal
 <TT>option</TT> function just returns 0.</P>
 <P>You can test
 <TT>lcc</TT> with the options <TT>-v -v</TT> to display the commands that
 would be executed, e.g.,</P>
 <BLOCKQUOTE>
-<PRE>% $BUILDDIR/lcc -v -v foo.c baz.c mylib.a -lX11 /usr/local/lib/lcc-3.6/sparc-solaris/lcc $Name$($Id$)
+<PRE>% $BUILDDIR/lcc -v -v foo.c baz.c mylib.a -lX11
+/usr/local/lib/lcc-4.0/lcc Id: lcc.c,v 4.8 1997/05/21 00:23:30 drh Exp $
 foo.c:
-/usr/local/lib/lcc/cpp -D__STDC__=1 -Dsparc -D__sparc__ -Dsun -D__sun__ -Dunix -D__LCC__ -I/usr/local/lib/lcc/include -I/usr/local/include -I/usr/include foo.c | /usr/local/lib/lcc/rcc -target=sparc/solaris -v - /tmp/lcc23900.s
-/usr/ccs/bin/as -Qy -s -o /tmp/lcc23901.o /tmp/lcc23900.s
+/usr/local/lib/lcc/cpp -D__STDC__=1 -Dsparc -D__sparc__ -Dsun -D__sun__ -Dunix -D__LCC__ -I/usr/local/lib/lcc/include -I/usr/local/include -I/usr/include foo.c /tmp/lcc266290.i
+/usr/local/lib/lcc/rcc -target=sparc/solaris -v /tmp/lcc266290.i /tmp/lcc266291.
+s
+/usr/ccs/bin/as -Qy -s -o /tmp/lcc266292.o /tmp/lcc266291.s
 baz.c:
-/usr/local/lib/lcc/cpp -D__STDC__=1 -Dsparc -D__sparc__ -Dsun -D__sun__ -Dunix -D__LCC__ -I/usr/local/lib/lcc/include -I/usr/local/include -I/usr/include baz.c | /usr/local/lib/lcc/rcc -target=sparc/solaris -v - /tmp/lcc23900.s
-/usr/ccs/bin/as -Qy -s -o /tmp/lcc23902.o /tmp/lcc23900.s
-/usr/ccs/bin/ld -o a.out /opt/SUNWspro/SC4.0/lib/crti.o /opt/SUNWspro/SC4.0/lib/crt1.o /opt/SUNWspro/SC4.0/lib/values-xa.o /tmp/lcc23901.o /tmp/lcc23902.o mylib.a -lX11 -Y P,/opt/SUNWspro/SC4.0/lib/:/usr/ccs/lib:/usr/lib -Qy -lm -lc /opt/SUNWspro/SC4.0/lib/crtn.o
-rm /tmp/lcc23902.o /tmp/lcc23900.s /tmp/lcc23901.o</PRE></BLOCKQUOTE>
-<P>Note the use of a pipeline to connect the preprocessor and compiler.
-<TT>lcc</TT> arranges this pipeline itself; it does not call the shell. If you
-want <TT>lcc</TT> to use temporary files instead of a pipeline, define <TT>PIPE=0</TT>
-in <TT>CFLAGS</TT> when building the driver. The option <TT>-pipe</TT> forces
-<TT>lcc</TT> to use a pipeline between the preprocessor and the compiler
-regardless of <TT>PIPE</TT>'s value; <TT>-nopipe</TT> has just the opposite
-effect.</P>
+/usr/local/lib/lcc/cpp -D__STDC__=1 -Dsparc -D__sparc__ -Dsun -D__sun__ -Dunix -D__LCC__ -I/usr/local/lib/lcc/include -I/usr/local/include -I/usr/include baz.c /tmp/lcc266290.i
+/usr/local/lib/lcc/rcc -target=sparc/solaris -v /tmp/lcc266290.i /tmp/lcc266291.s
+/usr/ccs/bin/as -Qy -s -o /tmp/lcc266293.o /tmp/lcc266291.s
+/usr/ccs/bin/ld -o a.out /opt/SUNWspro/SC4.0/lib/crti.o /opt/SUNWspro/SC4.0/lib/crt1.o /opt/SUNWspro/SC4.0/lib/values-xa.o /tmp/lcc266292.o /tmp/lcc266293.o mylib.a -lX11 -Y P,/opt/SUNWspro/SC4.0/lib/:/usr/ccs/lib:/usr/lib -Qy -L/usr/local/lib/lcc/ -llcc -lm -lc /opt/SUNWspro/SC4.0/lib/crtn.o
+rm /tmp/lcc266293.o /tmp/lcc266290.i /tmp/lcc266291.s /tmp/lcc266292.o</PRE></BLOCKQUOTE>
 <P>As the output shows, <TT>lcc</TT> places temporary files in <TT>/tmp</TT>.
 Alternatives can be specified by defining <TT>TEMPDIR</TT> in <TT>CFLAGS</TT>
 when building the driver, and with the <TT>-tempdir=</TT><EM>dir</EM> option.</P>
@@ -302,35 +328,35 @@ and <TT>as</TT> commands don't need to be modified on the SPARC. <TT>-g</TT>
 will also be added to the compiler's options by the host-independent part of the
 driver. The <TT>-p</TT> causes <TT>option</TT> to change the name of the
 startup code and changed the list of libraries. The <TT>-b</TT> option turns on
-lcc's per-expression profiling, which needs the special exit routine, <TT>bbexit.o</TT>,
-when the program is loaded, so <TT>option</TT> adds it to an otherwise empty
-slot in <TT>ld</TT>'s arguments. The call to access ensures that <TT>bbexit.o</TT>
-is added to the list only if it was installed.</P>
+lcc's per-expression profiling, the code for which is in <TT>liblcc.a</TT>, so
+<TT>option</TT> need no nothing.</P>
 <P>On SPARCs, the driver also recognizes <TT>-Bstatic</TT> and <TT>-Bdynamic</TT>
-as linker options, and recognizes but ignores &quot;<TT>-target</TT> <I>name</I>&quot;
-option.</P>
+as linker options. The driver recognizes but ignores &quot;<TT>-target</TT>
+<I>name</I>&quot; option.</P>
 <P>The option <TT>-Wo</TT><I>arg</I> causes the driver to pass <I>arg</I> to
 <TT>option</TT>. Such options have no other effect; this mechanism is provided
 to support system-specific options that affect the commands executed by the
 driver. As illustrated above, host-specific parts should support the <TT>-Wo-lccdir=</TT><EM>dir</EM>
 option, which causes lcc's compilation components to be found in <EM>dir</EM>,
 because this option is  used by the test scripts. The code above rebuilds the
-paths to the include files, preprocessor, compiler, and profiling exit routine
-by calling <TT>concat</TT>, which is defined in <TT>etc/lcc.c</TT>.</P>
+paths to the include files, preprocessor, compiler, and library by calling <TT>concat</TT>,
+which is defined in <TT>etc/lcc.c</TT>.</P>
 <H2><A NAME="rcc">3. Building the Compiler and Accessories</A></H2>
 <P>To build the rest of compilation components make sure <TT>BUILDDIR</TT> is
 set appropriately and type &quot;<TT>make all</TT>&quot;. This command builds
 <TT>rcc</TT> (the compiler proper), <TT>lburg</TT> (the code-generator
-generator), <TT>cpp</TT> (the preprocessor), <TT>bbexit.o</TT> (the profiling
-exit routine), and <TT>bprint</TT> (the profile printer), all in <TT>BUILDDIR</TT>.
+generator), <TT>cpp</TT> (the preprocessor), <TT>liblcc.a</TT> (the runtime
+library), and <TT>bprint</TT> (the profile printer), all in <TT>BUILDDIR</TT>.
 There may be a few warnings, but there should be no errors. If you're using an
 ANSI/ISO compiler other than <TT>cc</TT>, specify its name with the <TT>CC=</TT>
-option, e.g., &quot;<TT>make CC=gcc all</TT>&quot;.</P>
+option, e.g., &quot;<TT>make CC=gcc all</TT>&quot;. If you're running on a DEC
+ALPHA, use &quot;<TT>make CC='cc -std1' all</TT>&quot;; the <TT>-std1</TT>
+option is essential on the ALPHA.</P>
 <P>Once <TT>rcc</TT> is built with the host C compiler, run the test suite to
 verify that <TT>rcc</TT> is working correctly. If any of the steps below fail,
 contact us (see <A HREF="#bugs">Sec. 4</A>). The commands in the makefile run
 the shell script
-<TT>src/run</TT> on each C program in the test suite, <TT>tst/*.c</TT>. It
+<TT>src/run.sh</TT> on each C program in the test suite, <TT>tst/*.c</TT>. It
 uses the driver, <TT>$BUILDDIR/lcc</TT>, so you must have the driver in the
 build directory before testing <TT>rcc</TT>. The <I>target</I><TT>/</TT><I>os</I>
 combination is read from the variable <TT>TARGET</TT>, which must be specified
@@ -428,12 +454,12 @@ generator, type</P>
 <BLOCKQUOTE>
 <PRE>% setenv REMOTEHOST noexecute
 % make TARGET=mips/irix test</PRE></BLOCKQUOTE>
-<P>As above, <TT>src/run</TT> compares the MIPS code generated with what's
+<P>As above, <TT>src/run.sh</TT> compares the MIPS code generated with what's
 expected. There should be no differences. Setting <TT>REMOTEHOST</TT> to <TT>noexecute</TT>
 suppresses the assembly and execution of the generated code. If you set <TT>REMOTEHOST</TT>
 to the name of a MIPS machine to which you can <TT>rlogin</TT>,
-<TT>src/run</TT> will <TT>rcp</TT> the generated code to that machine and
-execute it there, if necessary. See <TT>src/run</TT> for the details.</P>
+<TT>src/run.sh</TT> will <TT>rcp</TT> the generated code to that machine and
+execute it there, if necessary. See <TT>src/run.sh</TT> for the details.</P>
 <P>You can use lcc as a cross compiler. The options <TT>-S</TT> and <TT>-Wf-target=</TT><I>target/os</I>
 generate assembly code for the specified target, which is any of those listed in
 the file
@@ -512,4 +538,5 @@ subscribe to it by sending a message with the 1-line body
 <HR>
 <ADDRESS><A HREF="http://www.research.microsoft.com/~cwfraser/">Chris Fraser</A> / <A
 HREF="mailto:cwfraser@microsoft.com">cwfraser@microsoft.com</A><BR><A
-HREF="/~drh/">David Hanson</A> / <A HREF="mailto:drh@cs.princeton.edu">drh@cs.princeton.edu</A><BR>$Name$ $Revision$ $Date$</ADDRESS></BODY></HTML>
+HREF="http://www.research.microsoft.com/~drh/">David Hanson</A> / <A
+HREF="mailto:drh@microsoft.com">drh@microsoft.com</A><BR>$Name$ $Revision$ $Date$</ADDRESS></BODY></HTML>
