@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+static char rcsid[] = "$Id$";
+
 #ifndef LCCDIR
 #define LCCDIR "/usr/local/lib/lcc/"
 #endif
@@ -13,7 +15,7 @@ char *cpp[] = {
 	"-Dalpha", "-D_alpha", "-D__alpha",
 	"-D__SYSTYPE_BSD",  "-D_SYSTYPE_BSD",
 	"$1", "$2", "$3", 0 };
-char *com[] =  { LCCDIR "rcc", "-target=alpha-osf", "$1", "$2", "$3", "", 0 };
+char *com[] =  { LCCDIR "rcc", "-target=alpha/osf", "$1", "$2", "$3", "", 0 };
 char *include[] = { "-I" LCCDIR "include", "-I/usr/local/include",
 	"-I/usr/include", 0 };
 char *as[] =  { "/bin/as", "-o", "$3", "", "$1", "-nocpp", "$2", 0 };

@@ -1,7 +1,8 @@
-/* Sparcs running Solaris 2.5.1 at CS Dept., Princeton University */
 /* SGI big endian MIPSes running IRIX 5.2 at CS Dept., Princeton University */
 
 #include <string.h>
+
+static char rcsid[] = "$Id$";
 
 #ifndef LCCDIR
 #define LCCDIR "/usr/local/lib/lcc/"
