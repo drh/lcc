@@ -420,11 +420,8 @@ After <tt>lcc</tt> is installed, install <tt>bprint</tt> with the commands
 % cp bprint /usr/local/bin/bprint
 % cp ../doc/bprint.1 /usr/local/man/man1
 </pre>
-The <tt>makefile</tt> uses <tt>lcc</tt> to compile <tt>bprint.c</tt>;
-you must use <tt>lcc</tt> or another ANSI C compiler, e.g., <tt>gcc</tt>,
-because <tt>bprint.c</tt> is written in ANSI C.
-Also, <tt>bprint.c</tt> <em>includes</em> <tt>"../src/profio.c"</tt>, so it must
-be compiled in <tt>etc</tt>.<p>
+You must use <tt>lcc</tt> or another ANSI C compiler, e.g., <tt>gcc</tt>,
+because <tt>bprint.c</tt> is written in ANSI C.<p>
 
 <h2><a name="rcc">5. Installing the Compiler Proper</a></h2>
 
@@ -673,7 +670,7 @@ because <tt>lburg</tt> is written in ANSI C.<p>
 To test <tt>lburg</tt>, use it process one of the machine
 descriptions in <tt>src/*.md</tt> and compare the output with
 the corresponding <tt>src/*.c</tt> file. For example,
-<pre>% lburg <../src/x86.md | diff ../src/x86.nw -
+<pre>% lburg <../src/x86.md | diff ../src/x86.c -
 40c40
 < generated at Mon Dec  5 17:49:52 1994
 ---
