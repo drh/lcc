@@ -433,7 +433,6 @@ static void help() {
 #endif
 "-Bdir/	use the compiler named `dir/rcc'\n",
 "-c	compile only\n",
-"-C	prevent the preprocessor from stripping comments\n",
 "-dn	set switch statement density to `n'\n",
 "-Dname -Dname=def	define the preprocessor symbol `name'\n",
 "-E	run only the preprocessor on the named C programs and unsuffixed files\n",
@@ -572,9 +571,6 @@ static void opt(arg) char *arg; {
 			return;
 		case 'c':
 			cflag++;
-			return;
-		case 'C':
-			plist = append(arg, plist);
 			return;
 		case 'N':
 			if (strcmp(basename(cpp[0]), "gcc-cpp") == 0)
