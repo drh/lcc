@@ -372,7 +372,7 @@ RCCSRCS=src/alloc.c \
 
 C=$Blcc -A -d0.6 -Wo-lccdir=$(BUILDDIR) -Isrc -I$(BUILDDIR)
 triple:	$B2rcc$E
-	fc /b $B1rcc$E $B2rcc$E
+	-fc /b $B1rcc$E $B2rcc$E
 
 $B1rcc$E:	$Brcc$E $Blcc$E $Bcpp$E
 		$C -o $@ -B$B $(RCCSRCS)
