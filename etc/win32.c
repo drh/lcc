@@ -17,7 +17,7 @@ char *com[] = { LCCDIR "rcc", "-target=x86/win32", "$1", "$2", "$3", 0 };
 char *as[] = { "ml", "-nologo", "-c", "-Cp", "-coff", "-Fo$3", "$1", "$2", 0 };
 char *ld[] = { "link", "-nologo", 
 	"", "-subsystem:console", "-entry:mainCRTStartup",
-	"$2", "-OUT:$3", "$1", LCCDIR "liblcc.lib", "libc.lib", "kernel32.lib", 0 };
+	"$2", "-OUT:$3", "$1", LCCDIR "liblcc.lib", "oldnames.lib", "libc.lib", "kernel32.lib", 0 };
 
 extern char *concat(char *, char *);
 extern char *replace(const char *, int, int);
