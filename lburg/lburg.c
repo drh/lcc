@@ -30,7 +30,7 @@ static void emitheader(void);
 static void emitkids(Rule rules, int nrules);
 static void emitnts(Rule rules, int nrules);
 static void emitrecalc(char *pre, Term root, Term kid);
-static void emitrecord(char *pre, Rule r, int cost);
+static void emitrecord(char *pre, Rule r, char *c, int cost);
 static void emitrule(Nonterm nts);
 static void emitlabel(Term terms, Nonterm start, int ntnumber);
 static void emitstring(Rule rules);
@@ -359,8 +359,12 @@ static void emitcase(Term p, int ntnumber) {
 		char *indent = "\t\t\0";
 		switch (p->arity) {
 		case 0: case -1:
-			print("%2/* %R */\n%2c = %s;\n", r, r->code);
-			emitrecord("\t\t", r, 0);
+			print("%2/* %R */\n", r);
+			if (r->cost == -1) {
+				print("%2c = %s;\n", r->code);
+				emitrecord("\t\t", r, "c", 0);
+			} else
+				emitrecord("\t\t", r, r->code, 0);
 			break;
 		case 1:
 			if (r->pattern->nterms > 1) {
@@ -376,7 +380,7 @@ static void emitcase(Term p, int ntnumber) {
 			print("%sc = ", indent);
 			emitcost(r->pattern->left, "LEFT_CHILD(a)");
 			print("%s;\n", r->code);
-			emitrecord(indent, r, 0);
+			emitrecord(indent, r, "c", 0);
 			if (indent[2])
 				print("%2}\n");
 			break;
@@ -394,7 +398,7 @@ static void emitcase(Term p, int ntnumber) {
 			emitcost(r->pattern->left,  "LEFT_CHILD(a)");
 			emitcost(r->pattern->right, "RIGHT_CHILD(a)");
 			print("%s;\n", r->code);
-			emitrecord(indent, r, 0);
+			emitrecord(indent, r, "c", 0);
 			if (indent[2])
 				print("%2}\n");
 			break;
@@ -418,7 +422,7 @@ static void emitclosure(Nonterm nts) {
 			print("static void %Pclosure_%S(NODEPTR_TYPE a, int c) {\n"
 "%1struct %Pstate *p = STATE_LABEL(a);\n", p);
 			for (r = p->chain; r; r = r->chain)
-				emitrecord("\t", r, r->cost);
+				emitrecord("\t", r, "c", r->cost);
 			print("}\n\n");
 		}
 }
@@ -579,17 +583,17 @@ static void emitrecalc(char *pre, Term root, Term kid) {
 }
 
 /* emitrecord - emit code that tests for a winning match of rule r */
-static void emitrecord(char *pre, Rule r, int cost) {
+static void emitrecord(char *pre, Rule r, char *c, int cost) {
 	if (Tflag)
-		print("%s%Ptrace(a, %d, c + %d, p->cost[%P%S_NT]);\n",
-			pre, r->ern, cost, r->lhs);
+		print("%s%Ptrace(a, %d, %s + %d, p->cost[%P%S_NT]);\n",
+			pre, r->ern, c, cost, r->lhs);
 	print("%sif (", pre);
-	print("c + %d < p->cost[%P%S_NT]) {\n"
-"%s%1p->cost[%P%S_NT] = c + %d;\n%s%1p->rule.%P%S = %d;\n",
-		cost, r->lhs, pre, r->lhs, cost, pre, r->lhs,
+	print("%s + %d < p->cost[%P%S_NT]) {\n"
+"%s%1p->cost[%P%S_NT] = %s + %d;\n%s%1p->rule.%P%S = %d;\n",
+		c, cost, r->lhs, pre, r->lhs, c, cost, pre, r->lhs,
 		r->packed);
 	if (r->lhs->chain)
-		print("%s%1%Pclosure_%S(a, c + %d);\n", pre, r->lhs, cost);
+		print("%s%1%Pclosure_%S(a, %s + %d);\n", pre, r->lhs, c, cost);
 	print("%s}\n", pre);
 }
 
