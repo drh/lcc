@@ -6,14 +6,18 @@
 
 static char rcsid[] = "$Id$";
 
-struct callsite {
+EXPORT struct callsite {
 	char *file, *name;
 	union coordinate {
 		struct { unsigned int index:6,x:10,y:16; } be;
 		struct { unsigned int y:16,x:10,index:6; } le;
 		unsigned int coord;
 	} u;
-} *_caller;
+} *_caller, **_callerp = &_caller;
+
+EXPORT void _setcallerp(struct callsite **p) {
+	_callerp = p;
+}
 
 static struct _bbdata {
 	struct _bbdata *link;
@@ -97,7 +101,7 @@ static void bbexit(void) {
 }
 
 EXPORT void _epilogue(struct func *callee) {
-	_caller = 0;
+	*_callerp = 0;
 }
 
 EXPORT void _prologue(struct func *callee, struct _bbdata *yylink) {
@@ -112,16 +116,16 @@ EXPORT void _prologue(struct func *callee, struct _bbdata *yylink) {
 			atexit(bbexit);
 	}
 	for (p = callee->callers; p; p = p->link)
-		if (p->caller == _caller) {
+		if (p->caller == *_callerp) {
 			p->count++;
 			break;
 		}
 	if (!p && next < sizeof callers/sizeof callers[0]) {
 		p = &callers[next++];
-		p->caller = _caller;
+		p->caller = *_callerp;
 		p->count = 1;
 		p->link = callee->callers;
 		callee->callers = p;
 	}
-	_caller = 0;
+	*_callerp = 0;
 }
