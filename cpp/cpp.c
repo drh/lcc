@@ -17,7 +17,7 @@ int	ifdepth;
 int	ifsatisfied[NIF];
 int	skipping;
 
-static char rcsid[] = "$Revision$ $Date$";
+char rcsid[] = "$Revision$ $Date$";
 
 void
 main(int argc, char **argv)
@@ -27,7 +27,7 @@ main(int argc, char **argv)
 	char ebuf[BUFSIZ];
 
 	setbuf(stderr, ebuf);
-	t = time((time_t)NULL);
+	t = time(NULL);
 	curtime = ctime(&t);
 	maketokenrow(3, &tr);
 	expandlex();
@@ -140,7 +140,7 @@ control(Tokenrow *trp)
 			error(ERROR, "Syntax error in #undef");
 			break;
 		}
-		if ((np = lookup(tp, 0)))
+		if ((np = lookup(tp, 0)) != NULL)
 			np->flag &= ~ISDEFINED;
 		break;
 

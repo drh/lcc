@@ -1,5 +1,5 @@
-#include <u.h>
-#include <libc.h>
+#include <stdlib.h>
+#include <string.h>
 #include "cpp.h"
 
 #define	NSTAK	32
@@ -23,7 +23,7 @@ struct value {
 #define	UNARY	6
 
 /* operator priority, arity, and conversion type, indexed by tokentype */
-const struct pri {
+struct pri {
 	char	pri;
 	char	arity;
 	char	ctype;
@@ -229,6 +229,7 @@ evalop(struct pri pri)
 		}
 		v1 = *--vp;
 		rv1 = v1.val;
+/*lint -e574 -e644 */
 		switch (priority[oper].ctype) {
 		case 0:
 		default:
@@ -372,6 +373,7 @@ evalop(struct pri pri)
 			error(ERROR, "Eval botch (unknown operator)");
 			return 1;
 		}
+/*lint +e574 +e644 */
 		v1.val = rv1;
 		v1.type = rtype;
 		*vp++ = v1;
@@ -384,9 +386,8 @@ tokval(Token *tp)
 {
 	struct value v;
 	Nlist *np;
-	int i, base, c, longcc;
+	int i, base, c;
 	unsigned long n;
-	Rune r;
 	uchar *p;
 
 	v.type = SGN;
@@ -398,7 +399,7 @@ tokval(Token *tp)
 		break;
 
 	case NAME1:
-		if ((np = lookup(tp, 0)) && np->flag&ISDEFINED)
+		if ((np = lookup(tp, 0)) != NULL && np->flag&ISDEFINED)
 			v.val = 1;
 		break;
 
@@ -445,10 +446,9 @@ tokval(Token *tp)
 	case CCON:
 		n = 0;
 		p = tp->t;
-		longcc = 0;
 		if (*p=='L') {
 			p += 1;
-			longcc = 1;
+			error(WARNING, "Wide char constant value undefined");
 		}
 		p += 1;
 		if (*p=='\\') {
@@ -475,7 +475,7 @@ tokval(Token *tp)
 				}
 			} else {
 				static char cvcon[]
-				  = "a\ab\bf\fn\nr\rt\tv\v''\"\"??\\\\";
+				  = "b\bf\fn\nr\rt\tv\v''\"\"??\\\\";
 				for (i=0; i<sizeof(cvcon); i+=2) {
 					if (*p == cvcon[i]) {
 						n = cvcon[i+1];
@@ -489,16 +489,11 @@ tokval(Token *tp)
 			}
 		} else if (*p=='\'')
 			error(ERROR, "Empty character constant");
-		else {
-			i = chartorune(&r, (char*)p);
-			n = r;
-			p += i;
-			if (i>1 && longcc==0)
-				error(WARNING, "Undefined character constant");
-		}
+		else
+			n = *p++;
 		if (*p!='\'')
 			error(WARNING, "Multibyte character constant undefined");
-		else if (n>127 && longcc==0)
+		else if (n>127)
 			error(WARNING, "Character constant taken as not signed");
 		v.val = n;
 		break;

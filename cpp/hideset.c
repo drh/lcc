@@ -1,6 +1,6 @@
-#include <u.h>
-#include <libc.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "cpp.h"
 
 /*
@@ -105,6 +105,6 @@ prhideset(int hs)
 
 	for (np = hidesets[hs]; *np; np++) {
 		fprintf(stderr, (char*)(*np)->name, (*np)->len);
-		fprintf(stderr, " ", 1);
+		fprintf(stderr, " ");
 	}
 }

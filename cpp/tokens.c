@@ -1,6 +1,6 @@
-#include <u.h>
-#include <libc.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "cpp.h"
 
 static char wbuf[2*OBS];
@@ -256,7 +256,6 @@ void
 peektokens(Tokenrow *trp, char *str)
 {
 	Token *tp;
-	int c;
 
 	tp = trp->tp;
 	flushout();
@@ -266,9 +265,9 @@ peektokens(Tokenrow *trp, char *str)
 		fprintf(stderr, "(tp offset %d) ", tp-trp->bp);
 	for (tp=trp->bp; tp<trp->lp && tp<trp->bp+32; tp++) {
 		if (tp->type!=NL) {
-			c = tp->t[tp->len];
+			int c = tp->t[tp->len];
 			tp->t[tp->len] = 0;
-			fprintf(stderr, "%s", tp->t, tp->len);
+			fprintf(stderr, "%s", tp->t);
 			tp->t[tp->len] = c;
 		}
 		if (tp->type==NAME) {
@@ -299,17 +298,8 @@ puttokens(Tokenrow *trp)
 			tp++;
 			len += tp->wslen+tp->len;
 		}
-		if (Mflag==0) {
-			if (len>OBS/2) {		/* handle giant token */
-				if (wbp > wbuf)
-					write(1, wbuf, wbp-wbuf);
-				write(1, p, len);
-				wbp = wbuf;
-			} else {	
-				memcpy(wbp, p, len);
-				wbp += len;
-			}
-		}
+		memcpy(wbp, p, len);
+		wbp += len;
 		if (wbp >= &wbuf[OBS]) {
 			write(1, wbuf, OBS);
 			if (wbp > &wbuf[OBS])

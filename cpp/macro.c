@@ -1,6 +1,6 @@
-#include <u.h>
-#include <libc.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "cpp.h"
 
 /*
@@ -483,7 +483,7 @@ builtin(Tokenrow *trp, int biname)
 
 	case KDATE:
 		strncpy(op, curtime+4, 7);
-		strncpy(op+7, curtime+24, 4); /* Plan 9 asctime disobeys standard */
+		strncpy(op+7, curtime+20, 4);
 		op += 11;
 		break;
 

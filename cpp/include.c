@@ -1,12 +1,10 @@
-#include <u.h>
-#include <libc.h>
+#include <stdlib.h>
+#include <string.h>
 #include "cpp.h"
 
-Includelist	includelist[NINCLUDE] = {
-	{ 0, 1, "/usr/include" },
-};
+Includelist	includelist[NINCLUDE];
 
-char	*objname;
+extern char	*objname;
 
 void
 doinclude(Tokenrow *trp)
@@ -48,7 +46,7 @@ doinclude(Tokenrow *trp)
 	if (fname[0]=='/') {
 		fd = open(fname, 0);
 		strcpy(iname, fname);
-	} else for (fd=-1,i=NINCLUDE-1; i>=0; i--) {
+	} else for (fd = -1,i=NINCLUDE-1; i>=0; i--) {
 		ip = &includelist[i];
 		if (ip->file==NULL || ip->deleted || (angled && ip->always==0))
 			continue;
