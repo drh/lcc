@@ -62,9 +62,9 @@ doinclude(Tokenrow *trp)
 			break;
 	}
 	if ( Mflag>1 || !angled&&Mflag==1 ) {
-		write(1,objname,strlen(objname));
-		write(1,iname,strlen(iname));
-		write(1,"\n",1);
+		fwrite(objname,1,strlen(objname),stdout);
+		fwrite(iname,1,strlen(iname),stdout);
+		fwrite("\n",1,1,stdout);
 	}
 	if (fd != NULL) {
 		if (++incdepth > 10)

@@ -77,10 +77,9 @@ setup(int argc, char **argv)
 			error(FATAL, "Can't open input file %s", fp);
 	}
 	if (optind+1<argc) {
-		int fdo = creat(argv[optind+1], 0666);
-		if (fdo<0)
+		FILE *fdo = freopen(argv[optind+1], "w", stdout);
+		if (fdo == NULL)
 			error(FATAL, "Can't open output file %s", argv[optind+1]);
-		dup2(fdo, 1);
 	}
 	if(Mflag)
 		setobjname(fp);

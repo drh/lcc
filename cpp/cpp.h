@@ -156,7 +156,3 @@ extern	int Cplusplus;
 extern	Nlist *kwdefined;
 extern	Includelist includelist[NINCLUDE];
 extern	char wd[];
-
-extern int creat(char *, int);
-extern int dup2(int, int);
-extern int write(int, char *, size_t);
