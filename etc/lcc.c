@@ -533,7 +533,8 @@ static void initinputs(void) {
 					ilist = append(concat("-I", b->str), ilist);
 					if (strstr(com[1], "win32") == NULL)
 						llist[0] = append(concat("-L", b->str), llist[0]);
-				}
+				} else
+					b->str = "";
 			} while (b != lccinputs);
 	}
 #ifdef WIN32
