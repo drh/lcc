@@ -92,7 +92,8 @@ void
 doadefine(Tokenrow *trp, int type)
 {
 	Nlist *np;
-	static Token onetoken[1] = {{ NUMBER, 0, 0, 0, 1, (uchar*)"1" }};
+	static unsigned char one[] = "1";
+	static Token onetoken[1] = {{ NUMBER, 0, 0, 0, 1, one }};
 	static Tokenrow onetr = { onetoken, onetoken, onetoken+1, 1 };
 
 	trp->tp = trp->bp;
