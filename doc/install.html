@@ -267,10 +267,10 @@ if the environment variable <TT>LCCINPUTS</TT> is not set; see the
 <A HREF="http://www.cs.princeton.edu/software/lcc/cgi-bin/man2html.cgi?lcc+1">man
 page</A>.</P>
 <P>Each command template is an array of pointers to strings terminated with a
-null pointer; the string are full path names of commands, arguments, or argument
-placeholders, which are described below. Commands are executed by calling <TT>system</TT>,
-and templates can contain multiple command by separating commands with newlines.
-The driver makes a separate call to <TT>system</TT> for each command.</P>
+null pointer; the strings are full path names of commands, arguments, or
+argument placeholders, which are described below. Commands are executed in a
+child process, and templates can contain multiple commands by separating
+commands with newlines. The driver runs each command in a new process.</P>
 <P>The <TT>cpp</TT> array gives the command for running lcc's preprocessor,
 <TT>cpp</TT>. Literal arguments specified in templates, e.g., <TT>&quot;-Dsparc&quot;</TT>
 in the <TT>cpp</TT> command above, are passed to the command as given.</P>
