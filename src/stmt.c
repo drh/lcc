@@ -444,12 +444,11 @@ void swcode(Swtch swp, int b[], int lb, int ub) {
 		Symbol table = genident(STATIC,
 			array(voidptype, u - l + 1, 0), GLOBAL);
 		(*IR->defsymbol)(table);
-		if (!isunsigned(swp->sym->type) || v[l] != 0)
-			cmp(LT, swp->sym, v[l], lolab);
+		cmp(LT, swp->sym, v[l], lolab);
 		cmp(GT, swp->sym, v[u], hilab);
 		e = (*optree['-'])(SUB, cast(idtree(swp->sym), ty), cnsttree(ty, v[l]));
-		if (e->type->size < unsignedptr->size)
-			e = cast(e, unsignedlong);
+		if (e->type->size < signedptr->size)
+			e = cast(e, longtype);
 		walk(tree(JUMP, voidtype,
 			rvalue((*optree['+'])(ADD, pointer(idtree(table)), e)), NULL),
 			0, 0);
