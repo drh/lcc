@@ -302,7 +302,7 @@ static void print(char *fmt, ...) {
 				print("%S: %T", r->lhs, r->pattern);
 				break;
 				}
-			case 'S': fputs(va_arg(ap, Term)->name, outfp); break;
+			case 'S': fputs((va_arg(ap, Term))->name, outfp); break;
 			case '1': case '2': case '3': case '4': case '5': {
 				int n = *fmt - '0';
 				while (n-- > 0)
