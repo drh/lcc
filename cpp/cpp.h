@@ -1,3 +1,4 @@
+/* $Id$ */
 #define	INS	32768		/* input buffer */
 #define	OBS	4096		/* outbut buffer */
 #define	NARG	32		/* Max number arguments to a macro */
@@ -10,7 +11,9 @@
 #define NULL	0
 #endif
 
+#ifndef __alpha
 typedef unsigned char uchar;
+#endif
 
 enum toktype { END, UNCLASS, NAME, NUMBER, STRING, CCON, NL, WS, DSHARP,
 		EQ, NEQ, LEQ, GEQ, LSH, RSH, LAND, LOR, PPLUS, MMINUS,
