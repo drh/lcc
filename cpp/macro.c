@@ -135,7 +135,7 @@ expandrow(Tokenrow *trp, char *flag)
 	Nlist *np;
 
 	if (flag)
-		setsource(flag, -1, "");
+		setsource(flag, NULL, "");
 	for (tp = trp->tp; tp<trp->lp; ) {
 		if (tp->type!=NAME
 		 || quicklook(tp->t[0], tp->len>1?tp->t[1]:0)==0
@@ -378,7 +378,7 @@ doconcat(Tokenrow *trp)
 			strncpy((char*)tt, (char*)ltp->t, ltp->len);
 			strncpy((char*)tt+ltp->len, (char*)ntp->t, ntp->len);
 			tt[len] = '\0';
-			setsource("<##>", -1, tt);
+			setsource("<##>", NULL, tt);
 			maketokenrow(3, &ntr);
 			gettokens(&ntr, 1);
 			unsetsource();
@@ -464,7 +464,7 @@ builtin(Tokenrow *trp, int biname)
 	trp->tp++;
 	/* need to find the real source */
 	s = cursource;
-	while (s && s->fd==-1)
+	while (s && s->fd==NULL)
 		s = s->next;
 	if (s==NULL)
 		s = cursource;

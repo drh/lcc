@@ -1,4 +1,5 @@
 /* $Id$ */
+#include <stdio.h>
 #define	INS	32768		/* input buffer */
 #define	OBS	4096		/* outbut buffer */
 #define	NARG	32		/* Max number arguments to a macro */
@@ -60,7 +61,7 @@ typedef struct source {
 	uchar	*inb;		/* input buffer */
 	uchar	*inp;		/* input pointer */
 	uchar	*inl;		/* end of input */
-	int	fd;		/* input source */
+	FILE*	fd;		/* input source */
 	int	ifdepth;	/* conditional nesting in include */
 	struct	source *next;	/* stack for #include */
 } Source;
@@ -93,7 +94,7 @@ void	fixlex(void);
 void	setup(int, char **);
 int	gettokens(Tokenrow *, int);
 int	comparetokens(Tokenrow *, Tokenrow *);
-Source	*setsource(char *, int, char *);
+Source	*setsource(char *, FILE *, char *);
 void	unsetsource(void);
 void	puttokens(Tokenrow *);
 void	process(Tokenrow *);
@@ -157,8 +158,5 @@ extern	Includelist includelist[NINCLUDE];
 extern	char wd[];
 
 extern int creat(char *, int);
-extern int open(char *, int);
-extern int close(int);
 extern int dup2(int, int);
 extern int write(int, char *, size_t);
-extern int read(int, char *, size_t);

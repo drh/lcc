@@ -15,7 +15,8 @@ int	Cplusplus = 1;
 void
 setup(int argc, char **argv)
 {
-	int c, fd, i;
+	int c, i;
+	FILE *fd;
 	char *fp, *dp;
 	Tokenrow tr;
 	extern void setup_kwtab(void);
@@ -41,7 +42,7 @@ setup(int argc, char **argv)
 			break;
 		case 'D':
 		case 'U':
-			setsource("<cmdarg>", -1, optarg);
+			setsource("<cmdarg>", NULL, optarg);
 			maketokenrow(3, &tr);
 			gettokens(&tr, 1);
 			doadefine(&tr, c);
@@ -72,7 +73,7 @@ setup(int argc, char **argv)
 			dp[len] = '\0';
 		}
 		fp = (char*)newstring((uchar*)argv[optind], strlen(argv[optind]), 0);
-		if ((fd = open(fp, 0)) <= 0)
+		if ((fd = fopen(fp, "r")) == NULL)
 			error(FATAL, "Can't open input file %s", fp);
 	}
 	if (optind+1<argc) {
