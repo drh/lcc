@@ -1,4 +1,4 @@
-/* SGI big endian MIPSes running IRIX 5.2 at CS Dept., Princeton University */
+/* SGI big endian MIPSes running IRIX 6.2 at CS Dept., Princeton University */
 
 #include <string.h>
 
@@ -6,6 +6,9 @@ static char rcsid[] = "$Id$";
 
 #ifndef LCCDIR
 #define LCCDIR "/usr/local/lib/lcc/"
+#endif
+#ifndef LIBDIR
+#define LIBDIR "/usr/lib/"
 #endif
 
 char *suffixes[] = { ".c", ".i", ".s", ".o", ".out", 0 };
@@ -38,11 +41,11 @@ char *cpp[] = { LCCDIR "cpp", "-D__STDC__=1",
 char *com[] =  { LCCDIR "rcc", "-target=mips/irix", "$1", "$2", "$3", "", 0 };
 char *include[] = { "-I" LCCDIR "include", "-I/usr/local/include",
 	"-I/usr/include", 0 };
-char *as[] = { "/usr/bin/as", "-o", "$3", "$1", "-nocpp", "-KPIC", "$2", 0 };
-char *ld[] = { "/usr/bin/ld", "-require_dynamic_link", "_rld_new_interface",
+char *as[] = { "/usr/bin/as", "-32", "-o", "$3", "$1", "-nocpp", "-KPIC", "$2", 0 };
+char *ld[] = { "/usr/bin/ld", "-require_dynamic_link", "_rld_new_interface", "-32",
 	"-elf", "-_SYSTYPE_SVR4", "-Wx,-G", "0", "-g0", "-KPIC", "-dont_warn_unused",
-	"-o", "$3", "/usr/lib/crt1.o", "-L/usr/local/lib",
-	"$1", "$2", "", "-L" LCCDIR, "-llcc", "-lc", "-lm", "/usr/lib/crtn.o", 0
+	"-o", "$3", LIBDIR "crt1.o", "-L/usr/local/lib",
+	"$1", "$2", "", "-L" LCCDIR, "-llcc", "-lc", "-lm", LIBDIR "crtn.o", 0
 };
 
 extern char *concat(char *, char *);
@@ -52,11 +55,11 @@ int option(char *arg) {
 		cpp[0] = concat(&arg[8], "/cpp");
 		include[0] = concat("-I", concat(&arg[8], "/include"));
 		com[0] = concat(&arg[8], "/rcc");
-		ld[17] = concat("-L", &arg[8]);
+		ld[18] = concat("-L", &arg[8]);
 	} else if (strcmp(arg, "-g") == 0)
 		;
 	else if (strcmp(arg, "-p") == 0)
-		ld[12] = "/usr/lib/mcrt1.o";
+		ld[13] = LIBDIR "mcrt1.o";
 	else if (strcmp(arg, "-b") == 0)
 		;
 	else
