@@ -5,11 +5,13 @@
 # set -x
 target=`echo $1 | awk -F/ '{ print $(NF-3) }'`
 os=`echo $1 | awk -F/ '{ print $(NF-2) }'`
-dir=$target/$os; idir=include/$dir
-remotehost=${2-$REMOTEHOST}
+dir=$target/$os; remotehost=${2-$REMOTEHOST}
 
 case "$1" in
-*symbolic*)	remotehost=noexecute ;;
+*symbolic/irix*)	idir=include/mips/irix; remotehost=noexecute ;;
+*symbolic/osf*)		idir=include/alpha/osf;	remotehost=noexecute ;;
+*symbolic/winnt*)	idir=include/x86/winnt4 ;;
+*)			idir=include/$dir ;;
 esac
 
 if [ ! -d "$target/$os" -o ! -d "$idir" ]; then
@@ -18,12 +20,12 @@ if [ ! -d "$target/$os" -o ! -d "$idir" ]; then
 fi
 
 C=`basename $1 .s`
-BUILDDIR=${BUILDDIR-./} LCC="${LCC-${BUILDDIR}/lcc} -Wo-lccdir=$BUILDDIR"
+BUILDDIR=${BUILDDIR-.} LCC="${LCC-${BUILDDIR}/lcc} -Wo-lccdir=$BUILDDIR"
 TSTDIR=${TSTDIR-${BUILDDIR}/$dir/tst}
 if [ ! -d $TSTDIR ]; then mkdir -p $TSTDIR; fi
 
 echo ${BUILDDIR}/rcc -target=$target/$os $1: 1>&2
-$LCC -N -S -B${BUILDDIR}/ -I$idir -Ualpha -Usun -Uvax -Umips -Ux86 \
+$LCC -N -S -I$idir -Ualpha -Usun -Uvax -Umips -Ux86 \
 	-Wf-errout=$TSTDIR/$C.2 -D$target -Wf-g0 \
 	-Wf-target=$target/$os -o $1 tst/$C.c
 if [ $? != 0 ]; then remotehost=noexecute; fi
@@ -51,3 +53,4 @@ if [ -r $dir/tst/$C.1bk ]; then
 	exit $?
 fi
 exit 0
+g
