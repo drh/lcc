@@ -540,7 +540,11 @@ static void initinputs(void) {
 #ifdef WIN32
 	if (list = b = path2list(getenv("include")))
 		do {
+			int n;
 			b = b->link;
+			n = strlen(b->str);
+			if (b->str[n-1] == '\\')
+				b->str[n-1] = '/';
 			ilist = append(stringf("-I\"%s\"", b->str), ilist);
 		} while (b != list);
 #endif
