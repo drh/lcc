@@ -19,7 +19,7 @@ int	skipping;
 
 char rcsid[] = "$Revision$ $Date$";
 
-void
+int
 main(int argc, char **argv)
 {
 	Tokenrow tr;
@@ -39,6 +39,7 @@ main(int argc, char **argv)
 	flushout();
 	fflush(stderr);
 	exit(nerrs > 0);
+	return 0;
 }
 
 void
