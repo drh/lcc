@@ -10,7 +10,6 @@ dir=$target/$os
 case "$1" in
 *symbolic/irix*)	idir=include/mips/irix; remotehost=noexecute ;;
 *symbolic/osf*)		idir=include/alpha/osf;	remotehost=noexecute ;;
-*symbolic/winnt*)	idir=include/x86/win32;	remotehost=noexecute ;;
 *)			idir=include/$dir;      remotehost=${2-$REMOTEHOST} ;;
 esac
 
