@@ -16,7 +16,7 @@ char *include[] = { "-I" LCCDIR "include", 0 };
 char *com[] = { LCCDIR "rcc", "-target=x86/win32", "$1", "$2", "$3", 0 };
 char *as[] = { "ml", "-nologo", "-c", "-Cp", "-coff", "-Fo$3", "$1", "$2", 0 };
 char *ld[] = { "link", "-nologo", 
-	"-align:0x1000", "-subsystem:console", "-entry:mainCRTStartup",
+	"", "-subsystem:console", "-entry:mainCRTStartup",
 	"$2", "-OUT:$3", "$1", LCCDIR "liblcc.lib", "libc.lib", "kernel32.lib", 0 };
 
 extern char *concat(char *, char *);
