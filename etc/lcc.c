@@ -2,7 +2,7 @@
  * lcc [ option ]... [ file | -llib ]...
  * front end for the ANSI C compiler
  */
-static char rcsid[] = "$Name$ ($Id$)";
+static char rcsid[] = "$Name$($Id$)";
 
 #include <stdio.h>
 #include <ctype.h>
@@ -32,6 +32,8 @@ struct list {		/* circular list nodes: */
 #define ARGS(list) ()
 extern void *malloc ARGS((unsigned));
 extern char *strcpy ARGS((char *,char *));
+extern char *strchr ARGS((char *,int));
+extern char *getenv ARGS((char *));
 #endif
 
 static void *alloc ARGS((int));
@@ -44,15 +46,18 @@ static void compose ARGS((char *[], List, List, List));
 static void cprint ARGS((char *[], char *));
 static void error ARGS((char *, char *));
 static void execute ARGS((char *[]));
-static int exists ARGS((char *));
+static char *exists ARGS((char *));
 static int filename ARGS((char *, char *));
 static List find ARGS((char *, List));
 static void help ARGS((void));
+static void initinputs ARGS((void));
 static void interrupt ARGS((int));
 static void opt ARGS((char *));
+extern int main ARGS((int, char *[]));
 static void rm ARGS((List));
 extern char *strsave ARGS((char *));
 extern int suffix ARGS((char *));
+extern char *tempname ARGS((char *));
 
 extern int access ARGS((char *, int));
 extern int close ARGS((int));
@@ -66,14 +71,14 @@ extern int read ARGS((int, char *, int));
 extern int unlink ARGS((char *));
 extern int wait ARGS((int*));
 
-extern char *cpp[], *include[], *com[], *as[],*ld[];
+extern char *cpp[], *include[], *com[], *as[],*ld[], inputs[];
 extern int option ARGS((char *));
 
 static int errcnt;		/* number of errors */
 static int Eflag;		/* -E specified */
 static int Sflag;		/* -S specified */
 static int cflag;		/* -c specified */
-static int pipeflag = PIPE;	/* -pipe specified */
+static int pipeflag = PIPE;	/* -pipe/-nopipe specified */
 static int verbose;		/* incremented for each -v */
 static List llist[2];		/* loader files, flags */
 static List alist;		/* assembler flags */
@@ -83,8 +88,9 @@ static List rmlist;		/* list of files to remove */
 static char *outfile;		/* ld output file or -[cS] object file */
 static int ac;			/* argument count */
 static char **av;		/* argument vector */
-static char tempname[sizeof TEMPDIR + 15];	/* temporary .s file */
+static char *tempdir = TEMPDIR;	/* directory for temporary files */
 static char *progname;
+static List lccinputs;		/* list of input directories */
 
 main(argc, argv) char *argv[]; {
 	int i, j, nf;
@@ -100,13 +106,12 @@ main(argc, argv) char *argv[]; {
 	if (signal(SIGHUP, SIG_IGN) != SIG_IGN)
 		signal(SIGHUP, interrupt);
 #endif
-	sprintf(tempname, "%s/lcc%05d.s", TEMPDIR, getpid());
-	rmlist = append(tempname, rmlist);
 	plist = append("-D__LCC__", append("-Dunix", 0));
 	if (argc <= 1) {
 		help();
 		exit(0);
 	}
+	initinputs();
 	for (nf = 0, i = j = 1; i < argc; i++) {
 		if (strcmp(argv[i], "-o") == 0) {
 			if (++i < argc) {
@@ -144,11 +149,16 @@ main(argc, argv) char *argv[]; {
 		if (*argv[i] == '-')
 			opt(argv[i]);
 		else {
-			if (nf > 1 && strchr("csi", suffix(argv[i]))) {
-				fprintf(stderr, "%s:\n", argv[i]);
-				fflush(stdout);
-			}
-			filename(argv[i], 0);
+			char *name = exists(argv[i]);
+			if (name) {
+				if (strcmp(name, argv[i]) != 0
+				|| nf > 1 && strchr("csi", suffix(name))) {
+					fprintf(stderr, "%s:\n", name);
+					fflush(stdout);
+				}
+				filename(name, 0);
+			} else
+				error("can't find `%s'", argv[i]);
 		}
 	if (errcnt == 0 && !Eflag && !Sflag && !cflag && llist[1]) {
 		if (i == 2 && strchr("csi", suffix(argv[1])))
@@ -307,39 +317,50 @@ static void execute(argv) char *argv[]; {
 	exit(100);
 }
 
-/* exists - is `name' readable? issue message if not */
-static int exists(name) char *name; {
-	if (verbose > 1 || access(name, 4) == 0)
-		return 1;
-	error("can't read `%s'", name);
+/* exists - if `name' readable return its path name or return null */
+static char *exists(name) char *name; {
+	List b;
+
+	if (name[0] == '/' && access(name, 4) == 0)
+		return name;
+	if (name[0] != '/' && (b = lccinputs))		
+		do {
+			b = b->link;
+			if (b->str[0]) {
+				char buf[1024];
+				sprintf(buf, "%s/%s", b->str, name);
+				if (access(buf, 4) == 0)
+					return strsave(buf);
+			} else if (access(name, 4) == 0)
+				return name;
+		} while (b != lccinputs);
+	if (verbose > 1)
+		return name;
 	return 0;
 }
 
 /* filename - process file name argument `name', return status */
 static int filename(name, base) char *name, *base; {
 	int status = 0;
+	static char *stemp;
 
 	if (base == 0)
 		base = basename(name);
 	switch (suffix(name)) {
 	case 'c':
-		if (!exists(name))
-			break;
 		compose(cpp, plist, append(name, 0), 0);
 		if (Eflag) {
 			status = callsys(av);
 			break;
 		}
 		if (pipeflag == 0) {
-			static char tempfile[sizeof TEMPDIR + 15];
-			if (tempfile[0] == 0) {
-				sprintf(tempfile, "%s/lcc%05d.i", TEMPDIR, getpid());
-				rmlist = append(tempfile, rmlist);
-			}
-			compose(cpp, plist, append(name, 0), append(tempfile, 0));
+			static char *itemp;
+			if (itemp == NULL)
+				itemp = tempname(".i");
+			compose(cpp, plist, append(name, 0), append(itemp, 0));
 			status = callsys(av);
 			if (status == 0)
-				return filename(tempfile, base);
+				return filename(itemp, base);
 			break;
 		}
 		cprint(av, " | ");
@@ -368,22 +389,28 @@ static int filename(name, base) char *name, *base; {
 		}
 		if (Sflag)
 			status = compile("-", outfile ? outfile : concat(base, ".s"));
-		else if ((status = compile("-", tempname)) == 0)
-			return filename(tempname, base);
+		else if ((status = compile("-", stemp?stemp:(stemp=tempname(".s")))) == 0)
+			return filename(stemp, base);
 		break;
 	case 'i':
-		if (!exists(name) || Eflag)
+		if (Eflag)
 			break;
 		if (Sflag)
 			status = compile(name, outfile ? outfile : concat(base, ".s"));
-		else if ((status = compile(name, tempname)) == 0)
-			return filename(tempname, base);
+		else if ((status = compile(name, stemp?stemp:(stemp=tempname(".s")))) == 0)
+			return filename(stemp, base);
 		break;
 	case 's':
 		if (Eflag)
 			break;
 		if (!Sflag) {
-			char *ofile = cflag && outfile ? outfile : concat(base, ".o");
+			char *ofile;
+			if (cflag && outfile)
+				ofile = outfile;
+			else if (cflag)
+				ofile = concat(base, ".o");
+			else
+				ofile = tempname(".o");
 			compose(as, alist, append(name, 0), append(ofile, 0));
 			status = callsys(av);
 			if (!find(ofile, llist[1]))
@@ -426,7 +453,7 @@ static void help() {
 "", " [ option | file ]...\n",
 "	except for -l, options are processed left-to-right before files\n",
 "	unrecognized options are taken to be linker options\n",
-"-A	warn about non-ANSI usage; 2nd -A warns more\n",
+"-A	warn about nonANSI usage; 2nd -A warns more\n",
 "-b	emit expression-level profiling code; see bprint(1)\n",
 #ifdef sparc
 "-Bstatic -Bdynamic	specify static or dynamic libraries\n",
@@ -442,6 +469,7 @@ static void help() {
 "-lx	search library `x'\n",
 "-N	do not search the standard directories for #include files\n",
 "-n	emit code to check for dereferencing zero pointers\n",
+"-nopipe	use a temporary file for the preproccesor output\n",
 "-O	is ignored\n",
 "-o file	leave the output in `file'\n",
 "-P	print ANSI-style declarations for globals\n",
@@ -452,6 +480,7 @@ static void help() {
 #ifdef sparc
 "-target name	is ignored\n",
 #endif
+"-tempdir=dir/	place temporary files in `dir/'\n",
 "-Uname	undefine the preprocessor symbol `name'\n",
 "-v	show commands as they are executed; 2nd -v suppresses execution\n",
 "-w	suppress warnings\n",
@@ -462,6 +491,34 @@ static void help() {
 	msgs[0] = progname;
 	for (i = 0; msgs[i]; i++)
 		fprintf(stderr, "%s", msgs[i]);
+}
+
+/* initinputs - if LCCINPUTS is defined, use it to initialize various lists */
+static void initinputs() {
+	char *s = getenv("LCCINPUTS");
+
+	if (s == 0 && (s = inputs)[0] == 0)
+		s = ".";
+	while (*s) {
+		char *p, buf[256];
+		if (p = strchr(s, ':')) {
+			strncpy(buf, s, p - s);
+			buf[p-s] = 0;
+		} else
+			strcpy(buf, s);
+		if (strcmp(buf, ".") == 0)
+			buf[0] = '\0';
+		if (!find(buf, lccinputs)) {
+			lccinputs = append(strsave(buf), lccinputs);
+			if (buf[0]) {
+				plist = append(concat("-I", buf), plist);
+				llist[0] = append(concat("-L", buf), llist[0]);
+			}
+		}
+		if (p == 0)
+			break;
+		s = p + 1;
+	}
 }
 
 /* interrupt - catch interrupt signals */
@@ -498,11 +555,21 @@ static void opt(arg) char *arg; {
 			}
 		fprintf(stderr, "%s: %s ignored\n", progname, arg);
 		return;
+	case 'n':
+		if (strcmp(arg, "-nopipe") == 0)
+			pipeflag = 0;
+		else
+			break;
+		return;
 	case 'd':	/* -dn */
 		arg[1] = 's';
-		/* fall thru */
-	case 't':	/* -t -tname */
 		clist = append(arg, clist);
+		return;
+	case 't':	/* -t -tname -tempdir=dir */
+		if (strncmp(arg, "-tempdir=", 9) == 0)
+			tempdir = arg + 9;
+		else
+			clist = append(arg, clist);
 		return;
 	case 'p':	/* -pipe -p -pg */
 		if (strcmp(arg, "-pipe") == 0)
@@ -627,3 +694,14 @@ int suffix(name) char *name; {
 		return t[0];
 	return -1;
 }
+
+/* tempname - generate a temporary file name in tempdir with given suffix */
+char *tempname(suffix) char *suffix; {
+	static int n;
+	char *name = alloc(strlen(tempdir) + strlen("/lccXXXXXX") + strlen(suffix) + 1);
+
+	sprintf(name, "%s/lcc%d%d%s", tempdir, getpid(), n++, suffix);
+	rmlist = append(name, rmlist);
+	return name;
+}
+
