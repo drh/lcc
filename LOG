@@ -1,4 +1,4 @@
-From lcc 3.4 to 3.4a:
+From lcc 3.4 to 3.4b:
 
 Errors fixed:
 Generated bad code for some switch statements with negative case labels
@@ -13,4 +13,15 @@ in dense ranges, eg,
       }
    }
 
-Mon Jul 24 11:25:35 EDT 1995
+Tue Jul 25 17:20:26 EDT 1995
+
+
+From lcc 3.3 to 3.4:
+
+Changes:
+The MIPS back end now generates position-independent code and thus
+supports dynamic linking. -Wf-pic=1 (the default under IRIX) and
+-Wf-pic=0 (the default under Ultrix) enable and disable
+position-independent code.
+
+Wed Jul 12 13:17:42 EDT 1995
