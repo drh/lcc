@@ -57,6 +57,7 @@ static List llist[2];		/* loader files, flags */
 static List alist;		/* assembler flags */
 static List clist;		/* compiler flags */
 static List plist;		/* preprocessor flags */
+static List ilist;		/* list of additional includes from LCCINPUTS */
 static List rmlist;		/* list of files to remove */
 static char *outfile;		/* ld output file or -[cS] object file */
 static int ac;			/* argument count */
@@ -123,6 +124,14 @@ main(int argc, char *argv[]) {
 	argv[j] = 0;
 	for (i = 0; include[i]; i++)
 		plist = append(include[i], plist);
+	if (ilist) {
+		List b = ilist;
+		do {
+			b = b->link;
+			plist = append(b->str, plist);
+		} while (b != ilist);
+	}
+	ilist = 0;
 	for (i = 1; argv[i]; i++)
 		if (*argv[i] == '-')
 			opt(argv[i]);
@@ -435,16 +444,19 @@ static void initinputs(void) {
 	while (*s) {
 		char *p, buf[256];
 		if (p = strchr(s, sep)) {
+			assert(p - s < sizeof buf);
 			strncpy(buf, s, p - s);
 			buf[p-s] = '\0';
-		} else
+		} else {
+			assert(strlen(s) < sizeof buf);
 			strcpy(buf, s);
+		}
 		if (strcmp(buf, ".") == 0)
 			buf[0] = '\0';
 		if (!find(buf, lccinputs)) {
 			lccinputs = append(strsave(buf), lccinputs);
 			if (buf[0]) {
-				plist = append(concat("-I", buf), plist);
+				ilist = append(concat("-I", buf), ilist);
 #ifdef unix
 				llist[0] = append(concat("-L", buf), llist[0]);
 #endif
@@ -570,6 +582,7 @@ static void opt(char *arg) {
 			if (strcmp(basename(cpp[0]), "gcc-cpp") == 0)
 				plist = append("-nostdinc", plist);
 			include[0] = 0;
+			ilist = 0;
 			return;
 		case 'v':
 			if (verbose++ == 0) {
