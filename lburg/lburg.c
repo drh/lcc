@@ -407,12 +407,12 @@ static void emitclosure(Nonterm nts) {
 
 	for (p = nts; p; p = p->link)
 		if (p->chain)
-			print("static void %Pclosure_%S ARGS((NODEPTR_TYPE, int));\n", p);
+			print("static void %Pclosure_%S(NODEPTR_TYPE, int);\n", p);
 	print("\n");
 	for (p = nts; p; p = p->link)
 		if (p->chain) {
 			Rule r;
-			print("static void %Pclosure_%S(a, c) NODEPTR_TYPE a; int c; {\n"
+			print("static void %Pclosure_%S(NODEPTR_TYPE a, int c) {\n"
 "%1struct %Pstate *p = STATE_LABEL(a);\n", p);
 			for (r = p->chain; r; r = r->chain)
 				emitrecord("\t", r, r->cost);
@@ -451,9 +451,9 @@ static void emitheader(void) {
 	time_t timer = time(NULL);
 
 	print("/*\ngenerated at %sby %s\n*/\n", ctime(&timer), rcsid);
-	print("static void %Pkids ARGS((NODEPTR_TYPE, int, NODEPTR_TYPE[]));\n");
-	print("static void %Plabel ARGS((NODEPTR_TYPE));\n");
-	print("static int %Prule ARGS((void*, int));\n\n");
+	print("static void %Pkids(NODEPTR_TYPE, int, NODEPTR_TYPE[]);\n");
+	print("static void %Plabel(NODEPTR_TYPE);\n");
+	print("static int %Prule(void*, int);\n\n");
 }
 
 /* computekids - compute paths to kids in tree t */
@@ -488,7 +488,7 @@ static void emitkids(Rule rules, int nrules) {
 		r->kids = rc[j];
 		rc[j] = r;
 	}
-	print("static void %Pkids(p, eruleno, kids) NODEPTR_TYPE p, kids[]; int eruleno; {\n"
+	print("static void %Pkids(NODEPTR_TYPE p, int eruleno, NODEPTR_TYPE kids[]) {\n"
 "%1if (!p)\n%2fatal(\"%Pkids\", \"Null tree\\n\", 0);\n"
 "%1if (!kids)\n%2fatal(\"%Pkids\", \"Null kids\\n\", 0);\n"
 "%1switch (eruleno) {\n");
@@ -505,7 +505,7 @@ static void emitlabel(Term terms, Nonterm start, int ntnumber) {
 	int i;
 	Term p;
 
-	print("static void %Plabel(a) NODEPTR_TYPE a; {\n%1int c;\n"
+	print("static void %Plabel(NODEPTR_TYPE a) {\n%1int c;\n"
 "%1struct %Pstate *p;\n\n"
 "%1if (!a)\n%2fatal(\"%Plabel\", \"Null tree\\n\", 0);\n");
 	print("%1STATE_LABEL(a) = p = allocate(sizeof *p, FUNC);\n"
@@ -601,7 +601,7 @@ static void emitrule(Nonterm nts) {
 			print("%1%d,\n", r->ern);
 		print("};\n\n");
 	}
-	print("static int %Prule(state, goalnt) void *state; int goalnt; {\n"
+	print("static int %Prule(void *state, int goalnt) {\n"
 "%1if (goalnt < 1 || goalnt > %d)\n%2fatal(\"%Prule\", \"Bad goal nonterminal %%d\\n\", goalnt);\n"
 "%1if (!state)\n%2return 0;\n%1switch (goalnt) {\n", ntnumber);
 	for (p = nts; p; p = p->link)
