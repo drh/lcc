@@ -24,7 +24,7 @@ char *ld[] = { "/usr/ccs/bin/ld", "-o", "$3", "$1",
 	SUNDIR "crti.o", SUNDIR "crt1.o",
 	SUNDIR "values-xa.o", "$2", "",
 	"-Y", "P," SUNDIR ":/usr/ccs/lib:/usr/lib", "-Qy",
-	"-lm", "-lc", "", SUNDIR "crtn.o", 0 };
+	"-L" LCCDIR, "-llcc", "-lm", "-lc", SUNDIR "crtn.o", 0 };
 static char *bbexit = LCCDIR "bbexit.o";
 
 extern char *concat(char *, char *);
@@ -34,6 +34,7 @@ int option(char *arg) {
 	if (strncmp(arg, "-lccdir=", 8) == 0) {
 		cpp[0] = concat(&arg[8], "/cpp");
 		include[0] = concat("-I", concat(&arg[8], "/include"));
+		ld[12] = concat("-L", &arg[8]);
 		com[0] = concat(&arg[8], "/rcc");
 		bbexit = concat(&arg[8], "/bbexit.o");
 	} else if (strcmp(arg, "-g") == 0)
