@@ -21,7 +21,7 @@ char *include[] = { "-I" LCCDIR "include", "-I/usr/local/include",
 	"-I/usr/include", 0 };
 char *as[] =  { "/bin/as", "-o", "$3", "", "$1", "-nocpp", "$2", 0 };
 char *ld[] =  { "/usr/bin/ld", "-o", "$3", "/usr/lib/cmplrs/cc/crt0.o",
-	"$1", "$2", "", "", "-lm", "-lc", 0 };
+	"$1", "$2", "", "", "-L" LCCDIR, "-llcc", "-lm", "-lc", 0 };
 static char *bbexit = LCCDIR "bbexit.o";
 
 extern char *concat(char *, char *);
@@ -32,6 +32,7 @@ int option(char *arg) {
 		cpp[0] = concat(&arg[8], "/cpp");
 		include[0] = concat("-I", concat(&arg[8], "/include"));
 		com[0] = concat(&arg[8], "/rcc");
+		ld[8] = concat("-L", &arg[8]);
 		bbexit = concat(&arg[8], "/bbexit.o");
 	} else if (strcmp(arg, "-g4") == 0
 	&& access("/u/drh/lib/alpha/rcc", 4) == 0
