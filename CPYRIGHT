@@ -1,8 +1,8 @@
 The authors of this software are Christopher W. Fraser and
 David R. Hanson.
 
-Copyright (c) 1991,1992,1993,1994,1995 by AT&T, Christopher W. Fraser,
-and David R. Hanson. All Rights Reserved.
+Copyright (c) 1991,1992,1993,1994,1995,1996,1997 by AT&T,
+Christopher W. Fraser, and David R. Hanson. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software for any
 purpose, subject to the provisions described below, without fee is
@@ -57,5 +57,5 @@ available; for more information, contact
 	415/854-0300 x2478 FAX: 415/614-2930 jcs@aw.com
 -----
 Chris Fraser / cwfraser@microsoft.com
-David Hanson / drh@cs.princeton.edu
+David Hanson / drh@microsoft.com
 $Revision$ $Date$
