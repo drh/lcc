@@ -84,12 +84,6 @@ main(int argc, char *argv[]) {
 	if (signal(SIGHUP, SIG_IGN) != SIG_IGN)
 		signal(SIGHUP, interrupt);
 #endif
-	if (argc <= 1) {
-		help();
-		exit(0);
-	}
-	plist = append("-D__LCC__", 0);
-	initinputs();
 	if (getenv("TMP"))
 		tempdir = getenv("TMP");
 	else if (getenv("TEMP"))
@@ -100,6 +94,12 @@ main(int argc, char *argv[]) {
 	i = strlen(tempdir);
 	for (; i > 0 && tempdir[i-1] == '/' || tempdir[i-1] == '\\'; i--)
 		tempdir[i-1] = '\0';
+	if (argc <= 1) {
+		help();
+		exit(0);
+	}
+	plist = append("-D__LCC__", 0);
+	initinputs();
 	if (getenv("LCCDIR"))
 		option(stringf("-lccdir=%s", getenv("LCCDIR")));
 	for (nf = 0, i = j = 1; i < argc; i++) {
@@ -490,17 +490,25 @@ static void help(void) {
 #endif
 "-t -tname	emit function tracing calls to printf or to `name'\n",
 "-target name	is ignored\n",
-"-tempdir=dir	place temporary files in `dir/'\n",
+"-tempdir=dir	place temporary files in `dir/'", "\n"
 "-Uname	undefine the preprocessor symbol `name'\n",
 "-v	show commands as they are executed; 2nd -v suppresses execution\n",
 "-w	suppress warnings\n",
 "-W[pfal]arg	pass `arg' to the preprocessor, compiler, assembler, or linker\n",
 	0 };
 	int i;
+	char *s;
 
 	msgs[0] = progname;
-	for (i = 0; msgs[i]; i++)
+	for (i = 0; msgs[i]; i++) {
 		fprintf(stderr, "%s", msgs[i]);
+		if (strncmp("-tempdir", msgs[i], 8) == 0 && tempdir)
+			fprintf(stderr, "; default=%s", tempdir);
+	}
+	if (s = getenv("LCCINPUTS"))
+		fprintf(stderr, "LCCINPUTS=%s\n", s);
+	if (s = getenv("LCCDIR"))
+		fprintf(stderr, "LCCDIR=%s\n", s);
 }
 
 /* initinputs - if LCCINPUTS is defined, use it to initialize various lists */
