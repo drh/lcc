@@ -30,6 +30,15 @@ extern int access(const char *, int);
 
 int option(char *arg) {
 	if (strncmp(arg, "-lccdir=", 8) == 0) {
+		char *s;
+		for (s = &arg[8]; *s; s++)
+			if (*s == '/') {
+				*s = '\\';
+				while (s[1] == '/')
+					s++;
+		}
+		if (s[-1] == '\\')
+			s--;
 		cpp[0] = concat(&arg[8], "\\cpp.exe");
 		include[0] = concat("-I", concat(&arg[8], "\\include"));
 		com[0] = concat(&arg[8], "\\rcc.exe");
