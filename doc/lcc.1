@@ -87,13 +87,17 @@ is unsupported.
 .BI \-Wf-g n , x
 Set the debugging level to
 .I n
-and emit source code into the generated assembly language, preceding each line with
-.IR x ,
-which should be the assembly language comment character.
+and emit source code as comments into the generated assembly code;
+.I x
+must be the assembly language comment character.
 If
 .I n
 is omitted, it defaults to 1, which is similar to
 .BR \-g .
+Omitting
+.BI , x
+just sets the debugging level to
+.BR n .
 .TP
 .B \-w
 Suppress warning diagnostics, such as those
