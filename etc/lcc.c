@@ -100,6 +100,8 @@ main(int argc, char *argv[]) {
 	i = strlen(tempdir);
 	for (; i > 0 && tempdir[i-1] == '/' || tempdir[i-1] == '\\'; i--)
 		tempdir[i-1] = '\0';
+	if (getenv("LCCDIR"))
+		option(stringf("-lccdir=%s", getenv("LCCDIR")));
 	for (nf = 0, i = j = 1; i < argc; i++) {
 		if (strcmp(argv[i], "-o") == 0) {
 			if (++i < argc) {
