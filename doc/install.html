@@ -121,7 +121,7 @@ the platform and to the version of lcc, and to point a symbolic link to this loc
 example,</p>
 
 <blockquote>
-  <pre>% ln -s $BUILDDIR/sparc-solaris /usr/local/lib/lcc</pre>
+  <pre>% ln -s /proj/pkg/lcc/4.2/sparc-solaris /usr/local/lib/lcc</pre>
 </blockquote>
 
 <p>points <code>/usr/local/lib/lcc</code> to a build directory for lcc on the SPARC under Solaris. Links into <code>/usr/local/lib/lcc</code> are created for the programs <code>lcc</code>
@@ -136,7 +136,7 @@ from the distribution directory.<ol>
   <li>Create the build directory, using a version- and platform-specific naming convention as
     suggested above, and record the name of this directory in the <code>BUILDDIR</code>
     environment variable:<blockquote>
-      <pre>% setenv BUILDDIR $BUILDDIR/sparc-solaris
+      <pre>% setenv BUILDDIR /proj/pkg/lcc/4.2/sparc-solaris
 % mkdir -p $BUILDDIR</pre>
     </blockquote>
     <p>Here and below, commands assume the C shell. Also, you'll need a version of <code>mkdir</code>
@@ -164,7 +164,7 @@ from the distribution directory.<ol>
     distributions are stored under <code>/proj/pkg/lcc</code>, so the included files are
     &quot;installed&quot; by creating one symbolic link: </p>
     <blockquote>
-      <pre>% ln -s $BUILDDIR/include/sparc/solaris $BUILDDIR/include</pre>
+      <pre>% ln -s /proj/pkg/lcc/4.2/include/sparc/solaris $BUILDDIR/include</pre>
     </blockquote>
     <p>If you're installing lcc on Linux, you <em>must</em> also plant a symbolic link named <code>gcc</code>
     to gcc's library directory, because lcc uses gcc's C preprocessor and most of gcc's header
@@ -228,9 +228,9 @@ and build the driver with a <code>make</code> command, e.g.,</p>
 
 <blockquote>
   <pre>% make HOSTFILE=etc/solaris.c lcc
-cc -g -c -o $BUILDDIR/sparc-solaris/lcc.o etc/lcc.c
-cc -g -c -o $BUILDDIR/sparc-solaris/host.o etc/solaris.c
-cc -g -o $BUILDDIR/lcc $BUILDDIR/sparc-solaris/lcc.o $BUILDDIR/sparc-solaris/host.o</pre>
+cc -g -c -o $BUILDDIR/lcc.o etc/lcc.c
+cc -g -c -o $BUILDDIR/host.o etc/solaris.c
+cc -g -o $BUILDDIR/lcc $BUILDDIR/lcc.o $BUILDDIR/host.o</pre>
 </blockquote>
 
 <p>Of course, the actual value of <code>BUILDDIR</code> will appear in place of
@@ -383,7 +383,7 @@ commands that would be executed, e.g.,</p>
 
 <blockquote>
   <pre>% $BUILDDIR/lcc -v -v foo.c baz.c mylib.a -lX11
-$BUILDDIR/sparc-solaris/lcc $ Id: lcc.c,v 4.33 2001/06/28 22:19:58 drh $
+$BUILDDIR/lcc $ Id: lcc.c,v 4.33 2001/06/28 22:19:58 drh $
 foo.c:
 /usr/local/lib/lcc/cpp -D__STDC__=1 -Dsparc -D__sparc__ -Dsun -D__sun__ -Dunix -D__LCC__i
 /usr/local/lib/lcc/rcc -target=sparc/solaris -v /tmp/lcc4060.i /tmp/lcc4061.s
@@ -456,25 +456,25 @@ invoking <code>make</code>:</p>
 
 <blockquote>
   <pre>% make TARGET=sparc/solaris test
-mkdir -p $BUILDDIR/sparc-solaris/sparc/solaris/tst
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/8q.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/array.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/cf.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/cq.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/cvt.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/fields.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/front.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/incr.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/init.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/limits.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/paranoia.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/sort.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/spill.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/stdarg.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/struct.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/switch.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/wf1.s:
-$BUILDDIR/sparc-solaris/rcc -target=sparc/solaris $BUILDDIR/sparc-solaris/sparc/solaris/tst/yacc.s:</pre>
+mkdir -p $BUILDDIR/sparc/solaris/tst
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/8q.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/array.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/cf.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/cq.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/cvt.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/fields.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/front.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/incr.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/init.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/limits.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/paranoia.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/sort.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/spill.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/stdarg.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/struct.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/switch.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/wf1.s:
+$BUILDDIR/rcc -target=sparc/solaris $BUILDDIR/sparc/solaris/tst/yacc.s:</pre>
 </blockquote>
 
 <p>Each line in the output above is of the form</p>
@@ -510,22 +510,22 @@ no differences in the output from executing the test programs.</p>
 
 <blockquote>
   <pre>% make triple
-$BUILDDIR/sparc-solaris/lcc -A -d0.6 -Wo-lccdir=$(BUILDDIR) -Isrc -I$(BUILDDIR) -o $BUILDDIR/sparc-solaris/1rcc -B$BUILDDIR/sparc-solaris/ src/alloc.c ...
+$BUILDDIR/lcc -A -d0.6 -Wo-lccdir=$(BUILDDIR) -Isrc -I$(BUILDDIR) -o $BUILDDIR/1rcc -B$BUILDDIR/ src/alloc.c ...
 src/alloc.c:
 ...
-$BUILDDIR/sparc-solaris/lcc -A -d0.6 -Wo-lccdir=$(BUILDDIR) -Isrc -I$(BUILDDIR) -o $BUILDDIR/sparc-solaris/2rcc -B$BUILDDIR/sparc-solaris/1 src/alloc.c ...
+$BUILDDIR/lcc -A -d0.6 -Wo-lccdir=$(BUILDDIR) -Isrc -I$(BUILDDIR) -o $BUILDDIR/2rcc -B$BUILDDIR/1 src/alloc.c ...
 src/alloc.c:
 ...
-strip $BUILDDIR/sparc-solaris/[12]rcc
-dd if=$BUILDDIR/sparc-solaris/1rcc of=$BUILDDIR/sparc-solaris/rcc1 bs=512 skip=1
+strip $BUILDDIR/[12]rcc
+dd if=$BUILDDIR/1rcc of=$BUILDDIR/rcc1 bs=512 skip=1
 1270+1 records in
 1270+1 records out
-dd if=$BUILDDIR/sparc-solaris/2rcc of=$BUILDDIR/sparc-solaris/rcc2 bs=512 skip=1
+dd if=$BUILDDIR/2rcc of=$BUILDDIR/rcc2 bs=512 skip=1
 1270+1 records in
 1270+1 records out
-if cmp $BUILDDIR/sparc-solaris/rcc[12]; then \
-        mv $BUILDDIR/sparc-solaris/2rcc $BUILDDIR/sparc-solaris/rcc; \
-        rm -f $BUILDDIR/sparc-solaris/1rcc $BUILDDIR/sparc-solaris/rcc[12]; fi</pre>
+if cmp $BUILDDIR/rcc[12]; then \
+        mv $BUILDDIR/2rcc $BUILDDIR/rcc; \
+        rm -f $BUILDDIR/1rcc $BUILDDIR/rcc[12]; fi</pre>
 </blockquote>
 
 <p>This command builds <code>rcc</code> twice; once using the <code>rcc</code> built by <code>cc</code>
