@@ -140,6 +140,7 @@ mov $18,$12
 .prologue 1
 cmplt $13,$12,$23
 bne $23,L.13
+mov $31,$0
 br L.12
 L.13:
 mov $14,$16

@@ -290,6 +290,7 @@ ldq $26,16($sp)
 lda $sp,160($sp)
 ret
 .end print
+.lcomm __va_arg_tmp,4
 .rdata
 .align 0
 L.86:
