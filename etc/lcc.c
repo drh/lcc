@@ -38,8 +38,9 @@ static void initinputs(void);
 static void interrupt(int);
 static void opt(char *);
 extern int main(int, char *[]);
+extern char *replace(const char *, int, int);
 static void rm(List);
-extern char *strsave(char *);
+extern char *strsave(const char *);
 extern int suffix(char *, char *[], int);
 extern char *tempname(char *);
 
@@ -81,11 +82,11 @@ main(int argc, char *argv[]) {
 	if (signal(SIGHUP, SIG_IGN) != SIG_IGN)
 		signal(SIGHUP, interrupt);
 #endif
-	plist = append("-D__LCC__", append("-Dunix", 0));
 	if (argc <= 1) {
 		help();
 		exit(0);
 	}
+	plist = append("-D__LCC__", 0);
 	initinputs();
 	if (getenv("TMPDIR"))
 		tempdir = getenv("TMPDIR");
@@ -105,12 +106,10 @@ main(int argc, char *argv[]) {
 				error("unrecognized option `%s'", argv[i]);
 				exit(8);
 			}
-#ifdef sun
 		} else if (strcmp(argv[i], "-target") == 0) {
 			if (argv[i+1] && *argv[i+1] != '-')
 				i++;
 			continue;
-#endif
 		} else if (*argv[i] == '-' && argv[i][1] != 'l') {
 			opt(argv[i]);
 			continue;
@@ -431,9 +430,7 @@ static void help(void) {
 "-p -pg	emit profiling code; see prof(1) and gprof(1)\n",
 "-S	compile to assembly language\n",
 "-t -tname	emit function tracing calls to printf or to `name'\n",
-#ifdef sparc
 "-target name	is ignored\n",
-#endif
 "-tempdir=dir/	place temporary files in `dir/'\n",
 "-Uname	undefine the preprocessor symbol `name'\n",
 "-v	show commands as they are executed; 2nd -v suppresses execution\n",
@@ -471,9 +468,8 @@ static void initinputs(void) {
 			lccinputs = append(strsave(buf), lccinputs);
 			if (buf[0]) {
 				ilist = append(concat("-I", buf), ilist);
-#ifdef unix
-				llist[0] = append(concat("-L", buf), llist[0]);
-#endif
+				if (strstr(com[1], "win32") == NULL)
+					llist[0] = append(concat("-L", buf), llist[0]);
 			}
 		}
 		if (p == 0)
@@ -538,7 +534,7 @@ static void opt(char *arg) {
 		plist = append(arg, plist);
 		return;
 	case 'B':	/* -Bdir -Bstatic -Bdynamic */
-#ifdef sun
+#ifdef sparc
 		if (strcmp(arg, "-Bstatic") == 0 || strcmp(arg, "-Bdynamic") == 0)
 			llist[1] = append(arg, llist[1]);
 		else
@@ -548,6 +544,8 @@ static void opt(char *arg) {
 		if (path)
 			error("-B overwrites earlier option", 0);
 		path = arg + 2;
+		if (strstr(com[1], "win32") != NULL)
+			path = replace(path, '/', '\\');
 		com[0] = concat(path, concat("rcc", first(suffixes[4])));
 		if (path[0] == 0)
 			error("missing directory in -B option", 0);
@@ -613,6 +611,15 @@ static void opt(char *arg) {
 		llist[1] = append(arg, llist[1]);
 }
 
+/* replace - copy str, then replace occurrences of from with to, return the copy */
+char *replace(const char *str, int from, int to) {
+	char *s = strsave(str), *p = s;
+
+	for ( ; (p = strchr(p, from)) != NULL; p++)
+		*p = to;
+	return s;
+}
+
 /* rm - remove files in list */
 static void rm(List list) {
 	if (list) {
@@ -631,7 +638,7 @@ static void rm(List list) {
 }
 
 /* strsave - return a saved copy of string str */
-char *strsave(char *str) {
+char *strsave(const char *str) {
 	return strcpy(alloc(strlen(str)+1), str);
 }
 
