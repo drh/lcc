@@ -2,7 +2,7 @@
  * lcc [ option ]... [ file | -llib ]...
  * front end for the ANSI C compiler
  */
-static char rcsid[] = "$Name$ ($Id$)";
+static char rcsid[] = "$Id$";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -445,7 +445,9 @@ static void initinputs(void) {
 			lccinputs = append(strsave(buf), lccinputs);
 			if (buf[0]) {
 				plist = append(concat("-I", buf), plist);
+#ifdef unix
 				llist[0] = append(concat("-L", buf), llist[0]);
+#endif
 			}
 		}
 		if (p == 0)
@@ -606,14 +608,22 @@ char *strsave(char *str) {
 	return strcpy(alloc(strlen(str)+1), str);
 }
 
-/* suffix - if one of tails[0..n-1] is the proper suffix of name, return its index */
+/* suffix - if one of tails[0..n-1] holds a proper suffix of name, return its index */
 int suffix(char *name, char *tails[], int n) {
 	int i, len = strlen(name);
 
 	for (i = 0; i < n; i++) {
-		int m = strlen(tails[i]);
-		if (len > m && strcmp(&name[len-m], tails[i]) == 0)
-			return i;
+		char *s = tails[i], *t;
+		for ( ; t = strchr(s, ';'); s = t + 1) {
+			int m = t - s;
+			if (len > m && strncmp(&name[len-m], s, m) == 0)
+				return i;
+		}
+		if (*s) {
+			int m = strlen(s);
+			if (len > m && strncmp(&name[len-m], s, m) == 0)
+				return i;
+		}
 	}
 	return -1;
 }
