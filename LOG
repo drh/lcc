@@ -1,16 +1,13 @@
-From lcc 3.4b to 3.5:
+From lcc 3.5 to 3.6:
+
+Changes:
+
+-A -A now complains if main is declared other than `int main(void)' or
+`int main(int, char **)'.
 
 Errors fixed:
 
-lcc -v -v foo.c no longer deletes foo.o.
-
-On the SPARC, generated bad code for an indirect call through a matrix
-of function pointers when the first argument was a float or double, eg,
-double x; (*f[i][j])(x).
-
-On the SPARC, emitted calling sequences incompatible with those emitted
-by cc and gcc for functions that returned structures.
-
-On the SPARC w/Solaris 2.3+, -g emitted invalid debugging stab directives.
+Given `typedef const struct foo T; struct foo { ... }' lcc failed to
+compute the size of T correctly.
 
 $Id$
