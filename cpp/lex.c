@@ -511,17 +511,14 @@ int
 fillbuf(Source *s)
 {
 	int n, nr;
-	static neof = 0;
 
 	nr = INS/8;
 	if ((char *)s->inl+nr > (char *)s->inb+INS)
 		error(FATAL, "Input buffer overflow");
-	if (s->fd<0)
+	if (s->fd<0 || (n=read(s->fd, (char *)s->inl, INS/8)) <= 0)
 		n = 0;
-	else if ((n=read(s->fd, (char *)s->inl, INS/8)) <= 0) {
-		if (neof++ > 10)
-			error(FATAL, "Early EOF");
-	}
+	if ((*s->inp&0xff) == EOB) /* sentinel character appears in input */
+		*s->inp = EOFC;
 	s->inl += n;
 	s->inl[0] = s->inl[1]= s->inl[2]= s->inl[3] = EOB;
 	if (n==0) {
