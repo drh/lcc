@@ -1,4 +1,4 @@
-.TH LCC 1 "local \- 9/21/96"
+.TH LCC 1 "local \- 2/21/97"
 .SH NAME
 lcc \- local ANSI C compiler
 .SH SYNOPSIS
@@ -34,6 +34,19 @@ source file (`.c', `.s', or `.i' file) is mentioned and no other file
 (source, object, library) or
 .B \-l
 option is mentioned.
+.PP
+If the environment variable
+.B LCCINPUTS
+is set,
+.I lcc
+assumes it gives a colon-separated list of directories in which to
+look for `.c', `.i', `.s', and `.o' files whose names do not begin with `/'.
+These directories are also added to the list of directories
+searched for libraries.
+If
+.B LCCINPUTS
+is defined, it must contain `.' in order for the current directory
+to be searched for input files.
 .PP
 .I lcc
 uses ANSI standard header files
@@ -479,6 +492,7 @@ a.{out,exe}	loaded output
 /usr/local/lib/lcc/cpp	preprocessor
 /usr/local/lib/lcc/rcc	compiler
 /usr/local/lib/lcc/bbexit.o	exit() for profiling
+/usr/local/lib/lcc/liblcc.o	\fIlcc\fP-specific library
 /lib/crt0.o	runtime startup
 /lib/[gm]crt0.o	startups for profiling
 /lib/libc.a	standard library
