@@ -1,16 +1,3 @@
-There's a new v3.0 lcc
+This is the LOG file for lcc v3.0.
 
-On the MIPS, initialized arrays were going into the "short data"
-segment and exhausting it too fast.  They're now back in the "long
-data" segment where they belong.
-
-On the MIPS, generated an assembler diagnostic and then incorrect code
-for struct copies when the size%4 was 2 or 3.
-
-On the MIPS, silently generated incorrect code for main(){struct
-{...}*f(),x; x=*f();}
-
-On the SPARC, silently generated incorrect code to copy structs and
-initialize arrays when the size was exactly 4096 bytes.
-
-Sat Jul 30 14:01:58 EDT 1994
+Sat Jul 30 14:24:30 EDT 1994
