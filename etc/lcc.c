@@ -476,7 +476,7 @@ static void help(void) {
 "-Dname -Dname=def	define the preprocessor symbol `name'\n",
 "-E	run only the preprocessor on the named C programs and unsuffixed files\n",
 "-g	produce symbol table information for debuggers\n",
-"-help	print this message\n",
+"-help or -?	print this message\n",
 "-Idir	add `dir' to the beginning of the list of #include directories\n",	
 "-lx	search library `x'\n",
 "-N	do not search the standard directories for #include files\n",
@@ -495,6 +495,7 @@ static void help(void) {
 "-Uname	undefine the preprocessor symbol `name'\n",
 "-v	show commands as they are executed; 2nd -v suppresses execution\n",
 "-w	suppress warnings\n",
+"-Woarg	specify system-specific `arg'\n",
 "-W[pfal]arg	pass `arg' to the preprocessor, compiler, assembler, or linker\n",
 	0 };
 	int i;
@@ -621,6 +622,7 @@ static void opt(char *arg) {
 	case 'h':
 		if (strcmp(arg, "-help") == 0) {
 			static int printed = 0;
+	case '?':
 			if (!printed)
 				help();
 			printed = 1;
