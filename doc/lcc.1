@@ -213,6 +213,17 @@ in the directory \fIdir\fP/ or \fIdir\fP\\.
 .I lcc
 warns when this option is unsupported.
 .TP
+.B \-Wf-unsigned_char=1
+.br
+.ns
+.TP
+.B \-Wf-unsigned_char=0 
+makes plain
+.B char
+an unsigned (1) or signed (0) type; by default,
+.B char
+is signed.
+.TP
 .B \-v
 Print commands as they are executed; some of the executed
 programs are directed to print their version numbers.
