@@ -522,7 +522,7 @@ static void initinputs(void) {
 	char *s = getenv("LCCINPUTS");
 	List list, b;
 
-	if (s == 0 || (s = inputs)[0] == 0)
+	if (s == 0 && (s = inputs)[0] == 0)
 		s = ".";
 	if (s) {
 		lccinputs = path2list(s);
