@@ -11,12 +11,14 @@ Errors fixed:
 -A -A erroneously complained about static main's that didn't conform to
 the ANSI-mandated `int main(void)' or `int main(int, char **)'.
 
-lcc silently generated incorrect code for a structure copy with a
+Silently generated incorrect code for a structure copy with a
 post-incremented target, eg,
 struct { int x; } data = {1}, copy[2], *q = copy;
 main() { *q++ = data; }
 
 Generated incorrect values in some expressions with constant pointers.
+
+Silently truncated string literals longer than 4095 characters.
 
 on the MIPS, sometimes generated an incorrect frame size and thus a
 crash when floating-point registers were saved.
