@@ -25,7 +25,7 @@ if [ ! -d $TSTDIR ]; then mkdir -p $TSTDIR; fi
 echo ${BUILDDIR}/rcc -target=$target/$os $1: 1>&2
 $LCC -N -S -B${BUILDDIR}/ -I$idir -Ualpha -Usun -Uvax -Umips -Ux86 \
 	-Wf-errout=$TSTDIR/$C.2 -D$target -Wf-g0 \
-	-Wf-target=$target-$os -o $1 tst/$C.c
+	-Wf-target=$target/$os -o $1 tst/$C.c
 if [ $? != 0 ]; then remotehost=noexecute; fi
 if [ -r $dir/tst/$C.2bk ]; then
 	diff $dir/tst/$C.2bk $TSTDIR/$C.2
