@@ -1,0 +1,1612 @@
+10/25/88:
+lcc is an ANSI C compiler available to friendly users on coma.
+
+Bit fields are parsed but ignored.  Trigraph sequences and the extended
+character set are not supported.  The code for register variables needs
+improvement.  The only cases now known to yield incorrect code involve
+C++ output and programs that run out of registers, but there must be
+more.  -g seems to work with pi, but it's very green.
+
+ANSI-style header files are in /usr/include/lcc, which lcc searches.
+A few prototypes may differ from what is actually in libc.a; the
+consequence is usually a type error.  A header file for some V9
+functions is on the way; more later on this.
+
+For a man page, run "man lcc" or "troff -man /usr/cwf/book/man/lcc.1.v9".
+Mail bug reports to both cwf and princeton!drh (Dave Hanson).
+Please include a short program that exposes the bug.  Thanks.
+
+11/8/88:
+fixes several bugs with error handling, float and string constants,
+register structs, and programs that exhaust register variables.
+makes code for char and short int functions compatible with cc's code.
+
+11/17/88:
+fixes bugs in spills, in the declaration of longjump in lcc's
+<setjmp.h>, and in the type system ("char" had compared equal to
+"signed char", which ansi forbids).  improves error recovery.  plus
+internal changes that are theoretically invisible.
+
+it also puts some formals and locals in registers; "man lcc" elaborates.
+the increased demand for registers may expose compiler bugs that have
+been in hiding.  if you have regression tests, try them.
+
+12/8/88:
+fixes sizeof("x"), overzealous reuse of common subexprs, and a loop in
+the spill emitter.  improves error reporting and code for many ++/--
+ops (but prefix versions on registers still need work).  folds the
+difference of two constant pointers.  defines standard "offsetof"
+macro.
+
+12/13/88:
+fixes compiler crashes on certain spills in nested conditional exprs.
+fixes bugs in hex char constants, in exprs with chains of unsigned
+mods and divisions, and in *x=*x when x is volatile.  uses gcc's
+preprocessor to offer more ANSI extensions.  adds bit fields, tho
+they're pretty green, the layout's unique (see the man page), and the
+code needs optimization.
+
+12/19/88:
+changes some diagnostics.  handles arbitrarily long lines.  emits
+slightly better code for switches and functions that return structs.
+fixes an infinite loop when undeclared identifiers appeared in
+initializers, an incorrectly formatted error message for illegal
+characters, and bad code for x:goto x and for *f()=g() when g returns
+a struct.  ignores -O, because /lib/c2 can trash lcc's code.  adds -n,
+which compiles code to detect certain zero-pointer errors; the man
+page elaborates.
+
+1/5/89:
+improves diagnostics.  deletes warnings about unused return values,
+except when they're structures.  fixes minor errors in the standard
+include files.  stops losing the token following asm("...").  emits
+slightly worse code for nested calls, in preparation for a mips
+target.  several internal changes that should have no effect.
+
+1/9/89:
+improves entry code for some functions.  gets clr/inc instructions even
+if the 0/1 is expressed oddly (eg, 0x1).  corrects bad code for
+(unsigned)c==0xff, for f(g().b) when b's offset >0, and for -u>0 for
+unsigned u.  returns to the old code for nested calls, so f(x?h():0),
+f(x&&h()), and f(x||h()) work again.  corrects minor flaws in string.h.
+
+2/1/89:
+
+improves diagnostics.  improves handling of long parameter lists, long
+string constants, and integral constants between 2^31-1 and 2^32-1.
+responds to constant overflow in a machine-independent fashion.
+flattens nested calls (for the mips target).  corrects bad code for
+a[2*i]=f(a[2*i]), (double)(float)0.3, stab entries for initialized
+statics, and some nested conditionals.  assigns registers differently:
+r0-5 are now for temporaries, and r6-11 for variables.  fixes several
+crashes and assertion failures:  if you've had some, try them now;
+otherwise ignore.
+
+2/10/89:
+
+-A now warns about calls to functions without prototypes.  diagnostics
+now include only the line number and omit the character position.
+empty declarations in parameter lists (eg, "f() struct s {int x;};")
+are now errors, and other empty declarations (eg, "int;") now draw
+warnings.  no longer forbids const struct members (eg, "struct {const
+int a,b;}").  several internal but theoretically invisible changes.
+
+2/11/89:
+
+fixes an endless compiler loop and a bug in bit field initialization
+that showed up only on the mips.
+
+2/14/89:
+
+improves constant folding (eg, 0&&x, -1&x).  fixes bugs:  applying
+sizeof to explicit array types sometimes made lcc loop or crash; some
+dissimilar floating point constants (eg, -111111.0 and
+-111111.00000000002) were treated as equivalent during constant
+folding; some conditional exprs involving constants gave a compiler
+error (eg, i = 5.6 && i ? 1 : 2;) or bad code (eg, *p = (int *)0 &&
+*(int *)0 ? 4 : 5;).  fixes a bug in the code that spills a temporary
+register when they're all gone; numerical programs were the most likely
+to have been effected.
+
+2/17/89:
+
+fixes an assertion failure in the code that spills a register.
+
+2/24/89:
+
+/usr/include/nlcc shipped.  it's a directory of mostly new .h files for
+lcc.  in 10 days or so, these files will replace those now in
+/usr/include/lcc, which lcc searches before /usr/include.
+
+fio.h, libc.h, and u.h are non-ansi local contributions from various
+sources.  the rest are intended to match the standard, which can be
+irritating but is necessary for portability.  the standard errno.h is
+omitted because the local one suits ansi.
+
+users interested more in convenience than in portability are welcome
+to edit fio.h, libc.h, and u.h and to add new .h files; do so on
+bowell or your changes will get lost.  don't edit the other headers --
+they're maintained mechanically from another source.  if you find a bug
+in one of these, post cwf and princeton!drh.  for portability, we want
+to keep non-standard stuff out of these files, but we do want to hear
+about bugs.
+
+these are just headers.  lcc will continue to use cc's libraries
+indefinitely.
+
+3/1/89:
+
+in the absence of -g, removes immediate tail recursion from
+non-variadic functions.  old-style, variadic, tail-recursive functions
+are optimized incorrectly, so give a prototype.
+
+-s now controls which switches become branch tables; the man page
+elaborates.  also, the man page now warns of bad code for switches over
+32kb; repairs soon.
+
+fixes bug that put formals in scope too early, which caused bad code
+or core dumps for some programs like "int a;f(a)int a[sizeof a];{}".
+no longer treats 1/0 and similar expressions as constant expressions.
+corrects diagnostics and compiler crashes for certain erroneous
+inputs.
+
+adds gauss to distribution list.
+
+3/10/89:
+
+implements 2c's structure extensions, except for in-line structure
+exprs.  replaces -s with -d to avoid conflict with ld's -s.  adds -v,
+which prints commands as they are executed; see the man page.  uses the
+two-operand instructions like addl2 a little more often.  places
+initialized const data in a readonly segment.  bags casel
+instructions, so switches over 32kb now work.  no longer omits
+unreferenced, anonymous types from -g symbol tables.  improves
+diagnostics.
+
+corrects a few bugs in /usr/include/nlcc, which replaces
+/usr/include/lcc on 3/14.  speak now or forever hold your peace.
+
+3/11/89:
+
+corrects bad code for switches and for "y>(float)0.0?y:-(double)y".
+avoids an ld bug with external initialized consts.
+deletes -B's "using" message.
+
+3/16/89:
+
+/usr/include/lcc shipped, a couple of days later than promised.  it's
+exactly what's been soaking in /usr/include/nlcc, in which fio.h,
+libc.h, and u.h were the latest local contributions (at least on
+coma), and the rest were conformed with the standard, except that the
+standard errno.h was omitted because the local one suits ansi.
+
+the old headers are in /usr/include/olcc, so try -I/usr/include/olcc
+if you get in a jam.  /usr/include/nlcc unshipped.
+
+users interested more in convenience than in portability are welcome
+to edit fio.h, libc.h, and u.h and to add new .h files; do so on
+bowell or your changes will get lost.  don't edit the other headers --
+they're maintained mechanically from another source.
+
+these are just headers.  lcc continues to use cc's libraries.
+
+3/23/89:
+
+fixes a register fragmentation bug by eschewing odd double registers;
+if you use a lot of doubles, retry any regression tests that you might
+have.  fixes bugs in a few diagnostics.  assert.h may now be included
+more than once without calamity.  -P prints function prototypes for all
+defined functions and globals in a form suitable for use in header
+files; see the man page.  plus several internal changes that should
+have no effect.
+
+3/29/89:
+
+fixes several spill bugs; code with large double exprs is most
+likely to have been bogus.  accepts wide-character literals and treats
+them like ordinary character literals.  treats `long int' and `long
+double' as types distinct from int and double, but with the same sizes
+and alignments; they had been treated as identical types, which is
+wrong.  deletes bogus diagnostics for:
+
+	int *const p = (int *const)0;
+	int *x = (f(), 0);
+	typedef int I;main(){I I(I);}
+
+3/29/89:
+
+fixes two bugs new in this morning's (3/29) lcc:
+
+calls to char and short functions gave a fatal compiler error.
+
+type `unsigned long int' was missing; variables so declared were taken
+to be `long int', so, for example, right shift of an unsigned long
+erroneously extended the sign bit.  the repair causes non-trivial
+expressions involving long int, long unsigned, and long double to have
+types int, unsigned, and double, respectively.  this behavior should
+not affect the generated code because ints *are* long ints, etc., but
+it might mask type errors.
+
+4/16/89:
+
+bug fixed:  casts to enum types weren't treated as ints.
+
+new feature:  in asm("string") occurrences of `%name' are replaced by
+the address or register for the identifier `name' if `name' is
+visible.  the man page elaborates.
+
+/usr/include/lcc now holds only the headers specified by the ANSI
+standard.  The local headers (fio.h, libc.h, u.h) and a local version
+of stdio.h are now in /usr/include/libc.  lcc now searches the latter
+before the former, so the default will find the local stdio.h.  -N
+tells lcc to discard its usual search list and use only directories
+named in explicit -I args.  So use "lcc -N -I/usr/include/lcc" to
+ensure conformance with the ANSI standard.  Report bugs in the standard
+headers to cwf.  Report bugs in the local headers to rob.  Don't edit
+either set directly -- they're maintained mechanically from central
+sources, so edits will get lost.
+
+4/19/89:
+
+some function definitions inconsistent their prototypes went
+undetected (eg, extern int f(int); void f(x)int x;{}).
+
+long ints were erroneously promoted to ints.  this bug showed up in
+prototype errors (eg, extern f(long); f(n) long n; {}).
+
+implements 2c's in-line struct exprs ((struct foo) {...}).  the code's
+poor, and run-time alignment errors can occur for incomplete exprs.
+improvements soon.
+
+structs have always been aligned to suit their strictest member.  to
+fix some alignment crashes on the mips, they are now additionally
+guaranteed int alignment (four bytes on all current targets).  so
+recompile all modules that use structures composed entirely of chars
+and shorts.  yacc and lex produce some.
+
+4/28/89:
+
+"-(unsigned long)x" crashed the compiler.  bit fields and functions
+were erroneously permitted as arguments to sizeof.  pointers to enums
+were not treated as pointers to ints, which drew erroneous type errors
+(eg, in "enum {...} *ap; int *x = ap;").
+
+local arrays are now guaranteed int alignment.  the old, weaker
+alignment sometimes made array initialization code crash on the mips.
+
+"#pragma ref id" now simulates a reference to id; it may be used to
+suppress a warning about an otherwise unreferenced variable (eg, a
+sccs id).
+
+-N now turns off the non-ansi local extensions in addition to restricting
+the search for header files to only those directories named by -I.
+
+5/1/89:
+
+fixes bug in some subscript computations for multi-dimensioned char
+arrays of length 4 or less.  this bug occurred only in the presence of
+char arrays in which each element was initialized or initialized
+structs with bit fields.
+
+5/11/89:
+
+improves code for arithmetic and boolean ops on chars and shorts.  if
+you use these a lot, run any regression tests that you have.
+
+the algorithm used to induce register variables has been changed.
+registers are assigned to locals and parameters if their weighted
+reference count is at least 3.  each reference counts adds X, where X
+starts out at 1 and is multiplied by 10 in each loop, by 1/2 in each
+then/else, and by 1/10 in each switch.
+
+4/28's fix that made `pointer to enum' equivalent to `pointer to int'
+was too permissive.  warnings are now issued for assignments between
+`pointer to int' and `pointer to enum'.  all other combinations are
+errors.
+
+structs are no longer guaranteed int alignment.  they are still aligned
+to suit their strictest member.  recompile modules that use structures
+composed entirely of chars and shorts.  yacc and lex produce some.
+
+tail recursion is no longer removed.  errors occurred when locals were
+aliased.
+
+some valid combinations of qualified pointers in result arms of ?:
+caused erroneous diagnostics, and incorrect uses of types pointer and
+int in result arms of ?: went undetected.
+
+some subscript computations for multi-dimensioned char arrays of
+length 4 or less were incorrect because their types were mangled.
+this bug occurred only in the presence of char arrays in which each
+element was initialized or initialized structs with bit fields.
+
+casts from integer types to long double were silently ignored.  real
+constants suffixed by "l" or "L" were erroneously type double; they're
+now type long double.
+
+UINT_MAX was missing from <limits.h>.  time_t, wchar_t, size_t and
+clock_t are now protected from redefinition.  the compiler erroneously
+accepted and silently ignored preprocessor statements; except for
+#pragma, they now draw an error.
+
+5/19/89:
+
+f(){int (*a)[];(*a)[5] = 0;} is now accepted.
+
+variables referenced mainly in deeply nested control structure were
+erroneously reported as unreferenced.
+
+no more arbitrary limit on the number of scope levels.
+
+5/27/89:
+
+Type casts were erroneously accepted as l-values.  On the vax, bad code
+was silently generated for signed div and mod ops when the destination
+was a (signed or unsigned) char or short.
+
+6/2/89:
+
+now accepts "int a = 3;extern int a;".  some constant expressions with
+casts were not accepted as constants (eg, ~((unsigned short) 0)).
+fixes bad code for struct args whose size is not divisible by four.
+
+6/8/89:
+
+improves diagnostics.  some valid field references in extended
+structures were erroneously flagged as errors.  e&0 always returned 0
+and never evaluated e, even if e had side effects.  ignores
+unrecognized preprocessor control lines.
+
+8/3/89:
+
+fixes compiler crashes caused by long string constants with lots of
+escaped characters.
+
+the va_start macro in stdarg.h did not handle char or short arguments
+correctly.
+
+on the vax, bad code was generated for some assignments to unsigned
+char (eg, "char a[10]; unsigned char b = a[i];").
+
+signed divisions by a constant power of two are no longer performed by
+shifts; the results were inconsistent with the standard, which
+requires that (a/b)*b + a%b == a.
+
+some illegal casts in constant expressions were erroneously accepted
+(eg, "int x, y=(int)&x;").
+
+missing tags were erroneously permitted in some struct declarations
+(eg, "struct *p;").
+
+now allows a terminal comma in enums, unless -N (strict ANSI) is
+specified.
+
+warns about switch statements with no cases and about functions
+declared static but never defined or referenced.
+
+with -A, warnings about missing prototypes are now issued only once
+instead of once per call.
+
+doug has merged the man pages for cc and lcc.
+
+8/8/89:
+
+fixes bad code for x=y<<1 when x is a short.
+
+8/29/89:
+
+preprocessor generated lines of the form `# n "name"' and `# n' are
+accepted.
+
+repeated initializations of an array type defined by a typedef
+(typedef char str[]; str a = "hi", b = "there";) elicited incorrect
+error messages.
+
+on the mips, some initialized structures that began with a char or
+short were misaligned.
+
+shamash and bartok added to the shipping list.
+
+9/16/89:
+
+better code for comparing bit fields with 0 and for setting them to all
+1s or 0s; manipulating 1-bit fields is as efficient as using flags with
+explicit | and & operators.
+
+eliminates more dead code.
+
+eliminates multiple copies of some constants.
+
+fixes bad code for multiple assignment to bit fields in the same word
+(eg, struct { unsigned x:1,y:1; } *p; p->x = p->y = 1;).
+
+fixes bad code for some logical operators with constant operands (eg,
+x||1).
+
+fixes a compiler crash on the mips for some calls that pass a float and
+return a struct.
+
+9/29/89:
+
+takes care to emit only non-empty .s files on the mips, whose assembler
+cares.  corrects bad mips code in some cases when one of the first four
+formals gets assigned to a register and is declared (old-style) to be a
+(single-precision) float.
+
+10/4/89:
+
+in unions with bit fields, the offsets for subsequent fields were
+wrong.  unions comprised entirely of bit fields were thought to be of
+size 0, which drew a bad diagnostic.  math.h's HUGE_VAL is now less
+conservative.  several numbers in limits.h were wrong.
+
+10/21/89:
+
+hex escapes now properly include the longest possible run of hex digits
+after the \x, even when the value is too big for a char.  lcc truncates
+and warns about octal and hex escapes with values that won't fit in 8
+bits.  it also warns about undefined escapes like \c.
+
+local declarations of static functions that were previously defined
+drew erroneous mismatched declaration warnings.
+
+better code for e1?e2:0.
+
+fixes bad struct returns for functions that explicitly declare more
+register locals than lcc allows for the target.
+
+different code for spills.
+
+on the 68020, fixes bad code for "return i%j".
+
+limits.m4 now casts INT_MIN to int and LONG_MIN to long.  without the
+casts, the 0x80000000 ended up unsigned.
+
+10/24/89:
+
+for new-style functions, float actuals corresponding to int or long
+formals went unconverted.  eg, "f(int x) { float y; f(y); }" failed to
+convert y.
+
+error messages for the redeclaration of enum ids misreported the
+location of the previous declaration.
+
+on the vax, <unsigned constant> >> <anything> generated bad code.
+
+on the vax, casts that narrowed and then widened an indexing expr
+generated bad code.
+
+limits.h substitutes exprs for some hard constants to reduce machine
+dependencies.
+
+11/3/89:
+
+a missing } at the end of file drew a garbled diagnostic.
+
+lcc crashed when a conditional expr fed a binary op that fed a
+bit field assignment.
+
+lcc crashed when the value of x?y:0 was not used.
+
+new driver for lcc.  no -M.  preprocessor and compiler are now
+connected with a pipe.  flags must now precede file names and
+libraries.
+
+11/7/89:
+
+on the vax, fixed bad code for *s&&*s++.
+
+11/17/89:
+
+casts of constants to illegal types caused an assertion failure.  no
+longer warns about switches with only the default case.  now allows
+more generated labels.  the new driver hung on long programs with too
+many errors.
+
+on v9 vaxes, now supplies -J to the assembler.
+
+on tempel, RAND_MAX was too small.  on all mips machines, lcc exited
+with status 0 even with errors.  an omission from the mipsco docs led
+to an incompatibility with code from cc for new-style functions with
+single-precision floats as arguments 2, 3, or 4.
+
+12/26/89:
+
+constants burn less time and space.  large initializations compile much
+faster.
+
+vertical tabs and form feeds were previously treated as newlines;
+they're now treated as blanks.
+
+~~x and -(-x) have been replaced with just x.
+
+specifying both -A and -n drew inappropriate missing prototype
+messages.
+
+types defined in parameter lists were inaccessible within the
+function.
+
+the compiler crashed when the value of "x,y" was used and y was a
+relational or conditional expr.
+
+the compiler crashed when a void (eg, via a cast) was assigned to a bit
+field.
+
+on the mips, an invalid instruction was generated for a register float
+used as argument 2, 3, or 4.  the assembler rejected it.
+
+on the mips, literals have been moved to the text segment.
+
+on the mips, -p now works.  as with cc on (only) these machines, it
+does not count calls.  for that, use "pixie", which works with lcc's
+a.outs.
+
+on the 68020, -g generated incomplete symbol table information for
+structures that were used before being defined
+(eg "struct A; g(struct A *x) {} struct A { int a,b; };")
+
+CLOCKS_PER_SECOND is now 1000000 everywhere.  that's now consistent
+with the clock function on the mips and 68020 machines, and it's
+irrelevant on the vaxes, because their libraries don't include the
+function.
+
+numerous internal improvements, all theoretically invisible.
+
+2/2/90:
+
+sizeof erroneously returned an int.  it now returns an unsigned as
+dictated by ANSI.  WARNING: the pre-ANSI sizeof returned an int, so lcc
+has been masking a potential problem with the conversion of pre-ANSI
+programs.
+
+casts in integer constant exprs in array bounds, enum defs, and field
+widths sometimes gave bad values.
+
+string constant arguments of asm directives were handled wrong, which
+made the compiler crash or emit bad diagnostics.
+
+comparisons of ints and pointers like i==(int*)1 crashed the compiler.
+
+arrays with unspecified bounds are now noted as an `incomplete array'
+in error messages.
+
+reuses of common subexprs in conditional exprs sometimes generated bad
+code.
+
+on the vax, bad code was generated for unsigned right shift by a
+non-constant when r0 was busy.
+
+on the suns, the register save mask at function entry and exit for
+floating point registers was incorrect.
+
+lcc -E foo.i (foo.s) erroneously compiled (assembled) the given file.
+
+several theoretically transparent internal changes.
+
+2/20/90:
+
+lcc no longer crashes when presented with local arrays of undefined
+structs or with calls to functions that return const structs.
+
+u%2^n now generates the same code as u&(2^n-1) for unsigned u and
+constant 2^n.
+
+on the suns, RAND_MAX is now 2^31-1, which contradicts the man page but
+is consistent with what rand() seems to do.
+
+2/21/90:
+
+fixes bad code introduced yesterday on all targets for u%2^n for
+unsigned u and constant 2^n.
+
+2/28/90:
+
+multiple assignments to bit fields in the first word of a struct (like
+struct {unsigned a:1,b:1;} x; x.a=x.b=1;) no longer generate bad code.
+
+extra parentheses in declarations (like int *(x(int));) sometimes crashed
+the compiler.
+
+the driver sometimes erroneously removed input .o files.
+
+-Wp<arg> now passes <arg> to the preprocessor.  -Wa, -Wl, and -Wf do
+likewise for the assembler, linker, and compiler proper.  <arg> is
+passed untouched; if the recipient expects a leading dash, give it
+explicitly.
+
+-T is gone.  use -Wp-T instead.
+
+3/2/90:
+
+fixed incorrect optimization of i%1 on all machines.
+
+on the vax, -Wf-k now avoids some of the instructions that may fail
+when used to access i/o space.  it does not protect against all
+dangers:  don't touch i/o space via the program counter, floating point
+instructions, struct copies (including struct args and return values),
+or calls (eg, don't index a table of function pointers with an i/o
+cell).  i can't thoroughly test this option myself, so beware.
+
+3/8/90:
+
+relaxes an overzealous assert() in the register spiller.
+
+many internal cleanups, all theoretically invisible outside.
+
+3/17/90:
+
+the compiler was crashing on x+=(const int)1
+
+on the mips, fixes bad code for functions that take a double or float
+as arg#1 and return a struct.
+
+on the vax, slightly different tradeoffs between movl $_x and moval _x.
+
+3/26/90:
+
+better assignment of variables to registers.  explicit register dcls
+are still obeyed first, but any remaining regs are now assigned to
+variables in order of estimated payoff.
+
+bad floating constants like 1e and 1e+ were erroneously accepted.
+
+diagnostics for illegal break and continue statements were garbled.
+
+inline struct expressions now accept struct-valued fields, eg
+struct Point { int x, y; } p, q;
+struct Rectangle { struct Point min, max;} r = (struct Rectangle){p, q};
+
+on v9 vaxes, lcc now emits some symbol table data even without -g.  the
+intent is to mimic cc, though lcc documents globals as well as locals
+and formals.
+
+compiler flags are no longer required to precede filenames.  like cc,
+they may appear anywhere but are processed before any files.
+
+lcc, like cc, now removes a .o file iff exactly one source file (.c,
+.s, .i) appears and no other file (source, object, library) or -l
+option appears.
+
+5/9/90:
+
+warnings are no longer issued for calls to struct functions in which
+the returned struct is not used.
+
+lines containing only white space and one # are now ignored.
+
+-N now suppresses recognition of asm("...").
+
+ansi multibyte characters like 'abc' are now accepted, and lcc warns
+about ignoring the excess characters.
+
+-P now prints char* even if a typedef for char* has been defined.
+
+sizeof(L'x') is now correctly the same as sizeof(wchar_t), which is 1.
+sizeof('x') is still the same as sizeof(int), as it must be.
+
+for constant y, 0&&y (0||y) erroneously returned y instead of y!=0.
+
+initializing char a[N] with a string of exactly N chars caused the
+trailing null byte to be omitted from other N-char strings appearing
+before the offending initialization.
+
+the value of bit field assignments was erroneously taken to be the
+right operand instead of the value of the left operand.  eg, for
+an unsigned 3-bit field x, f(b.x=15) passed 15.  it now passes 7.
+
+casts and structs returned by functions were erroneously permitted as
+l-values.
+
+exprs like &(((struct foo)0)->x[0]) and array-sizeof(array) were not
+recognized as constant.  they were thus erroneously forbidden in
+initializers.
+
+casts in the operands of ?: sometimes caused an assertion failure.
+
+using the value from a postincrement or postdecrement of a bit field
+caused an assertion failure.
+
+legal comparisons of qualified and unqualified compatible pointers were
+erroneously diagnosed as type errors.
+
+for function f, &f was erroneously diagnosed as an error.
+
+types `function returning T' and `array of T' were not uniformly converted
+to `pointer to function returning T' and `pointer to T', respectively.
+
+char *a; void *b; a?b:c was erroneously diagnosed as a type error.
+
+initialization of automatic structs with const fields was erroneously
+diagnosed as an assignment error.
+
+types other than int, signed int, or unsigned int were erroneously
+permitted for bit fields and const and volatile qualifiers were
+erroneously forbidden.
+
+repeated block-level declarations for functions were erroneously
+diagnosed as redeclaration errors.
+
+valid assignment of pointers to qualified or unqualified versions of
+compatible types was erroneously diagnosed as a type error, e.g.,
+const char *a;const char *volatile *b=&a;
+
+on the 68020, lcc gave bad code for x=f(x) where f returns a struct.
+
+on the 68020, lcc erroneously converted floats and doubles to ints by
+rounding.  it now correctly truncates any fraction.
+
+on the 68020 and mips, lcc gave bad code for calls in which the
+function was computed with another call, like (*g(f(1)))(2).
+
+on the mips, -p caused prof to report incorrect file names.
+
+on the mips, fixes bad code for f(x<op>y) when x is a floating point
+register and <op> is an augmented assignment.
+
+on the vax, fixes bad code for signed comparisons of chars with
+constants not in [-0x80..0x7f] and of shorts with constants not in
+[-0x8000..0x7fff].  lcc treats plain chars as signed chars, so they
+were afflicted too.
+
+on the vax, fixes bad code for u>0 and u<=0, for any unsigned expr u.
+
+the dummy parameter names were removed from the ansi include files.
+eg, f(int x) is now f(int) instead.  
+
+limits.h was rewritten to use simpler exprs and to avoid casts.
+#if misevaluated some of the old exprs, and it doesn't do casts.
+
+don't use the unsigned constant suffix (eg, 0u) in #if commands.
+the preprocessor can't cope.
+
+numerous theoretically invisible internal improvements.
+
+5/9/90:
+
+The lcc compiler now passes the conformance section of Version 1.09 of
+the Plum Hall Validation Suite for ANSI C, subject to the restrictions
+below.
+
+We do not have a conforming preprocessor or library.
+
+The lcc command must use -N and enable trigraphs with -Wp-T.  It must
+use -I to search only the ANSI standard headers.  It may need to
+undefine some of the system-specific pre-defined symbols;  -v exposes
+these.
+
+The only versions of lcc tested to date are the ones running on the SGI
+4D/240S under IRIX System V Release 3.2.1, on the VAX 8550 under
+UNIX V10, and on the Sun-3 under SunOS Release 4.0.
+
+5/11/90:
+
+for float constant x, -x was not recognized as constant.
+
+for volatile x, x++ drew unwarranted warnings.
+
+7/6/90:
+
+stores enums in unsigned/signed chars, unsigned/signed shorts, or ints
+depending on the range of the enum constants.  this change may alter
+struct layouts and the size of globals, so discard old object files
+that use enums.  it also causes diagnostics when new-style declarations
+are mixed with old-style definitions for functions with enum arguments,
+so enum foo {a,b,c}; int f(enum foo); ... f(x) enum foo x; {...}
+is equivalent to int f(char); ... f(x) char x; {...}
+which is an error because the prototype in the declaration doesn't
+match the prototype inferred from the definition (which is int f(int)).
+
+permits up to 127 formals.
+
+limits identifiers and numeric constants to 64 characters;
+string constants can have up to 4096 characters.
+
+better diagnostics; some warnings are now errors.
+
+eliminates more branch chains.
+
+on the mips, lcc now truncates constant shift counts to 5 bits.  the
+assembler did this before, but it squawked first.
+
+-t produces code to print trace messages at function entry & exit.
+
+the driver now ignores duplicate `.o' files, eg, `lcc x.c x.o' is
+identical to `lcc x.c'.
+
+provides errno.h, which simply includes /usr/include/errno.h.
+
+numerous internal improvements, all theoretically invisible.
+
+errors fixed:
+
+erroneously permitted 0x as a hexadecimal constant.
+
+failed to treat (double)<unsigned constant> as constant.
+
+did not detect overflow in enumeration constants, eg, for B in
+enum {A=INT_MAX, B}.  it still fails to detect underflow/overflow in
+constant expressions, which it really ought to do.
+
+erroneously permitted declarations and definitions for functions
+returning unknown structures.
+
+erroneously permitted application of unary + to any scalar type.
+
+erroneously permitted comma expressions in constant expressions.
+
+erroneously permitted negative bit field widths.
+
+did not recognize simple function types in casts, eg, int().
+
+incorrectly used the type of x or y for c?x:y where c is a constant;
+the correct type is the composite type of x and y; eg, the type of
+1?(char*)p:(const char*q) is const char* not char* .
+
+`lcc -g foo.i' emitted incorrect line number information if foo.i
+didn't include `# n file' directives.
+
+-g did not emit line number information for initialized locals.
+
+7/9/90:
+
+on the vax, lcc generated code that wouldn't even assemble for
+char c;unsigned short *v;f(){c = v[c];}
+
+8/27/90:
+
+-b produces code that writes an expression-level profile into
+prof.out.  bprint turns the data into an annotated listing, and lcc
+-Wf-a uses it to improve register assignments.  the man pages for lcc
+and bprint elaborate.
+
+warns about implicit returns for functions that return other than int
+or void; -A includes int functions.
+
+-E now preprocesses unsuffixed file arguments.
+
+sign extends integer right shift in constant expressions on all targets.
+
+many internal improvements, all theoretically invisible.
+
+errors fixed:
+
+-t caused an erroneous redeclaration message for printf.
+
+failed to convert x from double to float in f(x) const/volatile float x; {...}
+
+erroneously forbid const/volatile enum {...} x in switch (x) and in int y=x.
+
+erroneously forbid enum bit fields for enum types that are compatible
+with int, signed int, or unsigned.
+
+variadic functions with structure arguments did not work; 1 and 2-byte
+structs still fail on big endians (non-DEC MIPS, Motorola, SPARC), and
+8-byte structs and those holding doubles fail on all MIPSes.
+
+with -g on V10 VAXes, bad symbol table names for anonymous structs,
+unions, and enums.
+
+with -g on the Sun (68020 & SPARC), bad symbol table entries for
+mutually referential structs.
+
+with -g, misplaced or omitted symbol table entries for statics,
+externs, typedefs, and types defined in nested blocks.
+
+assertion failure on illegal casts of constants, eg, (struct foo)0.
+
+assertion failure on switch(x.y) {...} where y is an undefined field.
+
+8/28/90:
+
+on the vax, an unsigned div/mod common subexpr that was also an
+argument caused lcc to loop.  on the sparc, it happened for all
+int/unsigned div/mod/mul operations.
+
+9/5/90:
+
+now permits any number of parameters.
+
+volatile locals and parameters are no longer assigned to registers.
+
+with -g, parameters are no longer assigned to registers; some debuggers
+couldn't cope.
+
+generated bad symbolic addresses in constant expressions involving
+externals declared inside blocks.
+
+misdiagnosed as errors some multiple assignments of returned structs,
+eg, struct p {...} f(); struct r {struct p c;} x,y; x.c = y.c = f();
+
+on sparcs, generated unaligned code after some initialized const data.
+
+9/13/90:
+
+erroneously elided calls to struct functions in conditional expressions
+where the resulting value went unused, eg, i?y:f()
+
+assertion failure on conditional expressions with calls to struct
+functions, eg, x=i?y:f()
+
+improved diagnostics.
+
+theoretically invisible internal improvements.
+
+9/14/90:
+
+lcc crashed on f(){const struct { int a; } *fp;fp++;}
+
+9/21/90:
+
+dropped backslashes that appeared at positions evenly divided by 4096.
+
+on v10 vaxes, now emits stab entries for locals even without -g,
+for consistency with cc.
+
+on sparcs, fixes bad code for some argument lists that perform
+a mul/div/mod after the third argument.
+
+10/22/90:
+
+improvements/changes:
+warns about static declarations that specify incomplete types.
+
+diagnoses declarations that specify objects with sizes >= 2^31.
+
+detects overflow in constant expressions and treats such expressions
+as non-constant expressions; compiling old code may fail.
+
+better register allocation for leaf functions.  on sparcs, better
+register allocation for all functions.
+
+elides unreferenced locals.
+
+warns about bit-field initializers that are too big.
+
+with -N, duplicate global definitions in separately compiled
+files cause loader errors; compiling old code may fail.
+
+improved diagnostics.
+
+errors fixed:
+erroneously permitted static function declarations in blocks.
+
+erroneously diagnosed valid multiple declarations within blocks.
+
+computed incorrect composite types from multiple declarations.
+
+with -g, the Sun assembler choked on long symbol table entries;
+continuations are now emitted.
+
+with -t, assertion failure on `return f(x)' where f returns a struct.
+
+bad values for (unsigned)d when 2147483647 < double d <= 4294967295.
+
+erroneously forbid carriage returns in strings.
+
+10/23/90:
+
+fixes floating overflow in constant multiplications in which one
+nonzero argument is between -1.0 and 1.0.
+
+11/28/90:
+
+Now accepts #line.  It has for a month, but I forgot to say so before.
+
+Now ignores multiple occurrences of just `.o' file arguments.
+Formerly, it ignored multiple occurrences of ALL file arguments.
+
+With -A, now warns about declarations and casts with prototype-less
+function types.  Formerly, it warned only at calls.
+
+Warns about casts from pointers to integral types that are too small.
+
+Overflow in constant exprs has been demoted from an error to a warning.
+
+Conversions between pointers to objects and pointers to functions are
+now properly diagnosed.
+
+Void and struct operands to bitwise and, or and xor operators no longer
+cause an assertion failure.
+
+With -t, an illegal void return value or argument no longer causes an
+assertion failure.
+
+On MIPSes, functions with 3 or more float arguments no longer cause an
+assertion failure.
+
+On Suns and V10 Vaxes, now detects overflow in float and double
+constants.  It is supposed to do so on all targets, but some of them
+have sub-standard strtod's.
+
+On Suns, lcc now accepts the ld options -Bstatic and -Bdynamic.
+
+On SPARCs, fixes bad code when passing structures followed by
+floats/doubles.
+
+On SPARCs, -p and -pg now work.
+
+On V10 VAXes, formals may now get assigned to registers.  An error
+introduced several months ago had been forcing them into the stack.
+
+12/6/90:
+
+The compiler crashed after diagnosing some syntax errors involving
+top-level functions (eg, "void *a();static b(int)c(){}").
+
+With -b, the execution count for e2 in "for(e1;e2;e3)S" was wrong for
+loops not guaranteed to execute at least once.
+
+On the MIPS, the compiler crashed when frequently referenced locals
+were used in deeply nested loops.  The reference count estimate
+overflowed.
+
+On the SPARC, fixes (again!) bad code when passing structures followed
+by floats/doubles.
+
+On the SPARC, adds missing prototype to infinity() in math.h.
+
+12/13/90:
+
+Since 10/26/90, -N has arranged loader diagnostics for duplicate global
+definitions in separately compiled modules.  The arrangement, however,
+placed uninitialized globals in the data segment, which made some .o
+files huge.  Such globals have now been shifted back to the bss
+segment, saving space without losing the loader diagnostics.  On the
+MIPS, discard old .o files created with -N;  they might be compatable
+with new ones, but only an ld expert could guarantee it.
+
+[Without -N, uninitialized globals are emitted as "common" blocks, so
+loaders -- contrary to ANSI -- may silently merge duplicate
+definitions.  -N is overloaded: it also forbids extensions and searches
+for includes in only directories given by -I options.]
+
+lcc crashed when unknown enum types were used in contexts that required
+their sizes.
+
+lcc crashed or died with an assertion failure when parameter names were
+missing from new-style function definitions (eg, f(int){}).
+
+bprint crashed when prof.out had data for functions with >200 execution
+point counters.
+
+12/21/90:
+
+lcc issued an erroneous ``lvalue required'' diagnostic for x[0]=f()
+when f returns a struct.
+
+1/24/91:
+
+now reports as errors identifiers longer than 64 characters when they
+may cause parsing errors (because they span input buffers).
+
+erroneously forbid initialized local const arrays:
+f(){const char msg[]="hi";}
+
+erroneously warned about missing return values for:
+const void f(){}
+volatile void f(){}
+
+erroneously permitted function definitions with invalid uses of void
+arguments, some of which caused the compiler to crash:
+f(void,...){}
+g(void, int){}
+h(void, void){}
+
+aborted with an assertion failure on casts of a return value to void:
+void f(){return(void)23;}
+
+crashed when printing warnings about unreferenced const volatile statics.
+
+[I can't reach the Sun-3's or quetzal now.  I'll update these machines
+later.]
+
+2/14/91:
+
+Misidentified characters with ASCII codes greater than 127.
+
+switch(x) where x is a struct or union caused an assertion failure.
+
+On the vax, silently generated bad code for
+*<expr with ++ or --> = <expr with unsigned div/mod>
+(This was fixed last time, but I forgot to announce it.)
+
+On the vax, does a better job of using two-operand instructions (eg,
+addl2) and deleting gratuitous tst instructions.
+
+The warnings have been regularized somewhat.  Use "-A -A" to flag
+missing prototypes and as many undefined behaviors as possible; use
+"-A" to flag little more than missing prototypes; use no -A options for
+relative quiet.
+
+with -A, warns about:
+   missing prototypes in function types
+   missing return value in a return from an int function
+  *assignments between pointers to ints and pointers to enumerations
+  *conversions from pointers to smaller integral types
+
+a second -A also warns about:
+   non-ANSI language extensions
+   non-ANSI source characters in character and string literals
+  *unrecognized control lines
+  *unreferenced variables and static functions
+  *more than 32kb in an array, struct, or union
+   more than 509 characters in a string literal
+   more than 127 case labels in a switch statement
+   more than 31 formal parameters
+   more than 15 levels of nested statements
+   more than 127 identifiers declared in a block
+   more than 511 external identifiers
+   more than 127 fields in a struct or union
+   more than 127 enumeration constants in an enumeration
+
+* marks those warnings that were given *without* -A previously.
+
+Formerly, -N cleared the #include search list, disabled language
+extensions, and arranged for duplicate global definitions in separately
+compiled files to cause loader errors.  It now fools only with
+#includes;  -A -A handles the others.
+
+[I can't reach the Sun-4's now.  I'll update them later.]
+
+5/4/91:
+
+-A -A now warns about using function designators in conditionals
+(eg, f(){int g();if(g);})
+
+Null characters in string and character literals are now accepted.
+
+Returning the address of a parameter or a local is now an error.
+
+The compiler proper no longer ignores \<newline> in string and
+character literals; `line splicing' must be done by preprocessors.
+
+Erroneously complained about some valid uses of function types,
+(eg, int f(int (int));)
+
+Using -b to append data to a prof.out compressed by bprint -c corrupted
+the execution counts.
+
+Erroneously complained about a typedef name used as a label at the
+first token in a compound statement (eg, typedef int T; f(){T:;})
+
+Erroneously permitted array fields of structs returned by functions to
+be passed as arguments (eg, struct foo {char s[63];} g(); f(g().s);)
+
+Subsequent definition of unknown enums caused an assertion failure,
+(eg, enum foo x; enum foo {a,b,c};)
+
+Failed to diagnose empty extern/static declarations of enums or
+structs (eg, extern enum foo {a};)
+
+Failed to ignore leading white space that spanned input buffers.
+
+Failed to promote case labels to the promoted type of the switch
+expression (eg, case (char)16.2:).
+
+In structs/unions without named bit fields, padding specified by
+unnamed bit fields was erroneously omitted in initializations. (eg,
+struct { char a; int:0; char b; } x = {'a','b'} misinitialized x.b.)
+
+Erroneously complained about extern declarations of sizeless arrays
+with block scope that referred to statics with file scope (eg, static
+int a[3]; f() { extern int a[]; ...})
+
+On the MIPS, better code for conversions from char/short to unsigned.
+
+On the MIPS, failed to detect overflow in (1<<31)[*/](-1) and crashed.
+
+On the SPARC, taking the address of an argument in leaf functions
+caused junk to be stored in the actual argument, eg, f(x){int *p = &x;}
+
+On the SPARC, stdlib.h erroneously defined toupper() and tolower() as
+macros; they're library functions.
+
+On the SPARC, RAND_MAX in stdlib.h was erroneously defined as 32767; it
+should be 2^31-1.
+
+On Suns, -target sun[34] is now recognized (and ignored).
+
+8/2/91:
+
+Now permits -o to name the output file for -c and -S when
+invoked with exactly one source file.
+
+-t now prints char*'s as a address in hex and as a string.
+
+Constants cast to const/volatile were not treated as constant operands
+(eg, (const int)23 + 80 was not accepted as a constant expression).
+
+Some generated labels were not of the form Ln, which clogged symbol
+tables and confused profilers on some targets.
+
+The declaration `struct S;' failed to introduce a new type when a
+struct S was defined in an enclosing scope.
+
+When built with a compiler where `char' is unsigned, lcc failed to
+sign-extend `signed char' in constant expressions (eg, (signed char)-4
+became 252 instead of -4.)
+
+In structs/unions with bit fields, intra-word padding specified by
+unnamed bit fields was erroneously omitted in initializations (eg,
+struct {int :8;int a:3;}x={1} initialized x.a to 0 instead of 1).
+
+Crashed when case labels were given outside of switches.
+
+Sometimes computed incorrect values for relationals over two floating
+point constants.
+
+Erroneously permitted old-style parameter lists in function
+delarators.  Some caused the compiler to crash, eg,
+int(*f)(a);g(){(*f)(0);}
+
+On the 68020, SPARC and VAX, -g emitted bad symbol table data for
+typedefs of const/volatile types.
+
+On the 68020, lcc suffered an assertion failure occasionally when it
+ran out of floating point registers.
+
+On the MIPS, now places constants in the read-only data segment instead
+of the text segment.
+
+On the SPARC, now recognizes as leaves functions that return floats or
+doubles but use no other floating-point registers, eg, float f(float
+x){return x;}
+
+On the SPARC, emitted bad code for leaf functions that took the address
+of a float/double argument.
+
+8/13/91:
+
+Generated bad code for expressions with multiple references to fields
+of structs returned by functions (eg, f().a + g().b).
+
+Erroneously diagnosed as errors valid function definitions in which
+old-style parameters appeared in a declarator nested in parens (eg, int
+(*f(a,b))() int a,b; {}).
+
+9/30/91:
+
+"struct S;" is now never an error, even if repeated.
+
+Fixed assertion failure when a comparison was used as a value in an
+expression that had a type error, like char*f(){int x;x=(x==1|f());}
+
+-b profiled "while (e) S" wrong when e is constant and under -g.
+
+-P failed to include "const" and "volatile" in its output declarations.
+
+On the 68020, the driver now supplies -Dmc68000O in addition to
+-Dmc68000.
+
+On the MIPS, -Wf-Gn specifies the maximum size for data placed in the
+"short data" segment ala cc(1); the default is 8, and 0 causes all data
+to be placed in the "data" segment. -Wa-Gn and -Wl-Gn pass similar
+flags to the assembler and linker, resp.
+
+On the SPARC, structures are now passed using Sun's conventions.
+Discard old .o files.
+
+If bprint sees that it's about to print a count INSIDE a number or
+identifier, it moves the count to just BEFORE the token.  This
+heuristic applies only when macros or comments have confused bprint
+about the source code.  (Thanks to Doug.)
+
+10/7/91:
+
+On the SPARC, generated bad code for functions that are declared to
+return a struct but then fail to, like struct node f(){}.
+
+-P failed to include "const" and "volatile" in its output declarations.
+
+1/4/92:
+
+lcc formerly stopped compiling after 20 errors; -Wf-e<n> now sets the
+error limit to <n>.
+
+The driver now checks for non-existent or unreadable .c or .i files and
+does not try to compile them.
+
+Crashed when an unknown typedef declared parameters in old-style
+function definitions, like "f(x) T x; {...}".
+
+Crashed when both -b and -n were specified.
+
+Failed to fold case labels that exceeded the limits of the type of the
+associated switch expression, like "int i; switch (i) {case0xeb010000:;}".
+This yielded bad duplicate case label diagnostics or incorrect code.
+
+Failed to recognize unsigned comparisons with zero as constant expressions.
+For example, "int i=5U>=0;" is now accepted.
+
+Failed to diagnose structure initializations with excess initializers,
+like "struct { int a,b; } x = { 1,2,3 };".
+
+Failed to count as references occurrences of identifiers in asm, so
+locals with no other references were erroneously deleted.
+
+Failed to make each parameter visible at the end of its declarator,
+which led to erroneous diagnostics for valid prototypes.  For example,
+"f(int a, int b[sizeof a])" is now accepted.
+
+errno.h defined more error codes than are specified by the standard; it
+now defines only EDOM and ERANGE.
+
+assert.h, errno.h, locale.h, stdio.h, stdlib.h, string.h, and time.h
+included other headers and thus defined symbols beyond those permitted
+by the standard.  They now define only the specified symbols, except for
+assert.h, which defines write, sprintf, and abort on some targets.
+
+On the MIPS and SPARC, better code for structure assignment and
+structure arguments.
+
+On the SPARC with -g, gdb and dbx printed incorrect values for parameters
+that were changed because of extraneous symbol table entries.
+
+On the MIPS with -g, gdb and dbx mislocated some source files when
+#include directions contained function and variable definitions.
+
+2/11/92:
+
+Erroneously identified T* as the offending type when sizeof(T) is
+unknown or 0 (eg, "void *a,*b;a-b;").  Now correctly fingers T
+instead.
+
+Erroneously allowed arithmetic on `void *const' pointers (eg,
+"void *const p; int i; p+i;").
+
+Crashed when comparing prototypes with an argument that is a pointer to
+a function with a prototype, like
+int (*g)(char *,...); void f(int (*)(char *,...)) {} ... f(g);
+
+On Suns and BSD VAXes, ctype.h defined static functions _tolower and
+_toupper, which prompted `unreferenced' warnings if they weren't used.
+
+4/13/92:
+
+Crashed when comparing prototypes that differ in only top-level
+qualifiers (eg, int f(int); int f(const int);)
+
+The driver no longer ignores extra characters after flags.  As always,
+unrecognized flags are sent to the linker; eg, -cg was formerly treated
+like -c, but it's now sent to ld, which will complain.
+
+Now recognizes the identity u/1U == u for unsigned u.
+
+-A -A now correctly complains about switch statements with more than
+257 cases instead of 127.
+
+On the SPARC, generated incorrect code for calls with a floating-point
+argument followed anywhere by an argument involving an integer or
+unsigned division, multiplication, or modulus (eg, int i,j; f() {
+f(1.0,i/j); })
+
+On the SPARC, generated invalid assembly code for assignments of
+structures over 4095 bytes.
+
+12/16/92:
+
+changes/improvements:
+with -d0, warns about switch statements with huge jump tables, eg,
+switch (i) { case INT_MAX: ...; case INT_MIN: ... }
+
+now accepts identifiers up to 4096 characters long, although the ANSI
+standard requires that only the first 31 be examined.
+
+returning a pointer to a local variable now elicits a warning
+instead of an error.
+
+now warns about eliding references to incomplete types, eg,
+void *x; *x;
+
+with -A -A, now warns when declaring arrays incomplete types,
+eg, extern struct s x[];
+
+offsetof is less machine-specific but equivalent to the old one.
+
+On the MIPS, uses fewer of the assembler's pseudo-ops.  The assembly
+code looks longer, but it should generate about the same machine code.
+
+On the MIPS, a few stack frames may be larger, to enforce stricter
+alignment for the R4000.
+
+errors fixed:
+with -n, failed to recognize expressions that dereferenced constant
+pointers as valid constant expressions, eg,
+struct foo { int a, b; };
+unsigned off = (char *)&((struct foo *)0)->b - (char *)0;
+
+generated bad code for some inputs for which the compiler needed
+numerous temporaries.
+
+failed to accept function definitions with multiple top-level
+prototypes, eg, int (*g(int c))(char) { c = 0; }
+
+failed to warn about overflow in enumeration values, eg,
+enum { X = ~0U };
+
+ignored trailing characters of long file names in some "#" lines, which
+caused erroneous diagnostics. now accepts names upto 512 characters, and
+warns about longer ones.
+
+erroneously made enumerations visible before their optional values, eg,
+enum{A=2}; f() { enum {A=A} i = A; } assigned 0 to i instead of 2.
+
+exited with a code of 0 instead of 1 when there was exactly one
+"found X expecting Y" diagnostic.
+
+failed to detect overflow in hex character constants, eg, '\x100000000'.
+
+failed to accept assignment of 0U to pointers.
+
+failed to associate tags defined in a parameter list with defining
+declarations inside a function, eg,
+f(struct S *s) { struct S { int a; }; s->a = 1; }
+
+failed to reject function definitions with storage class typedef.
+
+failed to accept a trailing `,' in initializers for scalars
+and unions, eg, int x = {1,};
+
+erroneously defined wchar_t as `char' instead of `unsigned char';
+L'\xff' must have the integer value 0xff.
+
+failed to reject type `array of void'.
+
+failed to reject comparing a pointer to an object type
+with a pointer to an incomplete type, eg,
+extern int (*a)[],(*b)[10]; ...; if (a == b) ...
+
+failed to warn about comparing a function pointer with a void*,
+eg, int (*fp)(); ... if (fp == (void *)0) ...
+
+failed to reject (..., 0) as a null pointer constant.
+
+failed to accept redeclaration of functions with differently
+qualified parameters, eg, f(int); f(const int);
+
+on the SPARC, under -b, exit() failed to close all open files.
+
+on the MIPS, generated bad code for calls to variadic functions
+with a leading floating point arg (eg, f(double x,...)) when
+the 2nd actual argument was a float or a double.
+
+12/17/92:
+
+fix bug introduced yesterday into stddef.h's offsetof macro.
+
+12/18/92:
+
+On the MIPS, fixes code generated since 12/16 that crashes most
+procedures with >32kb of locals.
+
+2/18/93:
+
+On the MIPS, silently generated incorrect code for some programs that
+mix (single-precision) float register variables with int conditional
+exprs or int register variables with float conditional exprs.
+
+6/7/93:
+
+There's a new lcc, v2.0
+
+all enums are now ints; old .o files that use enums are incompatible
+with new ones.
+
+asm("...") is gone.
+
+diagnostics issued for non-constant case expressions now show the
+correct line number.
+
+non-empty declarations that fail to declare at least a declarator, a
+tag, or enumeration identifers now draw an error instead of a warning.
+
+failed to recognize `preprocessing numbers' as a superset of integer
+and floating constants. doing so can elicit unexpected errors, eg,
+i = 0xBE-0xAA; is illegal; the rhs is one preprocessing number that is
+not a legal integer constant.
+
+erroneously made old-style parameters visible before they were
+declared, and crashed when an old-style parameter hid a global name, eg,
+enum {n=10}; f(n,a) int a[n]; int n; {}
+
+crashed when pointers were erroneously compared with non-pointers, eg,
+int *p; double f; if (p == f);
+
+crashed with an assertion failure when a non-function was erroneously
+used in a call, eg, int x; x();
+
+crashed when extraneous arguments were passed to a function with no
+arguments, eg, int f(void); f(1,2);
+
+failed to permit == and != comparisons of incomplete and complete
+types, eg, int (*a)[], (*b)[120]; if (a == b) ...
+
+failed to diagnose relational comparisons between pointers to
+functions, eg, void (*f)(), (*g)(); ... if (f < g) ...
+
+failed to diagnose illegal uses of "auto" in top-level declarations.
+
+failed to warn about declarations that specify only untagged structs
+or unions, eg, struct { int a; };
+
+failed to diagnose incompatible function types from old-style definitions
+and new-style declarations, eg, int f(){...} ... int (*p)(int) = f;
+
+erroneously treated the constant -0.0 as 0.0, which IEEE forbids.
+
+erroneously diagnosed tentative unsized array definitions, eg,
+a lone "int x[]" is now treated as "int x[]={0}"
+
+failed to recognize integer and floating constants that were longer
+than 32 characters and were split across input buffers.
+
+incorrect definitions for va_start, which returned char* instead of
+void, and for va_end, which as empty instead of a void expression.
+
+on the VAX under V10, crashed when folding floating-point expressions
+that overflowed in contexts that require constants.
+
+on the MIPS, generated invalid assembly code for float arguments passed
+in registers 5 or 7 and either declared "register" or assigned to a
+register by lcc.
+
+on the SPARC, generated bad code for f(x,g()) where x is a double and g
+returns an int or pointer.
+
+7/10/93:
+
+On the MIPS, generated incorrect code for calls in which the first two
+args are float or double and the second includes a side-effect (eg,
+f(1.0, d+=2.0)).
+
+On the MIPS, avoids a bug in the new MIPS assembler that silently
+generates incorrect initializers for some strings and char arrays.
+
+10/29/93:
+
+There's a new lcc on cetus, hydra, and pyxis.  Bugs fixed include:
+
+With -A, failed to warn about old-style function definitions without an
+in-scope prototype.
+
+Failed to diagnose tentative definitions of objects with incomplete
+types and internal linkages as errors, eg, static in x[];
+
+Erroneously diagnosed as an error comparing a function pointer to a
+null pointer constant, eg, int (*f)(); ... if (f == (void *)0) ...
+
+Erroneously diagnosed as errors assignments of enum bit fields to ints.
+
+Erroneously diagnosed as errors non-constant initializations of locals
+be enclosed in braces, eg, g() { int i = { f() } }
+
+Erroneously treated enum identifiers declared in an old-style parameter
+declaration as parameters, eg, in f(x) enum color { blue } x; {},
+"blue" was diagnosed as a missing parameter.
+
+On the MIPS, calls to f(float x, double y) passed y incorrectly.
+
+Plus many theoretically invisible changes.
+
+11/19/93:
+
+On the MIPS, initialized arrays were going into the "short data" segment
+and exhausting it too fast.  They're now back in the "long data" segment
+where they belong.
+
+On the MIPS, generated an assembler diagnostic and then incorrect code
+for struct copies when the size%4 was 2 or 3.
+
+(Announced to only those who reported the errors.  Neither error was silent,
+so no one else should have been bitten.)
+
+2/3/94:
+
+lcc now works on slocum.  It generates code that needs static linking,
+which SGI now deprecates.  SGI's profiling library uses only dynamic
+linking, so avoid -p for now; -b is an alternative of sorts.
+
+next:
+
+On the MIPS, silently generated incorrect code for
+main(){struct {...}*f(),x; x=*f();}
