@@ -6,6 +6,8 @@ See doc/4.html for changes in the code-generation interface.
 
 Warns about constants that are too large, eg, short x = 70000;
 
+Warns about expressions that have no effect.
+
 Unsigned shorts are now used for wide-character constants, and
 wchar_t is a typedef for unsigned short.
 
