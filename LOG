@@ -1,9 +1,16 @@
-From lcc 3.3 to 3.4:
+From lcc 3.4 to 3.4a:
 
-Changes:
-The MIPS back end now generates position-independent code and thus
-supports dynamic linking. -Wf-pic=1 (the default under IRIX) and
--Wf-pic=0 (the default under Ultrix) enable and disable
-position-independent code.
+Errors fixed:
+Generated bad code for some switch statements with negative case labels
+in dense ranges, eg,
+   main () {
+      int i = -1;
+      switch (i) {
+      case -2: printf("-2=%d\n",i); break;
+      case 0:  printf( "0=%d\n",i); break;
+      case 1:  printf( "1=%d\n",i); break;
+      case 2:  printf( "2=%d\n",i); break;
+      }
+   }
 
-Wed Jul 12 13:17:42 EDT 1995
+Mon Jul 24 11:25:35 EDT 1995
