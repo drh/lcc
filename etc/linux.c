@@ -20,7 +20,7 @@ char *com[] = {LCCDIR "rcc", "-target=x86/linux", "$1", "$2", "$3", 0 };
 char *as[] = { "/usr/bin/as", "-o", "$3", "$1", "$2", 0 };
 char *ld[] = {
 	/*  0 */ "/usr/bin/ld", "-m", "elf_i386", "-dynamic-linker",
-	/*  4 */ "/lib/ld-linux.so.1", "-o", "$3",
+	/*  4 */ "/lib/ld-linux.so.2", "-o", "$3",
 	/*  7 */ "/usr/lib/crt1.o", "/usr/lib/crti.o",
 	/*  9 */ LCCDIR "/gcc/crtbegin.o", 
                  "$1", "$2",
