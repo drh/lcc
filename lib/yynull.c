@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef EXPORT
+#define EXPORT
+#endif
 
 static char rcsid[] = "$Id$";
 
-void _YYnull(char *file, int line) {
+EXPORT void _YYnull(char *file, int line) {
 	fprintf(stderr, "null pointer dereferenced:");
 	if (file)
 		fprintf(stderr, " file %s,", file);

@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef EXPORT
+#define EXPORT
+#endif
 
 static char rcsid[] = "$Id$";
 
@@ -93,11 +96,11 @@ static void bbexit(void) {
 	}
 }
 
-void _epilogue(struct func *callee) {
+EXPORT void _epilogue(struct func *callee) {
 	_caller = 0;
 }
 
-void _prologue(struct func *callee, struct _bbdata *yylink) {
+EXPORT void _prologue(struct func *callee, struct _bbdata *yylink) {
 	static struct caller callers[4096];
 	static int next;
 	struct caller *p;

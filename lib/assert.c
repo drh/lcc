@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef EXPORT
+#define EXPORT
+#endif
 
 static char rcsid[] = "$Id$";
 
-int _assert(char *e, char *file, int line) {
+EXPORT int _assert(char *e, char *file, int line) {
 	fprintf(stderr, "assertion failed:");
 	if (e)
 		fprintf(stderr, " %s", e);
