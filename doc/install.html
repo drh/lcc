@@ -597,9 +597,10 @@ For example,</p>
   <pre>% lcc -Wf-target=symbolic -S tst/8q.c</pre>
 </blockquote>
 
-<p>generates symbolic output for <code>tst/8q.c</code> in <code>8q.s</code>. Finally, the
-option <code>-Wf-target=null</code> specifies the &quot;null&quot; target for which lcc
-emits nothing and thus only checks the syntax and semantics of its input files.</p>
+<p>generates symbolic output for <code>tst/8q.c</code> in <code>8q.s</code>. Adding <code>-Wf-html</code>
+causes the symbolic target to emit HTML instead of plain text. Finally, the option <code>-Wf-target=null</code>
+specifies the &quot;null&quot; target for which lcc emits nothing and thus only checks the
+syntax and semantics of its input files.</p>
 
 <h2><a NAME="win32">Installation on Windows NT 4.0 or Windows 95/98</a></h2>
 
