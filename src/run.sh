@@ -10,7 +10,7 @@ dir=$target/$os; remotehost=${2-$REMOTEHOST}
 case "$1" in
 *symbolic/irix*)	idir=include/mips/irix; remotehost=noexecute ;;
 *symbolic/osf*)		idir=include/alpha/osf;	remotehost=noexecute ;;
-*symbolic/winnt*)	idir=include/x86/winnt4 ;;
+*symbolic/winnt*)	idir=include/x86/win32 ;;
 *)			idir=include/$dir ;;
 esac
 
@@ -24,7 +24,7 @@ BUILDDIR=${BUILDDIR-.} LCC="${LCC-${BUILDDIR}/lcc} -Wo-lccdir=$BUILDDIR"
 TSTDIR=${TSTDIR-${BUILDDIR}/$dir/tst}
 if [ ! -d $TSTDIR ]; then mkdir -p $TSTDIR; fi
 
-echo ${BUILDDIR}/rcc -target=$target/$os $1: 1>&2
+echo ${BUILDDIR}/rcc$EXE -target=$target/$os $1: 1>&2
 $LCC -N -S -I$idir -Ualpha -Usun -Uvax -Umips -Ux86 \
 	-Wf-errout=$TSTDIR/$C.2 -D$target -Wf-g0 \
 	-Wf-target=$target/$os -o $1 tst/$C.c
@@ -39,13 +39,13 @@ fi
 case "$remotehost" in
 noexecute)	exit 0 ;;
 ""|"-")	echo "   executing" $C: 1>&2
-	$LCC -o $TSTDIR/$C $1 ${BUILDDIR}/liblcc.a -lm; $TSTDIR/$C <tst/$C.0 >$TSTDIR/$C.1 ;;
+	$LCC -o $TSTDIR/$C$EXE $1; $TSTDIR/$C$EXE <tst/$C.0 >$TSTDIR/$C.1 ;;
 *)	echo "   executing" $C on $remotehost: 1>&2
 	rcp $1 $remotehost:
 	if expr "$remotehost" : '.*@' >/dev/null ; then
 		remotehost="`expr $remotehost : '.*@\(.*\)'` -l `expr $remotehost : '\(.*\)@'`"
 	fi
-	rsh $remotehost "cc -o $C $C.s -lm;./$C;rm -f $C $C.[so]" <tst/$C.0 >$TSTDIR/$C.1
+	rsh $remotehost "cc -o $C$EXE $C.s -lm;./$C$EXE;rm -f $C$EXE $C.[so]" <tst/$C.0 >$TSTDIR/$C.1
 	;;
 esac
 if [ -r $dir/tst/$C.1bk ]; then
@@ -53,4 +53,3 @@ if [ -r $dir/tst/$C.1bk ]; then
 	exit $?
 fi
 exit 0
-g
