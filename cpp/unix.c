@@ -4,7 +4,7 @@
 #include <string.h>
 #include "cpp.h"
 
-extern	int getopt(int, char **, char *);
+extern	int getopt(int, char *const *, const char *);
 extern	char	*optarg, rcsid[];
 extern	int	optind;
 int	verbose;
