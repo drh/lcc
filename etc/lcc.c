@@ -545,8 +545,9 @@ static void opt(char *arg) {
 			error("-B overwrites earlier option", 0);
 		path = arg + 2;
 		if (strstr(com[1], "win32") != NULL)
-			path = replace(path, '/', '\\');
-		com[0] = concat(path, concat("rcc", first(suffixes[4])));
+			com[0] = concat(replace(path, '/', '\\'), concat("rcc", first(suffixes[4])));
+		else
+			com[0] = concat(path, "rcc");
 		if (path[0] == 0)
 			error("missing directory in -B option", 0);
 		}
