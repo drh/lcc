@@ -5,22 +5,16 @@
 static char rcsid[] = "$Id$";
 
 #ifndef LCCDIR
-#define LCCDIR "/usr/local/lib/lcc/"
-#endif
-#ifndef VCCDIR
-#define VCCDIR "/program files/devstudio/vc/"
+#define LCCDIR ""
 #endif
 
-char *suffixes[] = { ".c", ".i", ".asm", ".obj", ".exe", 0 };
-char inputs[256] = "";
-char *cpp[] = { LCCDIR "cpp.exe",
-	"-D__STDC__=1", "$1", "$2", "$3", 0 };
-char *include[] = { "-I" LCCDIR "include", "\"-I" VCCDIR "include\"", 0 };
-char *com[] = { LCCDIR "rcc.exe", "-target=x86/win32",
-	"$1", "$2", "$3", 0 };
-char *as[] = { "\"/program files/MASM611/bin/ml.exe\"", "-nologo", "-c",
-	"-Fo$3", "$1", "$2", 0 };
-char *ld[] = { "\"" VCCDIR "bin/link.exe\"", "-nologo", 
+char *suffixes[] = { ".c", ".i", ".asm;.s", ".obj", ".exe", 0 };
+char inputs[256] = ".;\"/program files/devstudio/vc/include\";/msdev/include";
+char *cpp[] = { LCCDIR "cpp", "-D__STDC__=1", "$1", "$2", "$3", 0 };
+char *include[] = { "-I" LCCDIR "include", 0 };
+char *com[] = { LCCDIR "rcc", "-target=x86/win32", "$1", "$2", "$3", 0 };
+char *as[] = { "ml", "-nologo", "-c", "-Fo$3", "$1", "$2", 0 };
+char *ld[] = { "link", "-nologo", 
 	"-align:0x1000", "-subsystem:console", "-entry:mainCRTStartup",
 	"$2", "-OUT:$3", "$1", "", "libc.lib", "kernel32.lib", 0 };
 static char *bbexit = LCCDIR "bbexit.obj";
