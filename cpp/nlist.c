@@ -13,7 +13,7 @@ char	wd[128];
 
 #define	NLSIZE	128
 
-Nlist	*nlist[NLSIZE];
+static Nlist	*nlist[NLSIZE];
 
 struct	kwtab {
 	char	*kw;
