@@ -196,11 +196,11 @@ Tree cnsttree(Type ty, ...) {
 	return p;
 }
 
-Tree consttree(unsigned n, Type ty) {
+Tree consttree(int n, Type ty) {
 	if (isarray(ty))
 		ty = atop(ty);
 	else assert(isint(ty));
-	return cnsttree(ty, (unsigned long)n);
+	return cnsttree(ty, (long)n);
 }
 static Tree cmptree(int op, Tree l, Tree r) {
 	Type ty;
