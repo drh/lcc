@@ -442,7 +442,7 @@ extern Tree call(Tree, Type, Coordinate);
 extern Tree calltree(Tree, Type, Tree, Symbol);
 extern Tree condtree(Tree, Tree, Tree);
 extern Tree cnsttree(Type, ...);
-extern Tree consttree(unsigned int, Type);
+extern Tree consttree(int, Type);
 extern Tree eqtree(int, Tree, Tree);
 extern int iscallb(Tree);
 extern Tree shtree(int, Tree, Tree);
