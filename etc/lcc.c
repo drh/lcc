@@ -214,7 +214,10 @@ static int callsys(char **argv) {
 	for (i = 0; argv[i]; i++)
 		n += strlen(argv[i]) + 1;
 	if (n + 1 > cmdlen)
-		cmdbuf = realloc(cmdbuf, cmdlen = n + 1);
+		if (cmdlen == 0)
+			cmdbuf = malloc(cmdlen = n + 1);
+		else
+			cmdbuf = realloc(cmdbuf, cmdlen = n + 1);
 	assert(cmdbuf);
 	s = cmdbuf;
 	for (i = 0; argv[i]; i++) {
