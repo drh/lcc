@@ -38,6 +38,7 @@ static void help(void);
 static void initinputs(void);
 static void interrupt(int);
 static void opt(char *);
+static List path2list(const char *);
 extern int main(int, char *[]);
 extern char *replace(const char *, int, int);
 static void rm(List);
@@ -505,44 +506,42 @@ static void help(void) {
 		if (strncmp("-tempdir", msgs[i], 8) == 0 && tempdir)
 			fprintf(stderr, "; default=%s", tempdir);
 	}
-	if (s = getenv("LCCINPUTS"))
-		fprintf(stderr, "LCCINPUTS=%s\n", s);
-	if (s = getenv("LCCDIR"))
-		fprintf(stderr, "LCCDIR=%s\n", s);
+#define xx(v) if (s = getenv(#v)) fprintf(stderr, #v "=%s\n", s)
+	xx(LCCINPUTS);
+	xx(LCCDIR);
+#ifdef WIN32
+	xx(include);
+	xx(lib);
+#endif
+#undef xx
 }
 
-/* initinputs - if LCCINPUTS is defined, use it to initialize various lists */
+/* initinputs - if LCCINPUTS or include is defined, use them to initialize various lists */
 static void initinputs(void) {
-	char *s = getenv("LCCINPUTS"), sep = ':';
+	char *s = getenv("LCCINPUTS");
+	List list, b;
 
-	if (s == 0 && (s = inputs)[0] == 0)
+	if (s == 0 || (s = inputs)[0] == 0)
 		s = ".";
-	else if (strchr(s, ';'))
-		sep = ';';
-	while (*s) {
-		char *p, buf[256];
-		if (p = strchr(s, sep)) {
-			assert(p - s < sizeof buf);
-			strncpy(buf, s, p - s);
-			buf[p-s] = '\0';
-		} else {
-			assert(strlen(s) < sizeof buf);
-			strcpy(buf, s);
-		}
-		if (strcmp(buf, ".") == 0)
-			buf[0] = '\0';
-		if (!find(buf, lccinputs)) {
-			lccinputs = append(strsave(buf), lccinputs);
-			if (buf[0]) {
-				ilist = append(concat("-I", buf), ilist);
-				if (strstr(com[1], "win32") == NULL)
-					llist[0] = append(concat("-L", buf), llist[0]);
-			}
-		}
-		if (p == 0)
-			break;
-		s = p + 1;
+	if (s) {
+		lccinputs = path2list(s);
+		if (b = lccinputs)
+			do {
+				b = b->link;
+				if (strcmp(b->str, ".") != 0) {
+					ilist = append(concat("-I", b->str), ilist);
+					if (strstr(com[1], "win32") == NULL)
+						llist[0] = append(concat("-L", b->str), llist[0]);
+				}
+			} while (b != lccinputs);
 	}
+#ifdef WIN32
+	if (list = b = path2list(getenv("include")))
+		do {
+			b = b->link;
+			plist = append(stringf("-I\"%s\"", b->str), plist);
+		} while (b != list);
+#endif
 }
 
 /* interrupt - catch interrupt signals */
@@ -685,6 +684,34 @@ static void opt(char *arg) {
 		fprintf(stderr, "%s: %s ignored\n", progname, arg);
 	else
 		llist[1] = append(arg, llist[1]);
+}
+
+/* path2list - convert a colon- or semicolon-separated list to a list */
+static List path2list(const char *path) {
+	List list = NULL;
+	char sep = ':';
+
+	if (path == NULL)
+		return NULL;
+	if (strchr(path, ';'))
+		sep = ';';
+	while (*path) {
+		char *p, buf[512];
+		if (p = strchr(path, sep)) {
+			assert(p - path < sizeof buf);
+			strncpy(buf, path, p - path);
+			buf[p-path] = '\0';
+		} else {
+			assert(strlen(path) < sizeof buf);
+			strcpy(buf, path);
+		}
+		if (!find(buf, list))
+			list = append(strsave(buf), list);
+		if (p == 0)
+			break;
+		path = p + 1;
+	}
+	return list;
 }
 
 /* replace - copy str, then replace occurrences of from with to, return the copy */
