@@ -24,7 +24,7 @@ struct list {		/* circular list nodes: */
 
 static void *alloc(int);
 static List append(char *,List);
-extern char *basename(const char *);
+extern char *basepath(char *);
 static int callsys(char *[]);
 extern char *concat(char *, char *);
 static int compile(char *, char *);
@@ -192,11 +192,11 @@ static List append(char *str, List list) {
 	return p;
 }
 
-/* basename - return base name for name, e.g. /usr/drh/foo.c => foo */
-char *basename(const char *name) {
+/* basepath - return base name for name, e.g. /usr/drh/foo.c => foo */
+char *basepath(char *name) {
 	char *s, *b, *t = 0;
 
-	for (b = s = (char *)name; *s; s++)
+	for (b = s = name; *s; s++)
 		if (*s == '/' || *s == '\\') {
 			b = s + 1;
 			t = 0;
@@ -390,7 +390,7 @@ static int filename(char *name, char *base) {
 	static char *stemp, *itemp;
 
 	if (base == 0)
-		base = basename(name);
+		base = basepath(name);
 	switch (suffix(name, suffixes, 4)) {
 	case 0:	/* C source files */
 		compose(cpp, plist, append(name, 0), 0);
@@ -669,14 +669,14 @@ static void opt(char *arg) {
 			cflag++;
 			return;
 		case 'N':
-			if (strcmp(basename(cpp[0]), "gcc-cpp") == 0)
+			if (strcmp(basepath(cpp[0]), "gcc-cpp") == 0)
 				plist = append("-nostdinc", plist);
 			include[0] = 0;
 			ilist = 0;
 			return;
 		case 'v':
 			if (verbose++ == 0) {
-				if (strcmp(basename(cpp[0]), "gcc-cpp") == 0)
+				if (strcmp(basepath(cpp[0]), "gcc-cpp") == 0)
 					plist = append(arg, plist);
 				clist = append(arg, clist);
 				fprintf(stderr, "%s %s\n", progname, rcsid);
