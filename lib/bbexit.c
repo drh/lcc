@@ -31,11 +31,11 @@ static struct _bbdata {
 	} *funcs;
 } tail, *_bblist = &tail;
 
-_epilogue(callee) struct func *callee; {
+void _epilogue(struct func *callee) {
 	_caller = 0;
 }
 
-_prologue(callee, yylink) struct func *callee; struct _bbdata *yylink; {
+void _prologue(struct func *callee, struct _bbdata *yylink) {
 	static struct caller callers[4096];
 	static int next;
 	struct caller *p;
@@ -59,7 +59,7 @@ _prologue(callee, yylink) struct func *callee; struct _bbdata *yylink; {
 	_caller = 0;
 }
 
-static void profout(p, fp) struct _bbdata *p; FILE *fp; {
+static void profout(struct _bbdata *p, FILE *fp) {
 	int i;
 	struct func *f;
 	struct caller *q;
@@ -95,7 +95,7 @@ static void profout(p, fp) struct _bbdata *p; FILE *fp; {
 			p->coords[i].c.y, p->counts[i]);
 }
 
-exit(code) {
+void exit(int code) {
 	FILE *fp;
 
 	if (_bblist != &tail && (fp = fopen("prof.out", "a"))) {
@@ -103,8 +103,8 @@ exit(code) {
 			profout(_bblist, fp);
 		fclose(fp);
 	}
-#if mips || vax || sparc
-	_cleanup();
+#if mips || sparc
+	{ extern void _cleanup(void); _cleanup(); }
 #endif
-	_exit(code);
+	{ extern void _exit(int); _exit(code); }
 }
