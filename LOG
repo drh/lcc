@@ -1,22 +1,23 @@
-From lcc 3.0 to 3.1:
+From lcc 3.1 to 3.2:
 
 Errors fixed:
+Generated bad code when a conditional appeared as a operand and one of
+its arms computed a common subexpression, eg, a[i] + (i>0?a[i]:0)
+and a[i] = (n || (n=i), n)
 
-Died with an assertion failure when a constant was cast to void in a
-return statement, eg, f() { return (void)4; }.
+With -n, erroneously diagnosed dereferences of const pointers as errors,
+eg, f() { int x; const int *p; x=*p; }
 
-Died with an assertion failure when -b was specified.
+Crashed with an assertion failure on a multiple assignment of a struct
+return value to known elements of an array or fields of a structure, eg,
+struct foo { int a[4]; } f() { struct foo  x[2];  x[0]=x[1]=f(); }
 
-When -n was specified, issued meaningless diagnostic
-"illegal character `\00'" beyond the end of the input.
+On the SPARC, generated bad code for addressing locals in large frames,
+eg, f() { int a[10000], y = a[0]; }
 
-Erroneously issued "unclosed comment" followed by spurious diagnostics
-when spaces in long comments spanned input buffer boundaries.
+On the SPARC under Solaris, ctype.h was missing an extern declaration
+for __ctype.
 
-Line numbers suffered one extra, incorrect increment when long
-comments or string literals spanned input buffer boundaries.
+On the x86, generated bad code for nested division, eg i/=j/k
 
-On the MIPS, generated code that wouldn't assemble for calls to huge
-numeric constant addresses, like ((void (*)())0xbfc00010)().
-
-Wed Sep  7 16:06:37 EDT 1994
+Thu Dec  8 16:04:32 EST 1994
