@@ -35,7 +35,8 @@ extern char *concat(char *, char *);
 
 int option(char *arg) {
   	if (strncmp(arg, "-lccdir=", 8) == 0) {
-		cpp[0] = concat(&arg[8], "/gcc/cpp");
+		if (strcmp(cpp[0], LCCDIR "gcc/cpp") == 0)
+			cpp[0] = concat(&arg[8], "/gcc/cpp");
 		include[0] = concat("-I", concat(&arg[8], "/include"));
 		include[1] = concat("-I", concat(&arg[8], "/gcc/include"));
 		ld[9]  = concat(&arg[8], "/gcc/crtbegin.o");
@@ -53,8 +54,8 @@ int option(char *arg) {
 	else if (strncmp(arg, "-ld=", 4) == 0)
 		ld[0] = &arg[4];
 	else if (strcmp(arg, "-static") == 0) {
-	        ld[3] = "-static";
-	        ld[4] = "";
+		ld[3] = "-static";
+		ld[4] = "";
 	} else
 		return 0;
 	return 1;
