@@ -42,7 +42,7 @@ char *as[] = { "/usr/bin/as", "-o", "$3", "$1", "-nocpp", "-KPIC", "$2", 0 };
 char *ld[] = { "/usr/bin/ld", "-require_dynamic_link", "_rld_new_interface",
 	"-elf", "-_SYSTYPE_SVR4", "-Wx,-G", "0", "-g0", "-KPIC",
 	"-o", "$3", "/usr/lib/crt1.o", "-L/usr/local/lib",
-	"$1", "$2", "", "-L" LCCDIR, "-llcc", "-lc", "/usr/lib/crtn.o", 0
+	"$1", "$2", "", "-L" LCCDIR, "-llcc", "-lc", "-lm", "/usr/lib/crtn.o", 0
 };
 
 extern char *concat(char *, char *);
