@@ -21,12 +21,14 @@ char *as[] = { "/usr/bin/as", "-o", "$3", "$1", "$2", 0 };
 char *ld[] = {
 	/*  0 */ "/usr/bin/ld", "-m", "elf_i386", "-dynamic-linker",
 	/*  4 */ "/lib/ld-linux.so.1", "-o", "$3",
-	/*  7 */ "/usr/lib/crt1.o", "/usr/lib/crti.o", "/usr/lib/crtbegin.o", 
+	/*  7 */ "/usr/lib/crt1.o", "/usr/lib/crti.o",
+	/*  9 */ LCCDIR "/gcc/crtbegin.o", 
                  "$1", "$2",
 	/* 12 */ "-L" LCCDIR,
 	/* 13 */ "-llcc",
-	/* 14 */ "", "", "-lc", "-lm",
-	/* 18 */ "", "/usr/lib/crtend.o", "/usr/lib/crtn.o",
+	/* 14 */ "-L" LCCDIR "/gcc", "-lgcc", "-lc", "-lm",
+	/* 18 */ "",
+	/* 19 */ LCCDIR "/gcc/crtend.o", "/usr/lib/crtn.o",
 	0 };
 
 extern char *concat(char *, char *);
@@ -36,7 +38,10 @@ int option(char *arg) {
 		cpp[0] = concat(&arg[8], "/gcc/cpp");
 		include[0] = concat("-I", concat(&arg[8], "/include"));
 		include[1] = concat("-I", concat(&arg[8], "/gcc/include"));
-		ld[12] =  concat("-L", &arg[8]);
+		ld[9]  = concat(&arg[8], "/gcc/crtbegin.o");
+		ld[12] = concat("-L", &arg[8]);
+		ld[14] = concat("-L", concat(&arg[8], "/gcc"));
+		ld[19] = concat(&arg[8], "/gcc/crtend.o");
 		com[0] = concat(&arg[8], "/rcc");
 	} else if (strcmp(arg, "-p") == 0 || strcmp(arg, "-pg") == 0) {
 		ld[7] = "/usr/lib/gcrt1.o";
@@ -50,8 +55,6 @@ int option(char *arg) {
 	else if (strcmp(arg, "-static") == 0) {
 	        ld[3] = "-static";
 	        ld[4] = "";
-	        ld[14] = "-L/usr/lib/gcc-lib/i486-linux/2.7.2";
-	        ld[15] = "-lgcc";
 	} else
 		return 0;
 	return 1;
