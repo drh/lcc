@@ -1,91 +1,383 @@
-From lcc 4.0 to 4.1:
+From lcc 4.1 to 4.2:
 
-Changes:
-
-See doc/4.html for changes in the code-generation interface.
-
-Warns about constants that are too large, eg, short x = 70000;
-
-Warns about expressions that have no effect.
-
-Unsigned shorts are now used for wide-character constants, and
-wchar_t is a typedef for unsigned short.
-
-More assertions in gen.c to confirm that the register allocator is
-configured correctly; ie, that the various masks, wildcards,
-clobbers, and targets are internally consistent. Full checking
-appears impractical, but there's still more than than there was
-before.
-
-On the SPARC, lcc now emits .type and .size directives
-unconditionally.
-
-On the x86, constants are now emitted into the text segment.
-
-If the environment variable "LCCDIR" is defined, it gives the directory
-that contains the preprocessor, the compiler proper, and the
-lcc-specific libraries.
-
-Under Windows, lcc searches the directories named in the environment
-variable "include" for header files.
-
-Errors fixed:
-
-Erroneously complained about unknown sizes for some const fields, eg,
-typedef struct foo ref; struct foo { const ref *q; int a; };
-f(ref *p, int i) { return p->q[i].a; }
-
--A -A erroneously complained about static main's that didn't conform
-to the ANSI-mandated "int main(void)" or "int main(int, char **)".
-
-Silently generated incorrect code for a structure copy with a
-post-incremented target, eg,
-struct { int x; } data = {1}, copy[2], *q = copy;
-main() { *q++ = data; }
-
-Generated incorrect values in some expressions with constant pointers.
-
-Silently truncated string literals longer than 4095 characters.
-
-Failed to emit debugging information for uninitialized globals.
-
-Failed to diagnose missing sizes in some multi-dimensioned array
-declarators, eg, extern int x[][10]; int x[5][];
-
-Silently emitted incorrect sizes and initalizations for some
-incomplete multi-dimensioned arrays involving pointers and whose size
-is determined by the number of initializers.
-
-Set only the x.name field for some back-end symbols (eg, wildcards),
-and the uninitialized name field crashed some debugging output.
-
-uses() failed to check the register *set* as well as the register
-mask.  There's no known bug demo, but a wildcard set might be
-contrived that would need the test.
-
-Crashed with -b on some conditional expressions involving calls, eg,
-int p; void g(void) { p ? f() : 1; }
-
-On the MIPS, sometimes generated an incorrect frame size and thus a
-crash when floating-point registers were saved.
-
-On the SPARC, erroneously reused a register variable as a temporary
-when the variable is compiler-generated.
-
-On the SPARC with -b, emitted incorrect code for returning structs.
-
-On the x86, conversion from float to int rounded instead of truncated
-with the default floating-point mode.
-
-On the x86, eliminate rtargets for kids after the first (see p. 419).
-
-On the x86, substitute reg for freg, in order to use the common reg
-rules. Needed only for debugging output, since we're not using any
-float regs as regs at this time.
-
-On the x86, "double f(); main(){f();}" wasn't popping the FP register stack.
-
-On the x86, ECX was saved by the callee, when it should have been
-saved by the caller.
-
+Below is a summary of the source-control log entries for those files
+changed for lcc 4.2.
 $Id$
+
+src/alloc.c:
+Fixed subtle alignment bug on p. 28.
+
+src/dag.c:
+Renamed kill to killnodes to avoid possible clash with kill in <signal.ch>.
+
+Made address interface function optional.
+
+Ensured that generated locals, even if not temps, are
+added to the code list.
+
+Avoided calls to undag when errcnt>0.
+
+Changed listnodes so that array types decay to pointers; bug
+tickled by -n option.
+
+src/decl.c:
+Moved call to retcode that injects a return at the end of a function
+into compound so that temps created by retcode will be
+scoped properly.
+
+Fixed bug in which functions that return const struct S {...} issued
+an incorrect diagnostic.
+
+Ensure addressed is set for local arrays.
+
+src/enode.c:
+Corrected type conversions in addtree for ADD+P nodes;
+stripped qualifiers from pointer types in eqtree and cmptree.
+
+src/event.c:
+Revise functions called at events so all have the same signature,
+modulo pointer types.
+
+src/expr.c:
+With -b, avoid instrumenting  constant ?: expressions.
+
+Fixed bug in wide-character literals.
+
+Fix allocation error for identifiers injected to quell
+undeclared identifier errors;
+Correct int type added to addresses in field offsets.
+
+src/gen.c:
+Made emitasm extern.
+
+src/input.c:
+Fixed bug in resynch that caused infinite loop.
+
+Added #ident recognition, which simply ignores it.
+
+src/symbolic.c:
+Revised symbolic back end to emit -0.0 correctly.
+
+Emit flags in symbolic output.
+
+src/bytecode.c:
+Fixed double output botch in defconst in bytecode backend.
+
+src/dagcheck.c:
+Added mssing cases in dagcheck's reduce for types signedptr
+and unsignedptr. Without these, reduce can fail.
+
+src/lex.c:
+Permit \ to escape newline in string literals.
+
+Fixed scon() so that it accepts and concatenates adjacent wide-character literals.
+
+src/main.c:
+Fixed long-standing bug in which -n, -b, -C, and -a options caused
+interface functions to be called before progbeg.
+
+src/mips.md:
+Fixed FP comparisons to handle NaNs correctly.
+
+Round up framesize to a multiple of 16 for Irix 6.x;
+added casts in defconst to discard unused bits.
+
+src/prof.c:
+Revise functions called at events so all have the same signature,
+modulo pointer types.
+
+Change ftype to build arbitrary prototypes.
+
+Fixed long-standing bug in which -n, -b, -C, and -a options caused
+interface functions to be called before progbeg.
+Also, added missing call to space.
+
+Relaxed assertion in loop that searches for
+embedded CALL nodes.
+
+Emit correct padding in generated -b strutures.
+
+Revised call hook to find CALL nodes embedded
+at any depth.
+
+Edited bbincr so that it doesn't inject increments in constant expressions.
+
+src/profio.c:
+Change compare's prototype to conform to ANSI standard;
+change calls to qsort accordingly.
+
+Fixed implicit assumption that execution point i in file f always
+refers to the same x,y. This isn't true for noweb files.
+
+src/simp.c:
+Made address interface function optional.
+
+Tighten test that avoids folding addressing expressions
+for switch tables when the offset exceeds 16 bits. Without
+this addition, lcc can emit erroneous "initializer must be
+constant" diagnostics.
+
+Revised simplify() so that if doesn't call address to
+fold (ADDGRP a n) when n exceeds 16 bits.
+
+Reordered tests in MOD+I case so expressions like 6%1 fold correctly.
+
+src/sparc.md:
+Fixed FP comparisons to handle NaNs correctly.
+
+Added casts in defconst() to emit constants with proper sizes.
+
+Replaced pseudo-instructions st2/ld2 with pairs of st/ld instructions.
+
+src/stmt.c:
+Fixed botch in 2.16 revision.
+
+Fixed return statement so that "return;" in a function that returns
+a value returns 0. Similar code is already in decl.nw.
+
+Resynch to distributable version.
+
+Used dynamic variables for loop and switch handles.
+
+Fixed bug in which functions that return const struct S {...} issued
+an incorrect diagnostic.
+
+Appended a missing \n to a warning.
+
+src/sym.c:
+Revised 2.19's code for comparing -0.0 and 0.0 so that it works
+correctly when long double's occupy more bytes than the actual
+values, as on the x86 under gcc.
+Fix constant() so that it treats -0.0 and +0.0 as different constants.
+
+Added newtable() to allocate empty symbol tables.
+
+src/trace.c:
+Revise functions called at events so all have the same signature,
+modulo pointer types.
+
+Change ftype to build arbitrary prototypes.
+
+Fixed long-standing bug in which -n, -b, -C, and -a options caused
+interface functions to be called before progbeg.
+
+src/tree.c:
+Correct revision 2.9's implementation of check to avoid
+superfluous diagnostics on widening conversions.
+
+Avoid diagnostics for superfluous widening conversions.
+
+src/types.c:
+Revise fieldmask definition so it works
+for all values of fieldsize.
+
+Change ftype to build arbitrary prototypes.
+
+src/x86.md:
+Fixed FP comparisons to handle NaNs correctly.
+
+Changed ARGB instruction sequence to decrement
+esp by the size of the structure rounded up to 4.
+Changed struct allignment to 1; this required changing local to
+insure that on-stack structs are aligned to at least 4 bytes.
+
+Added cast in defconst to eliminate extraneous bits.
+
+Fixed float-to-int conversions so they truncate properly;
+fixed assembler syntax errors on x86/linux.
+
+Fixed frame size adjustment for frames >= 4096; now calls _chkstk
+to allocate large frames.
+
+Fixed overly specific opcode for loading constants.
+
+Changed add/sub to addl/subl in potentially ambiguous
+instructions in the x86/linux back end.
+
+cpp/cpp.c:
+Added line to fix Nelson Beebe's bug using #defined x X.
+
+cpp/cpp.h:
+Revised to use stdio for output.
+
+Converted to use stdio for input.
+
+cpp/eval.c:
+Added evaluation stack overflow checks.
+
+Included stdio.h.
+
+cpp/getopt.c:
+Include <string.h>; cut decl. for strchr.
+
+cpp/hideset.c:
+Fixed potential sizeof botches.
+
+cpp/include.c:
+Revised to use stdio for output.
+
+Removed unused wd[].
+
+Fixed incorrect check of fopen return value.
+
+Converted to use stdio for input.
+
+cpp/lex.c:
+Fixed incorrect test of fd value; fixed comments.
+
+Converted to use stdio for input.
+
+cpp/macro.c:
+Fixed obscure bug that occurs when string literals are stored
+in read-only memory. -DX attempts to append a null byte to "1".
+Found by Nelson Beebe.
+
+Converted to use stdio for input.
+
+cpp/nlist.c:
+Removed unused wd[].
+
+Added #ident; ignored as for #pragma.
+
+cpp/tokens.c:
+Revised to use stdio for output.
+
+Fixed erroneous initialization and check of FILE * value.
+
+cpp/unix.c:
+Revised to use stdio for output.
+
+Fixed erroneous initialization and check of FILE * value.
+
+Converted to use stdio for input.
+
+etc/irix.c:
+Added -D_LONGLONG, because some SGI assume this.
+Reported by Nelson Beebe.
+
+Added -32 option to insure O32 object files and libraries are used.
+
+etc/lcc.c:
+Fixed -l file so that file doesn't have to exist.
+
+Changed \ to / at the end of Win32 include paths.
+
+Added casts and prototypes to make _spawnvp compatible
+with Win32 version.
+
+Permit -dynamic -static on all systems, using option to check
+for validity.
+Edited help messages.
+
+Look for -Wf-unsigned_char=1 and added
+-D__CHAR_IUNSIGNED__ and -U_CHAR_IS_SIGNED to the cpp
+command line. These options interact with changes to the
+standard header limits.h to set CHAR_MIN and CHAR_MAX correctly.
+Look for -Wf-wchar_t=... and define _WCHAR_T_SIZE appropriately,
+which interacts with stddef.h and stdlib.h to typedef wchar_t correctly.
+
+Fixed botch in initinputs that cleared LCCINPUTS.
+
+etc/win32.c:
+Added oldnames.lib to link command.
+
+Cut useless -align directive in ld command.
+
+include/*/*/limits.h:
+Corrected name: __CHAR_IS_UNSIGNED__ should be __CHAR_UNSIGNED__.
+
+Define CHAR_MIN/CHAR_MAX depending on defintion of __CHAR_IS_UNSIGNED__.
+
+include/*/*/locale.h:
+Change NULL to ((void*)0).
+
+Protected definition of NULL;
+defined NULL as 0L on osf systems.
+
+include/*/*/stdarg.h:
+Fixed typedef for __va_list so it's protected by #ifdef.
+
+Fixed missing #endif;
+protected definition of va_list by _VA_LIST_DEFINED.
+
+Changed the type of va_list.
+
+Insured only va_list was conditionally defined.
+
+Insured _VA_LIST is defined.
+
+Revised __va_arg macro to handle va_arg(float) correctly;
+this addition required a static double temporary, which is
+less than elegant and subject to order-of-evaluation bugs.
+
+include/*/*/stddef.h:
+Change NULL to ((void*)0).
+
+Added _x_T_DEFINED flag macros for Windows compatibility.
+
+Added code to typedef wchar_t to unsigned char, short, or int
+depending on the value of _WCHAR_T_SIZE.
+
+Protected definition of NULL;
+defined NULL as 0L on osf systems.
+
+include/*/*/stdio.h:
+Change NULL to ((void*)0).
+
+Added _x_T_DEFINED flag macros for Windows compatibility.
+
+Changed the type of va_list.
+
+Protected definition of size_t by _SIZE_T_DEFINED;
+added definition for va_list protected by _VA_LIST.
+
+Protected definition of NULL;
+defined NULL as 0L on osf systems.
+
+include/*/*/stdlib.h:
+Change NULL to ((void*)0).
+
+Added _x_T_DEFINED flag macros for Windows compatibility.
+
+Added code to typedef wchar_t to unsigned char, short, or int
+depending on the value of _WCHAR_T_SIZE.
+
+Protected definition of NULL;
+defined NULL as 0L on osf systems.
+
+include/*/*/string.h:
+Change NULL to ((void*)0).
+
+Added _x_T_DEFINED flag macros for Windows compatibility.
+
+Protected definition of NULL;
+defined NULL as 0L on osf systems.
+
+include/*/*/time.h:
+Change NULL to ((void*)0).
+
+Added _x_T_DEFINED flag macros for Windows compatibility.
+
+Protected definition of NULL;
+defined NULL as 0L on osf systems.
+
+lburg/lburg.c:
+Simplified use of va_arg to accommodate gcc bug.
+
+Added ()s to avoid bogus compilation error on Linux.
+
+lib/assert.c:
+Added EXPORT and default definition.
+
+lib/bbexit.c:
+Access _caller via indirection; add _setcallerp.
+
+Added EXPORT and default definition.
+
+Changed profiling counters to ints.
+
+lib/yynull.c:
+Added EXPORT and default definition.
+
+tst/cq.c:
+Added prototypes to function pointer initializations.
