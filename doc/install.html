@@ -228,7 +228,7 @@ and build the driver with a <code>make</code> command, e.g.,</p>
 
 <blockquote>
   <pre>% make HOSTFILE=etc/solaris.c lcc
-cc -g -c -DTEMPDIR=\&quot;/tmp\&quot; -o $BUILDDIR/sparc-solaris/lcc.o etc/lcc.c
+cc -g -c -o $BUILDDIR/sparc-solaris/lcc.o etc/lcc.c
 cc -g -c -o $BUILDDIR/sparc-solaris/host.o etc/solaris.c
 cc -g -o $BUILDDIR/lcc $BUILDDIR/sparc-solaris/lcc.o $BUILDDIR/sparc-solaris/host.o</pre>
 </blockquote>
@@ -383,7 +383,7 @@ commands that would be executed, e.g.,</p>
 
 <blockquote>
   <pre>% $BUILDDIR/lcc -v -v foo.c baz.c mylib.a -lX11
-$BUILDDIR/sparc-solaris/lcc $ Id: lcc.c,v 4.30 2001/05/01 18:11:28Z drh Exp drh $
+$BUILDDIR/sparc-solaris/lcc $ Id: lcc.c,v 4.33 2001/06/28 22:19:58 drh $
 foo.c:
 /usr/local/lib/lcc/cpp -D__STDC__=1 -Dsparc -D__sparc__ -Dsun -D__sun__ -Dunix -D__LCC__i
 /usr/local/lib/lcc/rcc -target=sparc/solaris -v /tmp/lcc4060.i /tmp/lcc4061.s
@@ -510,21 +510,19 @@ no differences in the output from executing the test programs.</p>
 
 <blockquote>
   <pre>% make triple
-$BUILDDIR/sparc-solaris/lcc -o $BUILDDIR/sparc-solaris/1rcc -d0.6 -Wo-lccdir=$BUILDDIR/sparc-solaris -B$BUILDDIR/sparc-solaris/  -Isrc src/*.c
+$BUILDDIR/sparc-solaris/lcc -A -d0.6 -Wo-lccdir=$(BUILDDIR) -Isrc -I$(BUILDDIR) -o $BUILDDIR/sparc-solaris/1rcc -B$BUILDDIR/sparc-solaris/ src/alloc.c ...
 src/alloc.c:
 ...
-src/x86.c:
-$BUILDDIR/sparc-solaris/lcc -o $BUILDDIR/sparc-solaris/1rcc -d0.6 -Wo-lccdir=$BUILDDIR/sparc-solaris -B$BUILDDIR/sparc-solaris/  -Isrc src/*.c
+$BUILDDIR/sparc-solaris/lcc -A -d0.6 -Wo-lccdir=$(BUILDDIR) -Isrc -I$(BUILDDIR) -o $BUILDDIR/sparc-solaris/2rcc -B$BUILDDIR/sparc-solaris/1 src/alloc.c ...
 src/alloc.c:
 ...
-src/x86.c:
 strip $BUILDDIR/sparc-solaris/[12]rcc
 dd if=$BUILDDIR/sparc-solaris/1rcc of=$BUILDDIR/sparc-solaris/rcc1 bs=512 skip=1
-769+1 records in
-769+1 records out
+1270+1 records in
+1270+1 records out
 dd if=$BUILDDIR/sparc-solaris/2rcc of=$BUILDDIR/sparc-solaris/rcc2 bs=512 skip=1
-769+1 records in
-769+1 records out
+1270+1 records in
+1270+1 records out
 if cmp $BUILDDIR/sparc-solaris/rcc[12]; then \
         mv $BUILDDIR/sparc-solaris/2rcc $BUILDDIR/sparc-solaris/rcc; \
         rm -f $BUILDDIR/sparc-solaris/1rcc $BUILDDIR/sparc-solaris/rcc[12]; fi</pre>
@@ -636,9 +634,9 @@ C:\dist\lcc&gt;mkdir %BUILDDIR%</pre>
     directory. If necessary, revise a copy of <a HREF="../etc/win32.c"><code>etc\win32.c</code></a>
     to reflect the conventions on your computer (see <a HREF="#driver"><em>Building the Driver</em></a>),
     then build the driver, specifying the default temporary directory, if necessary:<blockquote>
-      <pre>C:\dist\lcc&gt;nmake -f makefile.nt TEMPDIR=\\temp HOSTFILE=etc/win32.c lcc
+      <pre>C:\dist\lcc&gt;nmake -f makefile.nt HOSTFILE=etc/win32.c lcc
 ...
-        cl -nologo -Zi -MLd -Fd%BUILDDIR%\ -c -DTEMPDIR=\&quot;\\temp\&quot; -Fo%BUILDDIR%\lcc.obj etc/lcc.c
+        cl -nologo -Zi -MLd -Fd%BUILDDIR%\ -c -Fo%BUILDDIR%\lcc.obj etc/lcc.c
 lcc.c
         cl -nologo -Zi -MLd -Fd%BUILDDIR%\ -c -Fo%BUILDDIR%\host.obj etc/win32.c
 win32.c
@@ -648,7 +646,7 @@ win32.c
     value of <code>HOSTFILE</code>. For example, if you copy <code>etc\win32.c</code> to <code>BUILDDIR</code>
     and edit it, use the command</p>
     <blockquote>
-      <pre>C:\dist\lcc&gt;nmake -f makefile.nt TEMPDIR=\\temp HOSTFILE=%BUILDDIR%\win32.c lcc</pre>
+      <pre>C:\dist\lcc&gt;nmake -f makefile.nt HOSTFILE=%BUILDDIR%\win32.c lcc</pre>
     </blockquote>
   </li>
   <li>Build the preprocessor, compiler proper, library, and other accessories (see <a
@@ -679,7 +677,6 @@ C:\dist\lcc&gt;nmake -f makefile.nt test</pre>
     verifies the results:<blockquote>
       <pre>C:\dist\lcc&gt;nmake -f makefile.nt triple
 ...
-\dist\lcc\src\x86.c:
  Assembling: C:/TEMP/lcc2001.asm
         fc /b %BUILDDIR%\1rcc.exe %BUILDDIR%\2rcc.exe
 Comparing files %BUILDDIR%\1rcc.exe and %BUILDDIR%\2RCC.EXE
