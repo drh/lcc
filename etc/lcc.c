@@ -541,7 +541,7 @@ static void initinputs(void) {
 	if (list = b = path2list(getenv("include")))
 		do {
 			b = b->link;
-			plist = append(stringf("-I\"%s\"", b->str), plist);
+			ilist = append(stringf("-I\"%s\"", b->str), ilist);
 		} while (b != list);
 #endif
 }
