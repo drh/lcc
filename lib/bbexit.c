@@ -14,7 +14,7 @@ struct callsite {
 
 static struct _bbdata {
 	struct _bbdata *link;
-	unsigned npoints, *counts;
+	int npoints, *counts;
 	union coordinate *coords;
 	char **files;
 	struct func {
@@ -22,7 +22,7 @@ static struct _bbdata {
 		struct caller {
 			struct caller *link;
 			struct callsite *caller;
-			unsigned count;
+			int count;
 		} *callers;
 		char *name;
 		union coordinate src;
