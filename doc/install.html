@@ -34,9 +34,13 @@ described in our book <cite>A Retargetable C Compiler: Design and Implementation
 
 <p>If you're installing lcc on a UNIX system, read the remainder of this section and
 continue with the next section. If you're installing lcc on a Windows NT 4.0 or Windows
-95/98 system, read the <a HREF="#win32">Windows NT/95/98 instructions</a> first; read the
-rest of the section and the following three sections only if you intend to modify lcc or
-rebuild it from the source files.</p>
+95/98 system, and you intend only to <u>use</u> lcc, you can run the <a
+href="ftp://ftp.cs.princeton.edu/pub/packages/lcc/lcc41.exe">InstallShield executable</a>,
+which installs the binaries and the documentation. If you want to <u>modify</u> lcc or <u>rebuild</u>
+it from the source files, you need the <a
+href="ftp://ftp.cs.princeton.edu/packages/lcc/lcc41.zip">complete distribution</a>, and
+you should read the rest of the section, the following three sections, and the <a
+HREF="#win32">Windows NT/95/98</a> section.</p>
 
 <p>Extract the distribution into its own directory. All non-absolute paths below are
 relative to this directory. The distribution holds the following subdirectories.</p>
@@ -134,7 +138,7 @@ conventions or their equivalents are followed, the host-specific parts of the dr
 program, <code>lcc</code>, can be used unmodified.</p>
 
 <p>Installation on a UNIX system involves the following steps. Below, the build directory
-is referred to as <code>BUILDDIR</code>.
+is referred to as <code>BUILDDIR</code>. 
 
 <ol>
   <li>Create the build directory, using a version- and platform-specific naming convention as
@@ -170,6 +174,22 @@ is referred to as <code>BUILDDIR</code>.
     <blockquote>
       <pre>% ln -s /proj/pkg/lcc/4.1/include/sparc/solaris $BUILDDIR/include</pre>
     </blockquote>
+    <p>If you're installing lcc on Linux, you <em>must</em> also plant a symbolic link named <code>gcc</code>
+    to gcc's library directory, because lcc uses gcc's C preprocessor and most of gcc's header
+    files:</p>
+    <blockquote>
+      <pre>% ln -s /usr/lib/gcc-lib/i486-linux/2.7.2.2 $BUILDDIR/gcc</pre>
+    </blockquote>
+    <p>The library directory shown above may be different on your Linux machine; to determine
+    the correct directory, browse <code>/usr/lib/gcc-lib</code>, or execute</p>
+    <blockquote>
+      <pre>% cc -v tst/8q.c</pre>
+    </blockquote>
+    <p>and examine the diagnostic output. Make sure that <code>$BUILDDIR/gcc/cpp</code> and <code>$BUILDDIR/gcc/include</code>
+    point to, respectively, gcc's C preprocessor and header files. On Linux, lcc looks for
+    include files in <code>$BUILDDIR/include</code>, <code>$BUILDDIR/gcc/include</code>, and <code>/usr/include</code>,
+    in that order; see <a HREF="#driver"><em>Building the Driver</em></a> and <a
+    href="../etc/linux.c"><code>etc/linux.c</code></a> for details.</p>
   </li>
   <li>The <a HREF="../makefile"><code>makefile</code></a> includes the file named by the <code>CUSTOM</code>
     macro; the default is <code>custom.mk</code>, and an empty <code>custom.mk</code> is
@@ -202,8 +222,8 @@ is referred to as <code>BUILDDIR</code>.
 
 <p>The preprocessor, compiler, assembler, and loader are invoked by a driver program, <code>lcc</code>,
 which is similar to <code>cc</code> on most systems. It's described in the man page <code>doc/lcc.1</code>.
-The driver is built by combining the host-independent part, <code>etc/lcc.c</code>, with a
-small host-specific part. Distributed host-specific parts are named <code>etc/</code><em>os</em><code>.c</code>,
+The driver is built by combining the host-independent part, <a href="../etc/lcc.c"><code>etc/lcc.c</code></a>,
+with a small host-specific part. Distributed host-specific parts are named <code>etc/</code><em>os</em><code>.c</code>,
 where <em>os</em> is the name of the operating system for the host on which <code>lcc</code>
 is being installed. If you're following the installations conventions described above, you
 can probably use one of the host-specific parts unmodified; otherwise, pick one that is
@@ -233,13 +253,13 @@ may require the <code>-e</code> option in order to read the environment.</p>
 
 #include &lt;string.h&gt;
 
-static char rcsid[] = &quot; Id: solaris.c,v 1.9 1997/05/27 23:03:45 drh Exp $&quot;;
+static char rcsid[] = &quot;$ Id: solaris.c,v 1.10 1998/09/14 20:36:33 drh Exp $&quot;;
 
 #ifndef LCCDIR
 #define LCCDIR &quot;/usr/local/lib/lcc/&quot;
 #endif
 #ifndef SUNDIR
-#define SUNDIR &quot;/opt/SUNWspro/SC4.0/lib/&quot;
+#define SUNDIR &quot;/opt/SUNWspro/SC4.2/lib/&quot;
 #endif
 
 char *suffixes[] = { &quot;.c&quot;, &quot;.i&quot;, &quot;.s&quot;, &quot;.o&quot;, &quot;.out&quot;, 0 };
@@ -371,7 +391,7 @@ commands that would be executed, e.g.,</p>
 
 <blockquote>
   <pre>% $BUILDDIR/lcc -v -v foo.c baz.c mylib.a -lX11
-/usr/local/lib/lcc-4.1/lcc $Id$
+/usr/local/lib/lcc-4.1/lcc $ Id: solaris.c,v 1.10 1998/09/14 20:36:33 drh Exp $
 foo.c:
 /usr/local/lib/lcc/cpp -D__STDC__=1 -Dsparc -D__sparc__ -Dsun -D__sun__ -Dunix -D__LCC__ -I/usr/local/lib/lcc/include -I/usr/local/include -I/usr/include foo.c /tmp/lcc266290.i
 /usr/local/lib/lcc/rcc -target=sparc/solaris -v /tmp/lcc266290.i /tmp/lcc266291.
@@ -381,7 +401,7 @@ baz.c:
 /usr/local/lib/lcc/cpp -D__STDC__=1 -Dsparc -D__sparc__ -Dsun -D__sun__ -Dunix -D__LCC__ -I/usr/local/lib/lcc/include -I/usr/local/include -I/usr/include baz.c /tmp/lcc266290.i
 /usr/local/lib/lcc/rcc -target=sparc/solaris -v /tmp/lcc266290.i /tmp/lcc266291.s
 /usr/ccs/bin/as -Qy -s -o /tmp/lcc266293.o /tmp/lcc266291.s
-/usr/ccs/bin/ld -o a.out /opt/SUNWspro/SC4.0/lib/crti.o /opt/SUNWspro/SC4.0/lib/crt1.o /opt/SUNWspro/SC4.0/lib/values-xa.o /tmp/lcc266292.o /tmp/lcc266293.o mylib.a -lX11 -Y P,/opt/SUNWspro/SC4.0/lib/:/usr/ccs/lib:/usr/lib -Qy -L/usr/local/lib/lcc/ -llcc -lm -lc /opt/SUNWspro/SC4.0/lib/crtn.o
+/usr/ccs/bin/ld -o a.out /opt/SUNWspro/SC4.2/lib/crti.o /opt/SUNWspro/SC4.2/lib/crt1.o /opt/SUNWspro/SC4.2/lib/values-xa.o /tmp/lcc266292.o /tmp/lcc266293.o mylib.a -lX11 -Y P,/opt/SUNWspro/SC4.2/lib/:/usr/ccs/lib:/usr/lib -Qy -L/usr/local/lib/lcc/ -llcc -lm -lc /opt/SUNWspro/SC4.2/lib/crtn.o
 rm /tmp/lcc266293.o /tmp/lcc266290.i /tmp/lcc266291.s /tmp/lcc266292.o</pre>
 </blockquote>
 
@@ -490,8 +510,9 @@ also compares the diagnostics from the compiler with the expected diagnostics.</
 <p>On some systems, there may be a few differences between the generated code and the
 expected code. These differences occur because the expected code is generated by cross
 compilation and the least significant bits of some floating-point constants differ from
-those bits in constants generated on your system. There should be no differences in the
-output from executing the test programs.</p>
+those bits in constants generated on your system. On Linux, there may be differences
+because of differences in the header files between our system and yours. There should be
+no differences in the output from executing the test programs.</p>
 
 <p>Next, run the &quot;triple test&quot;, which builds <code>rcc</code> using itself:</p>
 
@@ -589,28 +610,18 @@ you have MASM 6.11, make sure you <a
 HREF="http://support.microsoft.com/support/kb/articles/Q138/9/83.asp">upgrade to 6.11d</a>,
 because earlier 6.11 releases do not generate correct COFF object files.</p>
 
-<p>The distribution file <code>lcc41.exe</code> is a Windows InstallShield installation
-executable. The various configurations support installation of the binaries and
-documentation, the binaries, documentation and test suite, and the complete distribution.
-To install the distribution in a different directory than the binaries, run <code>lcc41.exe</code>
-twice: on the first run, install the binaries and documentation (components <em>Executables</em>
-and <em>Documentation</em>); on the second run, install the distribution (all components
-except <em>Executables</em>) and specify the destination directory. If necessary, copy or
-move <code>lcc.exe</code> and <code>bprint.exe</code> from the installation directory to a
-directory on the PATH.</p>
-
-<p>If you decide to build the distribution components from the ground up, you'll need
-Microsoft's Visual C/C++ 5.0 compiler, Microsoft's make, <code>nmake</code>, and the
-standard Windows command interpreter. <a HREF="../makefile.nt"><code>makefile.nt</code></a>
-is written to use only <code>nmake</code>. As on UNIX systems, the compilation components
-are installed in a single <em>build directory</em>, and the top-level programs, <code>lcc.exe</code>
-and <code>bprint.exe</code>, are installed in a directory on the PATH. If the conventions
-used below are followed, the Windows-specific parts of the driver program, <code>lcc.exe</code>,
-can be used unmodified.</p>
+<p>Building the distribution components from the ground up requires Microsoft's Visual
+C/C++ 5.0 compiler, Microsoft's make, <code>nmake</code>, and the standard Windows command
+interpreter. <a HREF="../makefile.nt"><code>makefile.nt</code></a> is written to use only <code>nmake</code>.
+As on UNIX systems, the compilation components are installed in a single <em>build
+directory</em>, and the top-level programs, <code>lcc.exe</code> and <code>bprint.exe</code>,
+are installed in a directory on the PATH. If the conventions used below are followed, the
+Windows-specific parts of the driver program, <code>lcc.exe</code>, can be used
+unmodified.</p>
 
 <p>Building from the source distribution on a Windows system involves the following steps.
 Below, the build directory is referred to as <code>BUILDDIR</code>, and the distribution
-is in <code>\dist\lcc\4.1</code>.
+is in <code>\dist\lcc\4.1</code>. 
 
 <ol>
   <li>Create the build directory, perhaps using a version- and platform-specific naming
@@ -711,7 +722,7 @@ C:\dist\lcc\4.1&gt;copy %BUILDDIR%\bprint.exe \bin
 
 <p>lcc is a large, complex program. We find and repair errors routinely. If you think that
 you've found a error, follow the steps below, which are adapted from the instructions in
-Chapter 1 of <cite>A Retargetable C Compiler: Design and Implementation</cite>.
+Chapter 1 of <cite>A Retargetable C Compiler: Design and Implementation</cite>. 
 
 <ol>
   <li>If you don't have a source file that displays the error, create one. Most errors are
