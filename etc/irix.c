@@ -40,35 +40,23 @@ char *include[] = { "-I" LCCDIR "include", "-I/usr/local/include",
 	"-I/usr/include", 0 };
 char *as[] = { "/usr/bin/as", "-o", "$3", "$1", "-nocpp", "-KPIC", "$2", 0 };
 char *ld[] = { "/usr/bin/ld", "-require_dynamic_link", "_rld_new_interface",
-	"-elf", "-_SYSTYPE_SVR4", "-Wx,-G", "0", "-g0", "-KPIC",
+	"-elf", "-_SYSTYPE_SVR4", "-Wx,-G", "0", "-g0", "-KPIC", "-dont_warn_unused",
 	"-o", "$3", "/usr/lib/crt1.o", "-L/usr/local/lib",
 	"$1", "$2", "", "-L" LCCDIR, "-llcc", "-lc", "-lm", "/usr/lib/crtn.o", 0
 };
 
 extern char *concat(char *, char *);
-extern int access(const char *, int);
 
 int option(char *arg) {
 	if (strncmp(arg, "-lccdir=", 8) == 0) {
 		cpp[0] = concat(&arg[8], "/cpp");
 		include[0] = concat("-I", concat(&arg[8], "/include"));
 		com[0] = concat(&arg[8], "/rcc");
-		ld[16] = concat("-L", &arg[8]);
-	} else if (strcmp(arg, "-g4") == 0
-	&& access("/u/drh/lib/mipseb/rcc", 4) == 0
-	&& access("/u/drh/book/cdb/mips/irix/cdbld", 4) == 0) {
-		com[0] = "/u/drh/lib/mipseb/rcc";
-		com[5] = "-g4";
-		ld[0] = "/u/drh/book/cdb/mips/irix/cdbld";
-		ld[1] = "-o";
-		ld[2] = "$3";
-		ld[3] = "$1";
-		ld[4] = "$2";
-		ld[5] = 0;
+		ld[17] = concat("-L", &arg[8]);
 	} else if (strcmp(arg, "-g") == 0)
 		;
 	else if (strcmp(arg, "-p") == 0)
-		ld[11] = "/usr/lib/mcrt1.o";
+		ld[12] = "/usr/lib/mcrt1.o";
 	else if (strcmp(arg, "-b") == 0)
 		;
 	else
