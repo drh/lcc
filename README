@@ -1,11 +1,11 @@
-This hierarchy is the distribution for lcc version 4.1.
+This hierarchy is the distribution for lcc version 4.2.
 
 lcc version 3.x is described in the book "A Retargetable C Compiler:
 Design and Implementation" (Addison-Wesley, 1995, ISBN 0-8053-1670-1).
 There are significant differences between 3.x and 4.x, most notably in
 the intermediate code. doc/4.html summarizes the differences.
 
-VERSION 4.1 IS INCOMPATIBLE WITH EARLIER VERSIONS OF LCC. DO NOT
+VERSION 4.2 IS INCOMPATIBLE WITH EARLIER VERSIONS OF LCC. DO NOT
 UNLOAD THIS DISTRIBUTION ON TOP OF A 3.X DISTRIBUTION.
 
 LOG describes the changes since the last release.
