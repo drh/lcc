@@ -513,15 +513,16 @@ are installed in a directory on the PATH. If the conventions used below are
 followed, the Windows-specific parts of the driver program, <TT>lcc</TT>, can
 be used unmodified.</P>
 <P> Installation on a Windows NT/95 system involves the following steps. Below,
-the build directory is referred to as <TT>BUILDDIR</TT>.</P>
+the build directory is referred to as <TT>BUILDDIR</TT>, and the distribution
+is in <TT>\dist\lcc\4.0</TT>.</P>
 <OL>
 <LI>Create the build directory, perhaps using a version- and platform-specific
 naming convention as suggested in <A HREF="#unix"><EM>Installation on UNIX</EM></A>,
 and record the name of this directory in the
 <TT>BUILDDIR</TT> environment variable:
 <BLOCKQUOTE>
-<PRE>C:&gt;set BUILDDIR=\pkg\lcc-4.0
-C:&gt;mkdir %BUILDDIR%</PRE></BLOCKQUOTE></LI>
+<PRE>C:\dist\lcc\4.0&gt;set BUILDDIR=\pkg\lcc-4.0
+C:\dist\lcc\4.0&gt;mkdir %BUILDDIR%</PRE></BLOCKQUOTE></LI>
 <LI><A HREF="pkg/etc/win32.c"><TT>etc/win32.c</TT></A> is the
 Windows-specific part of the driver. It assumes that the VC header files are in
 one of the standard places (<TT>\Program Files\devstudio\vc\include</TT> or
@@ -532,7 +533,7 @@ LCCDIR gives the build directory. If necessary, revise a copy of
 on your computer (see <A HREF="#driver"><EM>Building the Driver</EM></A>),
 then build the driver:
 <BLOCKQUOTE>
-<PRE>C:&gt;nmake -f makefile.nt HOSTFILE=etc\win32.c lcc
+<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt HOSTFILE=etc\win32.c lcc
 
 Microsoft (R) Program Maintenance Utility   Version 1.62.7022
 Copyright (C) Microsoft Corp 1988-1997. All rights reserved.
@@ -546,44 +547,44 @@ you make a copy of <TT>etc/win32.c</TT>, specify the path of the copy as the
 value of <TT>HOSTFILE</TT>. For example, if you copy <TT>etc/win32.c</TT> to
 <TT>BUILDDIR</TT> and edit it, use the command
 <BLOCKQUOTE>
-<PRE>C:&gt;nmake -f makefile.nt HOSTFILE=%BUILDDIR%\win32.c lcc</PRE></BLOCKQUOTE></LI>
-<LI>Build the preprocessor, compiler proper, libary, and other accessories (see
+<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt HOSTFILE=%BUILDDIR%\win32.c lcc</PRE></BLOCKQUOTE></LI>
+<LI>Build the preprocessor, compiler proper, library, and other accessories
+(see
 <A HREF="#rcc"><EM>Building the Compiler</EM></A>):
 <BLOCKQUOTE>
-<PRE>C:&gt;nmake -f makefile.nt all</PRE></BLOCKQUOTE>This command uses the VC
-command-line tools <TT>cl</TT> and <TT>lib</TT> to build, in <TT>BUILDDIR</TT>,
+<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt all</PRE></BLOCKQUOTE>This command
+uses the VC command-line tools <TT>cl</TT> and <TT>lib</TT> to build
 <TT>bprint.exe</TT>, <TT>cpp.exe</TT>, <TT>lburg.exe</TT>, <TT>liblcc.lib</TT>,
-<TT>librcc.lib</TT>, and <TT>rcc.exe</TT>. There may be some warnings, but
-there should be no warnings.</LI>
+<TT>librcc.lib</TT>, and <TT>rcc.exe</TT>, all in <TT>BUILDDIR</TT>. There
+may be some warnings, but there should be no warnings.</LI>
 <LI>Create a test directory and run the test suite:
 <BLOCKQUOTE>
-<PRE>C:&gt;mkdir %BUILDDIR%\x86\win32\tst
-C:&gt;nmake -f makefile.nt test</PRE></BLOCKQUOTE>This command compiles each
-program in <A HREF="pkg/tst">tst</A>, compares the generated assembly code and
-diagnostics with the expected assembly code and diagnostics, executes the
-program, and compares the output with the expected output (using  <TT>fc</TT>).
-For example, when the nmake command compiles <A HREF="pkg/tst/8q.c"><TT>tst/8q.c</TT></A>,
-it leaves the generated assembly code and diagnostic output in <TT>%BUILDDIR%\x86\win32\tst\8q.s</TT>
-and <TT>%BUILDDIR%\x86\win32\tst\8q.2</TT>, and it compares them with the
-expected results in <TT>x86\win32\tst\8q.sbk</TT>. It builds the executable
-program in  <TT>%BUILDDIR%\x86\win32\tst\8q.exe</TT>, runs it, and redirects
-the output to <TT>%BUILDDIR%\x86\win32\tst\8q.1</TT>, which it compares with
+<PRE>C:\dist\lcc\4.0&gt;mkdir %BUILDDIR%\x86\win32\tst
+C:\dist\lcc\4.0&gt;nmake -f makefile.nt test</PRE></BLOCKQUOTE>This command
+compiles each program in <A HREF="pkg/tst">tst</A>, compares the generated
+assembly code and diagnostics with the expected assembly code and diagnostics,
+executes the program, and compares the output with the expected output (using 
+<TT>fc</TT>). For example, when the nmake command compiles
+<A HREF="pkg/tst/8q.c"><TT>tst/8q.c</TT></A>, it leaves the generated assembly
+code and diagnostic output in <TT>%BUILDDIR%\x86\win32\tst\8q.s</TT> and <TT>%BUILDDIR%\x86\win32\tst\8q.2</TT>,
+and it compares them with the expected results in <TT>x86\win32\tst\8q.sbk</TT>.
+It builds the executable program in  <TT>%BUILDDIR%\x86\win32\tst\8q.exe</TT>,
+runs it, and redirects the output to <TT>%BUILDDIR%\x86\win32\tst\8q.1</TT>,
+which it compares with
 <TT>x86\win32\tst\8q.1bk</TT>. The output from this step is voluminous, but
-should be no differences and no errors.</LI>
+there should be no differences and no errors.</LI>
 <LI>Run the &quot;triple&quot; test, which compiles <TT>rcc</TT> with itself
 and verifies the results:
 <BLOCKQUOTE>
-<PRE>C:&gt;nmake -f makefile.nt triple
+<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt triple
 ...
 \pkg\lcc-4.0\x86.c:
- Assembling: C:/TEMP/lcc1731.asm
-lib/assert.c:
- Assembling: C:/TEMP/lcc1731.asm
+ Assembling: C:/TEMP/lcc2001.asm
         fc /b \pkg\lcc-4.0\1rcc.exe \pkg\lcc-4.0\2rcc.exe
 Comparing files \PKG\LCC-4.0\1rcc.exe and \PKG\LCC-4.0\2RCC.EXE
-00000088: 04 1F</PRE></BLOCKQUOTE>This command builds <TT>rcc</TT> twice; once
+00000088: A2 BE</PRE></BLOCKQUOTE>This command builds <TT>rcc</TT> twice; once
 using the
-<TT>rcc</TT> built by <TT>cc</TT> and again using the <TT>rcc</TT> built by
+<TT>rcc</TT> built by VC and again using the <TT>rcc</TT> built by
 <TT>lcc</TT>. The resulting binaries are compared using <TT>fc</TT>. They
 should be identical, except for one or two bytes of timestamp data, as shown at
 the end of the output above. If they aren't, our compiler is generating
@@ -592,21 +593,21 @@ incorrect code;
 <LI>Copy <TT>lcc.exe</TT> and <TT>bprint.exe</TT> to a directory on your
 PATH, e.g.,
 <BLOCKQUOTE>
-<PRE>C:&gt;copy %BUILDDIR%\lcc.exe \bin
+<PRE>C:\dist\lcc\4.0&gt;copy %BUILDDIR%\lcc.exe \bin
         1 file(s) copied.
 
-C:&gt;copy %BUILDDIR%\bprint.exe \bin
+C:\dist\lcc\4.0&gt;copy %BUILDDIR%\bprint.exe \bin
         1 file(s) copied.</PRE></BLOCKQUOTE></LI>
 <LI>Finally, clean up:
 <BLOCKQUOTE>
-<PRE>C:&gt;nmake -f makefile.nt clean</PRE></BLOCKQUOTE>cleans up, but does not
-remove
+<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt clean</PRE></BLOCKQUOTE>This
+command removes the derived files in <TT>BUILDDIR</TT>, but does not remove
 <TT>rcc.exe</TT>, etc.; &quot;<TT>nmake -f makefile.nt clobber</TT>&quot;
 cleans up and removes all executables and libraries. Test directories under
 <TT>BUILDDIR</TT> are <EM>not</EM> removed; you'll need to remove these by
 hand, e.g.
 <BLOCKQUOTE>
-<PRE>C:&gt;rmdir %BUILDDIR%\x86 /s
+<PRE>C:\dist\lcc\4.0&gt;rmdir %BUILDDIR%\x86 /s
 \pkg\lcc-4.0\x86, Are you sure (Y/N)? y</PRE></BLOCKQUOTE></LI></OL>
 <H2><A NAME="bugs">Reporting Bugs</A></H2>
 <P>lcc is a large, complex program. We find and repair errors routinely. If you
