@@ -20,6 +20,13 @@ unconditionally.
 
 On the x86, constants are now emitted into the text segment.
 
+If the environment variable "LCCDIR" is defined, it gives the directory
+that contains the preprocessor, the compiler proper, and the
+lcc-specific libraries.
+
+Under Windows, lcc searches the directories named in the environment
+variable "include" for header files.
+
 Errors fixed:
 
 Erroneously complained about unknown sizes for some const fields, eg,
