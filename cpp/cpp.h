@@ -10,6 +10,8 @@
 #define NULL	0
 #endif
 
+typedef unsigned char uchar;
+
 enum toktype { END, UNCLASS, NAME, NUMBER, STRING, CCON, NL, WS, DSHARP,
 		EQ, NEQ, LEQ, GEQ, LSH, RSH, LAND, LOR, PPLUS, MMINUS,
 		ARROW, SBRA, SKET, LP, RP, DOT, AND, STAR, PLUS, MINUS,
@@ -150,3 +152,10 @@ extern	int Cplusplus;
 extern	Nlist *kwdefined;
 extern	Includelist includelist[NINCLUDE];
 extern	char wd[];
+
+extern int creat(char *, int);
+extern int open(char *, int);
+extern int close(int);
+extern int dup2(int, int);
+extern int write(int, char *, size_t);
+extern int read(int, char *, size_t);
