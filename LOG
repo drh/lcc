@@ -54,6 +54,9 @@ uses() failed to check the register *set* as well as the register
 mask.  There's no known bug demo, but a wildcard set might be
 contrived that would need the test.
 
+Crashed with -b on some conditional expressions involving calls, eg,
+int p; void g(void) { p ? f() : 1; }
+
 On the MIPS, sometimes generated an incorrect frame size and thus a
 crash when floating-point registers were saved.
 
