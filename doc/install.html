@@ -79,7 +79,7 @@ subdirectories.</P>
 <TD>X86 test outputs</TD></TR></TABLE></BLOCKQUOTE>
 <P><TT>doc/install.html</TT> is the HTML file for this document.
 <A HREF="pkg/doc/4.html"><TT>doc/4.html</TT></A> describes the internal
-differences between lcc 3.x and 4.0.</P>
+differences between lcc 3.x and 4.1.</P>
 <P>The installation makefile is designed so that lcc can be installed from a
 read-only file system or directory, which is common in networked environments,
 so the distribution can be unloaded on a central file server. <STRONG>You will
@@ -95,8 +95,8 @@ multi-platform systems supported by a central file server, it's common to store
 the build directory in a location specific to the platform and to the version of
 lcc, and to point a symbolic link to this location. For example,</P>
 <BLOCKQUOTE>
-<PRE>% ln -s /usr/local/lib/lcc-4.0/sparc-solaris /usr/local/lib/lcc</PRE></BLOCKQUOTE>
-<P>points <TT>/usr/local/lib/lcc</TT> to a build directory for lcc version 4.0
+<PRE>% ln -s /usr/local/lib/lcc-4.1/sparc-solaris /usr/local/lib/lcc</PRE></BLOCKQUOTE>
+<P>points <TT>/usr/local/lib/lcc</TT> to a build directory for lcc version 4.1
 on the SPARC under Solaris. Links into <TT>/usr/local/lib</TT> are created for
 the programs <TT>lcc</TT> and <TT>bprint</TT>. Thus, a new distribution can be
 installed by building it in its own build directory and changing one symbolic
@@ -110,7 +110,7 @@ build directory is referred to as <TT>BUILDDIR</TT>.</P>
 convention as suggested above, and record the name of this directory in the
 <TT>BUILDDIR</TT> environment variable:
 <BLOCKQUOTE>
-<PRE>% setenv BUILDDIR /usr/local/lib/lcc-4.0/sparc-solaris
+<PRE>% setenv BUILDDIR /usr/local/lib/lcc-4.1/sparc-solaris
 % mkdir -p $BUILDDIR</PRE></BLOCKQUOTE>Here and below, commands assume the C
 shell. Also, you'll need a version of <TT>mkdir</TT> that supports the <TT>-p</TT>
 option, which creates intermediate directories as necessary.</LI>
@@ -123,17 +123,17 @@ pages to the build directory and create the appropriate symbolic links, e.g.,
 % ln -s $BUILDDIR/*.1 /usr/local/man/man1</PRE></BLOCKQUOTE></LI>
 <LI>Platform-specific include files are in directories named
 <TT>include/</TT><I>target</I><TT>/</TT><I>os</I>. Create the include
-directory in the build directory,  and copy the include files for your platform
-to this directory, e.g.,
+directory in the build directory,  and copy the include hierarchy for your
+platform to this directory, e.g.,
 <BLOCKQUOTE>
 <PRE>% mkdir $BUILDDIR/include
-% rcp -p include/sparc/solaris/*.h $BUILDDIR/include</PRE></BLOCKQUOTE>Again,
+% cp -p -R include/sparc/solaris/* $BUILDDIR/include</PRE></BLOCKQUOTE>Again,
 some users create a symbolic link to the appropriate directory in the
 distribution instead of copying the include files. For example, at Princeton,
 the distributions are stored under <TT>/proj/pkg/lcc</TT>, so the included
 files are &quot;installed&quot; by creating one symbolic link:
 <BLOCKQUOTE>
-<PRE>% ln -s /proj/pkg/lcc/4.0/include/sparc/solaris $BUILDDIR/include</PRE></BLOCKQUOTE></LI>
+<PRE>% ln -s /proj/pkg/lcc/4.1/include/sparc/solaris $BUILDDIR/include</PRE></BLOCKQUOTE></LI>
 <LI>The <A HREF="pkg/makefile"><TT>makefile</TT></A> includes the file named
 by the <TT>CUSTOM</TT> macro; the default is <TT>custom.mk</TT>, and an empty
 <TT>custom.mk</TT> is included in the distribution. If desired, prepare a
@@ -178,9 +178,9 @@ all the important features. Make sure you have the environment variable <TT>BUIL
 set correctly, and build the driver with a <TT>make</TT> command, e.g.,</P>
 <BLOCKQUOTE>
 <PRE>% make HOSTFILE=etc/solaris.c lcc
-cc -c -g -o /usr/local/lib/lcc-4.0/lcc.o etc/lcc.c
-cc -c -g -o /usr/local/lib/lcc-4.0/host.o etc/solaris.c
-cc -o /usr/local/lib/lcc-4.0/lcc -g /usr/local/lib/lcc-4.0/lcc.o /usr/local/lib/lcc-4.0/host.o</PRE></BLOCKQUOTE>
+cc -c -g -o /usr/local/lib/lcc-4.1/lcc.o etc/lcc.c
+cc -c -g -o /usr/local/lib/lcc-4.1/host.o etc/solaris.c
+cc -o /usr/local/lib/lcc-4.1/lcc -g /usr/local/lib/lcc-4.1/lcc.o /usr/local/lib/lcc-4.1/host.o</PRE></BLOCKQUOTE>
 <P>The symbolic name <TT>HOSTFILE</TT> specifies the path to the host-specific
 part, either one in the distribution or <I>whatever</I><TT>.c</TT>. Some
 versions of make may require the <TT>-e</TT> option in order to read the
@@ -318,7 +318,7 @@ startup code and default libraries, including the lcc library, <TT>liblcc.a</TT>
 would be executed, e.g.,</P>
 <BLOCKQUOTE>
 <PRE>% $BUILDDIR/lcc -v -v foo.c baz.c mylib.a -lX11
-/usr/local/lib/lcc-4.0/lcc Id: lcc.c,v 4.8 1997/05/21 00:23:30 drh Exp $
+/usr/local/lib/lcc-4.1/lcc Id: lcc.c,v 4.8 1997/05/21 00:23:30 drh Exp $
 foo.c:
 /usr/local/lib/lcc/cpp -D__STDC__=1 -Dsparc -D__sparc__ -Dsun -D__sun__ -Dunix -D__LCC__ -I/usr/local/lib/lcc/include -I/usr/local/include -I/usr/include foo.c /tmp/lcc266290.i
 /usr/local/lib/lcc/rcc -target=sparc/solaris -v /tmp/lcc266290.i /tmp/lcc266291.
@@ -387,25 +387,25 @@ when invoking
 <TT>make</TT>:</P>
 <BLOCKQUOTE>
 <PRE>% make TARGET=sparc/solaris test
-mkdir -p /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/8q.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/array.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/cf.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/cq.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/cvt.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/fields.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/front.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/incr.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/init.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/limits.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/paranoia.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/sort.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/spill.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/stdarg.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/struct.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/switch.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/wf1.s:
-/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/yacc.s:</PRE></BLOCKQUOTE>
+mkdir -p /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/8q.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/array.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/cf.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/cq.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/cvt.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/fields.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/front.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/incr.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/init.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/limits.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/paranoia.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/sort.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/spill.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/stdarg.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/struct.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/switch.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/wf1.s:
+/usr/local/lib/lcc-4.1/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.1/sparc-solaris/sparc/solaris/tst/yacc.s:</PRE></BLOCKQUOTE>
 <P>Each line in the output above is of the form</P>
 <BLOCKQUOTE>
 <P><TT>$BUILDDIR/rcc -target=</TT><I>target</I><TT>/</TT><I>os</I><TT>$BUILDDIR/</TT><I>target</I><TT>/</TT><I>os</I><TT>/</TT><EM>X</EM><TT>.s:</TT></P></BLOCKQUOTE>
@@ -434,24 +434,24 @@ programs.</P>
 itself:</P>
 <BLOCKQUOTE>
 <PRE>% make triple
-/usr/local/lib/lcc-4.0/sparc-solaris/lcc -o /usr/local/lib/lcc-4.0/sparc-solaris/1rcc -d0.6 -Wo-lccdir=/usr/local/lib/lcc-4.0/sparc-solaris -B/usr/local/lib/lcc-4.0/sparc-solaris/  -Isrc src/*.c
+/usr/local/lib/lcc-4.1/sparc-solaris/lcc -o /usr/local/lib/lcc-4.1/sparc-solaris/1rcc -d0.6 -Wo-lccdir=/usr/local/lib/lcc-4.1/sparc-solaris -B/usr/local/lib/lcc-4.1/sparc-solaris/  -Isrc src/*.c
 src/alloc.c:
 ...
 src/x86.c:
-/usr/local/lib/lcc-4.0/sparc-solaris/lcc -o /usr/local/lib/lcc-4.0/sparc-solaris/1rcc -d0.6 -Wo-lccdir=/usr/local/lib/lcc-4.0/sparc-solaris -B/usr/local/lib/lcc-4.0/sparc-solaris/  -Isrc src/*.c
+/usr/local/lib/lcc-4.1/sparc-solaris/lcc -o /usr/local/lib/lcc-4.1/sparc-solaris/1rcc -d0.6 -Wo-lccdir=/usr/local/lib/lcc-4.1/sparc-solaris -B/usr/local/lib/lcc-4.1/sparc-solaris/  -Isrc src/*.c
 src/alloc.c:
 ...
 src/x86.c:
-strip /usr/local/lib/lcc-4.0/sparc-solaris/[12]rcc
-dd if=/usr/local/lib/lcc-4.0/sparc-solaris/1rcc of=/usr/local/lib/lcc-4.0/sparc-solaris/rcc1 bs=512 skip=1
+strip /usr/local/lib/lcc-4.1/sparc-solaris/[12]rcc
+dd if=/usr/local/lib/lcc-4.1/sparc-solaris/1rcc of=/usr/local/lib/lcc-4.1/sparc-solaris/rcc1 bs=512 skip=1
 769+1 records in
 769+1 records out
-dd if=/usr/local/lib/lcc-4.0/sparc-solaris/2rcc of=/usr/local/lib/lcc-4.0/sparc-solaris/rcc2 bs=512 skip=1
+dd if=/usr/local/lib/lcc-4.1/sparc-solaris/2rcc of=/usr/local/lib/lcc-4.1/sparc-solaris/rcc2 bs=512 skip=1
 769+1 records in
 769+1 records out
-if cmp /usr/local/lib/lcc-4.0/sparc-solaris/rcc[12]; then \
-        mv /usr/local/lib/lcc-4.0/sparc-solaris/2rcc /usr/local/lib/lcc-4.0/sparc-solaris/rcc; \
-        rm -f /usr/local/lib/lcc-4.0/sparc-solaris/1rcc /usr/local/lib/lcc-4.0/sparc-solaris/rcc[12]; fi</PRE></BLOCKQUOTE>
+if cmp /usr/local/lib/lcc-4.1/sparc-solaris/rcc[12]; then \
+        mv /usr/local/lib/lcc-4.1/sparc-solaris/2rcc /usr/local/lib/lcc-4.1/sparc-solaris/rcc; \
+        rm -f /usr/local/lib/lcc-4.1/sparc-solaris/1rcc /usr/local/lib/lcc-4.1/sparc-solaris/rcc[12]; fi</PRE></BLOCKQUOTE>
 <P>This command builds <TT>rcc</TT> twice; once using the
 <TT>rcc</TT> built by <TT>cc</TT> and again using the <TT>rcc</TT> built by
 <TT>lcc</TT>. The resulting binaries are compared. They should be identical, as
@@ -519,15 +519,15 @@ followed, the Windows-specific parts of the driver program, <TT>lcc</TT>, can
 be used unmodified.</P>
 <P> Installation on a Windows NT/95 system involves the following steps. Below,
 the build directory is referred to as <TT>BUILDDIR</TT>, and the distribution
-is in <TT>\dist\lcc\4.0</TT>.</P>
+is in <TT>\dist\lcc\4.1</TT>.</P>
 <OL>
 <LI>Create the build directory, perhaps using a version- and platform-specific
 naming convention as suggested in <A HREF="#unix"><EM>Installation on UNIX</EM></A>,
 and record the name of this directory in the
 <TT>BUILDDIR</TT> environment variable:
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;set BUILDDIR=\pkg\lcc-4.0
-C:\dist\lcc\4.0&gt;mkdir %BUILDDIR%</PRE></BLOCKQUOTE></LI>
+<PRE>C:\dist\lcc\4.1&gt;set BUILDDIR=\pkg\lcc-4.1
+C:\dist\lcc\4.1&gt;mkdir %BUILDDIR%</PRE></BLOCKQUOTE></LI>
 <LI><A HREF="pkg/etc/win32.c"><TT>etc\win32.c</TT></A> is the
 Windows-specific part of the driver. It assumes that the VC header files are in
 one of the standard places (<TT>\Program Files\devstudio\vc\include</TT> or
@@ -538,34 +538,34 @@ assembler (<TT>ml.exe</TT>) are on the PATH. It also assumes that the macro
 on your computer (see <A HREF="#driver"><EM>Building the Driver</EM></A>),
 then build the driver, specifying the default temporary directory, if necessary:
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt TEMPDIR=\\temp HOSTFILE=etc/win32.c lcc
+<PRE>C:\dist\lcc\4.1&gt;nmake -f makefile.nt TEMPDIR=\\temp HOSTFILE=etc/win32.c lcc
 
 Microsoft (R) Program Maintenance Utility   Version 1.62.7022
 Copyright (C) Microsoft Corp 1988-1997. All rights reserved.
 
-        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.0\ -c -DTEMPDIR=\&quot;\\temp\&quot; -Fo\pkg\lcc-4.0\lcc.obj etc/lcc.c
+        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.1\ -c -DTEMPDIR=\&quot;\\temp\&quot; -Fo\pkg\lcc-4.1\lcc.obj etc/lcc.c
 lcc.c
-        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.0\ -c -Fo\pkg\lcc-4.0\host.obj etc/win32.c
+        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.1\ -c -Fo\pkg\lcc-4.1\host.obj etc/win32.c
 win32.c
-        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.0\ -Fe\pkg\lcc-4.0\lcc.exe \pkg\lcc-4.0\lcc.obj \pkg\lcc-4.0\host.obj</PRE></BLOCKQUOTE>If
+        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.1\ -Fe\pkg\lcc-4.1\lcc.exe \pkg\lcc-4.1\lcc.obj \pkg\lcc-4.1\host.obj</PRE></BLOCKQUOTE>If
 you make a copy of <TT>etc\win32.c</TT>, specify the path of the copy as the
 value of <TT>HOSTFILE</TT>. For example, if you copy <TT>etc\win32.c</TT> to
 <TT>BUILDDIR</TT> and edit it, use the command
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt TEMPDIR=\\temp HOSTFILE=%BUILDDIR%\win32.c lcc</PRE></BLOCKQUOTE></LI>
+<PRE>C:\dist\lcc\4.1&gt;nmake -f makefile.nt TEMPDIR=\\temp HOSTFILE=%BUILDDIR%\win32.c lcc</PRE></BLOCKQUOTE></LI>
 <LI>Build the preprocessor, compiler proper, library, and other accessories
 (see
 <A HREF="#rcc"><EM>Building the Compiler</EM></A>):
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt all</PRE></BLOCKQUOTE>This command
+<PRE>C:\dist\lcc\4.1&gt;nmake -f makefile.nt all</PRE></BLOCKQUOTE>This command
 uses the VC command-line tools <TT>cl</TT> and <TT>lib</TT> to build
 <TT>bprint.exe</TT>, <TT>cpp.exe</TT>, <TT>lburg.exe</TT>, <TT>liblcc.lib</TT>,
 <TT>librcc.lib</TT>, and <TT>rcc.exe</TT>, all in <TT>BUILDDIR</TT>. There
 may be some warnings, but there should be no warnings.</LI>
 <LI>Create a test directory and run the test suite:
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;mkdir %BUILDDIR%\x86\win32\tst
-C:\dist\lcc\4.0&gt;nmake -f makefile.nt test</PRE></BLOCKQUOTE>This command
+<PRE>C:\dist\lcc\4.1&gt;mkdir %BUILDDIR%\x86\win32\tst
+C:\dist\lcc\4.1&gt;nmake -f makefile.nt test</PRE></BLOCKQUOTE>This command
 compiles each program in <A HREF="pkg/tst">tst</A>, compares the generated
 assembly code and diagnostics with the expected assembly code and diagnostics,
 executes the program, and compares the output with the expected output (using 
@@ -581,12 +581,12 @@ there should be no differences and no errors.</LI>
 <LI>Run the &quot;triple&quot; test, which compiles <TT>rcc</TT> with itself
 and verifies the results:
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt triple
+<PRE>C:\dist\lcc\4.1&gt;nmake -f makefile.nt triple
 ...
-\pkg\lcc-4.0\x86.c:
+\pkg\lcc-4.1\x86.c:
  Assembling: C:/TEMP/lcc2001.asm
-        fc /b \pkg\lcc-4.0\1rcc.exe \pkg\lcc-4.0\2rcc.exe
-Comparing files \PKG\LCC-4.0\1rcc.exe and \PKG\LCC-4.0\2RCC.EXE
+        fc /b \pkg\lcc-4.1\1rcc.exe \pkg\lcc-4.1\2rcc.exe
+Comparing files \PKG\LCC-4.1\1rcc.exe and \PKG\LCC-4.1\2RCC.EXE
 00000088: A2 BE</PRE></BLOCKQUOTE>This command builds <TT>rcc</TT> twice; once
 using the
 <TT>rcc</TT> built by VC and again using the <TT>rcc</TT> built by
@@ -598,22 +598,22 @@ incorrect code;
 <LI>Copy <TT>lcc.exe</TT> and <TT>bprint.exe</TT> to a directory on your
 PATH, e.g.,
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;copy %BUILDDIR%\lcc.exe \bin
+<PRE>C:\dist\lcc\4.1&gt;copy %BUILDDIR%\lcc.exe \bin
         1 file(s) copied.
 
-C:\dist\lcc\4.0&gt;copy %BUILDDIR%\bprint.exe \bin
+C:\dist\lcc\4.1&gt;copy %BUILDDIR%\bprint.exe \bin
         1 file(s) copied.</PRE></BLOCKQUOTE></LI>
 <LI>Finally, clean up:
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt clean</PRE></BLOCKQUOTE>This
+<PRE>C:\dist\lcc\4.1&gt;nmake -f makefile.nt clean</PRE></BLOCKQUOTE>This
 command removes the derived files in <TT>BUILDDIR</TT>, but does not remove
 <TT>rcc.exe</TT>, etc.; &quot;<TT>nmake -f makefile.nt clobber</TT>&quot;
 cleans up and removes all executables and libraries. Test directories under
 <TT>BUILDDIR</TT> are <EM>not</EM> removed; you'll need to remove these by
 hand, e.g.
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;rmdir %BUILDDIR%\x86 /s
-\pkg\lcc-4.0\x86, Are you sure (Y/N)? y</PRE></BLOCKQUOTE></LI></OL>
+<PRE>C:\dist\lcc\4.1&gt;rmdir %BUILDDIR%\x86 /s
+\pkg\lcc-4.1\x86, Are you sure (Y/N)? y</PRE></BLOCKQUOTE></LI></OL>
 <H2><A NAME="bugs">Reporting Bugs</A></H2>
 <P>lcc is a large, complex program. We find and repair errors routinely. If you
 think that you've found a error, follow the steps below, which are adapted from
