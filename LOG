@@ -1,3 +1,22 @@
-This is the LOG file for lcc v3.0.
+From lcc 3.0 to 3.1:
 
-Sat Jul 30 14:24:30 EDT 1994
+Errors fixed:
+
+Died with an assertion failure when a constant was cast to void in a
+return statement, eg, f() { return (void)4; }.
+
+Died with an assertion failure when -b was specified.
+
+When -n was specified, issued meaningless diagnostic
+"illegal character `\00'" beyond the end of the input.
+
+Erroneously issued "unclosed comment" followed by spurious diagnostics
+when spaces in long comments spanned input buffer boundaries.
+
+Line numbers suffered one extra, incorrect increment when long
+comments or string literals spanned input buffer boundaries.
+
+On the MIPS, generated code that wouldn't assemble for calls to huge
+numeric constant addresses, like ((void (*)())0xbfc00010)().
+
+Wed Sep  7 16:06:37 EDT 1994
