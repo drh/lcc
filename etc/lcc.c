@@ -196,7 +196,7 @@ static List append(char *str, List list) {
 char *basename(const char *name) {
 	char *s, *b, *t = 0;
 
-	for (b = s = name; *s; s++)
+	for (b = s = (char *)name; *s; s++)
 		if (*s == '/' || *s == '\\') {
 			b = s + 1;
 			t = 0;
