@@ -2,6 +2,8 @@ From lcc 3.4b to 3.5:
 
 Errors fixed:
 
+lcc -v -v foo.c no longer deletes foo.o.
+
 On the SPARC, generated bad code for an indirect call through a matrix
 of function pointers when the first argument was a float or double, eg,
 double x; (*f[i][j])(x).
