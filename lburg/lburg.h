@@ -33,8 +33,9 @@ extern Term term(char *id, int esn);
 
 typedef struct tree *Tree;
 struct tree {		/* tree patterns: */
-	void *op;		/* a term or non-terminal */
+	void *op;		/* a terminal or non-terminal */
 	Tree left, right;	/* operands */
+	int nterms;		/* number of terminal nodes in this tree */
 };
 extern Tree tree(char *op, Tree left, Tree right);
 
