@@ -1,28 +1,24 @@
-This hierarchy is the distribution for a BETA version of lcc 4.0.  Only
-the Alpha and `symbolic' back ends are available at this time.
+This hierarchy is the distribution for lcc, the retargetable compiler
+for ANSI C described in the book `A Retargetable C Compiler: Design and
+Implementation' (Addison-Wesley, 1995, ISBN 0-8053-1670-1).
 
-lcc version 3.5 is described in the book `A Retargetable C Compiler:
-Design and Implementation' (Addison-Wesley, 1995, ISBN 0-8053-1670-1).
-There are significant differences between 3.5 and 4.0, most notably in
-the intermediate code. This beta 4.0 version is provided `as-is'.
+LOG describes the changes since the last release.
 
-VERSION 4.0 IS INCOMPATIBLE WITH EARLIER VERSIONS OF LCC. DO NOT UNLOAD
-THIS DISTRIBUTION ON TOP OF A 3.X DISTRIBUTION.
+CPYRIGHT describes the conditions under you can use, copy, modify, and
+distribute lcc or works derived from lcc.
 
-doc/install.ps is a PostScript file that gives complete description of
-the distribution and installation instructions. This file was generated
-from the HTML document doc/install.html. doc/install.txt is a plain
-ASCII version of these instructions. NB: THESE FILES ARE FOR LCC
-VERSION 3.5 AND THUS CONTAIN SOME EXTRANEOUS INFORMATION.
+doc/install.html is an HTML file that gives a complete description of
+the distribution and installation instructions.
 
-To build lcc with the Alpha/OSF C compiler, use the -std1 option, e.g.,
+NB: The distribution hierarchy and the installation procedures have
+changed with this release; see doc/install.html or visit
+http://www.cs.princeton.edu/software/lcc/pkg/install.html.
 
-	% cd alpha/osf
-	% make -f ../../src/makefile CC="cc -std1"
+The DOS executable files are not included in this distribution.
+They are available in the 3.5 distribution at
+http://www.cs.princeton.edu/software/lcc/old/
 
-uses cc to build alpha/osf/rcc. If you forget -std1, rcc will crash.
-
+-----
 Chris Fraser / cwfraser@microsoft.com
 David Hanson / drh@cs.princeton.edu
 $Revision$ $Date$
-

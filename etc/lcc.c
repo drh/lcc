@@ -2,7 +2,7 @@
  * lcc [ option ]... [ file | -llib ]...
  * front end for the ANSI C compiler
  */
-static char rcsid[] = "$Name$ ($Id$)";
+static char rcsid[] = "$Name$($Id$)";
 
 #include <stdio.h>
 #include <ctype.h>
@@ -50,9 +50,11 @@ static List find ARGS((char *, List));
 static void help ARGS((void));
 static void interrupt ARGS((int));
 static void opt ARGS((char *));
+extern int main ARGS((int, char *[]));
 static void rm ARGS((List));
 extern char *strsave ARGS((char *));
 extern int suffix ARGS((char *));
+extern char *tempname ARGS((char *));
 
 extern int access ARGS((char *, int));
 extern int close ARGS((int));
@@ -73,7 +75,7 @@ static int errcnt;		/* number of errors */
 static int Eflag;		/* -E specified */
 static int Sflag;		/* -S specified */
 static int cflag;		/* -c specified */
-static int pipeflag = PIPE;	/* -pipe specified */
+static int pipeflag = PIPE;	/* -pipe/-nopipe specified */
 static int verbose;		/* incremented for each -v */
 static List llist[2];		/* loader files, flags */
 static List alist;		/* assembler flags */
@@ -83,7 +85,7 @@ static List rmlist;		/* list of files to remove */
 static char *outfile;		/* ld output file or -[cS] object file */
 static int ac;			/* argument count */
 static char **av;		/* argument vector */
-static char tempname[sizeof TEMPDIR + 15];	/* temporary .s file */
+static char *tempdir = TEMPDIR;	/* directory for temporary files */
 static char *progname;
 
 main(argc, argv) char *argv[]; {
@@ -100,8 +102,6 @@ main(argc, argv) char *argv[]; {
 	if (signal(SIGHUP, SIG_IGN) != SIG_IGN)
 		signal(SIGHUP, interrupt);
 #endif
-	sprintf(tempname, "%s/lcc%05d.s", TEMPDIR, getpid());
-	rmlist = append(tempname, rmlist);
 	plist = append("-D__LCC__", append("-Dunix", 0));
 	if (argc <= 1) {
 		help();
@@ -318,6 +318,7 @@ static int exists(name) char *name; {
 /* filename - process file name argument `name', return status */
 static int filename(name, base) char *name, *base; {
 	int status = 0;
+	static char *stemp;
 
 	if (base == 0)
 		base = basename(name);
@@ -331,15 +332,13 @@ static int filename(name, base) char *name, *base; {
 			break;
 		}
 		if (pipeflag == 0) {
-			static char tempfile[sizeof TEMPDIR + 15];
-			if (tempfile[0] == 0) {
-				sprintf(tempfile, "%s/lcc%05d.i", TEMPDIR, getpid());
-				rmlist = append(tempfile, rmlist);
-			}
-			compose(cpp, plist, append(name, 0), append(tempfile, 0));
+			static char *itemp;
+			if (itemp == NULL)
+				itemp = tempname(".i");
+			compose(cpp, plist, append(name, 0), append(itemp, 0));
 			status = callsys(av);
 			if (status == 0)
-				return filename(tempfile, base);
+				return filename(itemp, base);
 			break;
 		}
 		cprint(av, " | ");
@@ -368,22 +367,28 @@ static int filename(name, base) char *name, *base; {
 		}
 		if (Sflag)
 			status = compile("-", outfile ? outfile : concat(base, ".s"));
-		else if ((status = compile("-", tempname)) == 0)
-			return filename(tempname, base);
+		else if ((status = compile("-", stemp?stemp:(stemp=tempname(".s")))) == 0)
+			return filename(stemp, base);
 		break;
 	case 'i':
 		if (!exists(name) || Eflag)
 			break;
 		if (Sflag)
 			status = compile(name, outfile ? outfile : concat(base, ".s"));
-		else if ((status = compile(name, tempname)) == 0)
-			return filename(tempname, base);
+		else if ((status = compile(name, stemp?stemp:(stemp=tempname(".s")))) == 0)
+			return filename(stemp, base);
 		break;
 	case 's':
 		if (Eflag)
 			break;
 		if (!Sflag) {
-			char *ofile = cflag && outfile ? outfile : concat(base, ".o");
+			char *ofile;
+			if (cflag && outfile)
+				ofile = outfile;
+			else if (cflag)
+				ofile = concat(base, ".o");
+			else
+				ofile = tempname(".o");
 			compose(as, alist, append(name, 0), append(ofile, 0));
 			status = callsys(av);
 			if (!find(ofile, llist[1]))
@@ -426,7 +431,7 @@ static void help() {
 "", " [ option | file ]...\n",
 "	except for -l, options are processed left-to-right before files\n",
 "	unrecognized options are taken to be linker options\n",
-"-A	warn about non-ANSI usage; 2nd -A warns more\n",
+"-A	warn about nonANSI usage; 2nd -A warns more\n",
 "-b	emit expression-level profiling code; see bprint(1)\n",
 #ifdef sparc
 "-Bstatic -Bdynamic	specify static or dynamic libraries\n",
@@ -442,6 +447,7 @@ static void help() {
 "-lx	search library `x'\n",
 "-N	do not search the standard directories for #include files\n",
 "-n	emit code to check for dereferencing zero pointers\n",
+"-nopipe	use a temporary file for the preproccesor output\n",
 "-O	is ignored\n",
 "-o file	leave the output in `file'\n",
 "-P	print ANSI-style declarations for globals\n",
@@ -452,6 +458,7 @@ static void help() {
 #ifdef sparc
 "-target name	is ignored\n",
 #endif
+"-tempdir=dir/	place temporary files in `dir/'\n",
 "-Uname	undefine the preprocessor symbol `name'\n",
 "-v	show commands as they are executed; 2nd -v suppresses execution\n",
 "-w	suppress warnings\n",
@@ -498,11 +505,21 @@ static void opt(arg) char *arg; {
 			}
 		fprintf(stderr, "%s: %s ignored\n", progname, arg);
 		return;
+	case 'n':
+		if (strcmp(arg, "-nopipe") == 0)
+			pipeflag = 0;
+		else
+			break;
+		return;
 	case 'd':	/* -dn */
 		arg[1] = 's';
-		/* fall thru */
-	case 't':	/* -t -tname */
 		clist = append(arg, clist);
+		return;
+	case 't':	/* -t -tname -tempdir=dir */
+		if (strncmp(arg, "-tempdir=", 9) == 0)
+			tempdir = arg + 9;
+		else
+			clist = append(arg, clist);
 		return;
 	case 'p':	/* -pipe -p -pg */
 		if (strcmp(arg, "-pipe") == 0)
@@ -627,3 +644,14 @@ int suffix(name) char *name; {
 		return t[0];
 	return -1;
 }
+
+/* tempname - generate a temporary file name in tempdir with given suffix */
+char *tempname(suffix) char *suffix; {
+	static int n;
+	char *name = alloc(strlen(tempdir) + strlen("/lccXXXXXX") + strlen(suffix) + 1);
+
+	sprintf(name, "%s/lcc%d%d%s", tempdir, getpid(), n++, suffix);
+	rmlist = append(name, rmlist);
+	return name;
+}
+
