@@ -8,7 +8,7 @@ static char rcsid[] = "$Id$";
 #define LCCDIR "/usr/local/lib/lcc/"
 #endif
 #ifndef SUNDIR
-#define SUNDIR "/opt/SUNWspro/SC4.0/lib/"
+#define SUNDIR "/opt/SUNWspro/SC4.2/lib/"
 #endif
 
 char *suffixes[] = { ".c", ".i", ".s", ".o", ".out", 0 };
