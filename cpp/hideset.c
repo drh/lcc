@@ -54,6 +54,8 @@ newhideset(int hs, Nlist *np)
 	if (nhidesets >= maxhidesets) {
 		maxhidesets = 3*maxhidesets/2+1;
 		hidesets = (Hideset *)realloc(hidesets, (sizeof (Hideset *))*maxhidesets);
+		if (hidesets == NULL)
+			error(FATAL, "Out of memory from realloc");
 	}
 	hs1 = (Hideset)domalloc(len*sizeof(Hideset));
 	memmove(hs1, nhs, len*sizeof(Hideset));
