@@ -30,9 +30,7 @@ int option(char *arg) {
 		include[0] = concat("-I", concat(arg, "\\include"));
 		com[0] = concat(arg, "\\rcc.exe");
 		ld[8] = concat(arg, "\\liblcc.lib");
-	} else if (strcmp(arg, "-g") == 0)
-		ld[9] = "libcd.lib";
-	else if (strcmp(arg, "-b") == 0)
+	} else if (strcmp(arg, "-b") == 0)
 		;
 	else if (strncmp(arg, "-ld=", 4) == 0)
 		ld[0] = &arg[4];
