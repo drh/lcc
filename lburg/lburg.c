@@ -74,9 +74,12 @@ int main(int argc, char *argv[]) {
 	yyparse();
 	if (start)
 		ckreach(start);
-	for (p = nts; p; p = p->link)
+	for (p = nts; p; p = p->link) {
+		if (p->rules == NULL)
+			yyerror("undefined nonterminal `%s'\n", p->name);
 		if (!p->reached)
 			yyerror("can't reach nonterminal `%s'\n", p->name);
+	}
 	emitheader();
 	emitdefs(nts, ntnumber);
 	emitstruct(nts, ntnumber);
