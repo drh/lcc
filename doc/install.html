@@ -78,7 +78,7 @@ subdirectories.</P>
 <TD></TD>
 <TD>X86 test outputs</TD></TR></TABLE></BLOCKQUOTE>
 <P><TT>doc/install.html</TT> is the HTML file for this document.
-<A HREF="pkg/doc/4.0.html"><TT>doc/4.0.html</TT></A> describes the internal
+<A HREF="pkg/doc/4.html"><TT>doc/4.html</TT></A> describes the internal
 differences between lcc 3.x and 4.0.</P>
 <P>The installation makefile is designed so that lcc can be installed from a
 read-only file system or directory, which is common in networked environments,
@@ -497,8 +497,8 @@ specify this target with the option <TT>-Wf-target=symbolic</TT>. For example,</
 the option <TT>-Wf-target=null</TT> specifies the &quot;null&quot; target for
 which lcc emits nothing and thus only checks the syntax and semantics of its
 input files.</P>
-<H2><A NAME="win32">Installation on Windows NT 4.0 or Windows 96</A></H2>
-<P>On Windows NT 4.0 and Windows 96, lcc is designed to work with Microsoft's
+<H2><A NAME="win32">Installation on Windows NT 4.0 or Windows 95</A></H2>
+<P>On Windows NT 4.0 and Windows 95, lcc is designed to work with Microsoft's
 Visual C++ 5.0 (VC) and Microsoft's Assembler, MASM 6.11d. It uses the VC header
 files, libraries, and command-line tools, and it uses MASM to assemble the code
 it generates. If you have MASM 6.11, make sure you
@@ -523,13 +523,13 @@ and record the name of this directory in the
 <BLOCKQUOTE>
 <PRE>C:\dist\lcc\4.0&gt;set BUILDDIR=\pkg\lcc-4.0
 C:\dist\lcc\4.0&gt;mkdir %BUILDDIR%</PRE></BLOCKQUOTE></LI>
-<LI><A HREF="pkg/etc/win32.c"><TT>etc/win32.c</TT></A> is the
+<LI><A HREF="pkg/etc/win32.c"><TT>etc\win32.c</TT></A> is the
 Windows-specific part of the driver. It assumes that the VC header files are in
 one of the standard places (<TT>\Program Files\devstudio\vc\include</TT> or
 <TT>\msdev\include</TT>) and that the linker (<TT>link.exe</TT>) and the
 assembler (<TT>ml.exe</TT>) are on the PATH. It also assumes that the macro
 LCCDIR gives the build directory. If necessary, revise a copy of
-<A HREF="pkg/etc/win32.c"><TT>etc/win32.c</TT></A> to reflect the conventions
+<A HREF="pkg/etc/win32.c"><TT>etc\win32.c</TT></A> to reflect the conventions
 on your computer (see <A HREF="#driver"><EM>Building the Driver</EM></A>),
 then build the driver:
 <BLOCKQUOTE>
@@ -543,8 +543,8 @@ lcc.c
         cl -nologo -Zi -MLd -Fd\pkg\lcc-4.0\ -c -Fo\pkg\lcc-4.0\host.obj etc\win32.c
 win32.c
         cl -nologo -Zi -MLd -Fd\pkg\lcc-4.0\ -Fe\pkg\lcc-4.0\lcc.exe \pkg\lcc-4.0\lcc.obj \pkg\lcc-4.0\host.obj</PRE></BLOCKQUOTE>If
-you make a copy of <TT>etc/win32.c</TT>, specify the path of the copy as the
-value of <TT>HOSTFILE</TT>. For example, if you copy <TT>etc/win32.c</TT> to
+you make a copy of <TT>etc\win32.c</TT>, specify the path of the copy as the
+value of <TT>HOSTFILE</TT>. For example, if you copy <TT>etc\win32.c</TT> to
 <TT>BUILDDIR</TT> and edit it, use the command
 <BLOCKQUOTE>
 <PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt HOSTFILE=%BUILDDIR%\win32.c lcc</PRE></BLOCKQUOTE></LI>
@@ -565,7 +565,7 @@ compiles each program in <A HREF="pkg/tst">tst</A>, compares the generated
 assembly code and diagnostics with the expected assembly code and diagnostics,
 executes the program, and compares the output with the expected output (using 
 <TT>fc</TT>). For example, when the nmake command compiles
-<A HREF="pkg/tst/8q.c"><TT>tst/8q.c</TT></A>, it leaves the generated assembly
+<A HREF="pkg/tst/8q.c"><TT>tst\8q.c</TT></A>, it leaves the generated assembly
 code and diagnostic output in <TT>%BUILDDIR%\x86\win32\tst\8q.s</TT> and <TT>%BUILDDIR%\x86\win32\tst\8q.2</TT>,
 and it compares them with the expected results in <TT>x86\win32\tst\8q.sbk</TT>.
 It builds the executable program in  <TT>%BUILDDIR%\x86\win32\tst\8q.exe</TT>,
