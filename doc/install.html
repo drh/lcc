@@ -7,7 +7,7 @@ HREF="mailto:drh@cs.princeton.edu" REV="made" TITLE="David R. Hanson">
 <H1>Installing lcc</H1>
 <P ALIGN="LEFT"><B><A HREF="http://www.research.microsoft.com/~cwfraser/">Christopher
 W. Fraser</A> and <A HREF="http://www.research.microsoft.com/~drh/">David R.
-Hanson</A>,<BR><A HREF="http://www.research.microsoft.com/">Microsoft Research</A></B></P>
+Hanson</A>, <A HREF="http://www.research.microsoft.com/">Microsoft Research</A></B></P>
 <H2>Contents</H2>
 <OL>
 <LI><A HREF="#intro">Introduction</A>
@@ -127,6 +127,15 @@ the distributions are stored under <TT>/proj/pkg/lcc</TT>, so the included
 files are &quot;installed&quot; by creating one symbolic link:
 <BLOCKQUOTE>
 <PRE>% ln -s /proj/pkg/lcc/4.0/include/sparc/solaris $BUILDDIR/include</PRE></BLOCKQUOTE></LI>
+<LI>The <A HREF="pkg/makefile"><TT>makefile</TT></A> includes the file named
+by the <TT>CUSTOM</TT> macro; the default is <TT>custom.mk</TT>, and an empty
+<TT>custom.mk</TT> is included in the distribution. If desired, prepare a
+site-specification customization file and define <TT>CUSTOM</TT> to the path of
+that file when invoking make in steps 5 and 6, e.g.,
+<BLOCKQUOTE>
+<PRE>make CUSTOM=/users/drh/solaris.mk</PRE></BLOCKQUOTE>You can, for example,
+use customization files to record site-specific values for macros instead of
+using environment variables, and to record targets for the steps in this list.</LI>
 <LI>Build the host-specific driver, creating a custom host-specific part, if
 necessary. See <A HREF="#driver">Sec. 2</A>.</LI>
 <LI>Build the preprocessor, compiler proper, libary, and other accessories. See
@@ -207,9 +216,7 @@ int option(char *arg) {
 		include[0] = concat(&quot;-I&quot;, concat(&amp;arg[8], &quot;/include&quot;));
 		ld[12] = concat(&quot;-L&quot;, &amp;arg[8]);
 		com[0] = concat(&amp;arg[8], &quot;/rcc&quot;);
-	} else if (strcmp(arg, &quot;-g&quot;) == 0)
-		;
-	else if (strcmp(arg, &quot;-p&quot;) == 0) {
+	} else if (strcmp(arg, &quot;-p&quot;) == 0) {
 		ld[5] = SUNDIR &quot;mcrt1.o&quot;;
 		ld[10] = &quot;P,&quot; SUNDIR &quot;libp:/usr/ccs/lib/libp:/usr/lib/libp:&quot;
 			 SUNDIR &quot;:/usr/ccs/lib:/usr/lib&quot;;
@@ -344,10 +351,11 @@ which is defined in <TT>etc/lcc.c</TT>.</P>
 <H2><A NAME="rcc">3. Building the Compiler and Accessories</A></H2>
 <P>To build the rest of compilation components make sure <TT>BUILDDIR</TT> is
 set appropriately and type &quot;<TT>make all</TT>&quot;. This command builds
+<TT>librcc.a</TT> (the compiler's private library), 
 <TT>rcc</TT> (the compiler proper), <TT>lburg</TT> (the code-generator
 generator), <TT>cpp</TT> (the preprocessor), <TT>liblcc.a</TT> (the runtime
 library), and <TT>bprint</TT> (the profile printer), all in <TT>BUILDDIR</TT>.
-There may be a few warnings, but there should be no errors. If you're using an
+There may be warnings, but there should be no errors. If you're using an
 ANSI/ISO compiler other than <TT>cc</TT>, specify its name with the <TT>CC=</TT>
 option, e.g., &quot;<TT>make CC=gcc all</TT>&quot;. If you're running on a DEC
 ALPHA, use &quot;<TT>make CC='cc -std1' all</TT>&quot;; the <TT>-std1</TT>
@@ -364,25 +372,25 @@ when invoking
 <TT>make</TT>:</P>
 <BLOCKQUOTE>
 <PRE>% make TARGET=sparc/solaris test
-mkdir -p /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/8q.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/array.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/cf.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/cq.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/cvt.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/fields.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/front.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/incr.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/init.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/limits.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/paranoia.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/sort.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/spill.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/stdarg.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/struct.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/switch.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/wf1.s:
-/usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/yacc.s:</PRE></BLOCKQUOTE>
+mkdir -p /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/8q.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/array.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/cf.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/cq.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/cvt.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/fields.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/front.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/incr.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/init.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/limits.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/paranoia.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/sort.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/spill.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/stdarg.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/struct.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/switch.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/wf1.s:
+/usr/local/lib/lcc-4.0/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-4.0/sparc-solaris/sparc/solaris/tst/yacc.s:</PRE></BLOCKQUOTE>
 <P>Each line in the output above is of the form</P>
 <BLOCKQUOTE>
 <P><TT>$BUILDDIR/rcc -target=</TT><I>target</I><TT>/</TT><I>os</I><TT>$BUILDDIR/</TT><I>target</I><TT>/</TT><I>os</I><TT>/</TT><EM>X</EM><TT>.s:</TT></P></BLOCKQUOTE>
@@ -391,7 +399,7 @@ in the test suite. This output identifies the compiler and the target, e.g., &qu
 is generating code for a <TT>sparc</TT> running the
 <TT>solaris</TT> operating system.&quot;</P>
 <P>For each program in the test suite,
-<TT>src/run</TT> compiles the program, drops the generated assembly language
+<TT>src/run.sh</TT> compiles the program, drops the generated assembly language
 code in <TT>BUILDDIR</TT>/<I>target</I><TT>/</TT><I>os</I>, and uses <TT>diff</TT>
 to compare the generated assembly code with the expected code (the code expected
 for <TT>tst/8q.c</TT> on the SPARC under Solaris is in <TT>sparc/solaris/tst/8q.sbk</TT>,
@@ -411,24 +419,24 @@ programs.</P>
 itself:</P>
 <BLOCKQUOTE>
 <PRE>% make triple
-/usr/local/lib/lcc-3.6/sparc-solaris/lcc -o /usr/local/lib/lcc-3.6/sparc-solaris/1rcc -d0.6 -Wo-lccdir=/usr/local/lib/lcc-3.6/sparc-solaris -B/usr/local/lib/lcc-3.6/sparc-solaris/  -Isrc src/*.c
+/usr/local/lib/lcc-4.0/sparc-solaris/lcc -o /usr/local/lib/lcc-4.0/sparc-solaris/1rcc -d0.6 -Wo-lccdir=/usr/local/lib/lcc-4.0/sparc-solaris -B/usr/local/lib/lcc-4.0/sparc-solaris/  -Isrc src/*.c
 src/alloc.c:
 ...
 src/x86.c:
-/usr/local/lib/lcc-3.6/sparc-solaris/lcc -o /usr/local/lib/lcc-3.6/sparc-solaris/1rcc -d0.6 -Wo-lccdir=/usr/local/lib/lcc-3.6/sparc-solaris -B/usr/local/lib/lcc-3.6/sparc-solaris/  -Isrc src/*.c
+/usr/local/lib/lcc-4.0/sparc-solaris/lcc -o /usr/local/lib/lcc-4.0/sparc-solaris/1rcc -d0.6 -Wo-lccdir=/usr/local/lib/lcc-4.0/sparc-solaris -B/usr/local/lib/lcc-4.0/sparc-solaris/  -Isrc src/*.c
 src/alloc.c:
 ...
 src/x86.c:
-strip /usr/local/lib/lcc-3.6/sparc-solaris/[12]rcc
-dd if=/usr/local/lib/lcc-3.6/sparc-solaris/1rcc of=/usr/local/lib/lcc-3.6/sparc-solaris/rcc1 bs=512 skip=1
+strip /usr/local/lib/lcc-4.0/sparc-solaris/[12]rcc
+dd if=/usr/local/lib/lcc-4.0/sparc-solaris/1rcc of=/usr/local/lib/lcc-4.0/sparc-solaris/rcc1 bs=512 skip=1
 769+1 records in
 769+1 records out
-dd if=/usr/local/lib/lcc-3.6/sparc-solaris/2rcc of=/usr/local/lib/lcc-3.6/sparc-solaris/rcc2 bs=512 skip=1
+dd if=/usr/local/lib/lcc-4.0/sparc-solaris/2rcc of=/usr/local/lib/lcc-4.0/sparc-solaris/rcc2 bs=512 skip=1
 769+1 records in
 769+1 records out
-if cmp /usr/local/lib/lcc-3.6/sparc-solaris/rcc[12]; then \
-        mv /usr/local/lib/lcc-3.6/sparc-solaris/2rcc /usr/local/lib/lcc-3.6/sparc-solaris/rcc; \
-        rm -f /usr/local/lib/lcc-3.6/sparc-solaris/rcc[12]; fi</PRE></BLOCKQUOTE>
+if cmp /usr/local/lib/lcc-4.0/sparc-solaris/rcc[12]; then \
+        mv /usr/local/lib/lcc-4.0/sparc-solaris/2rcc /usr/local/lib/lcc-4.0/sparc-solaris/rcc; \
+        rm -f /usr/local/lib/lcc-4.0/sparc-solaris/1rcc /usr/local/lib/lcc-4.0/sparc-solaris/rcc[12]; fi</PRE></BLOCKQUOTE>
 <P>This command builds <TT>rcc</TT> twice; once using the
 <TT>rcc</TT> built by <TT>cc</TT> and again using the <TT>rcc</TT> built by
 <TT>lcc</TT>. The resulting binaries are compared. They should be identical, as
@@ -449,7 +457,7 @@ remove these by hand, e.g.,</P>
 <PRE>% rm -fr $BUILDDIR/sparc</PRE></BLOCKQUOTE>
 <P>The code generators for the other targets can be tested by specifying the
 desired <I>target</I><TT>/</TT><I>os</I> and setting an environment variable
-that controls what <TT>src/run</TT> does. e.g., to test the MIPS code
+that controls what <TT>src/run.sh</TT> does. For example, to test the MIPS code
 generator, type</P>
 <BLOCKQUOTE>
 <PRE>% setenv REMOTEHOST noexecute
@@ -539,4 +547,4 @@ subscribe to it by sending a message with the 1-line body
 <ADDRESS><A HREF="http://www.research.microsoft.com/~cwfraser/">Chris Fraser</A> / <A
 HREF="mailto:cwfraser@microsoft.com">cwfraser@microsoft.com</A><BR><A
 HREF="http://www.research.microsoft.com/~drh/">David Hanson</A> / <A
-HREF="mailto:drh@microsoft.com">drh@microsoft.com</A><BR>$Name$ $Revision$ $Date$</ADDRESS></BODY></HTML>
+HREF="mailto:drh@microsoft.com">drh@microsoft.com</A><BR>$Revision$ $Date$</ADDRESS></BODY></HTML>
