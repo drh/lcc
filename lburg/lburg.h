@@ -45,13 +45,15 @@ struct rule {		/* rules: */
 	int ern;		/* external rule number */
 	int packed;		/* packed external rule number */
 	int cost;		/* associated cost */
+	char *asm;		/* assembler template */
+	char *code;		/* cost computation code for leaves */
 	Rule link;		/* next rule in ern order */
 	Rule next;		/* next rule with same pattern root */
 	Rule chain;		/* next chain rule with same rhs */
 	Rule decode;		/* next rule with same lhs */
 	Rule kids;		/* next rule with same burm_kids pattern */
 };
-extern Rule rule(char *id, Tree pattern, int ern, int cost);
+extern Rule rule(char *id, Tree pattern, char *asm, int cost, char *code);
 
 /* gram.y: */
 void yyerror(char *fmt, ...);

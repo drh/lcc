@@ -1,7 +1,8 @@
 %{
 #include <stdio.h>
-#include "iburg.h"
+#include "lburg.h"
 static char rcsid[] = "$Id$";
+/*lint -e616 -e527 -e652 -esym(552,yynerrs) -esym(563,yynewstate,yyerrlab) */
 %}
 %union {
 	int n;
@@ -12,9 +13,9 @@ static char rcsid[] = "$Id$";
 %term START
 %term PPERCENT
 
-%token  <string>        ID
+%token  <string>        ID TEMPLATE
 %token  <n>             INT
-%type	<string>	lhs
+%type	<string>	nonterm
 %type   <tree>          tree
 %type   <n>             cost
 %%
@@ -27,7 +28,7 @@ decls	: /* lambda */
 	;
 
 decl	: TERM  blist '\n'
-	| START lhs   '\n'		{
+	| START nonterm   '\n'		{
 		if (nonterm($2)->number != 1)
 			yyerror("redeclaration of the start symbol\n");
 		}
@@ -40,12 +41,12 @@ blist	: /* lambda */
 	;
 
 rules	: /* lambda */
-	| rules lhs ':' tree '=' INT cost ';' '\n'	{ rule($2, $4, $6, $7); }
+	| rules nonterm ':' tree TEMPLATE cost '\n'	{ rule($2, $4, $5, $6, NULL); }
 	| rules '\n'
 	| rules error '\n'		{ yyerrok; }
 	;
 
-lhs	: ID				{ nonterm($$ = $1); }
+nonterm	: ID				{ nonterm($$ = $1); }
 	;
 
 tree	: ID                            { $$ = tree($1,  0,  0); }
@@ -54,12 +55,14 @@ tree	: ID                            { $$ = tree($1,  0,  0); }
 	;
 
 cost	: /* lambda */			{ $$ = 0; }
-	| '(' INT ')'			{ $$ = $2; }
+	| INT				{ $$ = $1; }
 	;
 %%
+#include <assert.h>
 #include <stdarg.h>
 #include <ctype.h>
 #include <string.h>
+#include <limits.h>
 
 int errcnt = 0;
 FILE *infp = NULL;
@@ -114,7 +117,7 @@ int yylex(void) {
 			continue;
 		case '\n':
 		case '(': case ')': case ',':
-		case ';': case '=': case ':':
+		case ':': case '=':
 			return c;
 		}
 		if (c == '%' && *bp == '%') {
@@ -128,14 +131,28 @@ int yylex(void) {
 		&& isspace(bp[5])) {
 			bp += 5;
 			return START;
+		} else if (c == '"') {
+			char *p = strchr(bp, '"');
+			if (p == NULL) {
+				yyerror("missing \"\n");
+				p = strchr(bp, '\n');
+			}
+			assert(p);
+			yylval.string = alloc(p - bp + 1);
+			strncpy(yylval.string, bp, p - bp);
+			yylval.string[p - bp] = 0;
+			bp = *p == '"' ? p + 1 : p;
+			return TEMPLATE;
 		} else if (isdigit(c)) {
 			int n = 0;
 			do {
-				n = 10*n + (c - '0');
+				int d = c - '0';
+				if (n > (INT_MAX - d)/10)
+					yyerror("integer greater than %d\n", INT_MAX);
+				else
+					n = 10*n + d;
 				c = get();
 			} while (isdigit(c));
-			if (n > 32767)
-				yyerror("integer %d greater than 32767\n", n);
 			bp--;
 			yylval.n = n;
 			return INT;
