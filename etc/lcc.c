@@ -221,7 +221,8 @@ static int _spawnvp(int mode, const char *cmdname, char *argv[]) {
 		return 100;
 	case 0:
 		execv(cmdname, argv);
-		fprintf(stderr, "%s: can't execute `%s'\n", progname, cmdname);
+		fprintf(stderr, "%s: ", progname);
+		perror(cmdname);
 		fflush(stdout);
 		exit(100);
 	}
@@ -275,6 +276,10 @@ static int callsys(char **av) {
 		}
 		if (verbose < 2)
 			status = _spawnvp(_P_WAIT, argv[0], argv);
+		if (status == -1) {
+			fprintf(stderr, "%s: ", progname);
+			perror(argv[0]);
+		}
 	}
 	return status;
 }
