@@ -250,16 +250,8 @@ char *concat(char *s1, char *s2) {
 
 /* compile - compile src into dst, return status */
 static int compile(char *src, char *dst) {
-	int n, status;
-
 	compose(com, clist, append(src, 0), append(dst, 0));
-	status = callsys(av);
-	if (status && *src == '-') {
-		char buf[1024];
-		while ((n = read(0, buf, sizeof buf)) > 0)
-			;
-	}
-	return status;
+	return callsys(av);
 }
 
 /* compose - compose cmd into av substituting a, b, c for $1, $2, $3, resp. */
