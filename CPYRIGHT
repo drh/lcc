@@ -1,7 +1,7 @@
 The authors of this software are Christopher W. Fraser and
 David R. Hanson.
 
-Copyright (c) 1991,1992,1993,1994,1995,1996,1997,1998,1999,2000,2001
+Copyright (c) 1991,1992,1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
 by AT&T, Christopher W. Fraser, and David R. Hanson. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software for any
@@ -50,12 +50,12 @@ profit from what is primarily our work, requires a license agreement
 with Addison-Wesley.  Per-copy and unlimited use licenses are
 available; for more information, contact
 
-	Deborah Lafferty
+	Mike Hendrickson
 	Addison Wesley Professional
-	Pearson Technology Group
-	75 Arlington St., Suite 300
+	75 Arlington St.
 	Boston, MA 02116
-	617/848-6523 FAX: 617/848-6569 debbie.lafferty@awl.com
+	617/848-6522 FAX: 617/848-6569 mikeh@awl.com
+
 -----
 Chris Fraser / cwfraser@microsoft.com
 David Hanson / drh@microsoft.com
