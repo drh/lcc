@@ -660,7 +660,8 @@ reg:  CALLI4(addrj)  "call %0\n"                        1
 reg:  CALLU4(addrj)  "call %0\n"                        1
 reg:  CALLP4(addrj)  "call %0\n"                        1
 
-stmt: CALLV(addrj)   "call %0\naddl $%a,%%esp\n"        hasargs(a)
+stmt: CALLV(addrj)   "call %0\naddl $%a-4,%%esp\n"      hasargs(a) + !isstruct(freturn(a->syms[1]->type))
+stmt: CALLV(addrj)   "call %0\naddl $%a,%%esp\n"        hasargs(a) +  isstruct(freturn(a->syms[1]->type))
 stmt: CALLV(addrj)   "call %0\n"                        1
 
 freg: CALLF4(addrj)  "call %0\naddl $%a,%%esp\n"        hasargs(a)
@@ -924,7 +925,10 @@ static void function(Symbol f, Symbol caller[], Symbol callee[], int n) {
         print("popl %%esi\n");
         print("popl %%ebx\n");
         print("popl %%ebp\n");
-        print("ret\n");
+	if (isstruct(freturn(f->type)))
+		print("ret $4\n");
+	else
+		print("ret\n");
         { int l = genlabel(1);
           print(".Lf%d:\n", l);
           print(".size %s,.Lf%d-%s\n", f->x.name, l, f->x.name);
