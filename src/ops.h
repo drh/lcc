@@ -1,4 +1,4 @@
-// $Id$
+/* $Id$ */
 
 gop(CNST,1)
 	op(CNST,F,fdx)
