@@ -84,6 +84,17 @@ warns when
 .B \-g
 is unsupported.
 .TP
+.BI \-Wf-g n , x
+Set the debugging level to
+.I n
+and emit source code into the generated assembly language, preceding each line with
+.IR x ,
+which should be the assembly language comment character.
+If
+.I n
+is omitted, it defaults to 1, which is similar to
+.BR \-g .
+.TP
 .B \-w
 Suppress warning diagnostics, such as those
 announcing unreferenced statics, locals, and parameters.
