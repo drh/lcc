@@ -6,6 +6,8 @@ see doc/4.html for changes in the code-generation interface.
 
 on the SPARC, lcc now emits .type and .size directives unconditionally.
 
+on the x86, constants are now emitted into the text segment.
+
 Errors fixed:
 
 -A -A erroneously complained about static main's that didn't conform to
