@@ -35,6 +35,7 @@ static void emitrule(Nonterm nts);
 static void emitlabel(Term terms, Nonterm start, int ntnumber);
 static void emitstring(Rule rules);
 static void emitstruct(Nonterm nts, int ntnumber);
+static void emitterms(Term terms);
 static void emittest(Tree t, char *v, char *suffix);
 
 int main(int argc, char *argv[]) {
@@ -74,16 +75,14 @@ int main(int argc, char *argv[]) {
 	yyparse();
 	if (start)
 		ckreach(start);
-	for (p = nts; p; p = p->link) {
-		if (p->rules == NULL)
-			yyerror("undefined nonterminal `%s'\n", p->name);
+	for (p = nts; p; p = p->link)
 		if (!p->reached)
 			yyerror("can't reach nonterminal `%s'\n", p->name);
-	}
 	emitheader();
 	emitdefs(nts, ntnumber);
 	emitstruct(nts, ntnumber);
 	emitnts(rules, nrules);
+	emitterms(terms);
 	emitstring(rules);
 	emitrule(nts);
 	emitclosure(nts);
@@ -255,8 +254,10 @@ Rule rule(char *id, Tree pattern, char *template, char *code) {
 	r->template = template;
 	r->code = code;
 	r->cost = strtol(code, &end, 10);
-	if (*end)
+	if (*end) {
 		r->cost = -1;
+		r->code = stringf("(%s)", code);
+	}
 	if (p->kind == TERM) {
 		for (q = &p->rules; *q; q = &(*q)->next)
 			;
@@ -408,12 +409,12 @@ static void emitclosure(Nonterm nts) {
 
 	for (p = nts; p; p = p->link)
 		if (p->chain)
-			print("static void %Pclosure_%S(NODEPTR_TYPE, int);\n", p);
+			print("static void %Pclosure_%S ARGS((NODEPTR_TYPE, int));\n", p);
 	print("\n");
 	for (p = nts; p; p = p->link)
 		if (p->chain) {
 			Rule r;
-			print("static void %Pclosure_%S(NODEPTR_TYPE a, int c) {\n"
+			print("static void %Pclosure_%S(a, c) NODEPTR_TYPE a; int c; {\n"
 "%1struct %Pstate *p = STATE_LABEL(a);\n", p);
 			for (r = p->chain; r; r = r->chain)
 				emitrecord("\t", r, r->cost);
@@ -452,9 +453,9 @@ static void emitheader(void) {
 	time_t timer = time(NULL);
 
 	print("/*\ngenerated at %sby %s\n*/\n", ctime(&timer), rcsid);
-	print("static void %Pkids(NODEPTR_TYPE, int, NODEPTR_TYPE[]);\n");
-	print("static void %Plabel(NODEPTR_TYPE);\n");
-	print("static int %Prule(void*, int);\n\n");
+	print("static void %Pkids ARGS((NODEPTR_TYPE, int, NODEPTR_TYPE[]));\n");
+	print("static void %Plabel ARGS((NODEPTR_TYPE));\n");
+	print("static int %Prule ARGS((void*, int));\n\n");
 }
 
 /* computekids - compute paths to kids in tree t */
@@ -489,7 +490,7 @@ static void emitkids(Rule rules, int nrules) {
 		r->kids = rc[j];
 		rc[j] = r;
 	}
-	print("static void %Pkids(NODEPTR_TYPE p, int eruleno, NODEPTR_TYPE kids[]) {\n"
+	print("static void %Pkids(p, eruleno, kids) NODEPTR_TYPE p, kids[]; int eruleno; {\n"
 "%1if (!p)\n%2fatal(\"%Pkids\", \"Null tree\\n\", 0);\n"
 "%1if (!kids)\n%2fatal(\"%Pkids\", \"Null kids\\n\", 0);\n"
 "%1switch (eruleno) {\n");
@@ -506,7 +507,7 @@ static void emitlabel(Term terms, Nonterm start, int ntnumber) {
 	int i;
 	Term p;
 
-	print("static void %Plabel(NODEPTR_TYPE a) {\n%1int c;\n"
+	print("static void %Plabel(a) NODEPTR_TYPE a; {\n%1int c;\n"
 "%1struct %Pstate *p;\n\n"
 "%1if (!a)\n%2fatal(\"%Plabel\", \"Null tree\\n\", 0);\n");
 	print("%1STATE_LABEL(a) = p = allocate(sizeof *p, FUNC);\n"
@@ -602,7 +603,7 @@ static void emitrule(Nonterm nts) {
 			print("%1%d,\n", r->ern);
 		print("};\n\n");
 	}
-	print("static int %Prule(void *state, int goalnt) {\n"
+	print("static int %Prule(state, goalnt) void *state; int goalnt; {\n"
 "%1if (goalnt < 1 || goalnt > %d)\n%2fatal(\"%Prule\", \"Bad goal nonterminal %%d\\n\", goalnt);\n"
 "%1if (!state)\n%2return 0;\n%1switch (goalnt) {\n", ntnumber);
 	for (p = nts; p; p = p->link)
@@ -646,6 +647,27 @@ static void emitstruct(Nonterm nts, int ntnumber) {
 		print("%2unsigned int %P%S:%d;\n", nts, n);
 	}
 	print("%1} rule;\n};\n\n");
+}
+
+/* emitterms - emit terminal data structures */
+static void emitterms(Term terms) {
+	Term p;
+	int k;
+
+	print("static char %Parity[] = {\n");
+	for (k = 0, p = terms; p; p = p->link) {
+		for ( ; k < p->esn; k++)
+			print("%10,%1/* %d */\n", k);
+		print("%1%d,%1/* %d=%S */\n", p->arity < 0 ? 0 : p->arity, k++, p);
+	}
+	print("};\n\n");
+	print("static char *%Popname[] = {\n");
+	for (k = 0, p = terms; p; p = p->link) {
+		for ( ; k < p->esn; k++)
+			print("/* %d */%10,\n", k);
+		print("/* %d */%1\"%S\",\n", k++, p);
+	}
+	print("};\n\n");
 }
 
 /* emittest - emit clause for testing a match */
