@@ -228,8 +228,11 @@ Tree tree(char *id, Tree left, Tree right) {
 	if (p->kind == TERM && arity != p->arity)
 		yyerror("inconsistent arity for terminal `%s'\n", id);
 	t->op = p;
-	t->left = left;
-	t->right = right;
+	t->nterms = p->kind == TERM;
+	if (t->left = left)
+		t->nterms += left->nterms;
+	if (t->right = right)
+		t->nterms += right->nterms;
 	return t;
 }
 
@@ -343,20 +346,27 @@ static void emitcase(Term p, int ntnumber) {
 	}
 	for (r = p->rules; r; r = r->next) {
 		switch (p->arity) {
-		case 0:
+		case 0: case -1:
 			print("%2{%1/* %R */\n%3c = ", r);
 			break;
 		case 1:
-			print("%2if (%1/* %R */\n", r);
-			emittest(r->pattern->left, "l", "");
-			print("%2) {\n%3c = ");
+			if (r->pattern->nterms > 1) {
+				print("%2if (%1/* %R */\n", r);
+				emittest(r->pattern->left, "l", " ");
+				print("%2) {\n%3c = ");
+			} else
+				print("%2{%1/* %R */\n%3c = ", r);
 			emitcost(r->pattern->left, "l");
 			break;
 		case 2:
-			print("%2if (%1/* %R */\n", r);
-			emittest(r->pattern->left,  "l", " && ");
-			emittest(r->pattern->right, "r", "");
-			print("%2) {\n%3c = ");
+			if (r->pattern->nterms > 1) {
+				print("%2if (%1/* %R */\n", r);
+				emittest(r->pattern->left,  "l",
+					r->pattern->right->nterms ? " && " : " ");
+				emittest(r->pattern->right, "r", " ");
+				print("%2) {\n%3c = ");
+			} else
+				print("%2{%1/* %R */\n%3c = ", r);
 			emitcost(r->pattern->left,  "l");
 			emitcost(r->pattern->right, "r");
 			break;
@@ -715,15 +725,11 @@ static void emittest(Tree t, char *v, char *suffix) {
 
 	if (p->kind == TERM) {
 		print("%3%s->op == %d%s/* %S */\n", v, p->esn,
-			t->left ? " && " : suffix, p);
+			t->nterms > 1 ? " && " : suffix, p);
 		if (t->left)
-			emittest(t->left,  stringf("%s->left",  v),
-				t->right ? " && " : suffix);
+			emittest(t->left, stringf("%s->left",  v),
+				t->right && t->right->nterms ? " && " : suffix);
 		if (t->right)
 			emittest(t->right, stringf("%s->right", v), suffix);
-	} else {
-		Nonterm p = t->op;
-		assert(p->kind == NONTERM);
-		print("%3%s->rule.%P%S%s\n", v, p, suffix);
 	}
 }
