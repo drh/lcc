@@ -520,7 +520,7 @@ fillbuf(Source *s)
 	nr = INS/8;
 	if ((char *)s->inl+nr > (char *)s->inb+INS)
 		error(FATAL, "Input buffer overflow");
-	if (s->fd==NULL || (n=fread((char *)s->inl, 1, INS/8, s->fd) <= 0))
+	if (s->fd==NULL || (n=fread((char *)s->inl, 1, INS/8, s->fd)) <= 0)
 		n = 0;
 	if ((*s->inp&0xff) == EOB) /* sentinel character appears in input */
 		*s->inp = EOFC;
@@ -535,8 +535,8 @@ fillbuf(Source *s)
 
 /*
  * Push down to new source of characters.
- * If fd>0 and str==NULL, then from a file `name';
- * if fd==-1 and str, then from the string.
+ * If fd!=NULL and str==NULL, then from a file `name';
+ * if fd==NULL and str, then from the string.
  */
 Source *
 setsource(char *name, FILE *fd, char *str)
@@ -572,7 +572,7 @@ unsetsource(void)
 {
 	Source *s = cursource;
 
-	if (s->fd>=0) {
+	if (s->fd != NULL) {
 		fclose(s->fd);
 		dofree(s->inb);
 	}
