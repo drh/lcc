@@ -1,6 +1,7 @@
-#include <u.h>
-#include <libc.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include <stdarg.h>
 #include "cpp.h"
 
@@ -16,16 +17,18 @@ int	ifdepth;
 int	ifsatisfied[NIF];
 int	skipping;
 
+static char rcsid[] = "$Revision$ $Date$";
+
 void
 main(int argc, char **argv)
 {
 	Tokenrow tr;
-	long t;
+	time_t t;
 	char ebuf[BUFSIZ];
 
 	setbuf(stderr, ebuf);
-	t = time(NULL);
-	curtime = ctime(t);
+	t = time((time_t)NULL);
+	curtime = ctime(&t);
 	maketokenrow(3, &tr);
 	expandlex();
 	setup(argc, argv);
@@ -35,7 +38,7 @@ main(int argc, char **argv)
 	process(&tr);
 	flushout();
 	fflush(stderr);
-	exits(nerrs? "errors" : 0);
+	exit(nerrs > 0);
 }
 
 void
@@ -310,7 +313,7 @@ error(enum errtype type, char *string, ...)
 	va_end(ap);
 	fputc('\n', stderr);
 	if (type==FATAL)
-		exits("error");
+		exit(1);
 	if (type!=WARNING)
 		nerrs = 1;
 	fflush(stderr);
