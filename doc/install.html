@@ -21,8 +21,15 @@ Princeton, NJ 08544</b><p>
 <li><a href="#intro">Introduction</a>
 <li><a href="#paths">Paths</a>
 <li><a href="#preprocessor">Installing the Preprocessor</a>
-<li><a href="#driver">Installing the Driver</a>
-<li><a href="#rcc">Installing the Compiler Proper</a>
+<li><a href="#driver">Installing the Driver</a><br>
+4.1 <a href="#bprint">Installing bprint</a>
+<li><a href="#rcc">Installing the Compiler Proper</a><br>
+5.1 <a href="#cross-compiler">Using lcc as Cross-Compiler</a><br>
+5.2 <a href="#lburg">Installing the Code-Generator Generator</a>
+<li><a href="#pc">lcc on a PC</a><br>
+6.1 <a href="#pc-install">Installing lcc under DOS</a><br>
+6.2 <a href="#pc-using">Using lcc under DOS</a><br>
+6.3 <a href="#pc-build">Building lcc under DOS</a>
 <li><a href="#bugs">Reporting Bugs</a>
 <li><a href="#mailinglist">Keeping in Touch</a>
 </ol>
@@ -39,9 +46,10 @@ All paths below are relative to this directory.
 The distribution holds the following subdirectories.
 <dl>
 <dt><tt>src</tt>		<dd>source code
-<dt><tt>etc</tt>		<dd>driver, man page
+<dt><tt>etc</tt>		<dd>driver, accessories
 <dt><tt>cpp</tt>		<dd>preprocessor source code
-<dt><tt>doc</tt>		<dd>this document
+<dt><tt>lburg</tt>		<dd>code-generator generator source code
+<dt><tt>doc</tt>		<dd>this document, man pages
 <dt><tt>include</tt>		<dd>ANSI include files
 <dt><tt>tst</tt>		<dd>test suite
 <dt><tt>mips/* mips/*/tst</tt>	<dd>MIPS build directories, test outputs
@@ -51,7 +59,8 @@ The distribution holds the following subdirectories.
 Distributions include code generators for the MIPS, SPARC,
 and the Intel 386 and its successors.<p>
 
-Installation involves three steps performed in the following order.<p>
+Installation on Unix systems
+involves three steps performed in the following order.<p>
 <ol>
 <li>Decide where to install the man page, the include files,
 the compiler, and <tt>lcc</tt>, the driver program;
@@ -72,6 +81,9 @@ identifies the version of the distribution.
 If the file <tt>LOG</tt> appears, it
 describes the changes from the previous version.<p>
 
+If you're installing <tt>lcc</tt> on a PC, go to
+<a href="#pc">Sec. 6</a> after skimming Secs. 2-5.<p>
+
 <tt>doc/install.html</tt> is the HTML file for this document.
 <tt>doc/install.ps</tt> and <tt>doc/install.txt</tt>
 are PostScript and plain ASCII versions.<p>
@@ -90,7 +102,7 @@ these are summarized below along with paths used in typical installations.
 These files can be placed in other, site-specific locations,
 but the compiler should be named <tt>rcc</tt>.
 If the driver isn't named <tt>lcc</tt>,
-edit the man page (<tt>etc/lcc.1</tt>).<p>
+edit the man page (<tt>doc/lcc.1</tt>).<p>
 
 Include files are in directories named
 <tt>include/</tt><i>target</i><tt>/</tt><i>system</i>;
@@ -108,7 +120,7 @@ or make a copy of a closely related set and edit them.<p>
 For example, if the paths shown above are chosen and if
 <tt>include/mips/ultrix</tt> has the appropriate include files,
 install the man page and include files by
-<pre>% cp etc/lcc.1 /usr/local/man/man1
+<pre>% cp doc/lcc.1 /usr/local/man/man1
 % cp include/mips/ultrix/*.h /usr/local/include/ansi
 </pre>
 
@@ -152,7 +164,7 @@ in the host-specific part of the driver, as detailed in the next section.<p>
 The preprocessor, compiler, assembler, and loader are
 invoked by a driver program, <tt>lcc</tt>, which is similar
 to <tt>cc</tt> on most systems. It's described in the man page
-<tt>etc/lcc.1</tt>.
+<tt>doc/lcc.1</tt>.
 The driver is built by combining the host-independent
 part, <tt>etc/lcc.c</tt>, with a small host-specific part.
 By convention, host-specific parts are named <i>hostname</i><tt>.c</tt>,
@@ -378,6 +390,12 @@ to <tt>option</tt>. Such options have no other effect; this mechanism
 is provided to support system-specific options that affect the
 commands executed by the driver.<p>
 
+To complete the driver,
+write an appropriate <tt>option</tt> function for your system,
+and make and install the driver as described above.<p>
+
+<h3><a name="bprint">4.1 Installing bprint</a></h3>
+
 The <tt>-b</tt> option causes the compiler to generate
 code to count the number of times each expression is executed.
 The <tt>exit</tt> function in <tt>etc/bbexit.c</tt> writes these
@@ -401,17 +419,13 @@ and generates a listing annotated with execution counts.
 After <tt>lcc</tt> is installed, install <tt>bprint</tt> with the commands
 <pre>% make bprint
 % cp bprint /usr/local/bin/bprint
-% cp bprint.1 /usr/local/man/man1
+% cp ../doc/bprint.1 /usr/local/man/man1
 </pre>
 The <tt>makefile</tt> uses <tt>lcc</tt> to compile <tt>bprint.c</tt>;
 you must use <tt>lcc</tt> or another ANSI C compiler, e.g., <tt>gcc</tt>,
 because <tt>bprint.c</tt> is written in ANSI C.
 Also, <tt>bprint.c</tt> <em>includes</em> <tt>"../src/profio.c"</tt>, so it must
 be compiled in <tt>etc</tt>.<p>
-
-To complete the driver,
-write an appropriate <tt>option</tt> function for your system,
-and make and install the driver as described above.<p>
 
 <h2><a name="rcc">5. Installing the Compiler Proper</a></h2>
 
@@ -423,7 +437,7 @@ The examples below illustrate this process on a MIPS under Ultrix.
 You must have the driver, <tt>lcc</tt>, installed in order
 to test <tt>rcc</tt>.
 If any of the steps below fail, contact us
-(see <a href="#bugs">Sec. 6</a>).<p>
+(see <a href="#bugs">Sec. 7</a>).<p>
 
 The object files, <tt>rcc</tt>, and the generated code for
 the programs in the test suite are placed in the directory
@@ -622,6 +636,8 @@ to the name of a SPARC machine to which you can <tt>rlogin</tt>,
 <tt>src/run</tt> will <tt>rcp</tt> the generated code to that machine
 and execute it there, if necessary. See <tt>src/run</tt> for the details.<p>
 
+<h3><a name="cross-compiler">5.1 Using lcc as Cross-Compiler</a></h3>
+
 Once everything is installed, you can use <tt>lcc</tt> as a cross compiler.
 The options <tt>-S</tt> and <tt>-Wf-target=</tt><i>target-system</i>
 generate assembly code for the specified target, which
@@ -644,7 +660,226 @@ Finally, the option <tt>-Wf-target=null</tt> specifies the ``null''
 target for which <tt>lcc</tt> emits nothing and thus only checks
 the syntax and semantics of its inputs files.<p>
 
-<h2><a name="bugs">6. Reporting Bugs</a></h2>
+<h3><a name="lburg">5.2 Installing the Code-Generator Generator</a></h3>
+
+The directory <tt>lburg</tt> holds the source
+code for the code-generator generator. To build <tt>lburg</tt>,
+execute the commands
+<pre>% cd lburg
+% make
+</pre>
+You must use <tt>lcc</tt> or another ANSI C compiler, e.g., <tt>gcc</tt>,
+because <tt>lburg</tt> is written in ANSI C.<p>
+
+To test <tt>lburg</tt>, use it process one of the machine
+descriptions in <tt>src/*.md</tt> and compare the output with
+the corresponding <tt>src/*.c</tt> file. For example,
+<pre>% lburg <../src/x86.md | diff ../src/x86.nw -
+40c40
+< generated at Mon Dec  5 17:49:52 1994
+---
+> generated at Tue Dec  6 13:35:42 1994
+</pre>
+processes <tt>src/x86.md</tt> and compares the output with
+what's expected. You may get 1-2 lines of differences, because
+<tt>lburg</tt>'s output includes a timestamp and a version stamp.
+Move <tt>lburg</tt> to the desired
+installation directory.
+The command ``<tt>make clean</tt>''
+cleans up, but does not remove <tt>lburg</tt>, and
+``<tt>make clobber</tt>''
+cleans up more and removes <tt>lburg</tt>.<p>
+
+<tt>src/makefile</tt> includes three rules for building
+<tt>src/mips.c</tt>,
+<tt>src/sparc.c</tt>, and
+<tt>src/x86.c</tt> from the corresponding machine descriptions in
+<tt>src/mips.md</tt>,
+<tt>src/sparc.md</tt>, and
+<tt>src/x86.md</tt>. These rules are commented out in the distributed
+<tt>src/makefile</tt>; remove the leading ``<tt>#</tt>'' to uncomment
+these lines, if you want to run <tt>lburg</tt> whenever these <tt>src/*.md</tt>
+files are changed. You may also want to remove the leading ``<tt>#</tt>''
+on the <tt>rm</tt> command in the <tt>clobber</tt> rule, if you want
+``<tt>make clobber</tt>'' to remove the <tt>src/*.c</tt> files generated
+by <tt>lburg</tt>.<p>
+
+Chapters 13-15 in
+<cite>A Retargetable C Compiler: Design and Implementation</cite>
+describe the overall structure of <tt>lcc</tt>'s code generator,
+and the use of <tt>lburg</tt>. Chapters 16-18 describe the target-specific
+parts, including the <tt>lburg</tt> rules,
+for the MIPS, SPARC, and x86 architectures.
+The easiest way to write a code generator for a new target
+is to make a copy of the <tt>.md</tt> file for the architecture that's closest to your
+intended target, and edit the copy, using the corresponding chapter
+as a guide.<p>
+
+For example, the following steps add a code generator for the PowerPC under AIX.
+<ol>
+<li>Copy <tt>src/mips.md</tt> to, say, <tt>src/power.md</tt>,
+and edit this copy into a code generator for the PowerPC.<p>
+
+<li>Edit <tt>src/makefile</tt>:
+Add <tt>power.o</tt> to the definition of <tt>OBJS</tt>, and add
+the following rules.
+<pre>power.o:	$(SRC)/power.c;		$(CC) -c $(CFLAGS) $(SRC)/power.c
+$(SRC)/power.c:	$(SRC)/power.md;	lburg <$(SRC)/power.md >$(SRC)/power.c
+</pre><p>
+
+<li>Create the directories <tt>power</tt>, <tt>power/aix</tt>, and
+<tt>power/aix/tst</tt>.<p>
+
+<li>Bind the new code generator
+to the front end by including it in the initialization of
+<tt>bindings</tt> in <tt>src/bind.c</tt> as described in Section 5.11
+of <cite>A Retargetable C Compiler</cite>. For example, if the variable
+<tt>powerIR</tt> is the interface record for the PowerPC code generator,
+add the declaration
+<pre>extern Interface powerIR;
+</pre>
+to the beginning of <tt>src/bind.c</tt>, and add the line
+<pre>"power-aix",       &powerIR,
+</pre>
+to the initialization of <tt>bindings</tt>.<p>
+
+</ol>
+Once these steps are completed, the commands
+<pre>% cd power/aix
+% make -f ../../src/makefile TARGET=power-aix
+</pre>
+build an <tt>rcc</tt> that includes
+the new code generator. It's a good idea to do all these steps
+changing <tt>src/power.md</tt> as little as possible to get the
+machinery in place first, then finish editing <tt>src/power.md</tt>
+into the new code generator.<p>
+
+<h2><a name="pc">6. lcc on a PC</a></h2>
+
+This section describes installing and operating <tt>lcc</tt> under MS-DOS.
+Read all sections above first. The DOS distribution does not support
+<tt>lcc</tt>'s <tt>-b</tt>, <tt>-g</tt>, and <tt>-p</tt> options.<p>
+
+On the X86, <tt>lcc</tt> emits assembler code that uses a 32-bit flat address
+space. It requires an external assembler, linker, library, and DOS
+extender. We assemble <tt>lcc</tt>'s emitted code with Borland Turbo
+Assembler 4.0 or Microsoft's MASM 6.11, and we turn the resulting
+object code into .exe file using the linker, library, and DOS
+extender from Borland C++ 4.02 plus Borland PowerPack for DOS. Small
+changes to <tt>x86.c</tt> have allowed it to work with the linker, library, and
+DOS extender from Symantec C++ 6.1.<p>
+
+<h3><a name="pc-install">6.1 Installing lcc under DOS</a></h3>
+
+The distribution includes executable files for the preprocessor
+(<tt>cpp\cpp.exe</tt>), the compiler proper (<tt>src\rcc.exe</tt>),
+and the compiler's driver (<tt>etc\lcc.exe</tt>).
+<tt>etc\bc4.exe</tt> is a prebuilt driver for use with
+Borland's Turbo Assembler 4.0, Borland C++ 4.02, and Borland PowerPack
+for DOS. To use some other combination of assembler, linker, library,
+and DOS extender, or to change the path names compiled into the
+driver, build a new driver. Then copy the executables to the sites
+that you chose. You'll probablyl have to modify the driver
+and <tt>include\x86\dos\*.h</tt> if you want to use them.
+It is unlikely that you'll need to rebuild <tt>cpp.exe</tt> or <tt>rcc.exe</tt>.<p>
+
+<tt>lcc</tt> comes with a preprocessor and ANSI include files
+(<tt>include\x86\dos\*.h</tt>) that work with the library and DOS extender
+included with Symantec C++ 6.1. Include files are generally tailored,
+however, for a specific library, so use the headers that come with
+your library, or adapt <tt>lcc</tt>'s headers to work with your library.<p>
+
+If you use headers that exploit language extensions, you must also use
+their companion preprocessor, or you must protect <tt>cpp.exe</tt> from the
+extensions, because <tt>cpp.exe</tt> obeys the ANSI specification. For
+example, when we use <tt>lcc</tt> with the library from Borland C++ 4.02, we
+use Borland's headers too, and they annotate many declarations with a
+non-ANSI attribute, <tt>__cdecl</tt>.
+The distribution's <tt>cpp.exe</tt> won't recognize <tt>__cdecl</tt>,
+so we use the <tt>cpp.exe</tt> option <tt>-D__cdecl=</tt> to
+eliminate this extension, or we use Borland's preprocessor.
+
+<h3><a name="pc-using">6.2 Using lcc under DOS</a></h3>
+
+The default executable file is <tt>a.exe</tt>, and object files
+have the extension <tt>.obj</tt>.
+The other extensions are as described in <a href="#driver">Sec. 4</a>,
+above, including assembler files, which
+end in <tt>.s</tt>, not <tt>.asm</tt>.<p>
+
+The Unix driver for <tt>lcc</tt> invokes the process for each compiler subphase
+that's needed. In principle, the DOS driver could do likewise, but
+doing so fails under at least some DOS extenders. For maximum
+portability, the distributed DOS driver thus merely emits a command
+file, into <tt>\tmp\dolcc.bat</tt>, which must be run to compile anything;
+for example,
+<pre>C:> lcc 8q.c
+C:> \tmp\dolcc.bat
+</pre>
+compiles, assembles, and links <tt>8q.c</tt>.<p>
+
+Users running programs like <tt>doskey</tt> can easily create a macro that
+abbreviates this idiom, but makefiles and batch files must invoke
+<tt>dolcc.bat</tt> explicitly.
+If the library routines <tt>system</tt> or <tt>execv</tt> work
+with your DOS extender, you might be able to modify the routine
+<tt>execute</tt> in <tt>etc\lcc.c</tt> to avoid this irritation.<p>
+
+Note that the distributed <tt>lcc.exe</tt> obviates <tt>-v -v</tt>
+because it never executes commands anyway.
+Also, it complicates the idiom that saves
+the preprocessed source in a file. That is,
+<pre>C:> lcc -E 8q.c >8q.i
+</pre>
+fails to capture the preprocessed <tt>8q.c</tt> in <tt>8q.i</tt>
+because <tt>lcc.exe</tt> creates
+but does not execute a preprocessor command.<p>
+
+<h3><a name="pc-build">6.3 Building lcc under DOS</a></h3>
+
+It is not likely that you'll need to rebuild <tt>cpp.exe</tt>,
+but <tt>cpp\make.bat</tt>
+automates the process if you do. Nor is it likely that you'll need to
+rebuild <tt>rcc.exe</tt>, unless your assembler or library, say, requires the
+compiler to emit different assembler code. Read the rest of this
+section only if you need to modify <tt>rcc.exe</tt>.<p>
+
+On MS-DOS systems, several batch files replace the Unix make and shell
+files described in the sections above. <tt>src\make.bat</tt> replaces the
+<tt>make triple</tt> process described in <a href="#rcc">Sec. 5</a>.
+It calls <tt>src\lccn.bat</tt> to
+compile compiler modules using <tt>lcc</tt>.
+<tt>src\test.bat</tt> runs <tt>lcc</tt>'s test
+suite. It calls <tt>src\run.bat</tt> once for each test program. The batch
+files compile the test files in the directory <tt>x86\dos\tst</tt>, but they
+compile the compiler itself in the <tt>src</tt> directory.
+<tt>lccn.exe</tt> and <tt>run.exe</tt>
+include <tt>\tmp\dolcc.bat</tt> as a hard path name; edit them if you had your
+driver deliver its commands elsewhere.<p>
+
+<tt>src\make.bat</tt> builds <tt>rcc.exe</tt> three times.
+It builds the first with
+Borland C++ 4.02, and builds the other two with the <tt>rcc.exe</tt> built just
+before. For the first of these three stages, <tt>make.bat</tt> copies the
+generated executable to directory <tt>src\rcc1</tt>. The second and third
+stages do likewise with directories <tt>src/rcc2</tt> and <tt>src/rcc3</tt>,
+and they move to <tt>.s</tt>
+files there as well, so that they can be compared. Clear these
+directories once all tests pass.<p>
+
+Each stage runs <tt>src\test.bat</tt>.
+In directory <tt>x86\dos\tst</tt>, run <tt>clean.bat</tt>
+once all tests pass.<p>
+
+Ideally, <tt>rcc2\rcc.exe</tt> and <tt>rcc3\rcc.exe</tt> or <tt>rcc2\*.obj</tt>
+and <tt>rcc3\*.obj</tt> would be identical,
+but at least some DOS assemblers and linkers emit
+slightly different object and executable files when rerun on some fixed
+assembler modules, so <tt>make.bat</tt> can confirm that <tt>lcc</tt>
+consistently emits the same code for itself
+only by comparing <tt>rcc2\*.s</tt> with <tt>rcc3\*.s</tt>.<p>
+
+<h2><a name="bugs">7. Reporting Bugs</a></h2>
 
 <tt>lcc</tt> is a large, complex program.
 We find and repair errors routinely. If you think
@@ -703,7 +938,7 @@ semiautomatically.<p>
 
 </ol>
 
-<h2><a name="mailinglist">7. Keeping in Touch</a></h2>
+<h2><a name="mailinglist">8. Keeping in Touch</a></h2>
 
 There is an <tt>lcc</tt> mailing list for general information about <tt>lcc</tt>.
 To be added to the list, send a message with the 1-line body 
@@ -713,7 +948,7 @@ to <tt>majordomo@cs.princeton.edu</tt>.
 This line must appear in the message body;
 ``Subject:'' lines are ignored.
 To learn more about mailing lists served by <tt>majordomo</tt>,
-send a message with the 1-word body <tt>``help''</tt>
+send a message with the 1-word body ``<tt>help</tt>''
 to <tt>majordomo@cs.princeton.edu</tt>.
 
 Mail sent to <tt>lcc@cs.princeton.edu</tt>
@@ -736,6 +971,6 @@ this list.<p>
 <a href="/faculty/drh">David Hanson</a> / drh@cs.princeton.edu
 </address>
 <address>
-Sun Sep 25 15:59:53 EDT 1994
+Wed Dec  7 14:38:31 EST 1994
 </address>
 </BODY>
