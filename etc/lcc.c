@@ -216,7 +216,7 @@ extern int fork(void);
 extern int wait(int *);
 extern void execv(const char *, char *[]);
 
-static int _spawnvp(int mode, const char *cmdname, char *argv[]) {
+static int _spawnvp(int mode, const char *cmdname, const char *const argv[]) {
 	int pid, n, status;
 
 	switch (pid = fork()) {
@@ -224,7 +224,7 @@ static int _spawnvp(int mode, const char *cmdname, char *argv[]) {
 		fprintf(stderr, "%s: no more processes\n", progname);
 		return 100;
 	case 0:
-		execv(cmdname, argv);
+		execv(cmdname, (char **)argv);
 		fprintf(stderr, "%s: ", progname);
 		perror(cmdname);
 		fflush(stdout);
@@ -280,7 +280,7 @@ static int callsys(char **av) {
 			fprintf(stderr, "\n");
 		}
 		if (verbose < 2)
-			status = _spawnvp(_P_WAIT, argv[0], argv);
+			status = _spawnvp(_P_WAIT, argv[0], (const char * const *)argv);
 		if (status == -1) {
 			fprintf(stderr, "%s: ", progname);
 			perror(argv[0]);
