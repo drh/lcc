@@ -148,7 +148,7 @@ struct	fsm {
 	COM1,	{ '*' },	COM2,
 	COM1,	{ '/' },	COM4,
 
-	/* saw "/*", start of comment */
+	/* saw / then *, start of comment */
 	COM2,	{ C_XX },	COM2,
 	COM2,	{ '\n' },	S_COMNL,
 	COM2,	{ '*' },	COM3,
