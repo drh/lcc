@@ -204,39 +204,77 @@ char *basename(char *name) {
 	return s;
 }
 
-/* callsys - execute the command described by argv[0...], return status */
-static int callsys(char **argv) {
-	int i, n = 0, status = 0;
-	char *s, *cmd;
-	static char *cmdbuf;
-	static int cmdlen;
+#ifdef WIN32
+#include <process.h>
+#else
+#define _P_WAIT 0
+extern int fork(void);
+extern int wait(int *);
+extern void execv(const char *, char *[]);
 
-	for (i = 0; argv[i]; i++)
-		n += strlen(argv[i]) + 1;
-	if (n + 1 > cmdlen)
-		if (cmdlen == 0)
-			cmdbuf = malloc(cmdlen = n + 1);
-		else
-			cmdbuf = realloc(cmdbuf, cmdlen = n + 1);
-	assert(cmdbuf);
-	s = cmdbuf;
-	for (i = 0; argv[i]; i++) {
-		strcpy(s, argv[i]);
-		s += strlen(argv[i]);
-		*s++ = ' ';
+static int _spawnvp(int mode, const char *cmdname, char *argv[]) {
+	int pid, n, status;
+
+	switch (pid = fork()) {
+	case -1:
+		fprintf(stderr, "%s: no more processes\n", progname);
+		return 100;
+	case 0:
+		execv(cmdname, argv);
+		fprintf(stderr, "%s: can't execute `%s'\n", progname, cmdname);
+		fflush(stdout);
+		exit(100);
 	}
-	*s++ = '\n';
-	*s = '\0';		
-	if (verbose >= 2)
-		fprintf(stderr, "%s\n", cmdbuf);
-	else {
-		char *cmd;
-		for (cmd = cmdbuf; status == 0 && (s = strchr(cmd, '\n')) != NULL; cmd = s + 1) {
-			*s = '\0';
-			if (verbose > 0)
-				fprintf(stderr, "%s\n", cmd);
-			status = system(cmd);
+	while ((n = wait(&status)) != pid && n != -1)
+		;
+	if (n == -1)
+		status = -1;
+	if (status&0377) {
+		fprintf(stderr, "%s: fatal error in %s\n", progname, cmdname);
+		status |= 0400;
+	}
+	return (status>>8)&0377;
+}
+#endif
+
+/* callsys - execute the command described by av[0...], return status */
+static int callsys(char **av) {
+	int i, status = 0;
+	static char **argv;
+	static int argc;
+
+	for (i = 0; av[i] != NULL; i++)
+		;
+	if (i + 1 > argc) {
+		argc = i + 1;
+		if (argv == NULL)
+			argv = malloc(argc*sizeof *argv);
+		else
+			argv = realloc(argv, argc*sizeof *argv);
+	}
+	for (i = 0; status == 0 && av[i] != NULL; ) {
+		int j = 0;
+		char *s;
+		for ( ; av[i] != NULL && (s = strchr(av[i], '\n')) == NULL; i++)
+			argv[j++] = av[i];
+		if (s != NULL) {
+			if (s > av[i])
+				argv[j++] = stringf("%.*s", s - av[i], av[i]);
+			if (s[1] != '\0')
+				av[i] = s + 1;
+			else
+				i++;
 		}
+		argv[j] = NULL;
+		if (verbose > 0) {
+			int k;
+			fprintf(stderr, "%s", argv[0]);
+			for (k = 1; argv[k] != NULL; k++)
+				fprintf(stderr, " %s", argv[k]);
+			fprintf(stderr, "\n");
+		}
+		if (verbose < 2)
+			status = _spawnvp(_P_WAIT, argv[0], argv);
 	}
 	return status;
 }
