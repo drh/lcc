@@ -1,5 +1,5 @@
 .\" $Id$
-.TH LCC 1 "local \- 2/21/97"
+.TH LCC 1 "local \- $Date$"
 .SH NAME
 lcc \- local ANSI C compiler
 .SH SYNOPSIS
@@ -372,9 +372,8 @@ combinations may include
 .ta \w'sparc/solarisxx'u
 .nf
 alpha/osf	ALPHA, OSF 3.2
-mips/irix	big-endian MIPS, IRIX 4.0
+mips/irix	big-endian MIPS, IRIX 5.2
 mips/ultrix	little-endian MIPS, ULTRIX 4.3
-sparc/sun	SPARC, SunOS 4.1
 sparc/solaris	SPARC, Solaris 2.3
 x86/win32	Windows NT 4.0/Windows 95
 symbolic	textual rendition of the generated code
@@ -428,7 +427,7 @@ Consequently, calls to/from such functions compiled with
 or other C compilers may not work.
 Calling a function that returns
 a structure without declaring it as such violates
-the ANSI standard and may cause a core dump.
+the ANSI standard and may cause a fault.
 .SH FILES
 .PP
 The file names listed below are
@@ -474,7 +473,7 @@ C. W. Fraser and D. R. Hanson,
 .I A Retargetable C Compiler: Design and Implementation,
 Addison-Wesley, 1995. ISBN 0-8053-1670-1.
 .PP
-The World-Wide Web page at URL http://www.cs.princeton.edu/software/lcc/.
+The World-Wide Web page at http://www.cs.princeton.edu/software/lcc/.
 .PP
 S. P. Harbison and G. L. Steele, Jr.,
 .I C: A Reference Manual,
