@@ -72,9 +72,10 @@ static int code = 0;
 
 static int get(void) {
 	if (*bp == 0) {
+		bp = buf;
+		*bp = 0;
 		if (fgets(buf, sizeof buf, infp) == NULL)
 			return EOF;
-		bp = buf;
 		yylineno++;
 		while (buf[0] == '%' && buf[1] == '{' && buf[2] == '\n') {
 			for (;;) {
@@ -169,7 +170,7 @@ int yylex(void) {
 				else
 					n = 10*n + d;
 				c = get();
-			} while (isdigit(c));
+			} while (c != EOF && isdigit(c));
 			bp--;
 			yylval.n = n;
 			return INT;
