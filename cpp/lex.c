@@ -433,6 +433,11 @@ gettokens(Tokenrow *trp, int reset)
 				state = COM2;
 				ip += runelen;
 				runelen = 1;
+				if (ip >= s->inb+(7*INS/8)) { /* very long comment */
+					memmove(tp->t, ip, 4+s->inl-ip);
+					s->inl -= ip-tp->t;
+					ip = tp->t+1;
+				}
 				continue;
 
 			case S_EOFCOM:
