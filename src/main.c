@@ -111,7 +111,6 @@ void main_init(int argc, char *argv[]) {
 	if (inited)
 		return;
 	inited = 1;
-	type_init(argc, argv);
 	for (i = 1; i < argc; i++)
 		if (strcmp(argv[i], "-g") == 0 || strcmp(argv[i], "-g2") == 0)
 			glevel = 2;
