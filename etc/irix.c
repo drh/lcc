@@ -8,6 +8,7 @@ static char rcsid[] = "$Id$";
 #define LCCDIR "/usr/local/lib/lcc/"
 #endif
 
+char inputs[256] = "";
 char *cpp[] = { LCCDIR "cpp", "-D__STDC__=1",
 	"-DLANGUAGE_C",
 	"-DMIPSEB",
@@ -39,7 +40,7 @@ char *include[] = { "-I" LCCDIR "include", "-I/usr/local/include",
 char *as[] = { "/usr/bin/as", "-o", "$3", "$1", "-nocpp", "-KPIC", "$2", 0 };
 char *ld[] = { "/usr/bin/ld", "-require_dynamic_link", "_rld_new_interface",
 	"-elf", "-_SYSTYPE_SVR4", "-Wx,-G", "0", "-g0", "-KPIC",
-	"-o", "$3", "/usr/lib/crt1.o",
+	"-o", "$3", "/usr/lib/crt1.o", "-L/usr/local/lib",
 	"$1", "$2", "", "-lc", "/usr/lib/crtn.o", 0
 };
 static char *bbexit = LCCDIR "bbexit.o";
@@ -69,7 +70,7 @@ int option(char *arg) {
 	else if (strcmp(arg, "-p") == 0)
 		ld[11] = "/usr/lib/mcrt1.o";
 	else if (strcmp(arg, "-b") == 0 && access(bbexit, 4) == 0)
-		ld[14] = bbexit;
+		ld[15] = bbexit;
 	else
 		return 0;
 	return 1;

@@ -11,6 +11,7 @@ static char rcsid[] = "$Id$";
 #define SUNDIR "/opt/SUNWspro/SC4.0/lib/"
 #endif
 
+char inputs[256] = "";
 char *cpp[] = { LCCDIR "cpp",
 	"-D__STDC__=1", "-Dsparc", "-D__sparc__", "-Dsun", "-D__sun__",
 	"$1", "$2", "$3", 0 };
@@ -43,6 +44,8 @@ int option(char *arg) {
 			 SUNDIR ":/usr/ccs/lib:/usr/lib";
 	} else if (strcmp(arg, "-b") == 0 && access(bbexit, 4) == 0)
 		ld[8] = bbexit;
+	else if (strncmp(arg, "-ld=", 4) == 0)
+		ld[0] = &arg[4];
 	else
 		return 0;
 	return 1;

@@ -15,6 +15,7 @@ static char rcsid[] = "$Id$";
 #define GCCLIB "/usr/local/gnu/lib/gcc-lib/sparc-sun-solaris2.5/2.7.2/"
 #endif
 
+char inputs[256] = "";
 char *cpp[] = { LCCDIR "cpp",
 	"-D__STDC__=1", "-Dsparc", "-D__sparc__", "-Dsun", "-D__sun__",
 	"$1", "$2", "$3", 0 };
