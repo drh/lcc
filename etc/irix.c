@@ -17,6 +17,7 @@ char *cpp[] = { LCCDIR "cpp", "-D__STDC__=1",
 	"-DLANGUAGE_C",
 	"-DMIPSEB",
 	"-DSYSTYPE_SVR4",
+	"-D_LONGLONG",		/* some SGI header files assume this */
 	"-D_CFE",
 	"-D_LANGUAGE_C",
 	"-D_MIPSEB",
