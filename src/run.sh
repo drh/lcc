@@ -25,7 +25,7 @@ TSTDIR=${TSTDIR-${BUILDDIR}/$dir/tst}
 if [ ! -d $TSTDIR ]; then mkdir -p $TSTDIR; fi
 
 echo ${BUILDDIR}/rcc$EXE -target=$target/$os $1: 1>&2
-$LCC -N -S -I$idir -Ualpha -Usun -Uvax -Umips -Ux86 \
+$LCC -S -I$idir -Ualpha -Usun -Uvax -Umips -Ux86 \
 	-Wf-errout=$TSTDIR/$C.2 -D$target -Wf-g0 \
 	-Wf-target=$target/$os -o $1 tst/$C.c
 if [ $? != 0 ]; then remotehost=noexecute; fi
