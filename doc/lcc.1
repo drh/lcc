@@ -56,6 +56,10 @@ Include files not found in the ANSI header files
 are taken from the normal default include areas,
 which usually includes
 .BR /usr/include .
+Under Windows, if the environment variable
+.B include
+is defined, it gives a semicolon-separated list of directories in which to search for
+header files.
 .PP
 .I lcc
 interprets the following options; unrecognized options are
@@ -225,6 +229,9 @@ are passed to the loader; see
 .BI \-Wo\-lccdir= dir
 Find the preprocessor, compiler proper, and include directory
 in the directory \fIdir\fP/ or \fIdir\fP\\.
+If the environment variable
+.B LCCDIR
+is defined, it gives this directory.
 .I lcc
 warns when this option is unsupported.
 .TP
@@ -266,9 +273,18 @@ causes the commands to be printed, but
 executed.
 .TP
 .B \-help
-Print a message summarizing
+Print a message on the standard error summarizing
 .IR lcc 's
-options on the standard error.
+options and giving the values of the environment variables
+.B LCCINPUTS
+and
+.BR LCCDIR ,
+if they are defined.
+Under Windows, the values of
+.B include
+and
+.B lib
+are also given, if they are defined.
 .TP
 .B \-b
 Produce code that counts the number of times each expression is executed.
@@ -417,7 +433,8 @@ alpha/osf	ALPHA, OSF 3.2
 mips/irix	big-endian MIPS, IRIX 5.2
 mips/ultrix	little-endian MIPS, ULTRIX 4.3
 sparc/solaris	SPARC, Solaris 2.3
-x86/win32	Windows NT 4.0/Windows 95
+x86/win32	x86, Windows NT 4.0/Windows 95/Windows 98
+x86/linux	x86, Linux
 symbolic	text rendition of the generated code
 null		no output
 .fi
