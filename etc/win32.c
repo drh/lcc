@@ -19,7 +19,6 @@ char *ld[] = { "link", "-nologo",
 	"$2", "-OUT:$3", "$1", LCCDIR "liblcc.lib", "libc.lib", "kernel32.lib", 0 };
 
 extern char *concat(char *, char *);
-extern int access(const char *, int);
 extern char *replace(const char *, int, int);
 
 int option(char *arg) {
