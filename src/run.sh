@@ -36,7 +36,7 @@ noexecute)	exit 0 ;;
 	if expr "$remotehost" : '.*@' >/dev/null ; then
 		remotehost="`expr $remotehost : '.*@\(.*\)'` -l `expr $remotehost : '\(.*\)@'`"
 	fi
-	rsh $remotehost "$LCC -o $2 $2.s;./$2;rm $2 $2.[so]" <../../../tst/$2.0 >$2.1
+	rsh $remotehost "$LCC -o $2 $2.s -lm;./$2;rm $2 $2.[so]" <../../../tst/$2.0 >$2.1
 	;;
 esac
 if [ ! -r $2.1bk ]; then
