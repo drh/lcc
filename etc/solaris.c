@@ -11,6 +11,7 @@ static char rcsid[] = "$Id$";
 #define SUNDIR "/opt/SUNWspro/SC4.0/lib/"
 #endif
 
+char *suffixes[] = { ".c", ".i", ".s", ".o", "", 0 };
 char inputs[256] = "";
 char *cpp[] = { LCCDIR "cpp",
 	"-D__STDC__=1", "-Dsparc", "-D__sparc__", "-Dsun", "-D__sun__", "-Dunix",
