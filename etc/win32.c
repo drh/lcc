@@ -16,7 +16,7 @@ char inputs[256] = "";
 char *cpp[] = { LCCDIR "cpp.exe",
 	"-D__STDC__=1", "$1", "$2", "$3", 0 };
 char *include[] = { "-I" LCCDIR "include", "\"-I" VCCDIR "include\"", 0 };
-char *com[] = { LCCDIR "rcc.exe", "-target=sparc/solaris",
+char *com[] = { LCCDIR "rcc.exe", "-target=x86/win32",
 	"$1", "$2", "$3", 0 };
 char *as[] = { "\"/program files/MASM611/bin/ml.exe\"", "-nologo", "-c",
 	"-Fo$3", "$1", "$2", 0 };
