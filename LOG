@@ -1,34 +1,20 @@
-From lcc 3.5 to 3.6:
+From lcc 3.6 to 4.0:
 
 Changes:
 
--A -A now complains if main is declared other than the ANSI-mandated
-`int main(void)' or `int main(int, char **)'.
-
--A is no longer needed to diagnose missing int return values.
-
-lcc now writes .o files to the current directory or to the target of -o
-only if -c is specified.
-
-New options -nopipe, -tempdir, and -Wo-lccdir; see the man page.
-
-The SPARC code generator now emits multiply/divide instructions.
+on the SPARC, lcc now emits .type and .size directives unconditionally.
 
 Errors fixed:
 
-lcc's preprocessor failed to expand a macro w/parameters if the macro
-name alone appeared before an invocation, eg, #define x(b) b/x x(a)
+-A -A erroneously complained about static main's that didn't conform to
+the ANSI-mandated `int main(void)' or `int main(int, char **)'.
 
-Given `typedef const struct foo T; struct foo { ... }' lcc failed to
-compute the size of T correctly.
+Generated incorrect values in some expressions with constant pointers.
 
-Erroneously diagnosed some compatible new-style and old-style function
-types with enum arguments, e.g. void f(enum foo x); void f(x) int x; {}
+on the SPARC, erroneously reused a register variable as a temporary when
+the variable is compiler-generated.
 
-Generated incorrect values for constants that overflowed when running
-on an ALPHA (but generating code for other targets).
+on the SPARC with -b, emitted incorrect code for returning structs.
 
-Crashed with an assertion failure on some invalid function calls, eg,
-int i; f() { i(); }
 
 $Id$
