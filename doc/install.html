@@ -90,8 +90,8 @@ into that directory. If these conventions or their equivalents are followed, the
 host-specific parts of the driver program, <TT>lcc</TT>, can be used
 unmodified.</P>
 <P> Installation on UNIX systems involves the following steps. Below, the build
-directory is referred to as <TT>BUILDDIR</TT>. You will need an existing ANSI C
-compiler to install lcc.</P>
+directory is referred to as <TT>BUILDDIR</TT>. <STRONG>You will need an
+existing ANSI/ISO C compiler to install lcc.</STRONG></P>
 <OL>
 <LI>Create the build directory, using a version- and platform-specific naming
 convention as suggested above, and record the name of this directory in the
@@ -99,7 +99,8 @@ convention as suggested above, and record the name of this directory in the
 <BLOCKQUOTE>
 <PRE>% setenv BUILDDIR /usr/local/lib/lcc-3.6/sparc/solaris
 % mkdir -p $BUILDDIR</PRE></BLOCKQUOTE>Here and below, commands assume the C
-shell.</LI>
+shell. Also, you'll need a version of <TT>mkdir</TT> that supports the <TT>-p</TT>
+option, which creates intermediate directories as necessary.</LI>
 <LI>Copy the man pages to the repository for local man pages, e.g.,
 <BLOCKQUOTE>
 <PRE>% cp doc/*.1 /usr/local/man/man1</PRE></BLOCKQUOTE>Some users copy the man
@@ -317,9 +318,9 @@ set appropriately and type &quot;<TT>make all</TT>&quot;. This command builds
 <TT>rcc</TT> (the compiler proper), <TT>lburg</TT> (the code-generator
 generator), <TT>cpp</TT> (the preprocessor), <TT>bbexit.o</TT> (the profiling
 exit routine), and <TT>bprint</TT> (the profile printer), all in <TT>BUILDDIR</TT>.
-There may be a few warnings, but there should be no errors. If you use <TT>gcc</TT>,
-specify
-<TT>CFLAGS=&quot;-ansi -fno-builtin&quot;</TT>.</P>
+There may be a few warnings, but there should be no errors. If you're using an
+ANSI/ISO compiler other than <TT>cc</TT>, specify its name with the <TT>CC=</TT>
+option, e.g., &quot;<TT>make CC=gcc all</TT>&quot;.</P>
 <P>Once <TT>rcc</TT> is built with the host C compiler, run the test suite to
 verify that <TT>rcc</TT> is working correctly. If any of the steps below fail,
 contact us (see <A HREF="#bugs">Sec. 4</A>). The commands in the makefile run
@@ -332,6 +333,7 @@ when invoking
 <TT>make</TT>:</P>
 <BLOCKQUOTE>
 <PRE>% make TARGET=sparc/solaris test
+mkdir -p /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst
 /usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/8q.s:
 /usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/array.s:
 /usr/local/lib/lcc-3.6/sparc-solaris/rcc -target=sparc/solaris /usr/local/lib/lcc-3.6/sparc-solaris/sparc/solaris/tst/cf.s:
