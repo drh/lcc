@@ -1,5 +1,5 @@
 <HEADER>
-<TITLE>Installing lcc</tt></title></HEADER>
+<TITLE>Installing lcc</title></HEADER>
 <BODY>
 
 <H1>Installing lcc</H1>
@@ -107,7 +107,7 @@ Include files are in directories named
 <tt>include/</tt><i>target</i><tt>/</tt><i>system</i>;
 the meaningful combinations are
 <dl>
-<dt><tt>mips/irix</tt>		<dd>IRIX Release 4.0
+<dt><tt>mips/irix</tt>		<dd>IRIX Release 5.3
 <dt><tt>mips/ultrix</tt>	<dd>ULTRIX 4.3
 <dt><tt>sparc/sun</tt>		<dd>SunOS 4.1
 <dt><tt>sparc/solaris</tt>	<dd>Solaris 2.3
@@ -311,7 +311,7 @@ where <tt>hart</tt> is replaced by <i>yourhostname</i>.
 Run the resulting <tt>a.out</tt> with the options <tt>-v -v</tt>
 to display the commands that would be executed, e.g.,
 <pre>% a.out -v -v foo.c baz.c mylib.a -lX11
-a.out $ Revision: 3.2 $ $ Date: 1994/09/08 17:15:13 $
+a.out $Name$($Id$)
 foo.c:
 /usr/gnu/lib/gcc-cpp -undef -DLANGUAGE_C -D_LANGUAGE_C -D__LANGUAGE_C
    -D_unix -D__unix -Dultrix -D_ultrix -D__ultrix -Dmips -D_mips -D__mips
@@ -374,7 +374,7 @@ of the startup code and add the name of the profiling library. Note that
 <tt>option</tt> has been written to support simultaneous use
 of <tt>-g</tt> and <tt>-p</tt>, e.g.,
 <pre>% a.out -v -v -g -p foo.s baz.o -o myfoo
-a.out $ Revision: 3.2 $ $ Date: 1994/09/08 17:15:13 $
+a.out $Name$($Id$)
 /bin/as -o foo.o -g -nocpp -EL foo.s
 /usr/bin/ld -o myfoo /usr/lib/mcrt0.o foo.o baz.o
    /usr/lib/libprof1.a -lm -lc
@@ -519,7 +519,7 @@ above indicate the compiler and the target, e.g.,
 <tt>ultrix</tt> operating system.''<p>
 
 Next, build <tt>rcc</tt> again using the just-built <tt>rcc</tt>:
-<pre>%  make -f ../../src/makefile TARGET=mips-ultrix triple
+<pre>% make -f ../../src/makefile TARGET=mips-ultrix triple
 rm -f *.o
 make -f ../../src/makefile CC='lcc -B./ -d0.1 -A'
    CFLAGS='-Wf-target=mips-ultrix
@@ -672,9 +672,9 @@ descriptions in <tt>src/*.md</tt> and compare the output with
 the corresponding <tt>src/*.c</tt> file. For example,
 <pre>% lburg <../src/x86.md | diff ../src/x86.c -
 40c40
-< generated at Mon Dec  5 17:49:52 1994
+< generated at Fri Dec 15 15:15:18 1995
 ---
-> generated at Tue Dec  6 13:35:42 1994
+> generated at Fri Dec 15 18:28:05 1995
 </pre>
 processes <tt>src/x86.md</tt> and compares the output with
 what's expected. You may get 1-2 lines of differences, because

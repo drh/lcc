@@ -1,27 +1,14 @@
-From lcc 3.4 to 3.4b:
+From lcc 3.4b to 3.5:
 
 Errors fixed:
-Generated bad code for some switch statements with negative case labels
-in dense ranges, eg,
-   main () {
-      int i = -1;
-      switch (i) {
-      case -2: printf("-2=%d\n",i); break;
-      case 0:  printf( "0=%d\n",i); break;
-      case 1:  printf( "1=%d\n",i); break;
-      case 2:  printf( "2=%d\n",i); break;
-      }
-   }
 
-Tue Jul 25 17:20:26 EDT 1995
+On the SPARC, generated bad code for an indirect call through a matrix
+of function pointers when the first argument was a float or double, eg,
+double x; (*f[i][j])(x).
 
+On the SPARC, emitted calling sequences incompatible with those emitted
+by cc and gcc for functions that returned structures.
 
-From lcc 3.3 to 3.4:
+On the SPARC w/Solaris 2.3+, -g emitted invalid debugging stab directives.
 
-Changes:
-The MIPS back end now generates position-independent code and thus
-supports dynamic linking. -Wf-pic=1 (the default under IRIX) and
--Wf-pic=0 (the default under Ultrix) enable and disable
-position-independent code.
-
-Wed Jul 12 13:17:42 EDT 1995
+$Id$
