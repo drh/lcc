@@ -3,10 +3,10 @@ This hierarchy is the distribution for lcc version 4.0.
 lcc version 3.x is described in the book `A Retargetable C Compiler:
 Design and Implementation' (Addison-Wesley, 1995, ISBN 0-8053-1670-1).
 There are significant differences between 3.x and 4.0, most notably in
-the intermediate code.
+the intermediate code. doc/4.0.html summarizes the differences.
 
-VERSION 4.0 IS INCOMPATIBLE WITH EARLIER VERSIONS OF LCC. DO NOT UNLOAD
-THIS DISTRIBUTION ON TOP OF A 3.X DISTRIBUTION.
+VERSION 4.0 IS INCOMPATIBLE WITH EARLIER VERSIONS OF LCC. DO NOT
+UNLOAD THIS DISTRIBUTION ON TOP OF A 3.X DISTRIBUTION.
 
 LOG describes the changes since the last release.
 
@@ -15,13 +15,6 @@ distribute lcc or works derived from lcc.
 
 doc/install.html is an HTML file that gives a complete description of
 the distribution and installation instructions.
-
-To build lcc with the Alpha/OSF C compiler, use the -std1 option, e.g.,
-
-	% cd alpha/osf
-	% make CC="cc -std1"
-
-uses cc to build alpha/osf/rcc. If you forget -std1, rcc will crash.
 
 Chris Fraser / cwfraser@microsoft.com
 David Hanson / drh@microsoft.com
