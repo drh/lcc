@@ -9,8 +9,8 @@ Warns about constants that are too large, eg, short x = 70000;
 Unsigned shorts are now used for wide-character constants, and
 wchar_t is a typedef for unsigned short.
 
-More assertions in gen.c to confirm that the register allocator
-is configured correctly. ie, that the various masks, wildcards,
+More assertions in gen.c to confirm that the register allocator is
+configured correctly; ie, that the various masks, wildcards,
 clobbers, and targets are internally consistent. Full checking
 appears impractical, but there's still more than than there was
 before.
@@ -30,8 +30,9 @@ f(ref *p, int i) { return p->q[i].a; }
 to the ANSI-mandated "int main(void)" or "int main(int, char **)".
 
 Silently generated incorrect code for a structure copy with a
-post-incremented target, eg, struct { int x; } data = {1}, copy[2],
-*q = copy; main() { *q++ = data; }
+post-incremented target, eg,
+struct { int x; } data = {1}, copy[2], *q = copy;
+main() { *q++ = data; }
 
 Generated incorrect values in some expressions with constant pointers.
 
@@ -49,9 +50,9 @@ is determined by the number of initializers.
 Set only the x.name field for some back-end symbols (eg, wildcards),
 and the uninitialized name field crashed some debugging output.
 
-uses() failed to check the register *set* as well as the register mask.
-There's no known bug demo, but a wildcard set might be contrived
-that would need the test.
+uses() failed to check the register *set* as well as the register
+mask.  There's no known bug demo, but a wildcard set might be
+contrived that would need the test.
 
 On the MIPS, sometimes generated an incorrect frame size and thus a
 crash when floating-point registers were saved.
@@ -64,15 +65,15 @@ On the SPARC with -b, emitted incorrect code for returning structs.
 On the x86, conversion from float to int rounded instead of truncated
 with the default floating-point mode.
 
-On the x86, eliminate rtargets for kids after the first. (See page 419.)
+On the x86, eliminate rtargets for kids after the first (see p. 419).
 
-On the x86, substitute reg for freg, in order to use the common reg rules.
-Needed only for debugging output, since we're not using any float regs as
-regs at this time.
+On the x86, substitute reg for freg, in order to use the common reg
+rules. Needed only for debugging output, since we're not using any
+float regs as regs at this time.
 
 On the x86, "double f(); main(){f();}" wasn't popping the FP register stack.
 
-On the x86, ECX was saved by the callee, when it should have been saved by
-the caller.
+On the x86, ECX was saved by the callee, when it should have been
+saved by the caller.
 
 $Id$
