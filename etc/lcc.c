@@ -110,7 +110,7 @@ main(int argc, char *argv[]) {
 				outfile = argv[i];
 				continue;
 			} else {
-				error("unrecognized option `%s'", argv[i]);
+				error("unrecognized option `%s'", argv[i-1]);
 				exit(8);
 			}
 		} else if (strcmp(argv[i], "-target") == 0) {
