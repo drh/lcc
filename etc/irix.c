@@ -41,7 +41,7 @@ char *as[] = { "/usr/bin/as", "-o", "$3", "$1", "-nocpp", "-KPIC", "$2", 0 };
 char *ld[] = { "/usr/bin/ld", "-require_dynamic_link", "_rld_new_interface",
 	"-elf", "-_SYSTYPE_SVR4", "-Wx,-G", "0", "-g0", "-KPIC",
 	"-o", "$3", "/usr/lib/crt1.o", "-L/usr/local/lib",
-	"$1", "$2", "", "-lc", "/usr/lib/crtn.o", 0
+	"$1", "$2", "", "-L" LCCDIR, "-llcc", "-lc", "/usr/lib/crtn.o", 0
 };
 static char *bbexit = LCCDIR "bbexit.o";
 
@@ -53,6 +53,7 @@ int option(char *arg) {
 		cpp[0] = concat(&arg[8], "/cpp");
 		include[0] = concat("-I", concat(&arg[8], "/include"));
 		com[0] = concat(&arg[8], "/rcc");
+		ld[16] = concat("-L", &arg[8]);
 		bbexit = concat(&arg[8], "/bbexit.o");
 	} else if (strcmp(arg, "-g4") == 0
 	&& access("/u/drh/lib/mipseb/rcc", 4) == 0
