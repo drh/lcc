@@ -234,6 +234,7 @@ gatherargs(Tokenrow *trp, Tokenrow **atr, int *narg)
 	Token *bp, *lp;
 	Tokenrow ttr;
 	int ntokp;
+	int needspace;
 
 	*narg = -1;			/* means that there is no macro call */
 	/* look for the ( */
@@ -258,9 +259,14 @@ gatherargs(Tokenrow *trp, Tokenrow **atr, int *narg)
 	ntokp = ntok;
 	trp->tp++;
 	/* search for the terminating ), possibly extending the row */
+	needspace = 0;
 	while (parens>0) {
 		if (trp->tp >= trp->lp)
 			gettokens(trp, 0);
+		if (needspace) {
+			needspace = 0;
+			makespace(trp);
+		}
 		if (trp->tp->type==END) {
 			trp->lp -= 1;
 			trp->tp -= ntok;
@@ -272,6 +278,7 @@ gatherargs(Tokenrow *trp, Tokenrow **atr, int *narg)
 			adjustrow(trp, -1);
 			trp->tp -= 1;
 			makespace(trp);
+			needspace = 1;
 			continue;
 		}
 		if (trp->tp->type==LP)
