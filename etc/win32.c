@@ -8,7 +8,7 @@ static char rcsid[] = "$Id$";
 #define LCCDIR ""
 #endif
 
-char *suffixes[] = { ".c", ".i", ".asm;.s", ".obj", ".exe", 0 };
+char *suffixes[] = { ".c;.C", ".i;.I", ".asm;.ASM;.s;.S", ".obj;.OBJ", ".exe", 0 };
 char inputs[256] = ".;\"/program files/devstudio/vc/include\";/msdev/include";
 char *cpp[] = { LCCDIR "cpp", "-D__STDC__=1", "$1", "$2", "$3", 0 };
 char *include[] = { "-I" LCCDIR "include", 0 };
