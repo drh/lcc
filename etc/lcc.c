@@ -5,6 +5,7 @@
 static char rcsid[] = "$Id$";
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -41,6 +42,7 @@ extern int main(int, char *[]);
 extern char *replace(const char *, int, int);
 static void rm(List);
 extern char *strsave(const char *);
+extern char *stringf(const char *, ...);
 extern int suffix(char *, char *[], int);
 extern char *tempname(char *);
 
@@ -64,7 +66,7 @@ static List rmlist;		/* list of files to remove */
 static char *outfile;		/* ld output file or -[cS] object file */
 static int ac;			/* argument count */
 static char **av;		/* argument vector */
-static char *tempdir = TEMPDIR;	/* directory for temporary files */
+char *tempdir = TEMPDIR;	/* directory for temporary files */
 static char *progname;
 static List lccinputs;		/* list of input directories */
 
@@ -88,10 +90,14 @@ main(int argc, char *argv[]) {
 	}
 	plist = append("-D__LCC__", 0);
 	initinputs();
-	if (getenv("TMPDIR"))
+	if (getenv("TMP"))
+		tempdir = getenv("TMP");
+	else if (getenv("TEMP"))
+		tempdir = getenv("TEMP");
+	else if (getenv("TMPDIR"))
 		tempdir = getenv("TMPDIR");
 	i = strlen(tempdir);
-	if (i > 0 && tempdir[i-1] == '/' || tempdir[i-1] == '\\')
+	for (; i > 0 && tempdir[i-1] == '/' || tempdir[i-1] == '\\'; i--)
 		tempdir[i-1] = '\0';
 	for (nf = 0, i = j = 1; i < argc; i++) {
 		if (strcmp(argv[i], "-o") == 0) {
@@ -200,15 +206,15 @@ char *basename(char *name) {
 
 /* callsys - execute the command described by argv[0...], return status */
 static int callsys(char **argv) {
-	int i, n = 0;
-	char *s;
+	int i, n = 0, status = 0;
+	char *s, *cmd;
 	static char *cmdbuf;
 	static int cmdlen;
 
 	for (i = 0; argv[i]; i++)
 		n += strlen(argv[i]) + 1;
-	if (n > cmdlen)
-		cmdbuf = realloc(cmdbuf, cmdlen = n);
+	if (n + 1 > cmdlen)
+		cmdbuf = realloc(cmdbuf, cmdlen = n + 1);
 	assert(cmdbuf);
 	s = cmdbuf;
 	for (i = 0; argv[i]; i++) {
@@ -216,12 +222,20 @@ static int callsys(char **argv) {
 		s += strlen(argv[i]);
 		*s++ = ' ';
 	}
+	*s++ = '\n';
 	*s = '\0';		
-	if (verbose > 0)
-		fprintf(stderr, "%s\n", cmdbuf);
 	if (verbose >= 2)
-		return 0;
-	return system(cmdbuf);
+		fprintf(stderr, "%s\n", cmdbuf);
+	else {
+		char *cmd;
+		for (cmd = cmdbuf; status == 0 && (s = strchr(cmd, '\n')) != NULL; cmd = s + 1) {
+			*s = '\0';
+			if (verbose > 0)
+				fprintf(stderr, "%s\n", cmd);
+			status = system(cmd);
+		}
+	}
+	return status;
 }
 
 /* concat - return concatenation of strings s1 and s2 */
@@ -643,6 +657,18 @@ char *strsave(const char *str) {
 	return strcpy(alloc(strlen(str)+1), str);
 }
 
+/* stringf - format and return a string */
+char *stringf(const char *fmt, ...) {
+	char buf[1024];
+	va_list ap;
+	int n;
+
+	va_start(ap, fmt);
+	n = vsprintf(buf, fmt, ap);
+	va_end(ap);
+	return strsave(buf);
+}
+
 /* suffix - if one of tails[0..n-1] holds a proper suffix of name, return its index */
 int suffix(char *name, char *tails[], int n) {
 	int i, len = strlen(name);
@@ -666,9 +692,10 @@ int suffix(char *name, char *tails[], int n) {
 /* tempname - generate a temporary file name in tempdir with given suffix */
 char *tempname(char *suffix) {
 	static int n;
-	char *name = alloc(strlen(tempdir) + strlen("/lccXXXXXX") + strlen(suffix) + 1);
+	char *name = stringf("%s/lcc%d%d%s", tempdir, getpid(), n++, suffix);
 
-	sprintf(name, "%s/lcc%d%d%s", tempdir, getpid(), n++, suffix);
+	if (strstr(com[1], "win32") != NULL)
+		name = replace(name, '/', '\\');
 	rmlist = append(name, rmlist);
 	return name;
 }
