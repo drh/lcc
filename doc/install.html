@@ -83,12 +83,12 @@ lcc, and to point a symbolic link to this location. For example,</P>
 <BLOCKQUOTE>
 <PRE>% ln -s /usr/local/lib/lcc-3.6/sparc/solaris /usr/local/lib/lcc</PRE></BLOCKQUOTE>
 <P>points <TT>/usr/local/lib/lcc</TT> to a build directory for lcc version 3.6
-on the SPARC under Solaris. Similar links are created for the programs <TT>lcc</TT>
-and <TT>bprint</TT>. Thus, a new distribution can be installed by building it
-in its own build directory and swinging three symbolic links to point to and
-into that directory. If these conventions or their equivalents are followed, the
-host-specific parts of the driver program, <TT>lcc</TT>, can be used
-unmodified.</P>
+on the SPARC under Solaris. Links into <TT>/usr/local/lib</TT> are created for
+the programs <TT>lcc</TT> and <TT>bprint</TT>. Thus, a new distribution can be
+installed by building it in its own build directory and changing one symbolic
+link to point to that directory. If these conventions or their equivalents are
+followed, the host-specific parts of the driver program, <TT>lcc</TT>, can be
+used unmodified.</P>
 <P> Installation on UNIX systems involves the following steps. Below, the build
 directory is referred to as <TT>BUILDDIR</TT>. <STRONG>You will need an
 existing ANSI/ISO C compiler to install lcc.</STRONG></P>
@@ -129,9 +129,14 @@ necessary. See <A HREF="#driver">Sec. 2</A>.</LI>
 e.g.,
 <BLOCKQUOTE>
 <PRE>% ln -s $BUILDDIR /usr/local/lib/lcc
-% ln -s $BUILDDIR/{lcc,bprint} /usr/local/bin</PRE></BLOCKQUOTE>Some users copy
+% ln -s /usr/local/lib/{lcc,bprint} /usr/local/bin</PRE></BLOCKQUOTE>Some users
+copy
 <TT>bprint</TT> and <TT>lcc</TT> into <TT>/usr/local/bin</TT> instead of
-creating symbolic links.</LI></OL>
+creating symbolic links. The advantange of creating the links for <TT>lcc</TT>
+and <TT>bprint</TT> as shown is that, once established, they point indirectly
+to whatever  <TT>/usr/local/lib/lcc</TT> points to; installing a new version of
+lcc, say, 3.7, can be done by changing <TT>/usr/local/lib/lcc</TT> to point to
+the 3.7 build directory.</LI></OL>
 <H2><A NAME="driver">2. Building the Driver</A></H2>
 <P>The preprocessor, compiler, assembler, and loader are invoked by a driver
 program, <TT>lcc</TT>, which is similar to <TT>cc</TT> on most systems. It's
