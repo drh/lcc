@@ -5,13 +5,17 @@
 static char rcsid[] = "$Id$";
 
 #ifndef LCCDIR
-#define LCCDIR ""
+#define LCCDIR "\\pkg\\lcc-4.0\\"
 #endif
 
 char *suffixes[] = { ".c;.C", ".i;.I", ".asm;.ASM;.s;.S", ".obj;.OBJ", ".exe", 0 };
-char inputs[256] = ".;\"/program files/devstudio/vc/include\";/msdev/include";
-char *cpp[] = { LCCDIR "cpp", "-D__STDC__=1", "-Dwin32", "-D_WIN32", "$1", "$2", "$3", 0 };
-char *include[] = { "-I" LCCDIR "include", 0 };
+char inputs[256] = "";
+char *cpp[] = { LCCDIR "cpp", "-D__STDC__=1", "-Dwin32", "-D_WIN32", "-D_M_IX86",
+	"$1", "$2", "$3", 0 };
+char *include[] = {
+	"-I" LCCDIR "include",
+	"-I\"/program files/devstudio/vc/include\"",
+	"-I/msdev/include", 0 };
 char *com[] = { LCCDIR "rcc", "-target=x86/win32", "$1", "$2", "$3", 0 };
 char *as[] = { "ml", "-nologo", "-c", "-Cp", "-coff", "-Fo$3", "$1", "$2", 0 };
 char *ld[] = { "link", "-nologo", 
@@ -30,9 +34,7 @@ int option(char *arg) {
 		include[0] = concat("-I", concat(arg, "\\include"));
 		com[0] = concat(arg, "\\rcc.exe");
 		ld[8] = concat(arg, "\\liblcc.lib");
-	} else if (strcmp(arg, "-g") == 0)
-		ld[9] = "libcd.lib";
-	else if (strcmp(arg, "-b") == 0)
+	} else if (strcmp(arg, "-b") == 0)
 		;
 	else if (strncmp(arg, "-ld=", 4) == 0)
 		ld[0] = &arg[4];

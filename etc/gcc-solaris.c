@@ -32,6 +32,7 @@ char *ld[] = { GCCDIR "ld", "-o", "$3", "$1",
 	GCCLIB "crtend.o", GCCLIB "crtn.o", 0 };
 
 extern char *concat(char *, char *);
+extern int access(const char *, int);
 
 int option(char *arg) {
 	if (strncmp(arg, "-lccdir=", 8) == 0) {
