@@ -239,6 +239,23 @@ an unsigned (1) or signed (0) type; by default,
 .B char
 is signed.
 .TP
+.B \-Wf\-wchar_t=unsigned_char
+.br
+.ns
+.TP
+.B \-Wf\-wchar_t=unsigned_short
+.br
+.ns
+.TP
+.B \-Wf\-wchar_t=unsigned_int
+Makes wide characters the type indicated; by default,
+wide characters are unsigned short ints, and
+.B wchar_t
+is a typedef for unsigned short defined in stddef.h.
+The definition for
+.B wchar_t
+in stddef.h must correspond to the type specified.
+.TP
 .B \-v
 Print commands as they are executed; some of the executed
 programs are directed to print their version numbers.
@@ -401,7 +418,7 @@ mips/irix	big-endian MIPS, IRIX 5.2
 mips/ultrix	little-endian MIPS, ULTRIX 4.3
 sparc/solaris	SPARC, Solaris 2.3
 x86/win32	Windows NT 4.0/Windows 95
-symbolic	textual rendition of the generated code
+symbolic	text rendition of the generated code
 null		no output
 .fi
 .RE
@@ -411,7 +428,13 @@ The
 option lists the
 .I target/os
 combinations supported by specific installations of
-.IR lcc . 
+.IR lcc .
+For
+.BR \-Wf\-target=symbolic ,
+the option
+.B \-Wf-html
+causes the text rendition to be emitted as HTML.
+.B 
 .SH LIMITATIONS
 .PP
 .I lcc
@@ -423,33 +446,21 @@ is used with the GNU C preprocessor, the
 .B \-Wp-trigraphs
 option is required to enable trigraph sequences.
 .PP
-Wide-character literals are accepted
-but are treated as plain char literals.
-Plain chars are signed chars,
-ints and long ints are the same size
-as are doubles and long doubles, and
-plain int bit fields are signed.
+Plain int bit fields are signed.
 Bit fields are aligned like unsigned integers but are otherwise laid out
-as if by the standard C compiler,
-.IR cc (1).
-Other compilers, such as the GNU C compiler,
-.IR gcc (1),
+as by most standard C compilers.
+Some compilers, such as the GNU C compiler,
 may choose other, incompatible layouts.
 .PP
 Likewise, calling conventions are intended to be compatible with
-.IR cc (1),
+the host C compiler,
 except possibly for passing and returning structures.
 Specifically,
 .I lcc
-passes structures like
-.I cc
-on all targets,
-but returns structures like
-.I cc
-on only the MIPS.
+passes and returns structures like host ANSI C compilers
+on most targets, but some older host C compilers use different conventions.
 Consequently, calls to/from such functions compiled with
-.I cc
-or other C compilers may not work.
+older C compilers may not work.
 Calling a function that returns
 a structure without declaring it as such violates
 the ANSI standard and may cause a fault.
@@ -509,11 +520,9 @@ B. W. Kernighan and D. M. Ritchie,
 2nd ed., Prentice-Hall, 1988.
 .PP
 American National Standards Inst.,
-.I American National Standard for Information Systems \(em
-.I Programming Language \(em C,
+.I American National Standard for Information Systems\(emProgramming
+.IR Language\(emC ,
 ANSI X3.159-1989, New York, 1990.
-.PP
-cc(1), ld(1)
 .br
 .SH BUGS
 Mail bug reports along with the shortest program
@@ -524,12 +533,12 @@ option to lcc-bugs@princeton.edu. The WWW page at
 URL http://www.cs.princeton.edu/software/lcc/
 includes detailed instructions for reporting bugs.
 .PP
-The `ANSI standard headers' conform to the specifications in
-the standard, which may be too restrictive for some applications,
+The ANSI standard headers conform to the specifications in
+the Standard, which may be too restrictive for some applications,
 but necessary for portability.
 Functions given in the ANSI headers may be missing from
-the local C library (e.g., `wide character' functions)
-or may not correspond exactly to the local version;
+some local C libraries (e.g., wide-character functions)
+or may not correspond exactly to the local versions;
 for example, the ANSI standard
 .B stdio.h
 specifies that
@@ -538,7 +547,7 @@ specifies that
 and
 .I sprintf
 return the number of characters written to the file or array,
-but a few existing libraries don't implement this convention.
+but some existing libraries don't implement this convention.
 .PP
 On the MIPS and SPARC, old-style variadic functions must use
 .B varargs.h
