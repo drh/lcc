@@ -106,6 +106,7 @@ void yyerror(char *fmt, ...) {
 	if (fmt[strlen(fmt)-1] != '\n')
 		 fprintf(stderr, "\n");
 	errcnt++;
+	va_end(ap);
 }
 
 int yylex(void) {
