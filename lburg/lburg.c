@@ -255,8 +255,10 @@ Rule rule(char *id, Tree pattern, char *template, char *code) {
 	r->template = template;
 	r->code = code;
 	r->cost = strtol(code, &end, 10);
-	if (*end)
+	if (*end) {
 		r->cost = -1;
+		r->code = stringf("(%s)", code);
+	}
 	if (p->kind == TERM) {
 		for (q = &p->rules; *q; q = &(*q)->next)
 			;
