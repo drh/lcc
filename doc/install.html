@@ -774,16 +774,25 @@ library, and DOS extender from Symantec C++ 6.1.<p>
 
 <h3><a name="pc-install">6.1 Installing lcc under DOS</a></h3>
 
-The distribution includes the following executable files:
+The distribution includes the following files:
 <dl>
 <dt><tt>x86\dos\cpp.exe</tt>		<dd>the preprocessor
 <dt><tt>x86\dos\rcc.exe</tt>		<dd>the compiler proper
 <dt><tt>x86\dos\lcc.exe</tt>		<dd>the compiler's driver
-<dt><tt>x86\dos\32rtm.exe</tt>		<dd>extender
-<dt><tt>x86\dos\dpmi32vm.ovl</tt>	<dd>extender memmory management
+<dt><tt>x86\dos\32rtm.exe</tt>		<dd>Borland PowerPack runtime manager
+<dt><tt>x86\dos\dpmi32vm.ovl</tt>	<dd>Borland PowerPack DPMI server
+<dt><tt>x86\dos\windpmi.386</tt>	<dd>Borland PowerPack Windows DPMI driver
 </dl>
-Copy these executables to a directory
-in your <tt>PATH</tt>.
+Copy the <tt>.exe</tt> and <tt>.ovl</tt> files to a directory
+in your <tt>PATH</tt>. If you want to use <tt>lcc</tt>
+in a full-screen DOS window under Windows 3.1, copy
+<tt>windpmi.386</tt> to your <tt>\windows\system</tt> directory,
+and add the lines
+<pre>[386Enh]
+device=windpmi.386
+</pre>
+to your <tt>system.ini</tt> (which is located in <tt>\windows</tt>).<p>
+
 <tt>lcc.exe</tt> is a prebuilt driver for use with
 Borland's Turbo Assembler 4.0, Borland C++ 4.02, and Borland PowerPack
 for DOS.
