@@ -28,4 +28,7 @@ types with enum arguments, e.g. void f(enum foo x); void f(x) int x; {}
 Generated incorrect values for constants that overflowed when running
 on an ALPHA (but generating code for other targets).
 
+Crashed with an assertion failure on some invalid function calls, eg,
+int i; f() { i(); }
+
 $Id$
