@@ -13,7 +13,7 @@
 <p ALIGN="LEFT"><strong><a HREF="http://www.research.microsoft.com/~cwfraser/">Christopher
 W. Fraser</a> and <a HREF="http://www.research.microsoft.com/~drh/">David R. Hanson</a>, <a
 HREF="http://www.research.microsoft.com/">Microsoft Research</a></strong><br>
-July 2001</p>
+September 2002</p>
 
 <h2>Contents</h2>
 
@@ -597,10 +597,13 @@ syntax and semantics of its input files.</p>
 <h2><a NAME="win32">Installation on Windows</a></h2>
 
 <p>On Windows, lcc is designed to work with Microsoft's Visual
-C++ (VC), version 5.0 and above, and Microsoft's Assembler, MASM 6.11d. It uses the VC header files,
-libraries, and command-line tools, and it uses MASM to assemble the code it generates. If
-you have MASM 6.11, make sure you upgrade to 6.11d,
-because earlier 6.11 releases do not generate correct COFF object files.</p>
+C++ (VC), version 5.0 and above, and Microsoft's Assembler, MASM. It uses the VC header files,
+libraries, and command-line tools, and it uses MASM to assemble the code it generates. 
+You must use MASM 6.11d or later,
+because earlier  releases generate incorrect COFF object files. MASM 
+6.15 is available as part of the free
+<a href="http://msdn.microsoft.com/vstudio/downloads/ppack/default.asp">Visual 
+C++ 6.0 Processor Pack</a>.</p>
 
 <p>Building the distribution components from the ground up requires Microsoft's Visual
 C/C++ compiler, Microsoft's make, <code>nmake</code>, and the standard Windows command
@@ -685,7 +688,9 @@ Comparing files %BUILDDIR%\1rcc.exe and %BUILDDIR%\2RCC.EXE
     <p>This command builds <code>rcc</code> twice; once using the <code>rcc</code> built by VC
     and again using the <code>rcc</code> built by <code>lcc</code>. The resulting binaries are
     compared using <code>fc</code>. They should be identical, except for one or two bytes of
-    timestamp data, as shown at the end of the output above. If they aren't, our compiler is
+    timestamp data, as shown at the end of the output above (which will be 
+    different on your system). If <code>1rcc.exe</code> and <code>2rcc.exe</code> aren't 
+    identical, our compiler is
     generating incorrect code; <a HREF="#bugs">contact</a> us.</p>
   </li>
   <li>Copy <code>lcc.exe</code> and <code>bprint.exe</code> to a directory on your PATH, e.g.,<blockquote>
@@ -728,11 +733,11 @@ Chapter 1 of <cite>A Retargetable C Compiler: Design and Implementation</cite>.
     lcc. If you've changed lcc and the error appears only in your version, then you'll have to
     chase the error yourself, even if it turns out to be our fault, because we can't work on
     your code.</li>
-  <li>Annotate your code with comments that explain why you think that lcc is wrong. If lcc
-    dies with an assertion failure, please tell us where it died. If lcc crashes, please
-    report the last part of the call chain if you can. If lcc is rejecting a program you think
-    is valid, please tell us why you think it's valid, and include supporting page numbers in
-    the ANSI Standard, Appendix A in <cite>The C Programming Language</cite>, or the
+  <li>Annotate your code with comments that explain why you think that lcc is 
+  wrong. If lcc dies with an assertion failure, please tell us where it died. If 
+  lcc crashes, please report the last part of the call chain if you can. If lcc 
+  is rejecting a program you think is valid, please tell us why you think it's 
+  valid, and include supporting page numbers in the ANSI Standard or the
     appropriate section in <cite>C: A Reference Manual</cite>, 4th edition by S. B. Harbison
     and G. L. Steele, Jr. (Prentice Hall, 1995). If lcc silently generates incorrect code for
     some construct, please include the corrupt assembly code in the comments and flag the
@@ -744,8 +749,9 @@ Chapter 1 of <cite>A Retargetable C Compiler: Design and Implementation</cite>.
     acquisition details, and the <a HREF="../LOG"><code>LOG</code></a> file reports what errors
     were fixed and when they were fixed. If you report a error that's been fixed, you might
     get a canned reply.</li>
-  <li>Post your program to the newsgroup <a href="news:comp.compilers.lcc"><code>comp.compilers.lcc</code></a>
-    using a USENET newsreader or <a href="http://www.dejanews.com/">http://www.dejanews.com/</a>.
+  <li>Post your program to the newsgroup <a href="news:comp.compilers.lcc"><code>comp.compilers.lcc</code></a> 
+  using a USENET newsreader like those at <a href="http://www.dejanews.com/">http://www.dejanews.com/</a> 
+  and <a href="http://groups.google.com/">http://groups.google.com/</a>.
     Please post only valid C programs; put all remarks in C comments so that we can process
     reports semi automatically.</li>
 </ol>
