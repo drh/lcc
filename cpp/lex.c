@@ -1,6 +1,6 @@
+#include <u.h>
+#include <libc.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "cpp.h"
 
 /*
@@ -27,6 +27,9 @@
 #define	QBSBIT	0100
 #define	GETACT(st)	(st>>7)&0x1ff
 
+#define	UTF2(c)		((c)>=0xA0 && (c)<0xE0)		/* 2-char UTF seq */
+#define	UTF3(c)		((c)>=0xE0 && (c)<0xF0)		/* 3-char UTF seq */
+
 /* character classes */
 #define	C_WS	1
 #define	C_ALPH	2
@@ -46,7 +49,7 @@ int	tottok;
 int	tokkind[256];
 struct	fsm {
 	int	state;		/* if in this state */
-	char	ch[4];		/* and see one of these characters */
+	uchar	ch[4];		/* and see one of these characters */
 	int	nextstate;	/* enter this state if +ve */
 };
 
@@ -61,7 +64,7 @@ struct	fsm {
 	START,	{ '"' },	ST2,
 	START,	{ '\'' },	CC1,
 	START,	{ '/' },	COM1,
-	START,	{ EOF },	S_EOF,
+	START,	{ EOFC },	S_EOF,
 	START,	{ '\n' },	S_NL,
 	START,	{ '-' },	MINUS1,
 	START,	{ '+' },	PLUS1,
@@ -123,24 +126,24 @@ struct	fsm {
 	ST2,	{ '"' },	ACT(STRING, S_SELF),
 	ST2,	{ '\\' },	ST3,
 	ST2,	{ '\n' },	S_STNL,
-	ST1,	{ EOF },	S_EOFSTR,
+	ST2,	{ EOFC },	S_EOFSTR,
 
 	/* saw \ in string */
 	ST3,	{ C_XX },	ST2,
 	ST3,	{ '\n' },	S_STNL,
-	ST3,	{ EOF },	S_EOFSTR,
+	ST3,	{ EOFC },	S_EOFSTR,
 
 	/* saw ' beginning character const */
 	CC1,	{ C_XX },	CC1,
 	CC1,	{ '\'' },	ACT(CCON, S_SELF),
 	CC1,	{ '\\' },	CC2,
 	CC1,	{ '\n' },	S_STNL,
-	CC1,	{ EOF },	S_EOFSTR,
+	CC1,	{ EOFC },	S_EOFSTR,
 
 	/* saw \ in ccon */
 	CC2,	{ C_XX },	CC1,
 	CC2,	{ '\n' },	S_STNL,
-	CC2,	{ EOF },	S_EOFSTR,
+	CC2,	{ EOFC },	S_EOFSTR,
 
 	/* saw /, perhaps start of comment */
 	COM1,	{ C_XX },	ACT(SLASH, S_SELFB),
@@ -152,7 +155,7 @@ struct	fsm {
 	COM2,	{ C_XX },	COM2,
 	COM2,	{ '\n' },	S_COMNL,
 	COM2,	{ '*' },	COM3,
-	COM2,	{ EOF },	S_EOFCOM,
+	COM2,	{ EOFC },	S_EOFCOM,
 
 	/* saw the * possibly ending a comment */
 	COM3,	{ C_XX },	COM2,
@@ -163,7 +166,7 @@ struct	fsm {
 	/* // comment */
 	COM4,	{ C_XX },	COM4,
 	COM4,	{ '\n' },	S_NL,
-	COM4,	{ EOF },	S_EOFCOM,
+	COM4,	{ EOFC },	S_EOFCOM,
 
 	/* saw white space, eat it up */
 	WS1,	{ C_XX },	S_WS,
@@ -231,12 +234,12 @@ struct	fsm {
 	-1
 };
 
-/* first index is char+1 (to include EOF), second is state */
+/* first index is char, second is state */
 /* increase #states to power of 2 to encourage use of shift */
-short	bigfsm[257][MAXSTATE];
+short	bigfsm[256][MAXSTATE];
 
 void
-expandlex()
+expandlex(void)
 {
 	/*const*/ struct fsm *fp;
 	int i, j, nstate;
@@ -249,43 +252,44 @@ expandlex()
 			switch (fp->ch[i]) {
 
 			case C_XX:		/* random characters */
-				for (j=0; j<257; j++)
+				for (j=0; j<256; j++)
 					bigfsm[j][fp->state] = nstate;
 				continue;
 			case C_ALPH:
-				for (j='a'; j<='z'; j++) {
-					bigfsm[j+1][fp->state] = nstate;
-					bigfsm[j-'a'+'A'+1][fp->state] = nstate;
-				}
-				bigfsm['_'+1][fp->state] = nstate;
+				for (j=0; j<=256; j++)
+					if ('a'<=j&&j<='z' || 'A'<=j&&j<='Z'
+					  || UTF2(j) || UTF3(j) || j=='_')
+						bigfsm[j][fp->state] = nstate;
 				continue;
 			case C_NUM:
 				for (j='0'; j<='9'; j++)
-					bigfsm[j+1][fp->state] = nstate;
+					bigfsm[j][fp->state] = nstate;
 				continue;
 			default:
-				bigfsm[fp->ch[i]+1][fp->state] = nstate;
+				bigfsm[fp->ch[i]][fp->state] = nstate;
 			}
 		}
 	}
-	/* install special cases for ? (trigraphs)  \ (for splicing) and EOB */
+	/* install special cases for ? (trigraphs),  \ (splicing), runes, and EOB */
 	for (i=0; i<MAXSTATE; i++) {
-		if (bigfsm['?'+1][i]>0)
-			bigfsm['?'+1][i] = ~bigfsm['?'+1][i];
-		bigfsm['?'+1][i] &= ~QBSBIT;
-		if (bigfsm['\\'+1][i]>0)
-			bigfsm['\\'+1][i] = ~bigfsm['\\'+1][i];
-		bigfsm['\\'+1][i] &= ~QBSBIT;
-		bigfsm[EOB+1][i] = ~S_EOB;
+		for (j=0; j<0xFF; j++)
+			if (j=='?' || j=='\\' || UTF2(j) || UTF3(j)) {
+				if (bigfsm[j][i]>0)
+					bigfsm[j][i] = ~bigfsm[j][i];
+				bigfsm[j][i] &= ~QBSBIT;
+			}
+		bigfsm[EOB][i] = ~S_EOB;
+		if (bigfsm[EOFC][i]>=0)
+			bigfsm[EOFC][i] = ~S_EOF;
 	}
 }
 
 void
-fixlex()
+fixlex(void)
 {
 	/* do C++ comments? */
 	if (Cplusplus==0)
-		bigfsm['/'+1][COM1] = bigfsm['x'+1][COM1];
+		bigfsm['/'][COM1] = bigfsm['x'][COM1];
 }
 
 /*
@@ -299,10 +303,10 @@ int
 gettokens(Tokenrow *trp, int reset)
 {
 	register int c, state, oldstate;
-	register char *ip;
+	register uchar *ip;
 	register Token *tp, *maxp;
+	int runelen;
 	Source *s = cursource;
-	int c1;
 	int nmac = 0;
 	extern char outbuf[];
 
@@ -313,14 +317,15 @@ gettokens(Tokenrow *trp, int reset)
 		if (ip>=s->inl) {		/* nothing in buffer */
 			s->inl = s->inb;
 			fillbuf(s);
-			ip = s->inb;
+			ip = s->inp = s->inb;
 		} else if (ip >= s->inb+(3*INS/4)) {
 			memmove(s->inb, ip, 4+s->inl-ip);
 			s->inl = s->inb+(s->inl-ip);
-			ip = s->inb;
+			ip = s->inp = s->inb;
 		}
 	}
 	maxp = &trp->bp[trp->max];
+	runelen = 1;
 	for (;;) {
 	   continue2:
 		if (tp>=maxp) {
@@ -334,97 +339,78 @@ gettokens(Tokenrow *trp, int reset)
 		tp->wslen = 0;
 		tp->flag = 0;
 		state = START;
-		c = *(unsigned char *)ip++;
 		for (;;) {
 			oldstate = state;
-			if ((state = bigfsm[c+1][state]) >= 0) {
-				c = *(unsigned char *)ip++;
+			c = *ip;
+			if ((state = bigfsm[c][state]) >= 0) {
+				ip += runelen;
+				runelen = 1;
 				continue;
 			}
 			state = ~state;
 		reswitch:
 			switch (state&0177) {
 			case S_SELF:
-				tp->type = GETACT(state);
-				tp->len = ip - tp->t;
-				tp++;
-				goto continue2;
-
+				ip += runelen;
+				runelen = 1;
 			case S_SELFB:
 				tp->type = GETACT(state);
-				ip -= 1;
 				tp->len = ip - tp->t;
 				tp++;
 				goto continue2;
 
 			case S_NAME:	/* like S_SELFB but with nmac check */
 				tp->type = NAME;
-				ip -= 1;
 				tp->len = ip - tp->t;
-				if (tp->len>1)
-					nmac |= quicklook(tp->t[0], tp->t[1]);
-				else
-					nmac |= quicklook(tp->t[0], 0);
+				nmac |= quicklook(tp->t[0], tp->len>1?tp->t[1]:0);
 				tp++;
 				goto continue2;
 
 			case S_WS:
-				tp->wslen = ip - tp->t - 1;
-				tp->t = ip-1;
+				tp->wslen = ip - tp->t;
+				tp->t = ip;
 				state = START;
 				continue;
 
 			default:
-				if (c=='?' && state&QBSBIT) { /* check trigraph */
-					s->inp = ip;
-					if (c1 = trigraph(s)) {
-						c = c1;
-						ip = s->inp;
-						ip[-1] = c;
-						memmove(
-						  tp->t-tp->wslen+2,
-						  tp->t-tp->wslen,
-						  ip-tp->t+tp->wslen-3);
-						tp->t += 2;
+				if ((state&QBSBIT)==0) {
+					ip += runelen;
+					runelen = 1;
+					continue;
+				}
+				state &= ~QBSBIT;
+				s->inp = ip;
+				if (c=='?') { 	/* check trigraph */
+					if (trigraph(s)) {
 						state = oldstate;
 						continue;
-					} else
-						ip = s->inp;
-					state &= ~QBSBIT;
+					}
 					goto reswitch;
 				}
-				if (c=='\\' && state&QBSBIT) { /* line-folding */
-					s->inp = ip;
-					if ((c1 = getch(s)) == '\n') {
-						ip = s->inp;
-						memmove(
-						  tp->t-tp->wslen+2,
-						  tp->t-tp->wslen,
-						  ip-tp->t+tp->wslen-2);
-						tp->t += 2;
+				if (c=='\\') { /* line-folding */
+					if (foldline(s)) {
 						s->lineinc++;
 						state = oldstate;
-						c = *(unsigned char *)ip++;
 						continue;
-					} else {
-						ip = s->inp;
-						if (c1!=EOF)
-							ip -= 1;
 					}
-					state &= ~QBSBIT;
 					goto reswitch;
 				}
-				c = *(unsigned char *)ip++;
+				if (UTF2(c)) {
+					runelen = 2;
+					goto reswitch;
+				}
+				if (UTF3(c)) {
+					runelen = 3;
+					goto reswitch;
+				}
+				error(WARNING, "Lexical botch in cpp");
+				ip += runelen;
+				runelen = 1;
 				continue;
 
 			case S_EOB:
-				if (fillbuf(cursource)==EOF) {
-					ip = s->inp;
-					c = EOF;
-				} else {
-					ip = s->inp;
-					c = *(unsigned char *)ip++;
-				}
+				s->inp = ip;
+				fillbuf(cursource);
 				state = oldstate;
 				continue;
 
@@ -432,19 +418,20 @@ gettokens(Tokenrow *trp, int reset)
 				tp->type = END;
 				tp->len = 0;
 				s->inp = ip;
-				if (tp!=trp->bp && (tp-1)->type!=NL
-				 && cursource->fd!=-1)
+				if (tp!=trp->bp && (tp-1)->type!=NL && cursource->fd!=-1)
 					error(WARNING,"No newline at end of file");
 				trp->lp = tp+1;
 				return nmac;
 
+			case S_STNL:
+				error(ERROR, "Unterminated string or char const");
 			case S_NL:
-				tp->t = ip-1;
+				tp->t = ip;
 				tp->type = NL;
 				tp->len = 1;
 				tp->wslen = 0;
 				s->lineinc++;
-				s->inp = ip;
+				s->inp = ip+1;
 				trp->lp = tp+1;
 				return nmac;
 
@@ -452,79 +439,84 @@ gettokens(Tokenrow *trp, int reset)
 				error(FATAL, "EOF in string or char constant");
 				break;
 
-			case S_STNL:
-				error(ERROR, "Unterminated string or char const");
-				tp->type = STRING;
-				break;
-
 			case S_COMNL:
 				s->lineinc++;
 				state = COM2;
-				c = *(unsigned char *)ip++;
+				ip += runelen;
+				runelen = 1;
 				continue;
 
 			case S_EOFCOM:
-				error(WARNING, "EOF in comment");
+				error(WARNING, "EOF inside comment");
+				--ip;
 			case S_COMMENT:
+				++ip;
 				tp->t = ip;
 				tp->t[-1] = ' ';
 				tp->wslen = 1;
-				c = *(unsigned char *)ip++;
 				state = START;
 				continue;
 			}
 			break;
 		}
+		ip += runelen;
+		runelen = 1;
 		tp->len = ip - tp->t;
 		tp++;
 	}
+	return 0;
 }
 
-/* have seen ?; return the trigraph it starts (if any) else 0 */
+/* have seen ?; handle the trigraph it starts (if any) else 0 */
 int
 trigraph(Source *s)
 {
 	int c;
 
-	if ((c = getch(s)) != '?') {
-		s->inp -= 1;
+	while (s->inp+2 >= s->inl && fillbuf(s)!=EOF)
+		;
+	if (s->inp[1]!='?')
 		return 0;
-	}
-	switch(c = getch(s)) {
+	c = 0;
+	switch(s->inp[2]) {
 	case '=':
-		return '#';
+		c = '#'; break;
 	case '(':
-		return '[';
+		c = '['; break;
 	case '/':
-		return '\\';
+		c = '\\'; break;
 	case ')':
-		return ']';
+		c = ']'; break;
 	case '\'':
-		return '^';
+		c = '^'; break;
 	case '<':
-		return '{';
+		c = '{'; break;
 	case '!':
-		return '|';
+		c = '|'; break;
 	case '>':
-		return '}';
+		c = '}'; break;
 	case '-':
-		return '~';
+		c = '~'; break;
 	}
-	s->inp -= 2;
-	return 0;
+	if (c) {
+		*s->inp = c;
+		memmove(s->inp+1, s->inp+3, s->inl-s->inp+2);
+		s->inl -= 2;
+	}
+	return c;
 }
 
 int
-getch(Source *s)
+foldline(Source *s)
 {
-	int c;
-	if ((c = *(unsigned char *)(s->inp))==EOB) {
-		if (fillbuf(s)==EOF)
-			return EOF;
-		c = *(unsigned char *)(s->inp);
+	while (s->inp+1 >= s->inl && fillbuf(s)!=EOF)
+		;
+	if (s->inp[1] == '\n') {
+		memmove(s->inp, s->inp+2, s->inl-s->inp+3);
+		s->inl -= 2;
+		return 1;
 	}
-	s->inp += 1;
-	return c;
+	return 0;
 }
 
 int
@@ -532,13 +524,12 @@ fillbuf(Source *s)
 {
 	int n;
 
-	if ((n=read(s->fd, (char *)s->inl, INS/8)) <= 0)
+	if (s->fd<0 || (n=read(s->fd, (char *)s->inl, INS/8)) <= 0)
 		n = 0;
-	s->inp = s->inl;
-	s->inl = s->inp+n;
+	s->inl += n;
 	s->inl[0] = s->inl[1]= s->inl[2]= s->inl[3] = EOB;
 	if (n==0) {
-		s->inp++;
+		s->inl[0] = s->inl[1]= s->inl[2]= s->inl[3] = EOFC;
 		return EOF;
 	}
 	return 0;
@@ -559,6 +550,9 @@ setsource(char *name, int fd, char *str)
 	s->lineinc = 0;
 	s->fd = fd;
 	s->filename = name;
+	s->next = cursource;
+	s->ifdepth = 0;
+	cursource = s;
 	/* slop at right for EOB */
 	if (str) {
 		len = strlen(str);
@@ -566,15 +560,15 @@ setsource(char *name, int fd, char *str)
 		s->inp = s->inb;
 		strncpy((char *)s->inp, str, len);
 	} else {
-		s->inb = domalloc(INS+4);
+		Dir d;
+		if (dirfstat(fd, &d) < 0)
+			d.length = 0;
+		s->inb = domalloc((d.length<INS? INS: d.length)+4);
 		s->inp = s->inb;
 		len = 0;
 	}
 	s->inl = s->inp+len;
 	s->inl[0] = s->inl[1] = EOB;
-	s->next = cursource;
-	s->ifdepth = 0;
-	cursource = s;
 	return s;
 }
 

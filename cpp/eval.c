@@ -1,5 +1,5 @@
-#include <stdlib.h>
-#include <string.h>
+#include <u.h>
+#include <libc.h>
 #include "cpp.h"
 
 #define	NSTAK	32
@@ -101,7 +101,7 @@ enum toktype ops[NSTAK], *op;
 long
 eval(Tokenrow *trp, int kw)
 {
-	Token *tp, *tpn;
+	Token *tp;
 	Nlist *np;
 	int ntok, rand;
 
@@ -114,23 +114,10 @@ eval(Tokenrow *trp, int kw)
 		np = lookup(trp->tp, 0);
 		return (kw==KIFDEF) == (np && np->flag&ISDEFINED);
 	}
-	/* replace 'defined name',  'defined(name)' to prevent evaluation */
-	for (tp=trp->tp, ntok=tp-trp->bp; tp < trp->lp; tp++) {
-		if (tp->type!=NAME)
-			continue;
-		if ((np=lookup(tp, 0))!=NULL && np->val==KDEFINED) {
-			tp->type = DEFINED;
-			if ((tp+1)<trp->lp && (tp+1)->type==NAME)
-				(tp+1)->type = NAME1;
-			else if ((tp+3)<trp->lp && (tp+1)->type==LP
-			 && (tp+2)->type==NAME && (tp+3)->type==RP)
-				(tp+2)->type = NAME1;
-			else
-				error(ERROR, "Incorrect syntax for `defined'");
-		}
-	}
+	ntok = trp->tp - trp->bp;
+	kwdefined->val = KDEFINED;	/* activate special meaning of defined */
 	expandrow(trp, "<if>");
-	tp = trp->bp+ntok;
+	kwdefined->val = NAME;
 	vp = vals;
 	op = ops;
 	*op++ = END;
@@ -175,7 +162,7 @@ eval(Tokenrow *trp, int kw)
 			/* flow through */
 
 		/* plain binary */
-		case EQ: case NEQ: case LEQ: case GEQ: case LSH:
+		case EQ: case NEQ: case LEQ: case GEQ: case LSH: case RSH:
 		case LAND: case LOR: case SLASH: case PCT:
 		case LT: case GT: case CIRC: case OR: case QUEST:
 		case COLON: case COMMA:
@@ -232,6 +219,8 @@ evalop(struct pri pri)
 	long rv1, rv2;
 	int rtype, oper;
 
+	rv2=0;
+	rtype=0;
 	while (pri.pri < priority[op[-1]].pri) {
 		oper = *--op;
 		if (priority[oper].arity==2) {
@@ -244,7 +233,6 @@ evalop(struct pri pri)
 		case 0:
 		default:
 			error(WARNING, "Syntax error in #if/#endif");
-			rtype = SGN;
 			return 1;
 		case ARITH:
 		case RELAT:
@@ -262,7 +250,8 @@ evalop(struct pri pri)
 		case SHIFT:
 			if (v1.type==UND || v2.type==UND)
 				rtype = UND;
-			rtype = v1.type;
+			else
+				rtype = v1.type;
 			if (rtype==UNS)
 				oper |= UNSMARK;
 			break;
@@ -395,9 +384,10 @@ tokval(Token *tp)
 {
 	struct value v;
 	Nlist *np;
-	int i, base, c;
+	int i, base, c, longcc;
 	unsigned long n;
-	char *p;
+	Rune r;
+	uchar *p;
 
 	v.type = SGN;
 	v.val = 0;
@@ -455,9 +445,10 @@ tokval(Token *tp)
 	case CCON:
 		n = 0;
 		p = tp->t;
+		longcc = 0;
 		if (*p=='L') {
 			p += 1;
-			error(WARNING, "Wide char constant value undefined");
+			longcc = 1;
 		}
 		p += 1;
 		if (*p=='\\') {
@@ -498,11 +489,16 @@ tokval(Token *tp)
 			}
 		} else if (*p=='\'')
 			error(ERROR, "Empty character constant");
-		else
-			n = *p++;
+		else {
+			i = chartorune(&r, (char*)p);
+			n = r;
+			p += i;
+			if (i>1 && longcc==0)
+				error(WARNING, "Undefined character constant");
+		}
 		if (*p!='\'')
 			error(WARNING, "Multibyte character constant undefined");
-		if (n>127)
+		else if (n>127 && longcc==0)
 			error(WARNING, "Character constant taken as not signed");
 		v.val = n;
 		break;

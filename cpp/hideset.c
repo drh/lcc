@@ -1,6 +1,6 @@
+#include <u.h>
+#include <libc.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "cpp.h"
 
 /*
@@ -45,8 +45,6 @@ newhideset(int hs, Nlist *np)
 
 	len = inserths(nhs, hidesets[hs], np);
 	for (i=0; i<nhidesets; i++) {
-		hs1 = nhs;
-		hs2 = hidesets[i];
 		for (hs1=nhs, hs2=hidesets[i]; *hs1==*hs2; hs1++, hs2++)
 			if (*hs1 == NULL)
 				return i;
@@ -92,7 +90,7 @@ unionhideset(int hs1, int hs2)
 }
 
 void
-iniths()
+iniths(void)
 {
 	hidesets = (Hideset *)domalloc(maxhidesets*sizeof(Hideset *));
 	hidesets[0] = (Hideset)domalloc(sizeof(Hideset));
@@ -106,7 +104,7 @@ prhideset(int hs)
 	Hideset np;
 
 	for (np = hidesets[hs]; *np; np++) {
-		fprintf(stderr, (*np)->name, (*np)->len);
+		fprintf(stderr, (char*)(*np)->name, (*np)->len);
 		fprintf(stderr, " ", 1);
 	}
 }

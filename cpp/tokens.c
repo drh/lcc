@@ -1,6 +1,6 @@
+#include <u.h>
+#include <libc.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "cpp.h"
 
 static char wbuf[2*OBS];
@@ -111,7 +111,7 @@ comparetokens(Tokenrow *tr1, Tokenrow *tr2)
 		if (tp1->type != tp2->type
 		 || (tp1->wslen==0) != (tp2->wslen==0)
 		 || tp1->len != tp2->len
-		 || strncmp(tp1->t, tp2->t, tp1->len)!=0)
+		 || strncmp((char*)tp1->t, (char*)tp2->t, tp1->len)!=0)
 			return 1;
 	}
 	return 0;
@@ -142,7 +142,7 @@ insertrow(Tokenrow *dtr, int ntok, Tokenrow *str)
 void
 makespace(Tokenrow *trp)
 {
-	char *tt;
+	uchar *tt;
 	Token *tp = trp->tp;
 
 	if (tp >= trp->lp)
@@ -262,7 +262,7 @@ peektokens(Tokenrow *trp, char *str)
 	flushout();
 	if (str)
 		fprintf(stderr, "%s ", str);
-	if (tp <trp->bp || tp>trp->lp)
+	if (tp<trp->bp || tp>trp->lp)
 		fprintf(stderr, "(tp offset %d) ", tp-trp->bp);
 	for (tp=trp->bp; tp<trp->lp && tp<trp->bp+32; tp++) {
 		if (tp->type!=NL) {
@@ -287,7 +287,7 @@ puttokens(Tokenrow *trp)
 {
 	Token *tp;
 	int len;
-	char *p;
+	uchar *p;
 
 	if (verbose)
 		peektokens(trp, "");
@@ -299,8 +299,17 @@ puttokens(Tokenrow *trp)
 			tp++;
 			len += tp->wslen+tp->len;
 		}
-		memcpy(wbp, p, len);
-		wbp += len;
+		if (Mflag==0) {
+			if (len>OBS/2) {		/* handle giant token */
+				if (wbp > wbuf)
+					write(1, wbuf, wbp-wbuf);
+				write(1, p, len);
+				wbp = wbuf;
+			} else {	
+				memcpy(wbp, p, len);
+				wbp += len;
+			}
+		}
 		if (wbp >= &wbuf[OBS]) {
 			write(1, wbuf, OBS);
 			if (wbp > &wbuf[OBS])
@@ -349,11 +358,11 @@ outnum(char *p, int n)
  * allocate and initialize a new string from s, of length l, at offset o
  * Null terminated.
  */
-char *
-newstring(char *s, int l, int o)
+uchar *
+newstring(uchar *s, int l, int o)
 {
-	char *ns = domalloc(l+o+1);
+	uchar *ns = (uchar *)domalloc(l+o+1);
 
 	ns[l+o] = '\0';
-	return strncpy(ns+o, s, l) - o;
+	return (uchar*)strncpy((char*)ns+o, (char*)s, l) - o;
 }

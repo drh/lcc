@@ -1,6 +1,6 @@
+#include <u.h>
+#include <libc.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "cpp.h"
 
 /*
@@ -44,7 +44,7 @@ dodefine(Tokenrow *trp)
 					growtokenrow(args);
 				for (atp=args->bp; atp<args->lp; atp++)
 					if (atp->len==tp->len
-					 && strncmp(atp->t, tp->t, tp->len)==0)
+					 && strncmp((char*)atp->t, (char*)tp->t, tp->len)==0)
 						error(ERROR, "Duplicate macro argument");
 				*args->lp++ = *tp;
 				narg++;
@@ -72,7 +72,7 @@ dodefine(Tokenrow *trp)
 		if (comparetokens(def, np->vp)
 		 || (np->ap==NULL) != (args==NULL)
 		 || np->ap && comparetokens(args, np->ap))
-			error(ERROR, "Macro redefinition of %t", tp);
+			error(ERROR, "Macro redefinition of %t", trp->bp+2);
 	}
 	if (args) {
 		Tokenrow *tap;
@@ -92,8 +92,8 @@ void
 doadefine(Tokenrow *trp, int type)
 {
 	Nlist *np;
-	static Token onetoken = { NUMBER, 0, 0, 0, 1, "1" };
-	static Tokenrow onetr = { &onetoken, &onetoken, &onetoken+1, 1 };
+	static Token onetoken[1] = {{ NUMBER, 0, 0, 0, 1, (uchar*)"1" }};
+	static Tokenrow onetr = { onetoken, onetoken, onetoken+1, 1 };
 
 	trp->tp = trp->bp;
 	if (type=='U') {
@@ -146,6 +146,18 @@ expandrow(Tokenrow *trp, char *flag)
 			continue;
 		}
 		trp->tp = tp;
+		if (np->val==KDEFINED) {
+			tp->type = DEFINED;
+			if ((tp+1)<trp->lp && (tp+1)->type==NAME)
+				(tp+1)->type = NAME1;
+			else if ((tp+3)<trp->lp && (tp+1)->type==LP
+			 && (tp+2)->type==NAME && (tp+3)->type==RP)
+				(tp+2)->type = NAME1;
+			else
+				error(ERROR, "Incorrect syntax for `defined'");
+			tp++;
+			continue;
+		}
 		if (np->flag&ISMAC)
 			builtin(trp, np->val);
 		else {
@@ -170,6 +182,7 @@ expand(Tokenrow *trp, Nlist *np)
 	Token *tp;
 	Tokenrow *atr[NARG+1];
 	int hs;
+
 	copytokenrow(&ntr, np->vp);		/* copy macro value */
 	if (np->ap==NULL)			/* parameterless */
 		ntokc = 1;
@@ -319,7 +332,7 @@ substargs(Nlist *np, Tokenrow *rtr, Tokenrow **atr)
 		if (rtr->tp->type==NAME
 		 && (argno = lookuparg(np, rtr->tp)) >= 0) {
 			if ((rtr->tp+1)->type==DSHARP
-			 || (rtr->tp-1)->type==DSHARP)
+			 || rtr->tp!=rtr->bp && (rtr->tp-1)->type==DSHARP)
 				insertrow(rtr, 1, atr[argno]);
 			else {
 				copytokenrow(&tatr, atr[argno]);
@@ -340,7 +353,6 @@ void
 doconcat(Tokenrow *trp)
 {
 	Token *ltp, *ntp;
-	Source *s;
 	Tokenrow ntr;
 	int len;
 
@@ -356,10 +368,10 @@ doconcat(Tokenrow *trp)
 				continue;
 			}
 			len = ltp->len + ntp->len;
-			strncpy(tt, ltp->t, ltp->len);
-			strncpy(tt+ltp->len, ntp->t, ntp->len);
+			strncpy((char*)tt, (char*)ltp->t, ltp->len);
+			strncpy((char*)tt+ltp->len, (char*)ntp->t, ntp->len);
 			tt[len] = '\0';
-			s = setsource("<##>", -1, tt);
+			setsource("<##>", -1, tt);
 			maketokenrow(3, &ntr);
 			gettokens(&ntr, 1);
 			unsetsource();
@@ -388,7 +400,7 @@ lookuparg(Nlist *mac, Token *tp)
 	if (tp->type!=NAME || mac->ap==NULL)
 		return -1;
 	for (ap=mac->ap->bp; ap<mac->ap->lp; ap++) {
-		if (ap->len==tp->len && strncmp(ap->t, tp->t, ap->len)==0)
+		if (ap->len==tp->len && strncmp((char*)ap->t,(char*)tp->t,ap->len)==0)
 			return ap - mac->ap->bp;
 	}
 	return -1;
@@ -404,8 +416,8 @@ stringify(Tokenrow *vp)
 	static Token t = { STRING };
 	static Tokenrow tr = { &t, &t, &t+1, 1 };
 	Token *tp;
-	char s[STRLEN];
-	char *sp = s, *cp;
+	uchar s[STRLEN];
+	uchar *sp = s, *cp;
 	int i, instring;
 
 	*sp++ = '"';
@@ -426,7 +438,7 @@ stringify(Tokenrow *vp)
 	*sp++ = '"';
 	*sp = '\0';
 	sp = s;
-	t.len = strlen(sp);
+	t.len = strlen((char*)sp);
 	t.t = newstring(sp, t.len, 0);
 	return &tr;
 }
@@ -471,7 +483,7 @@ builtin(Tokenrow *trp, int biname)
 
 	case KDATE:
 		strncpy(op, curtime+4, 7);
-		strncpy(op+7, curtime+20, 4);
+		strncpy(op+7, curtime+24, 4); /* Plan 9 asctime disobeys standard */
 		op += 11;
 		break;
 
@@ -486,7 +498,7 @@ builtin(Tokenrow *trp, int biname)
 	}
 	if (tp->type==STRING)
 		*op++ = '"';
-	tp->t = outp;
+	tp->t = (uchar*)outp;
 	tp->len = op - outp;
 	outp = op;
 }

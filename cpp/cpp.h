@@ -2,8 +2,13 @@
 #define	OBS	4096		/* outbut buffer */
 #define	NARG	32		/* Max number arguments to a macro */
 #define	NINCLUDE 32		/* Max number of include directories (-I) */
-#define	NIF	10		/* depth of nesting of #if */
+#define	NIF	32		/* depth of nesting of #if */
+#ifndef EOF
 #define	EOF	(-1)
+#endif
+#ifndef NULL
+#define NULL	0
+#endif
 
 enum toktype { END, UNCLASS, NAME, NUMBER, STRING, CCON, NL, WS, DSHARP,
 		EQ, NEQ, LEQ, GEQ, LSH, RSH, LAND, LOR, PPLUS, MMINUS,
@@ -23,16 +28,17 @@ enum kwtype { KIF, KIFDEF, KIFNDEF, KELIF, KELSE, KENDIF, KINCLUDE, KDEFINE,
 #define	ISUNCHANGE	04	/* can't be #defined in PP */
 #define	ISMAC		010	/* builtin macro, e.g. __LINE__ */
 
-#define	EOB	0xFF		/* sentinel for end of input buffer */
+#define	EOB	0xFE		/* sentinel for end of input buffer */
+#define	EOFC	0xFD		/* sentinel for end of input file */
 #define	XPWS	1		/* token flag: white space to assure token sep. */
 
 typedef struct token {
 	unsigned char	type;
 	unsigned char 	flag;
 	unsigned short	hideset;
-	unsigned short	wslen;
-	unsigned short	len;
-	char	*t;
+	unsigned int	wslen;
+	unsigned int	len;
+	uchar	*t;
 } Token;
 
 typedef struct tokenrow {
@@ -46,9 +52,9 @@ typedef struct source {
 	char	*filename;	/* name of file of the source */
 	int	line;		/* current line number */
 	int	lineinc;	/* adjustment for \\n lines */
-	char	*inb;		/* input buffer */
-	char	*inp;		/* input pointer */
-	char	*inl;		/* end of input */
+	uchar	*inb;		/* input buffer */
+	uchar	*inp;		/* input pointer */
+	uchar	*inl;		/* end of input */
 	int	fd;		/* input source */
 	int	ifdepth;	/* conditional nesting in include */
 	struct	source *next;	/* stack for #include */
@@ -56,7 +62,7 @@ typedef struct source {
 
 typedef struct nlist {
 	struct nlist *next;
-	char	*name;
+	uchar	*name;
 	int	len;
 	Tokenrow *vp;		/* value as macro */
 	Tokenrow *ap;		/* list of argument names, if any */
@@ -91,8 +97,8 @@ void	dofree(void *);
 void	error(enum errtype, char *, ...);
 void	flushout(void);
 int	fillbuf(Source *);
-int	getch(Source *);
 int	trigraph(Source *);
+int	foldline(Source *);
 Nlist	*lookup(Token *, int);
 void	control(Tokenrow *);
 void	dodefine(Tokenrow *);
@@ -121,12 +127,13 @@ void	setempty(Tokenrow *);
 void	makespace(Tokenrow *);
 char	*outnum(char *, int);
 int	digit(int);
-char	*newstring(char *, int, int);
+uchar	*newstring(uchar *, int, int);
 int	checkhideset(int, Nlist *);
 void	prhideset(int);
 int	newhideset(int, Nlist *);
 int	unionhideset(int, int);
 void	iniths(void);
+void	setobjname(char *);
 #define	rowlen(tokrow)	((tokrow)->lp - (tokrow)->bp)
 
 extern	char *outp;
@@ -136,7 +143,10 @@ extern	char *curtime;
 extern	int incdepth;
 extern	int ifdepth;
 extern	int ifsatisfied[NIF];
+extern	int Mflag;
 extern	int skipping;
 extern	int verbose;
 extern	int Cplusplus;
+extern	Nlist *kwdefined;
 extern	Includelist includelist[NINCLUDE];
+extern	char wd[];

@@ -1,12 +1,12 @@
-#include <stdlib.h>
-#include <string.h>
+#include <u.h>
+#include <libc.h>
 #include "cpp.h"
-
-#define min(a,b) ((a)<(b)?a:b);
 
 Includelist	includelist[NINCLUDE] = {
 	{ 0, 1, "/usr/include" },
 };
+
+char	*objname;
 
 void
 doinclude(Tokenrow *trp)
@@ -24,8 +24,10 @@ doinclude(Tokenrow *trp)
 		trp->tp = trp->bp+len;
 	}
 	if (trp->tp->type==STRING) {
-		len = min(sizeof(fname)-1, trp->tp->len-2);
-		strncpy(fname, trp->tp->t+1, len);
+		len = trp->tp->len-2;
+		if (len > sizeof(fname) - 1)
+			len = sizeof(fname) - 1;
+		strncpy(fname, (char*)trp->tp->t+1, len);
 		angled = 0;
 	} else {
 		len = 0;
@@ -33,7 +35,7 @@ doinclude(Tokenrow *trp)
 		while (trp->tp->type!=GT) {
 			if (trp->tp>trp->lp || len+trp->tp->len+2 >= sizeof(fname))
 				goto syntax;
-			strncpy(fname+len, trp->tp->t, trp->tp->len);
+			strncpy(fname+len, (char*)trp->tp->t, trp->tp->len);
 			len += trp->tp->len;
 			trp->tp++;
 		}
@@ -58,10 +60,15 @@ doinclude(Tokenrow *trp)
 		if ((fd = open(iname, 0)) >= 0)
 			break;
 	}
+	if ( Mflag>1 || !angled&&Mflag==1 ) {
+		write(1,objname,strlen(objname));
+		write(1,iname,strlen(iname));
+		write(1,"\n",1);
+	}
 	if (fd >= 0) {
 		if (++incdepth > 10)
 			error(FATAL, "#include too deeply nested");
-		setsource(newstring(iname, strlen(iname), 0), fd, NULL);
+		setsource((char*)newstring((uchar*)iname, strlen(iname), 0), fd, NULL);
 		genline();
 	} else {
 		trp->tp = trp->bp+2;
@@ -81,18 +88,36 @@ genline(void)
 {
 	static Token ta = { UNCLASS, NULL, 0, 0 };
 	static Tokenrow tr = { &ta, &ta, &ta+1, 1 };
-	char *p;
+	uchar *p;
 
-	ta.t = p = outp;
-	strcpy(p, "#line ");
+	ta.t = p = (uchar*)outp;
+	strcpy((char*)p, "#line ");
 	p += sizeof("#line ")-1;
-	p = outnum(p, cursource->line);
+	p = (uchar*)outnum((char*)p, cursource->line);
 	*p++ = ' '; *p++ = '"';
-	strcpy(p, cursource->filename);
-	p += strlen(p);
+	if (cursource->filename[0]!='/' && wd[0]) {
+		strcpy((char*)p, wd);
+		p += strlen(wd);
+		*p++ = '/';
+	}
+	strcpy((char*)p, cursource->filename);
+	p += strlen((char*)p);
 	*p++ = '"'; *p++ = '\n';
-	ta.len = p-outp;
-	outp = p;
+	ta.len = (char*)p-outp;
+	outp = (char*)p;
 	tr.tp = tr.bp;
 	puttokens(&tr);
+}
+
+void
+setobjname(char *f)
+{
+	int n = strlen(f);
+	objname = (char*)domalloc(n+5);
+	strcpy(objname,f);
+	if(objname[n-2]=='.'){
+		strcpy(objname+n-1,"$O: ");
+	}else{
+		strcpy(objname+n,"$O: ");
+	}
 }

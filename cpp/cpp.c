@@ -1,7 +1,6 @@
+#include <u.h>
+#include <libc.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <stdarg.h>
 #include "cpp.h"
 
@@ -10,22 +9,23 @@ char	outbuf[OUTS];
 char	*outp = outbuf;
 Source	*cursource;
 int	nerrs;
-struct	token nltoken = { NL, 0, 0, 0, 1, "\n" };
+struct	token nltoken = { NL, 0, 0, 0, 1, (uchar*)"\n" };
 char	*curtime;
 int	incdepth;
 int	ifdepth;
 int	ifsatisfied[NIF];
 int	skipping;
 
+void
 main(int argc, char **argv)
 {
 	Tokenrow tr;
-	time_t t;
+	long t;
 	char ebuf[BUFSIZ];
 
 	setbuf(stderr, ebuf);
-	t = time((time_t)NULL);
-	curtime = ctime(&t);
+	t = time(NULL);
+	curtime = ctime(t);
 	maketokenrow(3, &tr);
 	expandlex();
 	setup(argc, argv);
@@ -35,7 +35,7 @@ main(int argc, char **argv)
 	process(&tr);
 	flushout();
 	fflush(stderr);
-	exit(nerrs);
+	exits(nerrs? "errors" : 0);
 }
 
 void
@@ -111,7 +111,7 @@ control(Tokenrow *trp)
 		case KIFDEF:
 		case KIFNDEF:
 		case KIF:
-			if (++ifdepth > NIF)
+			if (++ifdepth >= NIF)
 				error(FATAL, "#if too deeply nested");
 			++cursource->ifdepth;
 			return;
@@ -147,7 +147,7 @@ control(Tokenrow *trp)
 	case KIFDEF:
 	case KIFNDEF:
 	case KIF:
-		if (++ifdepth > NIF)
+		if (++ifdepth >= NIF)
 			error(FATAL, "#if too deeply nested");
 		++cursource->ifdepth;
 		ifsatisfied[ifdepth] = 0;
@@ -214,12 +214,12 @@ control(Tokenrow *trp)
 			error(ERROR, "Syntax error in #line");
 			return;
 		}
-		cursource->line = atol(tp->t)-1;
+		cursource->line = atol((char*)tp->t)-1;
 		if (cursource->line<0 || cursource->line>=32768)
 			error(WARNING, "#line specifies number out of range");
 		tp = tp+1;
 		if (tp+1<trp->lp)
-			cursource->filename=newstring(tp->t+1,tp->len-2,0);
+			cursource->filename=(char*)newstring(tp->t+1,tp->len-2,0);
 		return;
 
 	case KDEFINED:
@@ -266,12 +266,13 @@ error(enum errtype type, char *string, ...)
 	char *cp, *ep;
 	Token *tp;
 	Tokenrow *trp;
+	Source *s;
 	int i;
 
-	if (*cursource->filename)
-		fprintf(stderr, "cpp: %s:%d: ", cursource->filename, cursource->line);
-	else
-		fprintf(stderr, "cpp: ");
+	fprintf(stderr, "cpp: ");
+	for (s=cursource; s; s=s->next)
+		if (*s->filename)
+			fprintf(stderr, "%s:%d ", s->filename, s->line);
 	va_start(ap, string);
 	for (ep=string; *ep; ep++) {
 		if (*ep=='%') {
@@ -309,7 +310,7 @@ error(enum errtype type, char *string, ...)
 	va_end(ap);
 	fputc('\n', stderr);
 	if (type==FATAL)
-		exit(1);
+		exits("error");
 	if (type!=WARNING)
 		nerrs = 1;
 	fflush(stderr);
