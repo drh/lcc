@@ -35,7 +35,6 @@ static void emitrule(Nonterm nts);
 static void emitlabel(Term terms, Nonterm start, int ntnumber);
 static void emitstring(Rule rules);
 static void emitstruct(Nonterm nts, int ntnumber);
-static void emitterms(Term terms);
 static void emittest(Tree t, char *v, char *suffix);
 
 int main(int argc, char *argv[]) {
@@ -82,7 +81,6 @@ int main(int argc, char *argv[]) {
 	emitdefs(nts, ntnumber);
 	emitstruct(nts, ntnumber);
 	emitnts(rules, nrules);
-	emitterms(terms);
 	emitstring(rules);
 	emitrule(nts);
 	emitclosure(nts);
@@ -645,27 +643,6 @@ static void emitstruct(Nonterm nts, int ntnumber) {
 		print("%2unsigned int %P%S:%d;\n", nts, n);
 	}
 	print("%1} rule;\n};\n\n");
-}
-
-/* emitterms - emit terminal data structures */
-static void emitterms(Term terms) {
-	Term p;
-	int k;
-
-	print("static char %Parity[] = {\n");
-	for (k = 0, p = terms; p; p = p->link) {
-		for ( ; k < p->esn; k++)
-			print("%10,%1/* %d */\n", k);
-		print("%1%d,%1/* %d=%S */\n", p->arity < 0 ? 0 : p->arity, k++, p);
-	}
-	print("};\n\n");
-	print("static char *%Popname[] = {\n");
-	for (k = 0, p = terms; p; p = p->link) {
-		for ( ; k < p->esn; k++)
-			print("/* %d */%10,\n", k);
-		print("/* %d */%1\"%S\",\n", k++, p);
-	}
-	print("};\n\n");
 }
 
 /* emittest - emit clause for testing a match */
