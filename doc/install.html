@@ -13,7 +13,7 @@
 <p ALIGN="LEFT"><strong><a HREF="http://www.research.microsoft.com/~cwfraser/">Christopher
 W. Fraser</a> and <a HREF="http://www.research.microsoft.com/~drh/">David R. Hanson</a>, <a
 HREF="http://www.research.microsoft.com/">Microsoft Research</a></strong><br>
-May 2001</p>
+July 2001</p>
 
 <h2>Contents</h2>
 
@@ -22,7 +22,7 @@ May 2001</p>
   <li><a HREF="#unix">Installation on UNIX</a></li>
   <li><a HREF="#driver">Building the Driver</a></li>
   <li><a HREF="#rcc">Building the Compiler and Accessories</a></li>
-  <li><a HREF="#win32">Installation on Windows NT/2000/95/98</a></li>
+  <li><a HREF="#win32">Installation on Windows</a></li>
   <li><a HREF="#bugs">Reporting Bugs</a></li>
   <li><a HREF="#mailinglist">Keeping in Touch</a></li>
 </dir>
@@ -34,13 +34,8 @@ described in our book <cite>A Retargetable C Compiler: Design and Implementation
 (Addison-Wesley, 1995, ISBN 0-8053-1670-1).</p>
 
 <p>If you're installing lcc on a UNIX system, read the remainder of this section and
-continue with the next section. If you're installing lcc on a Windows NT/2000/95/98 system, and you intend only to <u>use</u> lcc, you can run the
-<a href="ftp://ftp.cs.princeton.edu/pub/packages/lcc/lcc42.exe">InstallShield executable</a>,
-which installs the binaries and the documentation. If you want to <u>modify</u> lcc or <u>rebuild</u>
-it from the source files, you need the
-<a href="ftp://ftp.cs.princeton.edu/packages/lcc/lcc42.zip">complete distribution</a>, and
-you should read the rest of the section, the following three sections, and the <a
-HREF="#win32">Windows NT/2000/95/98</a> section.</p>
+continue with the next section. If you're installing lcc on a Windows system, you should read the rest of this section, the following three sections, and the <a
+HREF="#win32">Windows</a> section.</p>
 
 <p>Extract the distribution into its own directory. All non-absolute paths below are
 relative to this directory. The distribution holds the following subdirectories.</p>
@@ -110,8 +105,7 @@ relative to this directory. The distribution holds the following subdirectories.
   </table>
 </blockquote>
 
-<p><code>doc/install.html</code> is the HTML file for this document. <a HREF="4.html"><code>doc/4.html</code></a>
-describes the internal differences between lcc 3.x and 4.x.</p>
+<p><code>doc/install.html</code> is the HTML file for this document.</p>
 
 <p>The installation makefile is designed so that lcc can be installed from a read-only
 file system or directory, which is common in networked environments, so the distribution
@@ -130,8 +124,7 @@ example,</p>
   <pre>% ln -s $BUILDDIR/sparc-solaris /usr/local/lib/lcc</pre>
 </blockquote>
 
-<p>points <code>/usr/local/lib/lcc</code> to a build directory for lcc version 
-4.2 on the SPARC under Solaris. Links into <code>/usr/local/lib/lcc</code> are created for the programs <code>lcc</code>
+<p>points <code>/usr/local/lib/lcc</code> to a build directory for lcc on the SPARC under Solaris. Links into <code>/usr/local/lib/lcc</code> are created for the programs <code>lcc</code>
 and <code>bprint</code>. Thus, a new distribution can be installed by building it in its
 own build directory and changing one symbolic link to point to that directory. If these
 conventions or their equivalents are followed, the host-specific parts of the driver
@@ -209,7 +202,7 @@ from the distribution directory.<ol>
 % ln -s /usr/local/lib/{lcc,bprint} /usr/local/bin</pre>
     </blockquote>
     <p>Some users copy <code>bprint</code> and <code>lcc</code> into <code>/usr/local/bin</code>
-    instead of creating symbolic links. The advantange of creating the links for <code>lcc</code>
+    instead of creating symbolic links. The advantage of creating the links for <code>lcc</code>
     and <code>bprint</code> as shown is that, once established, they point indirectly to
     whatever <code>/usr/local/lib/lcc</code> points to; installing a new version of lcc can be done by changing <code>/usr/local/lib/lcc</code> to point to the build
     directory for the new version.</p>
@@ -601,9 +594,9 @@ causes the symbolic target to emit HTML instead of plain text. Finally, the opti
 specifies the &quot;null&quot; target for which lcc emits nothing and thus only checks the
 syntax and semantics of its input files.</p>
 
-<h2><a NAME="win32">Installation on Windows NT/2000/95/98</a></h2>
+<h2><a NAME="win32">Installation on Windows</a></h2>
 
-<p>On Windows NT/2000/95/98, lcc is designed to work with Microsoft's Visual
+<p>On Windows, lcc is designed to work with Microsoft's Visual
 C++ (VC), version 5.0 and above, and Microsoft's Assembler, MASM 6.11d. It uses the VC header files,
 libraries, and command-line tools, and it uses MASM to assemble the code it generates. If
 you have MASM 6.11, make sure you upgrade to 6.11d,
@@ -626,11 +619,11 @@ is in <code>\dist\lcc</code>.
   <li>Create the build directory, perhaps using a version- and platform-specific naming
     convention as suggested in <a HREF="#unix"><em>Installation on UNIX</em></a>, and record
     the name of this directory in the <code>BUILDDIR</code> environment variable:<blockquote>
-      <pre>C:\dist\lcc&gt;set BUILDDIR=\progra~1\lcc\4.2\bin
+      <pre>C:\dist\lcc&gt;set BUILDDIR=\progra~1\lcc\<i>version</i>\bin
 C:\dist\lcc&gt;mkdir %BUILDDIR%</pre>
     </blockquote>
-    <p>The default build, or installation, directory is <code>\Program Files\lcc\4.2\bin</code>,
-    but the <code>nmake</code> commands require that you use the corresponding 8.3 file name, <code>progra~1</code>,
+    <p>The default build, or installation, directory is <code>\Program Files\lcc\</code><i>version</i><code>\bin</code>, 
+    where <i>version</i> is the version number, e.g., 4.2, but the <code>nmake</code> commands require that you use the corresponding 8.3 file name, <code>progra~1</code>,
     instead of <code>Program Files</code>.</p>
   </li>
   <li><a HREF="../etc/win32.c"><code>etc\win32.c</code></a> is the Windows-specific part of
