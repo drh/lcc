@@ -26,8 +26,8 @@ char *com[] = { LCCDIR "rcc", "-target=sparc/solaris",
 char *as[] = { GCCDIR "as", "-f", "-o", "$3", "$1", "$2", 0 };
 char *ld[] = { GCCDIR "ld", "-o", "$3", "$1",
 	GCCLIB "crti.o", GCCLIB "crt1.o",
-	GCCLIB "crtbegin.o", "$2", "", "", "-L" GCCLIB,
-	"-lgcc", "-lm", "-lc", "",
+	GCCLIB "crtbegin.o", "$2", "", "", "-L" LCCDIR, "-llcc",
+	"-L" GCCLIB, "-lgcc", "-lm", "-lc", "",
 	GCCLIB "crtend.o", GCCLIB "crtn.o", 0 };
 static char *bbexit = LCCDIR "bbexit.o";
 
@@ -38,6 +38,7 @@ int option(char *arg) {
 	if (strncmp(arg, "-lccdir=", 8) == 0) {
 		cpp[0] = concat(&arg[8], "/cpp");
 		include[0] = concat("-I", concat(&arg[8], "/include"));
+		ld[10] = concat("-L", &arg[8]);
 		com[0] = concat(&arg[8], "/rcc");
 		bbexit = concat(&arg[8], "/bbexit.o");
 	} else if (strcmp(arg, "-g") == 0)
