@@ -140,27 +140,27 @@ used for housekeeping, handshaking and module initialization.
 
                                                            */
    extern
-     s22(),
-     s241(),
-     s243(),
-     s244(),
-     s25(),
-     s26(),
-     s4(),
-     s61(),
-     s626(),
-     s71(),
-     s72(),
-     s757(),
-     s7813(),
-     s714(),
-     s715(),
-     s81(),
-     s84(),
-     s85(),
-     s86(),
-     s88(),
-     s9()
+     s22(struct defs *),
+     s241(struct defs *),
+     s243(struct defs *),
+     s244(struct defs *),
+     s25(struct defs *),
+     s26(struct defs *),
+     s4(struct defs *),
+     s61(struct defs *),
+     s626(struct defs *),
+     s71(struct defs *),
+     s72(struct defs *),
+     s757(struct defs *),
+     s7813(struct defs *),
+     s714(struct defs *),
+     s715(struct defs *),
+     s81(struct defs *),
+     s84(struct defs *),
+     s85(struct defs *),
+     s86(struct defs *),
+     s88(struct defs *),
+     s9(struct defs *)
    ;
 
    int j;
@@ -3762,7 +3762,7 @@ struct defs *pd0;
 
    if(lrc != 0){
      rc = rc+16;
-     printf(s72er,16);
+	 printf(s72er,16);
    }
 
         /*  The sizeof operator has been tested previously.     */
@@ -4800,7 +4800,7 @@ test is unreliable.              */
 s84(pd0)          /*  8.4 Meaning of declarators   */
 struct defs *pd0;
 {
-   int *ip, i, *fip(), (*pfi)(), j, k, array(), glork();
+   int *ip, i, *fip(), (*pfi)(), j, k, array(), glork(int);
    static int x3d[3][5][7];
    float fa[17], *afp[17], sum;
    static char s84er[] = "s84,er%d\n";
