@@ -65,7 +65,7 @@ setup(int argc, char **argv)
 		}
 	dp = ".";
 	fp = "<stdin>";
-	fd = 0;
+	fd = stdin;
 	if (optind<argc) {
 		if ((fp = strrchr(argv[optind], '/')) != NULL) {
 			int len = fp - argv[optind];

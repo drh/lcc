@@ -320,7 +320,7 @@ puttokens(Tokenrow *trp)
 		}
 	}
 	trp->tp = tp;
-	if (cursource->fd==0)
+	if (cursource->fd==stdin)
 		flushout();
 }
 
