@@ -1,7 +1,7 @@
 .\" $Id$
 .TH LCC 1 "local \- $Date$"
 .SH NAME
-lcc \- local ANSI C compiler
+lcc \- ANSI C compiler
 .SH SYNOPSIS
 .B lcc
 [
@@ -13,7 +13,7 @@ lcc \- local ANSI C compiler
 .SH DESCRIPTION
 .PP
 .I lcc
-is a local ANSI C compiler for a variety of platforms.
+is an ANSI C compiler for a variety of platforms.
 .PP
 Arguments whose names end with `.c' (plus `.C' under Windows) are taken to be
 C source programs; they are preprocessed, compiled, and
@@ -25,13 +25,13 @@ except they are not preprocessed.
 In the same way,
 arguments ending with `.s' (plus `.S', `.asm', and `.ASM', under Windows)
 are taken to be assembly source programs
-and are assembled, producing a `.o' (UNIX) or `.obj' (Windows) file.
+and are assembled, producing an object file.
 If there are no arguments,
 .I lcc
-prints a message summarizing its options on the standard error.
+summarizes its options on the standard error.
 .PP
 .I lcc
-deletes a `.o' (UNIX) or `.obj' (Windows) file if and only if exactly one
+deletes an object file if and only if exactly one
 source file is mentioned and no other file
 (source, object, library) or
 .B \-l
@@ -88,7 +88,7 @@ warns when
 .B \-g
 is unsupported.
 .TP
-.BI \-Wf-g n , x
+.BI \-Wf\-g n , x
 Set the debugging level to
 .I n
 and emit source code as comments into the generated assembly code;
@@ -101,7 +101,7 @@ is omitted, it defaults to 1, which is similar to
 Omitting
 .BI , x
 just sets the debugging level to
-.BR n .
+.IR n .
 .TP
 .B \-w
 Suppress warning diagnostics, such as those
@@ -141,7 +141,7 @@ Writes declarations for all defined globals on standard error.
 Function declarations include prototypes;
 editing this output can simplify conversion to ANSI C.
 This output may not correspond to the input when
-there are several typedef's for the same type.
+there are several typedefs for the same type.
 .TP
 .B \-n
 Arrange for the compiler to produce code
@@ -154,7 +154,7 @@ is ignored.
 .TP
 .B \-S
 Compile the named C programs, and leave the
-assembler-language output on corresponding files suffixed `.s'.
+assembler-language output on corresponding files suffixed `.s' or `.asm'.
 .TP
 .B \-E
 Run only the preprocessor on the named C programs
@@ -184,14 +184,12 @@ are given with more than one source file and ignores the
 option.
 .TP
 .BI \-D name=def
-.br
-.ns
-.TP
-.BI \-D name
 Define the
 .I name
 to the preprocessor, as if by `#define'.
-If no definition is given, the name is defined as "1".
+If
+.I =def
+is omitted, the name is defined as "1".
 .TP
 .BI \-U name
 Remove any initial definition of
@@ -215,7 +213,9 @@ Only those directories specified by subsequent explicit
 options will be searched, in the order given.
 .TP
 .BI \-B str
-Use the compiler \fIstr\fP\fBrcc\fP instead of the default version.
+Use the compiler
+.BI "" str rcc
+instead of the default version.
 Note that
 .I str
 often requires a trailing slash.
@@ -228,7 +228,11 @@ are passed to the loader; see
 .TP
 .BI \-Wo\-lccdir= dir
 Find the preprocessor, compiler proper, and include directory
-in the directory \fIdir\fP/ or \fIdir\fP\\.
+in the directory
+.I dir/
+or
+.I
+dir\\.
 If the environment variable
 .B LCCDIR
 is defined, it gives this directory.
@@ -272,7 +276,7 @@ causes the commands to be printed, but
 .I not
 executed.
 .TP
-.B \-help
+.BR \-help " or " \-?
 Print a message on the standard error summarizing
 .IR lcc 's
 options and giving the values of the environment variables
@@ -352,11 +356,15 @@ values, "(null)" is printed.
 is accepted, but ignored.
 .TP
 .BI \-tempdir= dir
-Store temporary files in the directory \fIdir\fP/ or \fIdir\fP\\.
+Store temporary files in the directory
+.I dir/
+or
+.I
+dir\\.
 The default is usually
 .BR /tmp .
 .TP
-.BI \-W x \fIarg\fP
+.BI \-W xarg
 pass argument
 .I arg
 to the program indicated by
@@ -374,7 +382,7 @@ the assembler, and the loader.
 is passed as given; if a
 .B \-
 is expected, it must be given explicitly.
-.BI \-W o \fIarg\fP
+.BI \-Wo arg
 specifies a system-specific option,
 .IR arg .
 .PP
@@ -383,7 +391,7 @@ are taken to be either loader option arguments, or C-compatible
 object programs, typically produced by an earlier
 .I lcc
 run, or perhaps libraries of C-compatible routines.
-Duplicate `.o' (UNIX) or `.obj' (Windows) files are ignored.
+Duplicate object files are ignored.
 These programs, together with the results of any
 compilations specified, are loaded (in the order
 given) to produce an executable program with name
@@ -403,7 +411,7 @@ Each top-level occurrence of an identifier
 counts as 1 reference. Occurrences in a loop,
 either of the then/else arms of an if statement, or a case
 in a switch statement each count, respectively, as 10, 1/2, or 1/10 references.
-These values are increased accordingly for nested control structures.
+These values are adjusted accordingly for nested control structures.
 .B \-Wf\-a
 causes
 .I lcc
@@ -433,19 +441,13 @@ alpha/osf	ALPHA, OSF 3.2
 mips/irix	big-endian MIPS, IRIX 5.2
 mips/ultrix	little-endian MIPS, ULTRIX 4.3
 sparc/solaris	SPARC, Solaris 2.3
-x86/win32	x86, Windows NT 4.0/Windows 95/Windows 98
+x86/win32	x86, Windows NT 4.0/Windows 95/98
 x86/linux	x86, Linux
 symbolic	text rendition of the generated code
 null		no output
 .fi
 .RE
 .PP
-The
-.B \-v
-option lists the
-.I target/os
-combinations supported by specific installations of
-.IR lcc .
 For
 .BR \-Wf\-target=symbolic ,
 the option
@@ -460,7 +462,7 @@ as described in the ANSI standard.
 If
 .I lcc
 is used with the GNU C preprocessor, the
-.B \-Wp-trigraphs
+.B \-Wp\-trigraphs
 option is required to enable trigraph sequences.
 .PP
 Plain int bit fields are signed.
@@ -493,20 +495,20 @@ with the
 option.
 .PP
 .RS
-.ta \w'/usr/local/lib/lcc/liblcc.{a,lib}XX'u
+.ta \w'$LCCDIR/liblcc.{a,lib}XX'u
 .nf
 file.{c,C}	input file
 file.{s,asm}	assembly-language file
 file.{o,obj}	object file
 a.{out,exe}	loaded output
-/tmp/lcc*	temporaries
-/usr/local/lib/lcc/cpp	preprocessor
-/usr/local/lib/lcc/rcc	compiler
-/usr/local/lib/lcc/liblcc.{a,lib}	\fIlcc\fP-specific library
+/tmp/lcc*	temporary files
+$LCCDIR/cpp	preprocessor
+$LCCDIR/rcc	compiler
+$LCCDIR/liblcc.{a,lib}	\fIlcc\fP-specific library
 /lib/crt0.o	runtime startup (UNIX)
 /lib/[gm]crt0.o	startups for profiling (UNIX)
 /lib/libc.a	standard library (UNIX)
-/usr/local/lib/lcc/include	ANSI standard headers
+$LCCDIR/include	ANSI standard headers
 /usr/local/include	local headers
 /usr/include	traditional headers
 prof.out	file produced for \fIbprint\fR(1)
@@ -516,7 +518,9 @@ gmon.out	file produced for \fIgprof\fR(1)
 .RE
 .PP
 .I lcc
-predefines the macro `__LCC__' on all systems.
+predefines the macro
+.B __LCC__
+on all systems.
 It may also predefine some installation-dependent symbols; option
 .B \-v
 exposes them.
@@ -542,7 +546,7 @@ American National Standards Inst.,
 ANSI X3.159-1989, New York, 1990.
 .br
 .SH BUGS
-Mail bug reports along with the shortest program
+Mail bug reports along with the shortest preprocessed program
 that exposes them and the details reported by
 .IR lcc 's
 .B \-v
@@ -557,7 +561,7 @@ Functions given in the ANSI headers may be missing from
 some local C libraries (e.g., wide-character functions)
 or may not correspond exactly to the local versions;
 for example, the ANSI standard
-.B stdio.h
+stdio.h
 specifies that
 .IR printf ,
 .IR fprintf ,
@@ -567,7 +571,7 @@ return the number of characters written to the file or array,
 but some existing libraries don't implement this convention.
 .PP
 On the MIPS and SPARC, old-style variadic functions must use
-.B varargs.h
+varargs.h
 from MIPS or Sun. New-style is recommended.
 .PP
 With
