@@ -103,7 +103,7 @@ Node listnodes(Tree tp, int tlab, int flab) {
 	Node p = NULL, l, r;
 	int op;
 
-	assert(tlab || flab || tlab == 0 && flab == 0);
+	assert(tlab == 0 || flab == 0);
 	if (tp == NULL)
 		return NULL;
 	if (tp->node)
