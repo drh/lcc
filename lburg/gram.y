@@ -162,6 +162,6 @@ void yywarn(char *fmt, ...) {
 	va_start(ap, fmt);
 	if (yylineno > 0)
 		fprintf(stderr, "line %d: ", yylineno);
-	fprintf(stderr, "warhing: ");
+	fprintf(stderr, "warning: ");
 	vfprintf(stderr, fmt, ap);
 }
