@@ -30,6 +30,7 @@ static int compile(char *, char *);
 static void compose(char *[], List, List, List);
 static void error(char *, char *);
 static char *exists(char *);
+static char *first(char *);
 static int filename(char *, char *);
 static List find(char *, List);
 static void help(void);
@@ -147,7 +148,7 @@ main(int argc, char *argv[]) {
 		}
 	if (errcnt == 0 && !Eflag && !Sflag && !cflag && llist[1]) {
 		compose(ld, llist[0], llist[1],
-			append(outfile ? outfile : concat("a", suffixes[4]), 0));
+			append(outfile ? outfile : concat("a", first(suffixes[4])), 0));
 		if (callsys(av))
 			errcnt++;
 	}
@@ -314,6 +315,19 @@ static char *exists(char *name) {
 	return 0;
 }
 
+/* first - return first component in semicolon separated list */
+static char *first(char *list) {
+	char *s = strchr(list, ';');
+
+	if (s) {
+		char buf[1024];
+		strncpy(buf, list, s-list);
+		buf[s-list] = '\0';
+		return strsave(buf);
+	} else
+		return list;
+}
+
 /* filename - process file name argument `name', return status */
 static int filename(char *name, char *base) {
 	int status = 0;
@@ -329,7 +343,7 @@ static int filename(char *name, char *base) {
 			break;
 		}
 		if (itemp == NULL)
-			itemp = tempname(suffixes[1]);
+			itemp = tempname(first(suffixes[1]));
 		compose(cpp, plist, append(name, 0), append(itemp, 0));
 		status = callsys(av);
 		if (status == 0)
@@ -339,8 +353,8 @@ static int filename(char *name, char *base) {
 		if (Eflag)
 			break;
 		if (Sflag)
-			status = compile(name, outfile ? outfile : concat(base, suffixes[2]));
-		else if ((status = compile(name, stemp?stemp:(stemp=tempname(suffixes[2])))) == 0)
+			status = compile(name, outfile ? outfile : concat(base, first(suffixes[2])));
+		else if ((status = compile(name, stemp?stemp:(stemp=tempname(first(suffixes[2]))))) == 0)
 			return filename(stemp, base);
 		break;
 	case 2:	/* assembly language files */
@@ -351,9 +365,9 @@ static int filename(char *name, char *base) {
 			if (cflag && outfile)
 				ofile = outfile;
 			else if (cflag)
-				ofile = concat(base, suffixes[3]);
+				ofile = concat(base, first(suffixes[3]));
 			else
-				ofile = tempname(suffixes[3]);
+				ofile = tempname(first(suffixes[3]));
 			compose(as, alist, append(name, 0), append(ofile, 0));
 			status = callsys(av);
 			if (!find(ofile, llist[1]))
@@ -534,7 +548,7 @@ static void opt(char *arg) {
 		if (path)
 			error("-B overwrites earlier option", 0);
 		path = arg + 2;
-		com[0] = concat(path, concat("rcc", suffixes[4]));
+		com[0] = concat(path, concat("rcc", first(suffixes[4])));
 		if (path[0] == 0)
 			error("missing directory in -B option", 0);
 		}
