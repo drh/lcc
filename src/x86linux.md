@@ -773,7 +773,7 @@ static void globalend(void) {
 static void progend(void) {
         globalend();
         (*IR->segment)(CODE);
-        print(".ident \"LCC: 4.1\"\n");
+        print(".ident \"LCC: 4.2\"\n");
 }
 
 static void target(Node p) {
