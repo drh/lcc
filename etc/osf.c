@@ -12,7 +12,7 @@ char inputs[256] = "";
 char *cpp[] = {
 	LCCDIR "cpp", "-D__STDC__=1",
 	"-DLANGUAGE_C", "-D__LANGUAGE_C__",
- 	"-D_unix", "-D__unix__", "-D_osf", "-D__osf__",
+ 	"-D_unix", "-D__unix__", "-D_osf", "-D__osf__", "-Dunix",
 	"-Dalpha", "-D_alpha", "-D__alpha",
 	"-D__SYSTYPE_BSD",  "-D_SYSTYPE_BSD",
 	"$1", "$2", "$3", 0 };

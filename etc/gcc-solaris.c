@@ -17,7 +17,7 @@ static char rcsid[] = "$Id$";
 
 char inputs[256] = "";
 char *cpp[] = { LCCDIR "cpp",
-	"-D__STDC__=1", "-Dsparc", "-D__sparc__", "-Dsun", "-D__sun__",
+	"-D__STDC__=1", "-Dsparc", "-D__sparc__", "-Dsun", "-D__sun__", "-Dunix",
 	"$1", "$2", "$3", 0 };
 char *include[] = { "-I" LCCDIR "include", "-I/usr/local/include",
 	"-I" GCCLIB "include", "-I/usr/include", 0 };
