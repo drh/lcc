@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "cpp.h"
@@ -57,7 +58,7 @@ doinclude(Tokenrow *trp)
 		strcpy(iname, ip->file);
 		strcat(iname, "/");
 		strcat(iname, fname);
-		if ((fd = fopen(iname, "r")) >= 0)
+		if ((fd = fopen(iname, "r")) != NULL)
 			break;
 	}
 	if ( Mflag>1 || !angled&&Mflag==1 ) {
