@@ -21,7 +21,7 @@ HREF="http://www.research.microsoft.com/">Microsoft Research</a></strong></p>
   <li><a HREF="#unix">Installation on UNIX</a></li>
   <li><a HREF="#driver">Building the Driver</a></li>
   <li><a HREF="#rcc">Building the Compiler and Accessories</a></li>
-  <li><a HREF="#win32">Installation on Windows NT 4.0 and Windows 95</a></li>
+  <li><a HREF="#win32">Installation on Windows NT 4.0 and Windows 95/98</a></li>
   <li><a HREF="#bugs">Reporting Bugs</a></li>
   <li><a HREF="#mailinglist">Keeping in Touch</a></li>
 </dir>
@@ -32,86 +32,87 @@ HREF="http://www.research.microsoft.com/">Microsoft Research</a></strong></p>
 described in our book <cite>A Retargetable C Compiler: Design and Implementation</cite>
 (Addison-Wesley, 1995, ISBN 0-8053-1670-1).</p>
 
+<p>If you're installing lcc on a UNIX system, read the remainder of this section and
+continue with the next section. If you're installing lcc on a Windows NT 4.0 or Windows
+95/98 system, read the <a HREF="#win32">Windows NT/95/98 instructions</a> first; read the
+rest of the section and the following three sections only if you intend to modify lcc or
+rebuild it from the source files.</p>
+
 <p>Extract the distribution into its own directory. All non-absolute paths below are
 relative to this directory. The distribution holds the following subdirectories.</p>
 
 <blockquote>
   <table BORDER="0" CELLPADDING="1" CELLSPACING="1" WIDTH="80%">
     <tr>
-      <td><a HREF="pkg/src"><code>src</code></a></td>
+      <td><a HREF="../src"><code>src</code></a></td>
       <td></td>
       <td>source code</td>
     </tr>
     <tr>
-      <td><a HREF="pkg/etc"><code>etc</code></a></td>
+      <td><a HREF="../etc"><code>etc</code></a></td>
       <td></td>
       <td>driver, accessories</td>
     </tr>
     <tr>
-      <td><a HREF="pkg/lib"><code>lib</code></a></td>
+      <td><a HREF="../lib"><code>lib</code></a></td>
       <td></td>
       <td>runtime library source code</td>
     </tr>
     <tr>
-      <td><a HREF="pkg/cpp"><code>cpp</code></a></td>
+      <td><a HREF="../cpp"><code>cpp</code></a></td>
       <td></td>
       <td>preprocessor source code</td>
     </tr>
     <tr>
-      <td><a HREF="pkg/lburg"><code>lburg</code></a></td>
+      <td><a HREF="../lburg"><code>lburg</code></a></td>
       <td></td>
       <td>code-generator generator source code</td>
     </tr>
     <tr>
-      <td><a HREF="pkg/doc"><code>doc</code></a></td>
+      <td><a HREF="../doc"><code>doc</code></a></td>
       <td></td>
       <td>this document, man pages</td>
     </tr>
     <tr>
-      <td><code><a HREF="pkg/include">include</a>/*/*</code></td>
+      <td><code><a HREF="../include">include</a>/*/*</code></td>
       <td></td>
       <td>include files</td>
     </tr>
     <tr>
-      <td><a HREF="pkg/tst"><code>tst</code></a></td>
+      <td><a HREF="../tst"><code>tst</code></a></td>
       <td></td>
       <td>test suite</td>
     </tr>
     <tr>
-      <td><code><a HREF="pkg/alpha">alpha</a>/*/tst</code></td>
+      <td><code><a HREF="../alpha">alpha</a>/*/tst</code></td>
       <td></td>
       <td>ALPHA test outputs</td>
     </tr>
     <tr>
-      <td><code><a HREF="pkg/mips">mips</a>/*/tst</code></td>
+      <td><code><a HREF="../mips">mips</a>/*/tst</code></td>
       <td></td>
       <td>MIPS test outputs</td>
     </tr>
     <tr>
-      <td><code><a HREF="pkg/sparc">sparc</a>/*/tst</code></td>
+      <td><code><a HREF="../sparc">sparc</a>/*/tst</code></td>
       <td></td>
       <td>SPARC test outputs</td>
     </tr>
     <tr>
-      <td><code><a HREF="pkg/x86">x86</a>/*/tst</code></td>
+      <td><code><a HREF="../x86">x86</a>/*/tst</code></td>
       <td></td>
       <td>X86 test outputs</td>
     </tr>
   </table>
 </blockquote>
 
-<p><code>doc/install.html</code> is the HTML file for this document. <a
-HREF="pkg/doc/4.html"><code>doc/4.html</code></a> describes the internal differences
-between lcc 3.x and 4.1.</p>
+<p><code>doc/install.html</code> is the HTML file for this document. <a HREF="4.html"><code>doc/4.html</code></a>
+describes the internal differences between lcc 3.x and 4.1.</p>
 
 <p>The installation makefile is designed so that lcc can be installed from a read-only
 file system or directory, which is common in networked environments, so the distribution
 can be unloaded on a central file server. <strong>You will need an existing ANSI/ISO C
 compiler to build and install lcc.</strong></p>
-
-<p>If you're installing lcc on a UNIX system, continue with the next section. If you're
-installing lcc on a Windows NT 4.0 or Windows 95 system, read the next three sections
-first, then follow the <a HREF="#win32">Windows NT/95 instructions</a>.</p>
 
 <h2><a NAME="unix">Installation on UNIX</a></h2>
 
@@ -133,12 +134,12 @@ conventions or their equivalents are followed, the host-specific parts of the dr
 program, <code>lcc</code>, can be used unmodified.</p>
 
 <p>Installation on a UNIX system involves the following steps. Below, the build directory
-is referred to as <code>BUILDDIR</code>. 
+is referred to as <code>BUILDDIR</code>.
 
 <ol>
   <li>Create the build directory, using a version- and platform-specific naming convention as
     suggested above, and record the name of this directory in the <code>BUILDDIR</code>
-    environment variable: <blockquote>
+    environment variable:<blockquote>
       <pre>% setenv BUILDDIR /usr/local/lib/lcc-4.1/sparc-solaris
 % mkdir -p $BUILDDIR</pre>
     </blockquote>
@@ -146,7 +147,7 @@ is referred to as <code>BUILDDIR</code>.
     that supports the <code>-p</code> option, which creates intermediate directories as
     necessary.</p>
   </li>
-  <li>Copy the man pages to the repository for local man pages, e.g., <blockquote>
+  <li>Copy the man pages to the repository for local man pages, e.g.,<blockquote>
       <pre>% cp doc/*.1 /usr/local/man/man1</pre>
     </blockquote>
     <p>Some users copy the man pages to the build directory and create the appropriate
@@ -158,7 +159,7 @@ is referred to as <code>BUILDDIR</code>.
   </li>
   <li>Platform-specific include files are in directories named <code>include/</code><em>target</em><code>/</code><em>os</em>.
     Create the include directory in the build directory, and copy the include hierarchy for
-    your platform to this directory, e.g., <blockquote>
+    your platform to this directory, e.g.,<blockquote>
       <pre>% mkdir $BUILDDIR/include
 % cp -p -R include/sparc/solaris/* $BUILDDIR/include</pre>
     </blockquote>
@@ -170,11 +171,11 @@ is referred to as <code>BUILDDIR</code>.
       <pre>% ln -s /proj/pkg/lcc/4.1/include/sparc/solaris $BUILDDIR/include</pre>
     </blockquote>
   </li>
-  <li>The <a HREF="pkg/makefile"><code>makefile</code></a> includes the file named by the <code>CUSTOM</code>
+  <li>The <a HREF="../makefile"><code>makefile</code></a> includes the file named by the <code>CUSTOM</code>
     macro; the default is <code>custom.mk</code>, and an empty <code>custom.mk</code> is
     included in the distribution. If desired, prepare a site-specification customization file
     and define <code>CUSTOM</code> to the path of that file when invoking make in steps 5 and
-    6, e.g., <blockquote>
+    6, e.g.,<blockquote>
       <pre>make CUSTOM=/users/drh/solaris.mk</pre>
     </blockquote>
     <p>You can, for example, use customization files to record site-specific values for macros
@@ -184,7 +185,7 @@ is referred to as <code>BUILDDIR</code>.
     HREF="#driver"><em>Building the Driver</em></a>.</li>
   <li>Build the preprocessor, compiler proper, library, and other accessories. See <a
     HREF="#rcc"><em>Building the Compiler</em></a>.</li>
-  <li>Plant symbolic links to the build directory and to the installed programs, e.g., <blockquote>
+  <li>Plant symbolic links to the build directory and to the installed programs, e.g.,<blockquote>
       <pre>% ln -s $BUILDDIR /usr/local/lib/lcc
 % ln -s /usr/local/lib/{lcc,bprint} /usr/local/bin</pre>
     </blockquote>
@@ -192,7 +193,7 @@ is referred to as <code>BUILDDIR</code>.
     instead of creating symbolic links. The advantange of creating the links for <code>lcc</code>
     and <code>bprint</code> as shown is that, once established, they point indirectly to
     whatever <code>/usr/local/lib/lcc</code> points to; installing a new version of lcc, say,
-    4.1, can be done by changing <code>/usr/local/lib/lcc</code> to point to the 4.1 build
+    4.2, can be done by changing <code>/usr/local/lib/lcc</code> to point to the 4.2 build
     directory.</p>
   </li>
 </ol>
@@ -209,16 +210,16 @@ can probably use one of the host-specific parts unmodified; otherwise, pick one 
 closely related to your platform, copy it to <em>whatever</em><code>.c</code>, and edit it
 as described below. You should not have to edit <code>etc/lcc.c</code>.</p>
 
-<p>We'll use <a HREF="pkg/etc/solaris.c"><code>etc/solaris.c</code></a> as an example in
+<p>We'll use <a HREF="../etc/solaris.c"><code>etc/solaris.c</code></a> as an example in
 describing how the host-specific part works. This example illustrates all the important
 features. Make sure you have the environment variable <code>BUILDDIR</code> set correctly,
 and build the driver with a <code>make</code> command, e.g.,</p>
 
 <blockquote>
   <pre>% make HOSTFILE=etc/solaris.c lcc
-cc -c -g -o /usr/local/lib/lcc-4.1/lcc.o etc/lcc.c
-cc -c -g -o /usr/local/lib/lcc-4.1/host.o etc/solaris.c
-cc -o /usr/local/lib/lcc-4.1/lcc -g /usr/local/lib/lcc-4.1/lcc.o /usr/local/lib/lcc-4.1/host.o</pre>
+cc -g -c -DTEMPDIR=\&quot;/tmp\&quot; -o /usr/local/lib/lcc-4.1/sparc-solaris/lcc.o etc/lcc.c
+cc -g -c -o /usr/local/lib/lcc-4.1/sparc-solaris/host.o etc/solaris.c
+cc -g -o /usr/local/lib/lcc-4.1/sparc-solaris/lcc /usr/local/lib/lcc-4.1/sparc-solaris/lcc.o /usr/local/lib/lcc-4.1/sparc-solaris/host.o</pre>
 </blockquote>
 
 <p>The symbolic name <code>HOSTFILE</code> specifies the path to the host-specific part,
@@ -289,30 +290,29 @@ command, e.g.,</p>
 
 <p>Note the trailing slash; <code>SUNDIR</code> is provided so you can use <code>etc/solaris.c</code>
 even if you have a different version of the Sun Pro compiler suite. If you're using the
-gcc compiler tools instead of the Sun Pro tools, see <a HREF="pkg/etc/gcc-solaris.c"><code>etc/gcc-solaris.c</code></a>.</p>
+gcc compiler tools instead of the Sun Pro tools, see <a HREF="../etc/gcc-solaris.c"><code>etc/gcc-solaris.c</code></a>.</p>
 
 <p>Most of the host-specific code is platform-specific data and templates for the commands
 that invoke the preprocessor, compiler, assembler, and loader. The <code>suffixes</code>
 array lists the file name suffixes for C source files, preprocessed source files, assembly
 language source files, object files, and executable files. <code>suffixes</code> must be
 terminated with a null pointer, as shown above. The initialization of <code>suffixes</code>
-in <code><a HREF="pkg/etc/solaris.c">etc/solaris</a></code> are the typical ones for UNIX
-systems. Each element of <code>suffixes</code> is actually a list of suffixes, seperated
-by semicolons; <code><a HREF="pkg/etc/win32.c">etc/win32.c</a></code> holds an example:</p>
+in <code><a HREF="../etc/solaris.c">etc/solaris.c</a></code> are the typical ones for UNIX
+systems. Each element of <code>suffixes</code> is actually a list of suffixes, separated
+by semicolons; <code><a HREF="../etc/win32.c">etc/win32.c</a></code> holds an example:</p>
 
 <blockquote>
-  <pre>char *suffixes[] = { &quot;.c;.C&quot;, &quot;.i;.I&quot;, &quot;.asm;.ASM;.s;.S&quot;, &quot;.obj;.OBJ&quot;, &quot;.exe&quot;, 0 };
-</pre>
+  <pre>char *suffixes[] = { &quot;.c;.C&quot;, &quot;.i;.I&quot;, &quot;.asm;.ASM;.s;.S&quot;, &quot;.obj;.OBJ&quot;, &quot;.exe&quot;, 0 };</pre>
 </blockquote>
 
 <p>When a list is given, the first suffix is used whenever lcc needs to generate a file
-name. For example, with <code><a HREF="pkg/etc/win32.c">etc/win32.c</a></code>, lcc emits
+name. For example, with <code><a HREF="../etc/win32.c">etc/win32.c</a></code>, lcc emits
 the generated assembly code into <code>.asm</code> files.</p>
 
 <p>The <code>inputs</code> array holds a null-terminated string of directories separated
 by colons or semicolons. These are used as the default value of <code>LCCINPUTS</code>, if
-the environment variable <code>LCCINPUTS</code> is not set; see the <a
-HREF="http://www.cs.princeton.edu/software/lcc/cgi-bin/man2html.cgi?lcc+1">man page</a>.</p>
+the environment variable <code>LCCINPUTS</code> is not set; see the <a HREF="lcc.pdf">man
+page</a>.</p>
 
 <p>Each command template is an array of pointers to strings terminated with a null
 pointer; the strings are full path names of commands, arguments, or argument placeholders,
@@ -327,9 +327,9 @@ command above, are passed to the command as given.</p>
 <p>The strings <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code>
 in templates are placeholders for <em>lists</em> of arguments that are substituted in a
 copy of the template before the command is executed. <code>$1</code> is replaced by the <em>options</em>
-specified by the user; for the preprocessor, this list always contains at least <code>-Dunix</code>
-and <code>-D__LCC__</code>. <code>$2</code> is replaced by the <em>input</em> files, and <code>$3</code>
-is replaced by the <em>output</em> file.</p>
+specified by the user; for the preprocessor, this list always contains at least <code>-D__LCC__</code>.
+<code>$2</code> is replaced by the <em>input</em> files, and <code>$3</code> is replaced
+by the <em>output</em> file.</p>
 
 <p>Zero-length arguments after replacement are removed from the argument list before the
 command is invoked. So, for example, if the preprocessor is invoked without an output
@@ -350,11 +350,11 @@ includes the string &quot;<code>win32</code>&quot;, the driver assumes it's runn
 Windows. lcc can generate code for <em>all</em> of the <em>target</em><code>/</code><em>os</em>
 combinations listed in the file <code>src/bind.c</code>. The <code>-target</code> option
 specifies the default combination. The driver's <code>-Wf</code> option can be used to
-specify other combinations; the <a
-HREF="http://www.cs.princeton.edu/software/lcc/cgi-bin/man2html.cgi?lcc+1">man page</a>
-elaborates.</p>
+specify other combinations; the <a HREF="lcc.pdf">man page</a> elaborates.</p>
 
-<p><code>as</code> gives the command for invoking the assembler.</p>
+<p><code>as</code> gives the command for invoking the assembler. On Linux, you must be
+running at least version 2.8.1 of the GNU assembler; earlier versions mis-assemble some
+instructions emitted by lcc.</p>
 
 <p><code>ld</code> gives the command for invoking the loader. For the other commands, the
 list <code>$2</code> contains a single file; for <code>ld</code>, <code>$2</code> contains
@@ -371,7 +371,7 @@ commands that would be executed, e.g.,</p>
 
 <blockquote>
   <pre>% $BUILDDIR/lcc -v -v foo.c baz.c mylib.a -lX11
-/usr/local/lib/lcc-4.1/lcc Id: lcc.c,v 4.8 1997/05/21 00:23:30 drh Exp $
+/usr/local/lib/lcc-4.1/lcc $Id$
 foo.c:
 /usr/local/lib/lcc/cpp -D__STDC__=1 -Dsparc -D__sparc__ -Dsun -D__sun__ -Dunix -D__LCC__ -I/usr/local/lib/lcc/include -I/usr/local/include -I/usr/include foo.c /tmp/lcc266290.i
 /usr/local/lib/lcc/rcc -target=sparc/solaris -v /tmp/lcc266290.i /tmp/lcc266291.
@@ -404,7 +404,7 @@ above accepts the option but does nothing else, because the <code>ld</code> and 
 commands don't need to be modified on the SPARC. <code>-g</code> will also be added to the
 compiler's options by the host-independent part of the driver. The <code>-p</code> causes <code>option</code>
 to change the name of the startup code and changed the list of libraries. The <code>-b</code>
-option turns on lcc's per-expression profiling, the code for which is in <code>liblcc.a</code>,
+option turns on <code>lcc</code>'s per-expression profiling, the code for which is in <code>liblcc.a</code>,
 so <code>option</code> need no nothing.</p>
 
 <p>On SPARCs, the driver also recognizes <code>-Bstatic</code> and <code>-Bdynamic</code>
@@ -416,8 +416,10 @@ Such options have no other effect; this mechanism is provided to support system-
 options that affect the commands executed by the driver. As illustrated above,
 host-specific parts should support the <code>-Wo-lccdir=</code><em>dir</em> option, which
 causes lcc's compilation components to be found in <em>dir</em>, because this option is
-used by the test scripts. The code above rebuilds the paths to the include files,
-preprocessor, compiler, and library by calling <code>concat</code>, which is defined in <code>etc/lcc.c</code>.</p>
+used by the test scripts, and because the driver simulates a <code>-Wo-lccdir</code>
+option with the value of the environment variable <code>LCCDIR</code>, if it's defined.
+The code above rebuilds the paths to the include files, preprocessor, compiler, and
+library by calling <code>concat</code>, which is defined in <code>etc/lcc.c</code>.</p>
 
 <h2><a NAME="rcc">Building the Compiler and Accessories</a></h2>
 
@@ -578,59 +580,73 @@ For example,</p>
 option <code>-Wf-target=null</code> specifies the &quot;null&quot; target for which lcc
 emits nothing and thus only checks the syntax and semantics of its input files.</p>
 
-<h2><a NAME="win32">Installation on Windows NT 4.0 or Windows 95</a></h2>
+<h2><a NAME="win32">Installation on Windows NT 4.0 or Windows 95/98</a></h2>
 
-<p>On Windows NT 4.0 and Windows 95, lcc is designed to work with Microsoft's Visual C++
-5.0 (VC) and Microsoft's Assembler, MASM 6.11d. It uses the VC header files, libraries,
-and command-line tools, and it uses MASM to assemble the code it generates. If you have
-MASM 6.11, make sure you <a HREF="http://www.microsoft.com/kb/articles/q138/9/83.htm">upgrade
-to 6.11d</a>, because earlier 6.11 releases do not generate correct COFF object files. <a
-HREF="pkg/makefile.nt"><code>makefile.nt</code></a> is written to use only Microsoft's
-make, <code>nmake</code>, and the standard Windows NT/95 command interpreter.</p>
+<p>On Windows NT 4.0 and Windows 95/98, lcc is designed to work with Microsoft's Visual
+C++ 5.0 (VC) and Microsoft's Assembler, MASM 6.11d. It uses the VC header files,
+libraries, and command-line tools, and it uses MASM to assemble the code it generates. If
+you have MASM 6.11, make sure you <a
+HREF="http://support.microsoft.com/support/kb/articles/Q138/9/83.asp">upgrade to 6.11d</a>,
+because earlier 6.11 releases do not generate correct COFF object files.</p>
 
-<p>As on UNIX systems, the compilation components are installed in a single <em>build
-directory</em>, and the top-level programs, <code>lcc</code> and <code>bprint</code>, are
-installed in a directory on the PATH. If the conventions used below are followed, the
-Windows-specific parts of the driver program, <code>lcc</code>, can be used unmodified.</p>
+<p>The distribution file <code>lcc41.exe</code> is a Windows InstallShield installation
+executable. The various configurations support installation of the binaries and
+documentation, the binaries, documentation and test suite, and the complete distribution.
+To install the distribution in a different directory than the binaries, run <code>lcc41.exe</code>
+twice: on the first run, install the binaries and documentation (components <em>Executables</em>
+and <em>Documentation</em>); on the second run, install the distribution (all components
+except <em>Executables</em>) and specify the destination directory. If necessary, copy or
+move <code>lcc.exe</code> and <code>bprint.exe</code> from the installation directory to a
+directory on the PATH.</p>
 
-<p>Installation on a Windows NT/95 system involves the following steps. Below, the build
-directory is referred to as <code>BUILDDIR</code>, and the distribution is in <code>\dist\lcc\4.1</code>.
+<p>If you decide to build the distribution components from the ground up, you'll need
+Microsoft's Visual C/C++ 5.0 compiler, Microsoft's make, <code>nmake</code>, and the
+standard Windows command interpreter. <a HREF="../makefile.nt"><code>makefile.nt</code></a>
+is written to use only <code>nmake</code>. As on UNIX systems, the compilation components
+are installed in a single <em>build directory</em>, and the top-level programs, <code>lcc.exe</code>
+and <code>bprint.exe</code>, are installed in a directory on the PATH. If the conventions
+used below are followed, the Windows-specific parts of the driver program, <code>lcc.exe</code>,
+can be used unmodified.</p>
+
+<p>Building from the source distribution on a Windows system involves the following steps.
+Below, the build directory is referred to as <code>BUILDDIR</code>, and the distribution
+is in <code>\dist\lcc\4.1</code>.
 
 <ol>
   <li>Create the build directory, perhaps using a version- and platform-specific naming
     convention as suggested in <a HREF="#unix"><em>Installation on UNIX</em></a>, and record
-    the name of this directory in the <code>BUILDDIR</code> environment variable: <blockquote>
-      <pre>C:\dist\lcc\4.1&gt;set BUILDDIR=\pkg\lcc-4.1
+    the name of this directory in the <code>BUILDDIR</code> environment variable:<blockquote>
+      <pre>C:\dist\lcc\4.1&gt;set BUILDDIR=\progra~1\lcc\4.1\bin
 C:\dist\lcc\4.1&gt;mkdir %BUILDDIR%</pre>
     </blockquote>
+    <p>The default build, or installation, directory is <code>\Program Files\lcc\4.1\bin</code>,
+    but the <code>nmake</code> commands require that you use the corresponding 8.3 file name, <code>progra~1</code>,
+    instead of <code>Program Files</code>.</p>
   </li>
-  <li><a HREF="pkg/etc/win32.c"><code>etc\win32.c</code></a> is the Windows-specific part of
-    the driver. It assumes that the VC header files are in one of the standard places (<code>\Program
-    Files\devstudio\vc\include</code> or <code>\msdev\include</code>) and that the linker (<code>link.exe</code>)
-    and the assembler (<code>ml.exe</code>) are on the PATH. It also assumes that the macro <code>LCCDIR</code>
-    gives the build directory. If necessary, revise a copy of <a HREF="pkg/etc/win32.c"><code>etc\win32.c</code></a>
+  <li><a HREF="../etc/win32.c"><code>etc\win32.c</code></a> is the Windows-specific part of
+    the driver. It assumes that environment variable <code>include</code> gives the locations
+    of the VC header files and that the linker (<code>link.exe</code>) and the assembler (<code>ml.exe</code>)
+    are on the PATH. It also assumes that the macro <code>LCCDIR</code> gives the build
+    directory. If necessary, revise a copy of <a HREF="../etc/win32.c"><code>etc\win32.c</code></a>
     to reflect the conventions on your computer (see <a HREF="#driver"><em>Building the Driver</em></a>),
-    then build the driver, specifying the default temporary directory, if necessary: <blockquote>
+    then build the driver, specifying the default temporary directory, if necessary:<blockquote>
       <pre>C:\dist\lcc\4.1&gt;nmake -f makefile.nt TEMPDIR=\\temp HOSTFILE=etc/win32.c lcc
-
-Microsoft (R) Program Maintenance Utility   Version 1.62.7022
-Copyright (C) Microsoft Corp 1988-1997. All rights reserved.
-
-        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.1\ -c -DTEMPDIR=\&quot;\\temp\&quot; -Fo\pkg\lcc-4.1\lcc.obj etc/lcc.c
+...
+        cl -nologo -Zi -MLd -Fd\progra~1\lcc\4.1\bin\ -c -DTEMPDIR=\&quot;\\temp\&quot; -Fo\progra~1\lcc\4.1\bin\lcc.obj etc/lcc.c
 lcc.c
-        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.1\ -c -Fo\pkg\lcc-4.1\host.obj etc/win32.c
+        cl -nologo -Zi -MLd -Fd\progra~1\lcc\4.1\bin\ -c -Fo\progra~1\lcc\4.1\bin\host.obj etc/win32.c
 win32.c
-        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.1\ -Fe\pkg\lcc-4.1\lcc.exe \pkg\lcc-4.1\lcc.obj \pkg\lcc-4.1\host.obj</pre>
+        cl -nologo -Zi -MLd -Fd\progra~1\lcc\4.1\bin\ -Fe\progra~1\lcc\4.1\bin\lcc.exe \progra~1\lcc\4.1\bin\lcc.obj \progra~1\lcc\4.1\bin\host.obj</pre>
     </blockquote>
     <p>If you make a copy of <code>etc\win32.c</code>, specify the path of the copy as the
     value of <code>HOSTFILE</code>. For example, if you copy <code>etc\win32.c</code> to <code>BUILDDIR</code>
-    and edit it, use the command </p>
+    and edit it, use the command</p>
     <blockquote>
       <pre>C:\dist\lcc\4.1&gt;nmake -f makefile.nt TEMPDIR=\\temp HOSTFILE=%BUILDDIR%\win32.c lcc</pre>
     </blockquote>
   </li>
   <li>Build the preprocessor, compiler proper, library, and other accessories (see <a
-    HREF="#rcc"><em>Building the Compiler</em></a>): <blockquote>
+    HREF="#rcc"><em>Building the Compiler</em></a>):<blockquote>
       <pre>C:\dist\lcc\4.1&gt;nmake -f makefile.nt all</pre>
     </blockquote>
     <p>This command uses the VC command-line tools <code>cl</code> and <code>lib</code> to
@@ -638,14 +654,14 @@ win32.c
     <code>librcc.lib</code>, and <code>rcc.exe</code>, all in <code>BUILDDIR</code>. There may
     be some warnings, but there should be no warnings.</p>
   </li>
-  <li>Create a test directory and run the test suite: <blockquote>
+  <li>Create a test directory and run the test suite:<blockquote>
       <pre>C:\dist\lcc\4.1&gt;mkdir %BUILDDIR%\x86\win32\tst
 C:\dist\lcc\4.1&gt;nmake -f makefile.nt test</pre>
     </blockquote>
-    <p>This command compiles each program in <a HREF="pkg/tst">tst</a>, compares the generated
+    <p>This command compiles each program in <a HREF="../tst">tst</a>, compares the generated
     assembly code and diagnostics with the expected assembly code and diagnostics, executes
     the program, and compares the output with the expected output (using <code>fc</code>). For
-    example, when the nmake command compiles <a HREF="pkg/tst/8q.c"><code>tst\8q.c</code></a>,
+    example, when the nmake command compiles <a HREF="../tst/8q.c"><code>tst\8q.c</code></a>,
     it leaves the generated assembly code and diagnostic output in <code>%BUILDDIR%\x86\win32\tst\8q.s</code>
     and <code>%BUILDDIR%\x86\win32\tst\8q.2</code>, and it compares them with the expected
     results in <code>x86\win32\tst\8q.sbk</code>. It builds the executable program in <code>%BUILDDIR%\x86\win32\tst\8q.exe</code>,
@@ -654,14 +670,14 @@ C:\dist\lcc\4.1&gt;nmake -f makefile.nt test</pre>
     but there should be no differences and no errors.</p>
   </li>
   <li>Run the &quot;triple&quot; test, which compiles <code>rcc</code> with itself and
-    verifies the results: <blockquote>
+    verifies the results:<blockquote>
       <pre>C:\dist\lcc\4.1&gt;nmake -f makefile.nt triple
 ...
-\pkg\lcc-4.1\x86.c:
+\progra~1\lcc\4.1\bin\x86.c:
  Assembling: C:/TEMP/lcc2001.asm
-        fc /b \pkg\lcc-4.1\1rcc.exe \pkg\lcc-4.1\2rcc.exe
-Comparing files \PKG\LCC-4.1\1rcc.exe and \PKG\LCC-4.1\2RCC.EXE
-00000088: A2 BE</pre>
+        fc /b \progra~1\lcc\4.1\bin\1rcc.exe \progra~1\lcc\4.1\bin\2rcc.exe
+Comparing files \progra~1\lcc\4.1\bin\1rcc.exe and \progra~1\lcc\4.1\bin\2RCC.EXE
+00000088: B4 D5</pre>
     </blockquote>
     <p>This command builds <code>rcc</code> twice; once using the <code>rcc</code> built by VC
     and again using the <code>rcc</code> built by <code>lcc</code>. The resulting binaries are
@@ -669,8 +685,7 @@ Comparing files \PKG\LCC-4.1\1rcc.exe and \PKG\LCC-4.1\2RCC.EXE
     timestamp data, as shown at the end of the output above. If they aren't, our compiler is
     generating incorrect code; <a HREF="#bugs">contact</a> us.</p>
   </li>
-  <li>Copy <code>lcc.exe</code> and <code>bprint.exe</code> to a directory on your PATH, e.g.,
-    <blockquote>
+  <li>Copy <code>lcc.exe</code> and <code>bprint.exe</code> to a directory on your PATH, e.g.,<blockquote>
       <pre>C:\dist\lcc\4.1&gt;copy %BUILDDIR%\lcc.exe \bin
         1 file(s) copied.
 
@@ -678,16 +693,16 @@ C:\dist\lcc\4.1&gt;copy %BUILDDIR%\bprint.exe \bin
         1 file(s) copied.</pre>
     </blockquote>
   </li>
-  <li>Finally, clean up: <blockquote>
+  <li>Finally, clean up:<blockquote>
       <pre>C:\dist\lcc\4.1&gt;nmake -f makefile.nt clean</pre>
     </blockquote>
     <p>This command removes the derived files in <code>BUILDDIR</code>, but does not remove <code>rcc.exe</code>,
     etc.; &quot;<code>nmake -f makefile.nt clobber</code>&quot; cleans up and removes all
     executables and libraries. Test directories under <code>BUILDDIR</code> are <em>not</em>
-    removed; you'll need to remove these by hand, e.g. </p>
+    removed; you'll need to remove these by hand, e.g.,</p>
     <blockquote>
       <pre>C:\dist\lcc\4.1&gt;rmdir %BUILDDIR%\x86 /s
-\pkg\lcc-4.1\x86, Are you sure (Y/N)? y</pre>
+\progra~1\lcc\4.1\bin\x86, Are you sure (Y/N)? y</pre>
     </blockquote>
   </li>
 </ol>
@@ -696,7 +711,7 @@ C:\dist\lcc\4.1&gt;copy %BUILDDIR%\bprint.exe \bin
 
 <p>lcc is a large, complex program. We find and repair errors routinely. If you think that
 you've found a error, follow the steps below, which are adapted from the instructions in
-Chapter 1 of <cite>A Retargetable C Compiler: Design and Implementation</cite>. 
+Chapter 1 of <cite>A Retargetable C Compiler: Design and Implementation</cite>.
 
 <ol>
   <li>If you don't have a source file that displays the error, create one. Most errors are
@@ -723,9 +738,9 @@ Chapter 1 of <cite>A Retargetable C Compiler: Design and Implementation</cite>.
     available for anonymous <code>ftp</code> from <code>ftp.cs.princeton.edu</code> in <a
     HREF="ftp://ftp.cs.princeton.edu/pub/lcc"><code>pub/lcc</code></a>. A <a
     HREF="ftp://ftp.cs.princeton.edu/pub/lcc/README"><code>README</code></a> file there gives
-    acquistion details, and a <a HREF="ftp://ftp.cs.princeton.edu/pub/lcc/LOG"><code>LOG</code></a>
-    file reports what errors were fixed and when they were fixed. If you report a error that's
-    been fixed, you might get a canned reply.</li>
+    acquistion details, and the <a HREF="../LOG"><code>LOG</code></a> file reports what errors
+    were fixed and when they were fixed. If you report a error that's been fixed, you might
+    get a canned reply.</li>
   <li>Send your program by electronic mail to <code>lcc-bugs@cs.princeton.edu</code>. Please
     send only valid C programs; put all remarks in C comments so that we can process reports
     semiautomatically.</li>
