@@ -96,6 +96,7 @@ main(int argc, char *argv[]) {
 		tempdir = getenv("TEMP");
 	else if (getenv("TMPDIR"))
 		tempdir = getenv("TMPDIR");
+	assert(tempdir);
 	i = strlen(tempdir);
 	for (; i > 0 && tempdir[i-1] == '/' || tempdir[i-1] == '\\'; i--)
 		tempdir[i-1] = '\0';
@@ -252,6 +253,7 @@ static int callsys(char **av) {
 			argv = malloc(argc*sizeof *argv);
 		else
 			argv = realloc(argv, argc*sizeof *argv);
+		assert(argv);
 	}
 	for (i = 0; status == 0 && av[i] != NULL; ) {
 		int j = 0;
