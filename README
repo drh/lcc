@@ -1,28 +1,28 @@
-This hierarchy is the distribution for a BETA version of lcc 4.0.  Only
-the Alpha and `symbolic' back ends are available at this time.
+This hierarchy is the distribution for lcc version 4.0.
 
-lcc version 3.5 is described in the book `A Retargetable C Compiler:
+lcc version 3.x is described in the book `A Retargetable C Compiler:
 Design and Implementation' (Addison-Wesley, 1995, ISBN 0-8053-1670-1).
-There are significant differences between 3.5 and 4.0, most notably in
-the intermediate code. This beta 4.0 version is provided `as-is'.
+There are significant differences between 3.x and 4.0, most notably in
+the intermediate code.
 
 VERSION 4.0 IS INCOMPATIBLE WITH EARLIER VERSIONS OF LCC. DO NOT UNLOAD
 THIS DISTRIBUTION ON TOP OF A 3.X DISTRIBUTION.
 
-doc/install.ps is a PostScript file that gives complete description of
-the distribution and installation instructions. This file was generated
-from the HTML document doc/install.html. doc/install.txt is a plain
-ASCII version of these instructions. NB: THESE FILES ARE FOR LCC
-VERSION 3.5 AND THUS CONTAIN SOME EXTRANEOUS INFORMATION.
+LOG describes the changes since the last release.
+
+CPYRIGHT describes the conditions under you can use, copy, modify, and
+distribute lcc or works derived from lcc.
+
+doc/install.html is an HTML file that gives a complete description of
+the distribution and installation instructions.
 
 To build lcc with the Alpha/OSF C compiler, use the -std1 option, e.g.,
 
 	% cd alpha/osf
-	% make -f ../../src/makefile CC="cc -std1"
+	% make CC="cc -std1"
 
 uses cc to build alpha/osf/rcc. If you forget -std1, rcc will crash.
 
 Chris Fraser / cwfraser@microsoft.com
-David Hanson / drh@cs.princeton.edu
+David Hanson / drh@microsoft.com
 $Revision$ $Date$
-
