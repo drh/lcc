@@ -10,6 +10,10 @@ on the x86, constants are now emitted into the text segment.
 
 Errors fixed:
 
+Erroneously complained about unknown sizes for some const fields, eg,
+typedef struct foo ref; struct foo { const ref *q; int a; };
+f(ref *p, int i) { return p->q[i].a; }
+
 -A -A erroneously complained about static main's that didn't conform to
 the ANSI-mandated `int main(void)' or `int main(int, char **)'.
 
