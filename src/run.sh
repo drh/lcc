@@ -38,10 +38,8 @@ fi
 
 case "$remotehost" in
 noexecute)	exit 0 ;;
-""|"-")	echo "   executing" $C: 1>&2
-	$LCC -o $TSTDIR/$C$EXE $1; $TSTDIR/$C$EXE <tst/$C.0 >$TSTDIR/$C.1 ;;
-*)	echo "   executing" $C on $remotehost: 1>&2
-	rcp $1 $remotehost:
+""|"-")	$LCC -o $TSTDIR/$C$EXE $1; $TSTDIR/$C$EXE <tst/$C.0 >$TSTDIR/$C.1 ;;
+*)	rcp $1 $remotehost:
 	if expr "$remotehost" : '.*@' >/dev/null ; then
 		remotehost="`expr $remotehost : '.*@\(.*\)'` -l `expr $remotehost : '\(.*\)@'`"
 	fi
