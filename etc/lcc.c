@@ -2,10 +2,7 @@
  * lcc [ option ]... [ file | -llib ]...
  * front end for the ANSI C compiler
  */
-/*
-Sat Jun 18 12:37:32 EDT 1994
-*/
-#define VERSION ((3<<8)|0)
+static char rcsid[] = "$Revision$ $Date$";
 
 #include <stdio.h>
 #include <ctype.h>
@@ -589,7 +586,7 @@ static void opt(arg) char *arg; {
 				if (strcmp(basename(cpp[0]), "gcc-cpp") == 0)
 					plist = append(arg, plist);
 				clist = append(arg, clist);
-				fprintf(stderr, "%s version %d.%d\n", progname, VERSION>>8, VERSION&0xff);
+				fprintf(stderr, "%s %s\n", progname, rcsid);
 			}
 			return;
 		}
