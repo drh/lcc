@@ -23,6 +23,7 @@ substituted for the extension.
 Arguments whose names end with `.i' are treated similarly,
 except they are not preprocessed.
 In the same way,
+arguments ending with `.s' (plus `.S', `.asm', and `.ASM', under Windows)
 are taken to be assembly source programs
 and are assembled, producing a `.o' (UNIX) or `.obj' (Windows) file.
 If there are no arguments,
@@ -40,7 +41,7 @@ If the environment variable
 .B LCCINPUTS
 is set,
 .I lcc
-assumes it gives a colon-separated list of directories in which to
+assumes it gives a semicolon- or colon-separated list of directories in which to
 look for source and object files whose names do not begin with `/'.
 These directories are also added to the list of directories
 searched for libraries.
@@ -208,7 +209,7 @@ are passed to the loader; see
 .TP
 .BI \-Wo\-lccdir= dir
 Find the preprocessor, compiler proper, and include directory
-in the directory \fIdir\fP/.
+in the directory \fIdir\fP/ or \fIdir\fP\\.
 .I lcc
 warns when this option is unsupported.
 .TP
@@ -228,10 +229,9 @@ options on the standard error.
 .TP
 .B \-b
 Produce code that counts the number of times each expression is executed.
-If loading takes place, replace the standard exit
-function by one that writes a
+If loading takes place, arrange for a
 .B prof.out
-file when the object program terminates.
+file to be written when the object program terminates.
 A listing annotated with execution counts can then be generated with
 .IR bprint (1).
 .I lcc
@@ -288,10 +288,14 @@ appears, it does.
 For null
 .I char*
 values, "(null)" is printed. 
-On Sparcs only,
 .BI \-target
 .I name
 is accepted, but ignored.
+.TP
+.BI \-tempdir= dir
+Store temporary files in the directory \fIdir\fP/ or \fIdir\fP\\.
+The default is usually
+.BR /tmp .
 .TP
 .BI \-W x \fIarg\fP
 pass argument
@@ -314,11 +318,6 @@ is expected, it must be given explicitly.
 .BI \-W o \fIarg\fP
 specifies a system-specific option,
 .IR arg .
-.TP
-.BI \-tempdir= dir
-Store temporary files in the directory \fIdir\fP/.
-The default is usually
-.BR /tmp .
 .PP
 Other arguments
 are taken to be either loader option arguments, or C-compatible
