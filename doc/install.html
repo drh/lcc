@@ -5,7 +5,7 @@
 <H1>Installing lcc</H1>
 
 <b><a href="ftp://netlib.att.com/netlib/att/cs/home/cwfraser.html">Christopher W. Fraser</a><br>
-AT&T Bell Laboratories Rm. 2C-300,
+AT&amp;T Bell Laboratories Rm. 2C-300,
 600 Mountain Ave.,
 Murray Hill, NJ 07974-0636<p>
 
@@ -206,11 +206,11 @@ int option(arg) char *arg; {
         if (strcmp(arg, "-g") == 0)
                 as[3] = "-g";
         else if (strcmp(arg, "-p") == 0
-        && strcmp(ld[3], "/usr/lib/crt0.o") == 0) {
+        &amp;&amp; strcmp(ld[3], "/usr/lib/crt0.o") == 0) {
                 ld[3] = "/usr/lib/mcrt0.o";
                 ld[7] = "/usr/lib/libprof1.a";
         } else if (strcmp(arg, "-b") == 0
-        && access("/usr/local/lib/bbexit.o", 4) == 0)
+        &amp;&amp; access("/usr/local/lib/bbexit.o", 4) == 0)
                 ld[6] = "/usr/local/lib/bbexit.o";
         else
                 return 0;
@@ -537,7 +537,7 @@ lcc -B./ -d0.1 -A -c -Wf-target=mips-ultrix
    -I../../src ../../src/x86.c
 lcc -B./ -d0.1 -A -o rcc  alloc.o ... sparc.o x86.o
 strip rcc
-od +8 <rcc >od2
+od rcc +8 &gt;od2
 rm -f *.o
 make -f ../../src/makefile CC='lcc -B./ -d0.1 -A'
    CFLAGS='-Wf-target=mips-ultrix
@@ -552,8 +552,8 @@ lcc -B./ -d0.1 -A -c -Wf-target=mips-ultrix
    -I../../src ../../src/x86.c
 lcc -B./ -d0.1 -A -o rcc  alloc.o ... sparc.o x86.o
 strip rcc
-od +8 <rcc >od3
-cmp od[23] && rm od[23]
+od rcc +8 &gt;od3
+cmp od[23] &amp;&amp; rm od[23]
 </pre>
 This command builds <tt>rcc</tt> twice; once using the
 <tt>rcc</tt> built by <tt>cc</tt>
@@ -723,7 +723,7 @@ and edit this copy into a code generator for the PowerPC.<p>
 Add <tt>power.o</tt> to the definition of <tt>OBJS</tt>, and add
 the following rules.
 <pre>power.o:	$(SRC)/power.c;		$(CC) -c $(CFLAGS) $(SRC)/power.c
-$(SRC)/power.c:	$(SRC)/power.md;	lburg <$(SRC)/power.md >$(SRC)/power.c
+$(SRC)/power.c:	$(SRC)/power.md;	lburg &lt;$(SRC)/power.md &gt;$(SRC)/power.c
 </pre><p>
 
 <li>Create the directories <tt>power</tt>, <tt>power/aix</tt>, and
@@ -738,7 +738,7 @@ add the declaration
 <pre>extern Interface powerIR;
 </pre>
 to the beginning of <tt>src/bind.c</tt>, and add the line
-<pre>"power-aix",       &powerIR,
+<pre>"power-aix",       &amp;powerIR,
 </pre>
 to the initialization of <tt>bindings</tt>.<p>
 
@@ -859,7 +859,7 @@ the option <tt>-v -v</tt> decsribed in <a href="#driver">Sec. 4</a>
 because it never executes commands anyway.
 Also, it complicates the idiom that saves
 the preprocessed source in a file. That is,
-<pre>C:> lcc -E 8q.c >8q.i
+<pre>C:> lcc -E 8q.c &gt;8q.i
 </pre>
 fails to capture the preprocessed <tt>8q.c</tt> in <tt>8q.i</tt>
 because <tt>lcc.exe</tt> creates
