@@ -476,6 +476,9 @@ static void help(void) {
 "-P	print ANSI-style declarations for globals\n",
 "-p -pg	emit profiling code; see prof(1) and gprof(1)\n",
 "-S	compile to assembly language\n",
+#ifdef linux
+"-static	specify static libraries (default is dynamic)\n",
+#endif
 "-t -tname	emit function tracing calls to printf or to `name'\n",
 "-target name	is ignored\n",
 "-tempdir=dir	place temporary files in `dir/'\n",
@@ -607,6 +610,14 @@ static void opt(char *arg) {
 			printed = 1;
 			return;
 		}
+#ifdef linux
+	case 's':
+		if (strcmp(arg,"-static") == 0) {
+			if (!option(arg))
+				fprintf(stderr, "%s: %s ignored\n", progname, arg);
+			return;
+		}
+#endif         
 	}
 	if (arg[2] == 0)
 		switch (arg[1]) {	/* single-character options */
