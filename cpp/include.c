@@ -96,11 +96,6 @@ genline(void)
 	p += sizeof("#line ")-1;
 	p = (uchar*)outnum((char*)p, cursource->line);
 	*p++ = ' '; *p++ = '"';
-	if (cursource->filename[0]!='/' && wd[0]) {
-		strcpy((char*)p, wd);
-		p += strlen(wd);
-		*p++ = '/';
-	}
 	strcpy((char*)p, cursource->filename);
 	p += strlen((char*)p);
 	*p++ = '"'; *p++ = '\n';
