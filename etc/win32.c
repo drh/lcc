@@ -5,17 +5,14 @@
 static char rcsid[] = "$Id$";
 
 #ifndef LCCDIR
-#define LCCDIR "\\pkg\\lcc-4.0\\"
+#define LCCDIR "\\progra~1\\lcc\\4.1\\bin\\"
 #endif
 
 char *suffixes[] = { ".c;.C", ".i;.I", ".asm;.ASM;.s;.S", ".obj;.OBJ", ".exe", 0 };
 char inputs[256] = "";
 char *cpp[] = { LCCDIR "cpp", "-D__STDC__=1", "-Dwin32", "-D_WIN32", "-D_M_IX86",
 	"$1", "$2", "$3", 0 };
-char *include[] = {
-	"-I" LCCDIR "include",
-	"-I\"/program files/devstudio/vc/include\"",
-	"-I/msdev/include", 0 };
+char *include[] = { "-I" LCCDIR "include", 0 };
 char *com[] = { LCCDIR "rcc", "-target=x86/win32", "$1", "$2", "$3", 0 };
 char *as[] = { "ml", "-nologo", "-c", "-Cp", "-coff", "-Fo$3", "$1", "$2", 0 };
 char *ld[] = { "link", "-nologo", 
