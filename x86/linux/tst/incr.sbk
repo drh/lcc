@@ -178,4 +178,4 @@ popl %ebp
 ret
 .Lf10:
 .size regint,.Lf10-regint
-.ident "LCC: 4.1"
+.ident "LCC: 4.2"

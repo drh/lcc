@@ -283,4 +283,4 @@ ret
 .long 0
 .long 0
 .text
-.ident "LCC: 4.1"
+.ident "LCC: 4.2"

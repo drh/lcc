@@ -177,4 +177,4 @@ ret
 .byte 32
 .byte 0
 .text
-.ident "LCC: 4.1"
+.ident "LCC: 4.2"

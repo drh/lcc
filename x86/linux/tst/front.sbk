@@ -527,4 +527,4 @@ ret
 .size a,4
 .comm a,4
 .text
-.ident "LCC: 4.1"
+.ident "LCC: 4.2"
