@@ -13,11 +13,10 @@ static char rcsid[] = "$Id$";
 %term START
 %term PPERCENT
 
-%token  <string>        ID TEMPLATE
+%token  <string>        ID TEMPLATE CODE
 %token  <n>             INT
-%type	<string>	nonterm
+%type	<string>	nonterm cost
 %type   <tree>          tree
-%type   <n>             cost
 %%
 spec	: decls PPERCENT rules		{ yylineno = 0; }
 	| decls				{ yylineno = 0; }
@@ -28,7 +27,7 @@ decls	: /* lambda */
 	;
 
 decl	: TERM  blist '\n'
-	| START nonterm   '\n'		{
+	| START nonterm '\n'		{
 		if (nonterm($2)->number != 1)
 			yyerror("redeclaration of the start symbol\n");
 		}
@@ -41,7 +40,7 @@ blist	: /* lambda */
 	;
 
 rules	: /* lambda */
-	| rules nonterm ':' tree TEMPLATE cost '\n'	{ rule($2, $4, $5, $6, NULL); }
+	| rules nonterm ':' tree TEMPLATE cost '\n'	{ rule($2, $4, $5, $6); }
 	| rules '\n'
 	| rules error '\n'		{ yyerrok; }
 	;
@@ -54,8 +53,7 @@ tree	: ID                            { $$ = tree($1,  0,  0); }
 	| ID '(' tree ',' tree ')'      { $$ = tree($1, $3, $5); }
 	;
 
-cost	: /* lambda */			{ $$ = 0; }
-	| INT				{ $$ = $1; }
+cost	: CODE				{ if (*$1 == 0) $$ = "0"; }
 	;
 %%
 #include <assert.h>
@@ -70,6 +68,7 @@ FILE *outfp = NULL;
 static char buf[BUFSIZ], *bp = buf;
 static int yylineno = 0;
 static int ppercent = 0;
+static int code = 0;
 
 static int get(void) {
 	if (*bp == 0) {
@@ -111,6 +110,19 @@ void yyerror(char *fmt, ...) {
 int yylex(void) {
 	int c;
 
+	if (code) {
+		char *p;
+		bp += strspn(bp, " \t\f");
+		p = strchr(bp, '\n');
+		while (p > bp && isspace(p[-1]))
+			p--;
+		yylval.string = alloc(p - bp + 1);
+		strncpy(yylval.string, bp, p - bp);
+		yylval.string[p - bp] = 0;
+		bp = p;
+		code--;
+		return CODE;
+	}
 	while ((c = get()) != EOF) {
 		switch (c) {
 		case ' ': case '\f': case '\t':
@@ -134,7 +146,7 @@ int yylex(void) {
 		} else if (c == '"') {
 			char *p = strchr(bp, '"');
 			if (p == NULL) {
-				yyerror("missing \"\n");
+				yyerror("missing \" in assembler template\n");
 				p = strchr(bp, '\n');
 			}
 			assert(p);
@@ -142,6 +154,7 @@ int yylex(void) {
 			strncpy(yylval.string, bp, p - bp);
 			yylval.string[p - bp] = 0;
 			bp = *p == '"' ? p + 1 : p;
+			code++;
 			return TEMPLATE;
 		} else if (isdigit(c)) {
 			int n = 0;

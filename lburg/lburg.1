@@ -1,9 +1,9 @@
-.TH IBURG 1 "local \- 1/26/93"
+.TH LBURG 1 "local \- 11/30/94"
 .\" $Id$
 .SH NAME
-iburg \- code generator generator
+lburg \- lcc's code-generator generator
 .SH SYNOPSIS
-.B iburg
+.B lburg
 [
 .I option
 ]...
@@ -15,43 +15,47 @@ iburg \- code generator generator
 .br
 .SH DESCRIPTION
 .PP
-.I iburg
-reads BURG specification from
+.I lburg
+reads an lcc-style BURG specification from
 .I input
 and writes a pattern-matching code generator to
 .IR output .
 If
 .I input
 is `\-' or is omitted,
-.I iburg
+.I lburg
 reads the standard input;
 If
 .I output
 is `\-' or is omitted,
-.I iburg
+.I lburg
 writes to the standard output.
 .PP
-.I iburg
-accepts BURG specifications that conform to the following EBNF grammar.
-Terminals are enclosed in single quotes, all other symbols are nonterminals,
+.I lburg
+accepts specifications that conform to the following EBNF grammar.
+Terminals are enclosed in single quotes or are
+given in uppercase, all other symbols are nonterminals or English phrases,
 {X} denotes zero or more instances of X, and [X] denotes an optional X.
 .PP
 .nf
 .RS
 .ft CW
-spec:   { dcl } `%%' { rule } [ `%%' ]
+spec:     `%{' configuration `%}' { dcl } `%%' { rule }
+               [ `%%' C code ]
 
-dcl:    `%start' nonterm
-        `%term' { identifier `=' integer }
+dcl:      `%start' nonterm
+          `%term' { ID `=' INT }
 
-rule:   nonterm `:' tree `=' integer [ cost ] `;'
+rule:     nonterm `:' tree template [ C expression ]
 
-cost:   `(' integer ')'
+tree:     term `(' tree `,' tree `)'
+          term `(' tree `)'
+          term
+          nonterm
 
-tree:   term `(' tree `,' tree `)'
-        term `(' tree `)'
-        term
-        nonterm
+nonterm:  ID
+
+template: `"' { any character except double quote } `"'
 .RE
 .fi
 .PP
@@ -62,13 +66,10 @@ Text between
 and
 `\f(CW%}\fP'
 is called the configuration section; there may be several such segments.
-All are concatenated and copied verbatim into the head of the generated
-parser, which is called burm.
+All are concatenated and copied verbatim into the head of the output.
 Text after the second
 `\f(CW%%\fP',
-if any, is also copied verbatim into
-.IR burm ,
-at the end.
+if any, is also copied verbatim into the output, at the end.
 .PP
 Specifications consist of declarations, a
 `\f(CW%%\fP'
@@ -78,96 +79,42 @@ and declarations must begin in column 1.
 Declarations declare terminals \(em the operators in subject
 trees \(em and associate a unique, positive external symbol
 number with each one.
-Non-terminals are declared by their presence
+Nonterminals are declared by their presence
 on the left side of rules.  The
 \f(CW%start\fP
-declaration optionally declares a non-terminal as the start symbol.
+declaration optionally declares a nonterminal as the start symbol.
 In the grammar above,
 \f(CWterm\fP
 and
 \f(CWnonterm\fP
-denote identifiers that are terminals and non-terminals, respectively.
+denote identifiers that are terminals and nonterminals.
 .PP
 Rules define tree patterns in a fully parenthesized prefix
-form. Every non-terminal denotes a tree.
+form. Every nonterminal denotes a tree.
 Each operator has a fixed
 arity, which is inferred from the rules in which it is used.
-A chain rule is a rule whose pattern is another non-terminal.
-If no start symbol is declared, the non-terminal defined by the first rule is used.
+A chain rule is a rule whose pattern is another nonterminal.
+If no start symbol is declared, the nonterminal defined by the first rule is used.
 .PP
-Each rule has a unique, positive external rule number, which
-comes after the pattern and is preceded by a
-`\f(CW=\fP'.
-External rule numbers are used to report the
-matching rule to a user-supplied semantic action routine.
-Rules end with an optional non-negative, integer cost; omitted costs
-default to zero.
+Each rule ends with an expression that computes the cost of matching
+that rule; omitted costs
+default to zero. Costs of chain rules must be constants.
 .PP
-The display below shows a fragment of a BURG specification.
-This example uses upper-case for terminals and lower-case for non-terminals.
-.PP
-.nf
-.ft CW
-%{
-enum {  ADDI=309, ADDRLP=295, ASGNI=53,
-        CNSTI=21, CVCI=85, I0I=661, INDIRC=67 };
-
-typedef struct tree {
-        int op;
-        struct tree *kids[2];
-        int val;
-        struct { int state; } x;
-} *NODEPTR_TYPE, *Tree;
-#define LEFT_CHILD(p) ((p)->kids[0])
-#define RIGHT_CHILD(p) ((p)->kids[1])
-#define PANIC printf
-#define STATE_LABEL(p) ((p)->x.state)
-
-int OP_LABEL(NODEPTR_TYPE p) {
-        switch (p->op) {
-        case CNSTI:  if (p->val == 0) return 661 /* I0I */;
-        default:     return p->op;
-        }
-}
-%}
-%term ADDI=309 ADDRLP=295 ASGNI=53
-%term CNSTI=21 CVCI=85 I0I=661 INDIRC=67
-%%
-stmt:   ASGNI(disp,reg) = 4 (1);
-stmt:   reg = 5;
-reg:    ADDI(reg,rc) = 6 (1);
-reg:    CVCI(INDIRC(disp)) = 7 (1);
-reg:    I0I = 8;
-reg:    disp = 9 (1);
-disp:   ADDI(reg,con) = 10;
-disp:   ADDRLP = 11;
-rc:     con = 12;
-rc:     reg = 13;
-con:    CNSTI = 14;
-con:    I0I = 15;
-%%
-.fi
-.PP
-The configuration section configures
-\f(CWburm\fP
+The configuration section configures the output
 for the trees being parsed and the client's environment.
 As shown, this section must define
 \f(CWNODEPTR_TYPE\fP
 to be a visible typedef symbol for a pointer to a
 node in the subject tree.
-\f(CWburm\fP
-invokes
+The labeller invokes
 \f(CWOP_LABEL(p)\fP,
 \f(CWLEFT\_CHILD(p)\fP, and
 \f(CWRIGHT\_CHILD(p)\fP
 to read the operator and children from the node pointed to by \f(CWp\fP.
-It invokes
-\f(CWPANIC\fP
-when it detects an error.
 If the configuration section defines these operations as macros, they are implemented in-line;
 otherwise, they must be implemented as functions.
 .PP
-\f(CWburm\fP
+The matcher
 computes and stores a single integral state in each node of the subject tree.
 The configuration section must define a macro
 \f(CWSTATE_LABEL(p)\fP
@@ -175,16 +122,6 @@ to access the state field of the node pointed to
 by \f(CWp\fP. It must be large enough to hold a pointer, and
 a macro is required because it is used as an lvalue.
 .PP
-The configuration section may also define
-\f(CWALLOC(n)\fP
-for allocating
-\f(CWn\fP
-bytes.
-If
-\f(CWALLOC\fP
-is not defined,
-.IR malloc (3)
-is used.
 .SH OPTIONS
 .TP
 .BI \-p \ prefix
@@ -194,43 +131,15 @@ is used.
 .BI \-p prefix
 Use
 .I prefix
-as the disambiquating prefix for exported names and visible fields.
-The default is `\f(CWburm\fP'.
-.TP
-.B \-I
-Emit code for the following data values and functions.
-.sp
-.nf
-.ft CW
-    char burm_arity[];
-    char *burm_opname[];
-    char *burm_ntname[];
-    char *burm_string[];
-    short burm_cost[][4];
-    int burm_op_label(NODEPTR_TYPE p);
-    NODEPTR_TYPE burm_child(NODEPTR_TYPE p, int index);
-    int burm_state_label(NODEPTR_TYPE p);
-.sp
-.fi
-.ft R
-\f(CWburm_arity\fP and
-\f(CWburm_opname\fP
-are indexed by external symbol numbers and gives their arities.
-\f(CWburm_ntname\fP
-is indexed by a non-terminal number and gives its string name.
-\f(CWburm_string\fP
-and
-\f(CWburm_cost\fP
-are indexed by an external rule number and give the string
-representation and cost of each rule.
-The functions encapsulate the similarly named macros.
+as the disambiquating prefix for visible names and fields.
+The default is `\f(CW_\fP'.
 .TP
 .B \-T
 Arrange for
 .sp
 .nf
 .ft CW
-    void burm_trace(NODEPTR_TYPE p, int eruleno,
+    void _trace(NODEPTR_TYPE p, int eruleno,
                     int cost, int bestcost);
 .sp
 .fi
@@ -239,9 +148,8 @@ to be called at each successful match.
 \f(CWp\fP
 identifies the node and
 \f(CWeruleno\fP
-identifies the matching rule;
-\f(CWeruleno\fP
-is an index into \f(CWburm_string\fP.
+identifies the matching rule; the rules are numbered
+beginning at 1 in the order they appear in the input.
 \f(CWcost\fP
 is the cost of the match and
 \f(CWbestcost\fP
@@ -250,14 +158,14 @@ wins only if
 \f(CWcost\fP
 is less than \f(CWbestcost\fP.
 32767 represents the infinite cost of no previous match.
-\f(CWburm_trace\fP must be declared in the configuration section.
+\f(CW_trace\fP must be declared in the configuration section.
 .SH "SEE ALSO"
-C. W. Fraser, R. R. Henry and T. A. Proebsting,
-`BURG \(em Fast optimal instruction selection and tree parsing,'
-.I
-SIGPLAN Notices
-.BR 27 ,
-4 (Apr. 1992), 68-76.
+.IR lcc (1)
+.PP
+C. W. Fraser and D. R. Hanson,
+.IR A Retargetable C Compiler: Design and Implementation ,
+Benjamin/Cummings, Redwood City, CA, 1995,
+ISBN 0-8053-1670-1. Chapter 14.
 .PP
 C. W. Fraser, D. R. Hanson and T. A. Proebsting,
 `Engineering a simple, efficient code generator generator,'

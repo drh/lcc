@@ -1,19 +1,24 @@
 #include <assert.h>
+#include <ctype.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "lburg.h"
 
 static char rcsid[] = "$Id$";
 static char *prefix = "";
-static int Iflag = 1, Tflag = 0;
+static int Tflag = 0;
 static int ntnumber = 0;
 static Nonterm start = 0;
 static Term terms;
 static Nonterm nts;
 static Rule rules;
 static int nrules;
+static struct block {
+	struct block *link;
+} *memlist;			/* list of allocated blocks */
 
 static char *stringf(char *fmt, ...);
 static void print(char *fmt, ...);
@@ -24,6 +29,7 @@ static void emitdefs(Nonterm nts, int ntnumber);
 static void emitheader(void);
 static void emitkids(Rule rules, int nrules);
 static void emitnts(Rule rules, int nrules);
+static void emitrecalc(char *pre, Term root, Term kid);
 static void emitrecord(char *pre, Rule r, int cost);
 static void emitrule(Nonterm nts);
 static void emitlabel(Term terms, Nonterm start, int ntnumber);
@@ -37,16 +43,14 @@ int main(int argc, char *argv[]) {
 	Nonterm p;
 	
 	for (i = 1; i < argc; i++)
-		if (strcmp(argv[i], "-I") == 0)
-			Iflag = 1;
-		else if (strcmp(argv[i], "-T") == 0)
+		if (strcmp(argv[i], "-T") == 0)
 			Tflag = 1;
 		else if (strncmp(argv[i], "-p", 2) == 0 && argv[i][2])
 			prefix = &argv[i][2];
 		else if (strncmp(argv[i], "-p", 2) == 0 && i + 1 < argc)
 			prefix = argv[++i];
 		else if (*argv[i] == '-' && argv[i][1]) {
-			yyerror("usage: %s [-T | -I | -p prefix]... [ [ input ] output \n",
+			yyerror("usage: %s [-T | -p prefix]... [ [ input ] output \n",
 				argv[0]);
 			exit(1);
 		} else if (infp == NULL) {
@@ -73,14 +77,13 @@ int main(int argc, char *argv[]) {
 		ckreach(start);
 	for (p = nts; p; p = p->link)
 		if (!p->reached)
-			yyerror("can't reach non-terminal `%s'\n", p->name);
+			yyerror("can't reach nonterminal `%s'\n", p->name);
 	emitheader();
 	emitdefs(nts, ntnumber);
 	emitstruct(nts, ntnumber);
 	emitnts(rules, nrules);
 	emitterms(terms);
-	if (Iflag)
-		emitstring(rules);
+	emitstring(rules);
 	emitrule(nts);
 	emitclosure(nts);
 	if (start)
@@ -89,18 +92,25 @@ int main(int argc, char *argv[]) {
 	if (!feof(infp))
 		while ((c = getc(infp)) != EOF)
 			putc(c, outfp);
+	while (memlist) {	/* for purify */
+		struct block *q = memlist->link;
+		free(memlist);
+		memlist = q;
+	}
 	return errcnt > 0;
 }
 
 /* alloc - allocate nbytes or issue fatal error */
 void *alloc(int nbytes) {
-	void *p = calloc(1, nbytes);
+	struct block *p = calloc(1, sizeof *p + nbytes);
 
 	if (p == NULL) {
 		yyerror("out of memory\n");
 		exit(1);
 	}
-	return p;
+	p->link = memlist;
+	memlist = p;
+	return p + 1;
 }
 
 /* stringf - format and save a string */
@@ -212,7 +222,7 @@ Tree tree(char *id, Tree left, Tree right) {
 	} else if (p == NULL && arity == 0)
 		p = (Term)nonterm(id);
 	else if (p && p->kind == NONTERM && arity > 0) {
-		yyerror("`%s' is a non-terminal\n", id);
+		yyerror("`%s' is a nonterminal\n", id);
 		p = term(id, -1);
 	}
 	if (p->kind == TERM && p->arity == -1)
@@ -229,9 +239,10 @@ Tree tree(char *id, Tree left, Tree right) {
 }
 
 /* rule - create & initialize a rule with the given fields */
-Rule rule(char *id, Tree pattern, char *asm, int cost, char *code) {
+Rule rule(char *id, Tree pattern, char *template, char *code) {
 	Rule r = alloc(sizeof *r), *q;
 	Term p = pattern->op;
+	char *end;
 
 	r->lhs = nonterm(id);
 	r->packed = ++r->lhs->lhscount;
@@ -240,16 +251,21 @@ Rule rule(char *id, Tree pattern, char *asm, int cost, char *code) {
 	*q = r;
 	r->pattern = pattern;
 	r->ern = ++nrules;
-	r->cost = cost;
-	r->asm = asm;
+	r->template = template;
 	r->code = code;
+	r->cost = strtol(code, &end, 10);
+	if (*end)
+		r->cost = -1;
 	if (p->kind == TERM) {
-		r->next = p->rules;
-		p->rules = r;
+		for (q = &p->rules; *q; q = &(*q)->next)
+			;
+		*q = r;
 	} else if (pattern->left == NULL && pattern->right == NULL) {
 		Nonterm p = pattern->op;
 		r->chain = p->chain;
 	        p->chain = r;
+		if (r->cost == -1)
+			yyerror("illegal nonconstant cost `%s'\n", code);
 	}
 	for (q = &rules; *q; q = &(*q)->link)
 		;
@@ -297,7 +313,7 @@ static void print(char *fmt, ...) {
 	va_end(ap);
 }
 
-/* reach - mark all non-terminals in tree t as reachable */
+/* reach - mark all nonterminals in tree t as reachable */
 static void reach(Tree t) {
 	Nonterm p = t->op;
 
@@ -310,7 +326,7 @@ static void reach(Tree t) {
 		reach(t->right);
 }
 
-/* ckreach - mark all non-terminals reachable from p */
+/* ckreach - mark all nonterminals reachable from p */
 static void ckreach(Nonterm p) {
 	Rule r;
 
@@ -337,18 +353,29 @@ static void emitcase(Term p, int ntnumber) {
 	default: assert(0);
 	}
 	for (r = p->rules; r; r = r->next) {
+		char *indent = "\t\t\0";
 		switch (p->arity) {
 		case 0: case -1:
-			print("%2{%1/* %R */\n%3c = ", r);
+			print("%2/* %R */\n%2c = %s;\n", r, r->code);
+			emitrecord("\t\t", r, 0);
 			break;
 		case 1:
 			if (r->pattern->nterms > 1) {
 				print("%2if (%1/* %R */\n", r);
 				emittest(r->pattern->left, "LEFT_CHILD(a)", " ");
-				print("%2) {\n%3c = ");
+				print("%2) {\n");
+				indent = "\t\t\t";
 			} else
-				print("%2{%1/* %R */\n%3c = ", r);
+				print("%2/* %R */\n", r);
+			if (r->pattern->nterms == 2 && r->pattern->left
+			&&  r->pattern->right == NULL)
+				emitrecalc(indent, r->pattern->op, r->pattern->left->op);
+			print("%sc = ", indent);
 			emitcost(r->pattern->left, "LEFT_CHILD(a)");
+			print("%s;\n", r->code);
+			emitrecord(indent, r, 0);
+			if (indent[2])
+				print("%2}\n");
 			break;
 		case 2:
 			if (r->pattern->nterms > 1) {
@@ -356,17 +383,20 @@ static void emitcase(Term p, int ntnumber) {
 				emittest(r->pattern->left,  "LEFT_CHILD(a)",
 					r->pattern->right->nterms ? " && " : " ");
 				emittest(r->pattern->right, "RIGHT_CHILD(a)", " ");
-				print("%2) {\n%3c = ");
+				print("%2) {\n");
+				indent = "\t\t\t";
 			} else
-				print("%2{%1/* %R */\n%3c = ", r);
+				print("%2/* %R */\n", r);
+			print("%sc = ", indent);
 			emitcost(r->pattern->left,  "LEFT_CHILD(a)");
 			emitcost(r->pattern->right, "RIGHT_CHILD(a)");
+			print("%s;\n", r->code);
+			emitrecord(indent, r, 0);
+			if (indent[2])
+				print("%2}\n");
 			break;
 		default: assert(0);
 		}
-		print("%d;\n", r->cost);
-		emitrecord("\t\t\t", r, 0);
-		print("%2}\n");
 	}
 	print("%2break;\n");
 }
@@ -403,23 +433,24 @@ static void emitcost(Tree t, char *v) {
 		print("((struct %Pstate *)(%s->x.state))->cost[%P%S_NT] + ", v, p);
 }
 
-/* emitdefs - emit non-terminal defines and data structures */
+/* emitdefs - emit nonterminal defines and data structures */
 static void emitdefs(Nonterm nts, int ntnumber) {
 	Nonterm p;
 
 	for (p = nts; p; p = p->link)
 		print("#define %P%S_NT %d\n", p, p->number);
 	print("\n");
-	if (Iflag) {
-		print("static char *%Pntname[] = {\n%10,\n");
-		for (p = nts; p; p = p->link)
-			print("%1\"%S\",\n", p);
-		print("%10\n};\n\n");
-	}
+	print("static char *%Pntname[] = {\n%10,\n");
+	for (p = nts; p; p = p->link)
+		print("%1\"%S\",\n", p);
+	print("%10\n};\n\n");
 }
 
 /* emitheader - emit initial definitions */
 static void emitheader(void) {
+	time_t timer = time(NULL);
+
+	print("/*\ngenerated at %sby %s\n*/\n", ctime(&timer), rcsid);
 	print("static void %Pkids ARGS((NODEPTR_TYPE, int, NODEPTR_TYPE[]));\n");
 	print("static void %Plabel ARGS((NODEPTR_TYPE));\n");
 	print("static int %Prule ARGS((void*, int));\n\n");
@@ -440,11 +471,11 @@ static char *computekids(Tree t, char *v, char *bp, int *ip) {
 	return bp;
 }
 
-/* emitkids - emit burm_kids */
+/* emitkids - emit _kids */
 static void emitkids(Rule rules, int nrules) {
 	int i;
-	Rule r, *rc = alloc((nrules + 1)*sizeof *rc);
-	char **str  = alloc((nrules + 1)*sizeof *str);
+	Rule r, *rc = alloc((nrules + 1 + 1)*sizeof *rc);
+	char **str  = alloc((nrules + 1 + 1)*sizeof *str);
 
 	for (i = 0, r = rules; r; r = r->link) {
 		int j = 0;
@@ -458,8 +489,8 @@ static void emitkids(Rule rules, int nrules) {
 		rc[j] = r;
 	}
 	print("static void %Pkids(p, eruleno, kids) NODEPTR_TYPE p, kids[]; int eruleno; {\n"
-"%1if (!p)\n%2fatal(\"%Pkids\", \"Null tree\\n\");\n"
-"%1if (!kids)\n%2fatal(\"%Pkids\", \"Null kids\\n\");\n"
+"%1if (!p)\n%2fatal(\"%Pkids\", \"Null tree\\n\", 0);\n"
+"%1if (!kids)\n%2fatal(\"%Pkids\", \"Null kids\\n\", 0);\n"
 "%1switch (eruleno) {\n");
 	for (i = 0; (r = rc[i]) != NULL; i++) {
 		for ( ; r; r = r->kids)
@@ -467,18 +498,6 @@ static void emitkids(Rule rules, int nrules) {
 		print("%s%2break;\n", str[i]);
 	}
 	print("%1default:\n%2fatal(\"%Pkids\", \"Bad rule number %%d\\n\", eruleno);\n%1}\n}\n\n");
-}
-
-/* closure - fill in cost & rule with results of chain rules w/p as rhs */
-static void closure(int cost[], Rule rule[], Nonterm p, int c) {
-	Rule r;
-
-	for (r = p->chain; r; r = r->chain)
-		if (c + r->cost < cost[r->lhs->number]) {
-			cost[r->lhs->number] = c + r->cost;
-			rule[r->lhs->number] = r;
-			closure(cost, rule, r->lhs, c + r->cost);
-		}
 }
 
 /* emitlabel - emit label function */
@@ -500,7 +519,7 @@ static void emitlabel(Term terms, Nonterm start, int ntnumber) {
 "%2fatal(\"%Plabel\", \"Bad terminal %%d\\n\", OP_LABEL(a));\n%1}\n}\n\n");
 }
 
-/* computents - fill in bp with burm_nts vector for tree t */
+/* computents - fill in bp with _nts vector for tree t */
 static char *computents(Tree t, char *bp) {
 	if (t) {
 		Nonterm p = t->op;
@@ -513,11 +532,11 @@ static char *computents(Tree t, char *bp) {
 	return bp;
 }
 
-/* emitnts - emit burm_nts ragged array */
+/* emitnts - emit _nts ragged array */
 static void emitnts(Rule rules, int nrules) {
 	Rule r;
-	int i, j, *nts = alloc(nrules*sizeof *nts);
-	char **str = alloc(nrules*sizeof *str);
+	int i, j, *nts = alloc((nrules + 1)*sizeof *nts);
+	char **str = alloc((nrules + 1)*sizeof *str);
 
 	for (i = 0, r = rules; r; r = r->link) {
 		char buf[1024];
@@ -539,22 +558,39 @@ static void emitnts(Rule rules, int nrules) {
 	print("};\n\n");
 }
 
+/* emitrecalc - emit code that tests for recalculation of INDIR?(VREGP) */
+static void emitrecalc(char *pre, Term root, Term kid) {
+	if (root->kind == TERM && strncmp(root->name, "INDIR", 5) == 0
+	&&   kid->kind == TERM &&  strcmp(kid->name,  "VREGP"   ) == 0) {
+		Nonterm p;
+		print("%sif (mayrecalc(a)) {\n", pre);
+		print("%s%1struct %Pstate *q = a->syms[RX]->u.t.cse->x.state;\n", pre);
+		for (p = nts; p; p = p->link) {
+			print("%s%1if (q->cost[%P%S_NT] == 0) {\n", pre, p);
+			print("%s%2p->cost[%P%S_NT] = 0;\n", pre, p);
+			print("%s%2p->rule.%P%S = q->rule.%P%S;\n", pre, p, p);
+			print("%s%1}\n", pre);
+		}
+		print("%s}\n", pre);
+	}
+}
+
 /* emitrecord - emit code that tests for a winning match of rule r */
 static void emitrecord(char *pre, Rule r, int cost) {
-	print("%sif (", pre);
 	if (Tflag)
-		print("%Ptrace(%Pnp, %d, c + %d, p->cost[%P%S_NT]), ",
-			r->ern, cost, r->lhs);
+		print("%s%Ptrace(a, %d, c + %d, p->cost[%P%S_NT]);\n",
+			pre, r->ern, cost, r->lhs);
+	print("%sif (", pre);
 	print("c + %d < p->cost[%P%S_NT]) {\n"
 "%s%1p->cost[%P%S_NT] = c + %d;\n%s%1p->rule.%P%S = %d;\n",
 		cost, r->lhs, pre, r->lhs, cost, pre, r->lhs,
 		r->packed);
 	if (r->lhs->chain)
-		print("%s%1%Pclosure_%S(p, c + %d);\n", pre, r->lhs, cost);
+		print("%s%1%Pclosure_%S(a, c + %d);\n", pre, r->lhs, cost);
 	print("%s}\n", pre);
 }
 
-/* emitrule - emit decoding vectors and burm_rule */
+/* emitrule - emit decoding vectors and _rule */
 static void emitrule(Nonterm nts) {
 	Nonterm p;
 
@@ -566,7 +602,7 @@ static void emitrule(Nonterm nts) {
 		print("};\n\n");
 	}
 	print("static int %Prule(state, goalnt) void *state; int goalnt; {\n"
-"%1if (goalnt < 1 || goalnt > %d)\n%2fatal(\"%Prule\", \"Bad goal nonterminal %%d\\n\", goalnt));\n"
+"%1if (goalnt < 1 || goalnt > %d)\n%2fatal(\"%Prule\", \"Bad goal nonterminal %%d\\n\", goalnt);\n"
 "%1if (!state)\n%2return 0;\n%1switch (goalnt) {\n", ntnumber);
 	for (p = nts; p; p = p->link)
 		print("%1case %P%S_NT:"
@@ -581,14 +617,15 @@ static void emitstring(Rule rules) {
 	print("static char *%Ptemplates[] = {\n");
 	print("/* 0 */%10,\n");
 	for (r = rules; r; r = r->link)
-		print("/* %d */%1\"%s\",%1/* %R */\n", r->ern, r->asm, r);
+		print("/* %d */%1\"%s\",%1/* %R */\n", r->ern, r->template, r);
 	print("};\n");
 	print("\nstatic char %Pisinstruction[] = {\n");
 	print("/* 0 */%10,\n");
 	for (r = rules; r; r = r->link) {
-		int len = strlen(r->asm);
+		int len = strlen(r->template);
 		print("/* %d */%1%d,%1/* %s */\n", r->ern,
-			r->asm[len-2] == '\\' && r->asm[len-1] == 'n', r->asm);
+			len >= 2 && r->template[len-2] == '\\' && r->template[len-1] == 'n',
+			r->template);
 	}
 	print("};\n");
 	print("\nstatic char *%Pstring[] = {\n");
@@ -622,15 +659,13 @@ static void emitterms(Term terms) {
 		print("%1%d,%1/* %d=%S */\n", p->arity < 0 ? 0 : p->arity, k++, p);
 	}
 	print("};\n\n");
-	if (Iflag) {
-		print("static char *%Popname[] = {\n");
-		for (k = 0, p = terms; p; p = p->link) {
-			for ( ; k < p->esn; k++)
-				print("/* %d */%10,\n", k);
-			print("/* %d */%1\"%S\",\n", k++, p);
-		}
-		print("};\n\n");
+	print("static char *%Popname[] = {\n");
+	for (k = 0, p = terms; p; p = p->link) {
+		for ( ; k < p->esn; k++)
+			print("/* %d */%10,\n", k);
+		print("/* %d */%1\"%S\",\n", k++, p);
 	}
+	print("};\n\n");
 }
 
 /* emittest - emit clause for testing a match */
