@@ -1,23 +1,39 @@
-From lcc 3.1 to 3.2:
+From lcc 3.2 to 3.3:
+
+Changes:
+The driver no longer accepts -C, because not all preprocessors
+implement it; use -Wp-C to pass -C to preprocessors that accept -C.
 
 Errors fixed:
-Generated bad code when a conditional appeared as a operand and one of
-its arms computed a common subexpression, eg, a[i] + (i>0?a[i]:0)
-and a[i] = (n || (n=i), n)
+Erroneously interpreted x as a typedef in
+typedef int x; void f(signed x) {}
 
-With -n, erroneously diagnosed dereferences of const pointers as errors,
-eg, f() { int x; const int *p; x=*p; }
+Generated the wrong constant when folding a != comparison of two
+double constants, eg, i = (4.5 != 5.0), or a conditional with
+double and float arms, eg, 1 == 2 ? 5.6 : 3.4F.
 
-Crashed with an assertion failure on a multiple assignment of a struct
-return value to known elements of an array or fields of a structure, eg,
-struct foo { int a[4]; } f() { struct foo  x[2];  x[0]=x[1]=f(); }
+Assertion failed on
+struct cdata_struct{int*a,b;}c;
+void f(int*T){if(c.a[c.b]<(((int*)T[1]-T)));}
 
-On the SPARC, generated bad code for addressing locals in large frames,
-eg, f() { int a[10000], y = a[0]; }
+Looped when -Wf-a was specified.
 
-On the SPARC under Solaris, ctype.h was missing an extern declaration
-for __ctype.
+Failed to diagnose illegal occurrences of comma expressions in some
+constant expressions, eg, static int d = (1,2);
 
-On the x86, generated bad code for nested division, eg i/=j/k
+When compiling for the SPARC, the program below caused spillr to
+dereference a null pointer:
+   f4(int *v) {
+      int cB;
+      cB = !v[16] & !v[11] & !v[10] & !v[9] & !v[6] & v[5]
+      | v[11] & !v[5] | v[10] & v[6]  | v[11] &  v[6]  | v[12] & v[7]
+      | v[10] &  v[8] | v[11] & v[8]  | v[12] & !v[9]  | v[10] & v[9]
+      | v[11] &  v[9] | v[11] & v[10] | v[12] &  v[10] | v[12];
+      return 0;
+   }
 
-Thu Dec  8 16:04:32 EST 1994
+Generated incorrect x86 code for some structure copies from an address
+returned by a function, eg,
+main(){struct {int i;} *f(), *p; *p = *f(p);}
+
+Fri Jun  2 11:42:02 EDT 1995
