@@ -566,11 +566,21 @@ static void opt(char *arg) {
 				plist = append(&arg[3], plist);
 				return;
 			case 'f':
-				if (strcmp(&arg[3], "-C") || option("-b")) {
-					clist = append(&arg[3], clist);
-					return;
+				if (strcmp(&arg[3], "-C") == 0 && !option("-b"))
+					break;	/* -C requires that -b is supported */
+				clist = append(&arg[3], clist);
+				if (strcmp(&arg[3], "-unsigned_char=1") == 0) {
+					plist = append("-D__CHAR_UNSIGNED__", plist);
+					plist = append("-U_CHAR_IS_SIGNED", plist);
 				}
-				break; /* and fall thru */
+#define xx(name,k) \
+				if (strcmp(&arg[3], "-wchar_t=" #name) == 0) \
+					plist = append("-D_WCHAR_T_SIZE=" #k, plist);
+xx(unsigned_char,1)
+xx(unsigned_short,2)
+xx(unsigned_int,4)
+#undef xx
+				return;
 			case 'a':
 				alist = append(&arg[3], alist);
 				return;
