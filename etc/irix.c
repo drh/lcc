@@ -43,7 +43,6 @@ char *ld[] = { "/usr/bin/ld", "-require_dynamic_link", "_rld_new_interface",
 	"-o", "$3", "/usr/lib/crt1.o", "-L/usr/local/lib",
 	"$1", "$2", "", "-L" LCCDIR, "-llcc", "-lc", "/usr/lib/crtn.o", 0
 };
-static char *bbexit = LCCDIR "bbexit.o";
 
 extern char *concat(char *, char *);
 extern int access(const char *, int);
@@ -54,7 +53,6 @@ int option(char *arg) {
 		include[0] = concat("-I", concat(&arg[8], "/include"));
 		com[0] = concat(&arg[8], "/rcc");
 		ld[16] = concat("-L", &arg[8]);
-		bbexit = concat(&arg[8], "/bbexit.o");
 	} else if (strcmp(arg, "-g4") == 0
 	&& access("/u/drh/lib/mipseb/rcc", 4) == 0
 	&& access("/u/drh/book/cdb/mips/irix/cdbld", 4) == 0) {
@@ -70,8 +68,8 @@ int option(char *arg) {
 		;
 	else if (strcmp(arg, "-p") == 0)
 		ld[11] = "/usr/lib/mcrt1.o";
-	else if (strcmp(arg, "-b") == 0 && access(bbexit, 4) == 0)
-		ld[15] = bbexit;
+	else if (strcmp(arg, "-b") == 0)
+		;
 	else
 		return 0;
 	return 1;

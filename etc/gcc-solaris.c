@@ -29,7 +29,6 @@ char *ld[] = { GCCDIR "ld", "-o", "$3", "$1",
 	GCCLIB "crtbegin.o", "$2", "", "", "-L" LCCDIR, "-llcc",
 	"-L" GCCLIB, "-lgcc", "-lm", "-lc", "",
 	GCCLIB "crtend.o", GCCLIB "crtn.o", 0 };
-static char *bbexit = LCCDIR "bbexit.o";
 
 extern char *concat(char *, char *);
 extern int access(const char *, int);
@@ -40,13 +39,12 @@ int option(char *arg) {
 		include[0] = concat("-I", concat(&arg[8], "/include"));
 		ld[10] = concat("-L", &arg[8]);
 		com[0] = concat(&arg[8], "/rcc");
-		bbexit = concat(&arg[8], "/bbexit.o");
 	} else if (strcmp(arg, "-g") == 0)
 		;
 	else if (strcmp(arg, "-pg") == 0) {
 		ld[8] = GCCLIB "gmon.o";
-	} else if (strcmp(arg, "-b") == 0 && access(bbexit, 4) == 0)
-		ld[9] = bbexit;
+	} else if (strcmp(arg, "-b") == 0)
+		;
 	else
 		return 0;
 	return 1;
