@@ -2,7 +2,7 @@
  * lcc [ option ]... [ file | -llib ]...
  * front end for the ANSI C compiler
  */
-static char rcsid[] = "$Revision$ $Date$";
+static char rcsid[] = "$Name$ ($Id$)";
 
 #include <stdio.h>
 #include <ctype.h>
@@ -601,7 +601,8 @@ static void rm(list) List list; {
 		do {
 			if (verbose)
 				fprintf(stderr, " %s", b->str);
-			unlink(b->str);
+			if (verbose < 2)
+				unlink(b->str);
 		} while ((b = b->link) != list);
 		if (verbose)
 			fprintf(stderr, "\n");
