@@ -8,13 +8,6 @@ static char rcsid[] = "$Revision$ $Date$";
 #include <ctype.h>
 #include <signal.h>
 
-#ifndef TEMPDIR
-#define TEMPDIR "/tmp"
-#endif
-#ifndef PIPE
-#define PIPE 1
-#endif
-
 typedef struct list *List;
 struct list {		/* circular list nodes: */
 	char *str;		/* option or file name */
@@ -41,7 +34,7 @@ static int callsys ARGS((char *[]));
 extern char *concat ARGS((char *, char *));
 static int compile ARGS((char *, char *));
 static void compose ARGS((char *[], List, List, List));
-static void cprint ARGS((char *[], char *));
+static void cprint ARGS((FILE *, char *[], char *));
 static void error ARGS((char *, char *));
 static void execute ARGS((char *[]));
 static int exists ARGS((char *));
@@ -54,26 +47,18 @@ static void rm ARGS((List));
 extern char *strsave ARGS((char *));
 extern int suffix ARGS((char *));
 
-extern int access ARGS((char *, int));
-extern int close ARGS((int));
-extern int dup ARGS((int));
 extern int execv ARGS((char *, char *[]));
-extern int fork ARGS((void));
 extern int getpid ARGS((void));
-extern int open ARGS((char *, int));
-extern int pipe ARGS((int[]));
-extern int read ARGS((int, char *, int));
-extern int unlink ARGS((char *));
-extern int wait ARGS((int*));
 
-extern char *cpp[], *include[], *com[], *as[],*ld[];
+extern char *tempdir[], *shell[], *delete[],
+	*cpp[], *include[], *com[], *as[],*ld[];
 extern int option ARGS((char *));
 
+static FILE *out;		/* command file */
 static int errcnt;		/* number of errors */
 static int Eflag;		/* -E specified */
 static int Sflag;		/* -S specified */
 static int cflag;		/* -c specified */
-static int pipeflag = PIPE;	/* -pipe specified */
 static int verbose;		/* incremented for each -v */
 static List llist[2];		/* loader files, flags */
 static List alist;		/* assembler flags */
@@ -83,10 +68,11 @@ static List rmlist;		/* list of files to remove */
 static char *outfile;		/* ld output file or -[cS] object file */
 static int ac;			/* argument count */
 static char **av;		/* argument vector */
-static char tempname[sizeof TEMPDIR + 15];	/* temporary .s file */
+static char *tempname;		/* temporary .s file */
+static char *cmdname;		/* temporary .bat file */
 static char *progname;
 
-main(argc, argv) char *argv[]; {
+main(argc, argv) int argc; char *argv[]; {
 	int i, j, nf;
 	
 	progname = argv[0];
@@ -100,13 +86,19 @@ main(argc, argv) char *argv[]; {
 	if (signal(SIGHUP, SIG_IGN) != SIG_IGN)
 		signal(SIGHUP, interrupt);
 #endif
-	sprintf(tempname, "%s/lcc%05d.s", TEMPDIR, getpid());
-	rmlist = append(tempname, rmlist);
-	plist = append("-D__LCC__", append("-Dunix", 0));
 	if (argc <= 1) {
 		help();
 		exit(0);
 	}
+	cmdname = "dolcc.bat";
+	if ((out = fopen(cmdname, "w")) == NULL) {
+		error("can't write command file `%s'\n", cmdname);
+		out = stdout;
+	}
+	tempname = alloc(strlen(tempdir[0]) + 15);
+	sprintf(tempname, "%slcc%05d.s", tempdir[0], getpid()%100000);
+	rmlist = append(tempname, rmlist);
+	plist = append("-D__LCC__=1", 0);
 	for (nf = 0, i = j = 1; i < argc; i++) {
 		if (strcmp(argv[i], "-o") == 0) {
 			if (++i < argc) {
@@ -145,24 +137,31 @@ main(argc, argv) char *argv[]; {
 			opt(argv[i]);
 		else {
 			if (nf > 1 && strchr("csi", suffix(argv[i]))) {
-				fprintf(stderr, "%s:\n", argv[i]);
-				fflush(stdout);
+				;
 			}
 			filename(argv[i], 0);
 		}
 	if (errcnt == 0 && !Eflag && !Sflag && !cflag && llist[1]) {
 		if (i == 2 && strchr("csi", suffix(argv[1])))
-			rmlist = append(concat(basename(argv[1]), ".o"), rmlist);
-		compose(ld, llist[0], llist[1], append(outfile ? outfile : "a.out", 0));
+			rmlist = append(concat(basename(argv[1]), ".obj"), rmlist);
+		compose(ld, llist[0], llist[1], append(outfile ? outfile : "a.exe", 0));
 		if (callsys(av))
 			errcnt++;
 	}
-	rm(rmlist);	
+	rm(rmlist);
+	if (errcnt == 0) {
+		compose(shell, append(cmdname, 0), 0, 0);
+		if (verbose >= 2)
+			cprint(stderr, av, 0);
+		if (out != stdout)
+			fclose(out);
+		execute(av);
+	}
 	return errcnt > 0;
 }
 
 /* alloc - allocate n bytes or die */
-static void *alloc(n) {
+static void *alloc(n) int n; {
 	static char *avail, *limit;
 	
 	n = (n + sizeof(char *) - 1)&~(sizeof(char *) - 1);
@@ -206,26 +205,10 @@ char *basename(name) char *name; {
 
 /* callsys - fork and execute the command described by argv[0...], return status */
 static int callsys(argv) char **argv; {
-	int n, m = 0, status = 0, pid;
-
-	cprint(argv, 0);
-	if (verbose >= 2)
-		return 0;
-	switch (pid = fork()) {
-	case -1:
-		fprintf(stderr, "%s: no more processes\n", progname);
-		return 100;
-	case 0:
-		execute(argv);
-	}
-	while ((n = wait(&m)) != pid && n != -1)
-		status |= m;
-	status |= m;
-	if (status&0377) {
-		fprintf(stderr, "%s: fatal error in %s\n", progname, argv[0]);
-		status |= 0400;
-	}
-	return (status>>8)&0377;
+	if (verbose >= 1)
+		cprint(stderr, argv, 0);
+	cprint(out, argv, 0);
+	return 0;
 }
 
 /* concat - return concatenation of strings s1 and s2 */
@@ -240,16 +223,8 @@ char *concat(s1, s2) char *s1, *s2; {
 
 /* compile - compile src into dst, return status */
 static int compile(src, dst) char *src, *dst; {
-	int n, status;
-
 	compose(com, clist, append(src, 0), append(dst, 0));
-	status = callsys(av);
-	if (status && *src == '-') {
-		char buf[1024];
-		while ((n = read(0, buf, sizeof buf)) > 0)
-			;
-	}
-	return status;
+	return callsys(av);
 }
 
 /* compose - compose cmd into av substituting a, b, c for $1, $2, $3, resp. */
@@ -264,7 +239,7 @@ static void compose(cmd, a, b, c) char *cmd[]; List a, b, c; {
 		if (cmd[i][0] == '$' && isdigit(cmd[i][1])) {
 			int k = cmd[i][1] - '0';
 			assert(k >= 1 && k <= 3);
-			if (b = lists[k-1])
+			if ((b = lists[k-1]) != NULL)
 				do {
 					b = b->link;
 					assert(j < ac);
@@ -277,16 +252,18 @@ static void compose(cmd, a, b, c) char *cmd[]; List a, b, c; {
 	av[j] = 0;
 }
 
-/* cprint - print the command described by argv[0...] followed by str or \n */
-static void cprint(argv, str) char *argv[], *str; {
-	if (verbose) {
-		fprintf(stderr, "%s", *argv++);
-		while (*argv)
-			fprintf(stderr, " %s", *argv++);
-		if (str == 0)
-			str = "\n";
-		fprintf(stderr, str);
+/* cprint - print the command described by argv[0...] followed by str or \n on f */
+static void cprint(f, argv, str) FILE *f; char **argv, *str; {
+	fprintf(f, "%s", *argv);
+	while (*++argv) {
+		if (strcmp(*argv, ",") != 0)
+			fprintf(f, " ");
+		fprintf(f, "%s", *argv);
 	}
+	if (str == 0)
+		str = "\n";
+	fprintf(f, str);
+	fflush(f);
 }
 
 /* error - issue error msg according to fmt, bump error count */
@@ -299,6 +276,7 @@ static void error(fmt, msg) char *fmt, *msg; {
 
 /* execute - replace this process by the command described by argv[0...] */
 static void execute(argv) char *argv[]; {
+	return;	/* remove this line if execv works on your system */
 	if (verbose >= 2)
 		return;
 	execv(argv[0], argv);
@@ -309,10 +287,7 @@ static void execute(argv) char *argv[]; {
 
 /* exists - is `name' readable? issue message if not */
 static int exists(name) char *name; {
-	if (verbose > 1 || access(name, 4) == 0)
-		return 1;
-	error("can't read `%s'", name);
-	return 0;
+	return 1;
 }
 
 /* filename - process file name argument `name', return status */
@@ -326,50 +301,20 @@ static int filename(name, base) char *name, *base; {
 		if (!exists(name))
 			break;
 		compose(cpp, plist, append(name, 0), 0);
-		if (Eflag) {
+		if (Eflag)
 			status = callsys(av);
-			break;
-		}
-		if (pipeflag == 0) {
-			static char tempfile[sizeof TEMPDIR + 15];
-			if (tempfile[0] == 0) {
-				sprintf(tempfile, "%s/lcc%05d.i", TEMPDIR, getpid());
+		else {
+			static char *tempfile;
+			if (tempfile == 0) {
+				tempfile = alloc(strlen(tempdir[0]) + 15);
+				sprintf(tempfile, "%slcc%05d.i", tempdir[0], getpid()%100000);
 				rmlist = append(tempfile, rmlist);
 			}
 			compose(cpp, plist, append(name, 0), append(tempfile, 0));
 			status = callsys(av);
 			if (status == 0)
 				return filename(tempfile, base);
-			break;
 		}
-		cprint(av, " | ");
-		if (verbose <= 1) {
-			int fd[2], pid;
-			if (pipe(fd) < 0) {
-				error("can't create preprocessor-compiler pipe\n", 0);
-				exit(1);
-			}
-			switch (pid = fork()) {
-			case -1:
-				fprintf(stderr, "%s: no more processes\n", progname);
-				return 100;
-			case 0:
-				close(1);
-				dup(fd[1]);
-				close(fd[0]);
-				close(fd[1]);
-				execute(av);
-				assert(0);	/* no return from execute */
-			}
-			close(0);
-			dup(fd[0]);
-			close(fd[0]);
-			close(fd[1]);
-		}
-		if (Sflag)
-			status = compile("-", outfile ? outfile : concat(base, ".s"));
-		else if ((status = compile("-", tempname)) == 0)
-			return filename(tempname, base);
 		break;
 	case 'i':
 		if (!exists(name) || Eflag)
@@ -383,7 +328,7 @@ static int filename(name, base) char *name, *base; {
 		if (Eflag)
 			break;
 		if (!Sflag) {
-			char *ofile = cflag && outfile ? outfile : concat(base, ".o");
+			char *ofile = cflag && outfile ? outfile : concat(base, ".obj");
 			compose(as, alist, append(name, 0), append(ofile, 0));
 			status = callsys(av);
 			if (!find(ofile, llist[1]))
@@ -412,7 +357,7 @@ static int filename(name, base) char *name, *base; {
 static List find(str, list) char *str; List list; {
 	List b;
 	
-	if (b = list)
+	if ((b = list) != NULL)
 		do {
 			if (strcmp(str, b->str) == 0)
 				return b;
@@ -447,7 +392,6 @@ static void help() {
 "-o file	leave the output in `file'\n",
 "-P	print ANSI-style declarations for globals\n",
 "-p -pg	emit profiling code; see prof(1) and gprof(1)\n",
-"-pipe	pipe the preprocessor output to the compiler\n",
 "-S	compile to assembly language\n",
 "-t -tname	emit function tracing calls to printf or to `name'\n",
 #ifdef sparc
@@ -466,9 +410,9 @@ static void help() {
 }
 
 /* interrupt - catch interrupt signals */
-static void interrupt(n) {
+static void interrupt(n) int n; {
 	rm(rmlist);
-	exit(n = 100);
+	exit(100);
 }
 
 /* opt - process option in arg */
@@ -506,9 +450,7 @@ static void opt(arg) char *arg; {
 		clist = append(arg, clist);
 		return;
 	case 'p':	/* -pipe -p -pg */
-		if (strcmp(arg, "-pipe") == 0)
-			pipeflag = 1;
-		else if (option(arg))
+		if (option(arg))
 			clist = append(arg, clist);
 		else
 			fprintf(stderr, "%s: %s ignored\n", progname, arg);
@@ -542,7 +484,12 @@ static void opt(arg) char *arg; {
 			printed = 1;
 			return;
 		}
+/*lint -e616 */
+	case 'l':	/* -lx */
+		llist[1] = append(arg, llist[1]);
+		return;
 	}
+/*lint +e616 */
 	if (arg[2] == 0)
 		switch (arg[1]) {	/* single-character options */
 		case 'S':
@@ -598,18 +545,13 @@ static void opt(arg) char *arg; {
 
 /* rm - remove files in list */
 static void rm(list) List list; {
-	if (list) {
-		List b = list;
-		if (verbose)
-			fprintf(stderr, "rm");
+	List b;
+
+	if ((b = list) != NULL)
 		do {
-			if (verbose)
-				fprintf(stderr, " %s", b->str);
-			unlink(b->str);
+			compose(delete, append(b->str, 0), 0, 0);
+			callsys(av);
 		} while ((b = b->link) != list);
-		if (verbose)
-			fprintf(stderr, "\n");
-	}
 }
 
 /* strsave - return a saved copy of string str */
@@ -617,7 +559,7 @@ char *strsave(str) char *str; {
 	return strcpy(alloc(strlen(str)+1), str);
 }
 
-/* suffix - return the 1-character suffix of name, e.g. /usr/drh/foo.c => 'c' */
+/* suffix - return the first character of name's suffix, e.g. /usr/drh/foo.obj => 'o' */
 int suffix(name) char *name; {
 	char *t = 0, *s;
 
@@ -626,7 +568,7 @@ int suffix(name) char *name; {
 			t = 0;
 		else if (*s == '.')
 			t = s + 1;
-	if (t && t[1] == 0)
+	if (t)
 		return t[0];
 	return -1;
 }
