@@ -46,8 +46,16 @@ Using parts of lcc in other products is more problematic. For example,
 using parts of lcc in a C++ compiler could save substantial time and
 effort and therefore contribute significantly to the profitability of
 the product. This kind of use, or any use where others stand to make a
-profit from what is primarily our work, is subject to negotiation.
+profit from what is primarily our work, requires a license agreement
+with Addison-Wesley.  Per-copy and unlimited use licenses are
+available; for more information, contact
 
-Chris Fraser / cwf@bell-labs.com
+	J. Carter Shanklin
+	Addison Wesley Longman, Inc. 
+	2725 Sand Hill Rd.
+	Menlo Park, CA 94025
+	415/854-0300 x2478 FAX: 415/614.2930 jcs@aw.com
+-----
+Chris Fraser / cwfraser@microsoft.com
 David Hanson / drh@cs.princeton.edu
-Tue Apr  2 15:37:45 PST 1996
+$Revision$ $Date$
