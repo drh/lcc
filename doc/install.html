@@ -267,8 +267,10 @@ if the environment variable <TT>LCCINPUTS</TT> is not set; see the
 <A HREF="http://www.cs.princeton.edu/software/lcc/cgi-bin/man2html.cgi?lcc+1">man
 page</A>.</P>
 <P>Each command template is an array of pointers to strings terminated with a
-null pointer; the first string is the full path name of the command and the
-others are the arguments or argument placeholders, which are described below.</P>
+null pointer; the string are full path names of commands, arguments, or argument
+placeholders, which are described below. Commands are executed by calling <TT>system</TT>,
+and templates can contain multiple command by separating commands with newlines.
+The driver makes a separate call to <TT>system</TT> for each command.</P>
 <P>The <TT>cpp</TT> array gives the command for running lcc's preprocessor,
 <TT>cpp</TT>. Literal arguments specified in templates, e.g., <TT>&quot;-Dsparc&quot;</TT>
 in the <TT>cpp</TT> command above, are passed to the command as given.</P>
@@ -295,10 +297,11 @@ except when <TT>-N</TT> is specified.</P>
 <P><TT>com</TT> gives the command for invoking the compiler. This template can
 appear as shown above in a custom host-specific part, but the option <TT>-target=sparc/solaris</TT>
 should be edited to the <I>target</I><TT>/</TT><I>os</I> for your platform.
-lcc can generate code for <EM>all</EM> of the <I>target</I><TT>/</TT><I>os</I>
-combinations listed in the file <TT>src/bind.c</TT>. The <TT>-target</TT>
-option specifies the default combination. The driver's <TT>-Wf</TT> option can
-be used to specify other combinations; the
+If <TT>com[1]</TT> includes the string &quot;<TT>win32</TT>&quot;, the driver
+assumes it's running on Windows. lcc can generate code for <EM>all</EM> of the
+<I>target</I><TT>/</TT><I>os</I> combinations listed in the file <TT>src/bind.c</TT>.
+The <TT>-target</TT> option specifies the default combination. The driver's
+<TT>-Wf</TT> option can be used to specify other combinations; the
 <A HREF="http://www.cs.princeton.edu/software/lcc/cgi-bin/man2html.cgi?lcc+1">man
 page</A> elaborates.</P>
 <P><TT>as</TT> gives the command for invoking the assembler.</P>
@@ -327,9 +330,11 @@ baz.c:
 /usr/ccs/bin/as -Qy -s -o /tmp/lcc266293.o /tmp/lcc266291.s
 /usr/ccs/bin/ld -o a.out /opt/SUNWspro/SC4.0/lib/crti.o /opt/SUNWspro/SC4.0/lib/crt1.o /opt/SUNWspro/SC4.0/lib/values-xa.o /tmp/lcc266292.o /tmp/lcc266293.o mylib.a -lX11 -Y P,/opt/SUNWspro/SC4.0/lib/:/usr/ccs/lib:/usr/lib -Qy -L/usr/local/lib/lcc/ -llcc -lm -lc /opt/SUNWspro/SC4.0/lib/crtn.o
 rm /tmp/lcc266293.o /tmp/lcc266290.i /tmp/lcc266291.s /tmp/lcc266292.o</PRE></BLOCKQUOTE>
-<P>As the output shows, <TT>lcc</TT> places temporary files in <TT>/tmp</TT>.
-Alternatives can be specified by defining <TT>TEMPDIR</TT> in <TT>CFLAGS</TT>
-when building the driver, and with the <TT>-tempdir=</TT><EM>dir</EM> option.</P>
+<P>As the output shows, <TT>lcc</TT> places temporary files in <TT>/tmp</TT>;
+if any of the environment variables <TT>TMP</TT>, <TT>TEMP</TT>, and <TT>TMPDIR</TT>
+are set, they override this default (in the order shown) as does the <TT>-tempdir=</TT><EM>dir</EM>
+option. The default can be changed by defining <TT>TEMPDIR</TT> in <TT>CFLAGS</TT>
+when building the driver.</P>
 <P>The <TT>option</TT> function is called for the options
 <TT>-Wo</TT>, <TT>-g</TT>, <TT>-p</TT>, <TT>-pg</TT>, and <TT>-b</TT>
 because these compiler options might also affect the loader's arguments. For
@@ -528,26 +533,26 @@ Windows-specific part of the driver. It assumes that the VC header files are in
 one of the standard places (<TT>\Program Files\devstudio\vc\include</TT> or
 <TT>\msdev\include</TT>) and that the linker (<TT>link.exe</TT>) and the
 assembler (<TT>ml.exe</TT>) are on the PATH. It also assumes that the macro
-LCCDIR gives the build directory. If necessary, revise a copy of
+<TT>LCCDIR</TT> gives the build directory. If necessary, revise a copy of
 <A HREF="pkg/etc/win32.c"><TT>etc\win32.c</TT></A> to reflect the conventions
 on your computer (see <A HREF="#driver"><EM>Building the Driver</EM></A>),
-then build the driver:
+then build the driver, specifying the default temporary directory, if necessary:
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt HOSTFILE=etc\win32.c lcc
+<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt TEMPDIR=\\temp HOSTFILE=etc/win32.c lcc
 
 Microsoft (R) Program Maintenance Utility   Version 1.62.7022
 Copyright (C) Microsoft Corp 1988-1997. All rights reserved.
 
-        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.0\ -c -Fo\pkg\lcc-4.0\lcc.obj etc/lcc.c
+        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.0\ -c -DTEMPDIR=\&quot;\\temp\&quot; -Fo\pkg\lcc-4.0\lcc.obj etc/lcc.c
 lcc.c
-        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.0\ -c -Fo\pkg\lcc-4.0\host.obj etc\win32.c
+        cl -nologo -Zi -MLd -Fd\pkg\lcc-4.0\ -c -Fo\pkg\lcc-4.0\host.obj etc/win32.c
 win32.c
         cl -nologo -Zi -MLd -Fd\pkg\lcc-4.0\ -Fe\pkg\lcc-4.0\lcc.exe \pkg\lcc-4.0\lcc.obj \pkg\lcc-4.0\host.obj</PRE></BLOCKQUOTE>If
 you make a copy of <TT>etc\win32.c</TT>, specify the path of the copy as the
 value of <TT>HOSTFILE</TT>. For example, if you copy <TT>etc\win32.c</TT> to
 <TT>BUILDDIR</TT> and edit it, use the command
 <BLOCKQUOTE>
-<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt HOSTFILE=%BUILDDIR%\win32.c lcc</PRE></BLOCKQUOTE></LI>
+<PRE>C:\dist\lcc\4.0&gt;nmake -f makefile.nt TEMPDIR=\\temp HOSTFILE=%BUILDDIR%\win32.c lcc</PRE></BLOCKQUOTE></LI>
 <LI>Build the preprocessor, compiler proper, library, and other accessories
 (see
 <A HREF="#rcc"><EM>Building the Compiler</EM></A>):
