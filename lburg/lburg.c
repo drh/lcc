@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 		else if (strncmp(argv[i], "-p", 2) == 0 && i + 1 < argc)
 			prefix = argv[++i];
 		else if (*argv[i] == '-' && argv[i][1]) {
-			yyerror("usage: %s [-T | -p prefix]... [ [ input ] output \n",
+			yyerror("usage: %s [-T | -p prefix]... [ [ input ] output ] \n",
 				argv[0]);
 			exit(1);
 		} else if (infp == NULL) {
