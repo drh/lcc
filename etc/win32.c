@@ -5,7 +5,7 @@
 static char rcsid[] = "$Id$";
 
 #ifndef LCCDIR
-#define LCCDIR ""
+#define LCCDIR "\\pkg\\lcc-4.0\\"
 #endif
 
 char *suffixes[] = { ".c;.C", ".i;.I", ".asm;.ASM;.s;.S", ".obj;.OBJ", ".exe", 0 };
