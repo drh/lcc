@@ -92,6 +92,7 @@ lookup(Token *tp, int install)
 		np->vp = NULL;
 		np->ap = NULL;
 		np->flag = 0;
+		np->val = 0;
 		np->len = tp->len;
 		np->name = newstring(tp->t, tp->len, 0);
 		np->next = nlist[h];
