@@ -188,8 +188,10 @@ expand(Tokenrow *trp, Nlist *np)
 		ntokc = 1;
 	else {
 		ntokc = gatherargs(trp, atr, &narg);
-		if (narg<0)			/* not actually a call (no '(') */
+		if (narg<0) {			/* not actually a call (no '(') */
+			trp->tp++;
 			return;
+		}
 		if (narg != rowlen(np->ap)) {
 			error(ERROR, "Disagreement in number of macro arguments");
 			trp->tp->hideset = newhideset(trp->tp->hideset, np);
