@@ -21,22 +21,17 @@ static char *bbexit = LCCDIR "bbexit.obj";
 
 extern char *concat(char *, char *);
 extern int access(const char *, int);
+extern char *replace(const char *, int, int);
 
 int option(char *arg) {
 	if (strncmp(arg, "-lccdir=", 8) == 0) {
-		char *s;
-		for (s = &arg[8]; *s; s++)
-			if (*s == '/') {
-				*s = '\\';
-				while (s[1] == '/')
-					s++;
-		}
-		if (s[-1] == '\\')
-			s--;
-		cpp[0] = concat(&arg[8], "\\cpp.exe");
-		include[0] = concat("-I", concat(&arg[8], "\\include"));
-		com[0] = concat(&arg[8], "\\rcc.exe");
-		bbexit = concat(&arg[8], "\\bbexit.obj");
+		arg = replace(arg + 8, '/', '\\');
+		if (arg[strlen(arg)-1] == '\\')
+			arg[strlen(arg)-1] = '\0';
+		cpp[0] = concat(arg, "\\cpp.exe");
+		include[0] = concat("-I", concat(arg, "\\include"));
+		com[0] = concat(arg, "\\rcc.exe");
+		bbexit = concat(arg, "\\bbexit.obj");
 	} else if (strcmp(arg, "-g") == 0)
 		;
 	else if (strcmp(arg, "-b") == 0 && access(bbexit, 4) == 0)
