@@ -5,13 +5,13 @@
 # set -x
 target=`echo $1 | awk -F/ '{ print $(NF-3) }'`
 os=`echo $1 | awk -F/ '{ print $(NF-2) }'`
-dir=$target/$os; remotehost=${2-$REMOTEHOST}
+dir=$target/$os
 
 case "$1" in
 *symbolic/irix*)	idir=include/mips/irix; remotehost=noexecute ;;
 *symbolic/osf*)		idir=include/alpha/osf;	remotehost=noexecute ;;
-*symbolic/winnt*)	idir=include/x86/win32 ;;
-*)			idir=include/$dir ;;
+*symbolic/winnt*)	idir=include/x86/win32;	remotehost=noexecute ;;
+*)			idir=include/$dir;      remotehost=${2-$REMOTEHOST} ;;
 esac
 
 if [ ! -d "$target/$os" -o ! -d "$idir" ]; then
