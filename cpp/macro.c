@@ -476,10 +476,14 @@ builtin(Tokenrow *trp, int biname)
 		op = outnum(op-1, s->line);
 		break;
 
-	case KFILE:
-		strcpy(op, s->filename);
-		op += strlen(s->filename);
+	case KFILE: {
+		char *src = s->filename;
+		while ((*op++ = *src++) != 0)
+			if (src[-1] == '\\')
+				*op++ = '\\';
+		op--;
 		break;
+		}
 
 	case KDATE:
 		strncpy(op, curtime+4, 7);
