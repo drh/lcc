@@ -4,8 +4,7 @@
 
 # set -x
 case "$1" in
-symbolic-irix)	target=$1; include=mips/irix ;;
-symbolic-osf)	target=$1; include=alpha/osf ;;
+symbolic-*)	target=symbolic; include=mips/`expr "$1" : '.*-\(.*\)'` ;;
 *)		target=$1;
 		include=`expr "$1" : '\(.*\)-'`/`expr "$1" : '.*-\(.*\)'` ;;
 esac
