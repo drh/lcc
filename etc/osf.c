@@ -8,7 +8,7 @@ static char rcsid[] = "$Id$";
 #define LCCDIR "/usr/local/lib/lcc/"
 #endif
 
-char *suffixes[] = { ".c", ".i", ".s", ".o", "", 0 };
+char *suffixes[] = { ".c", ".i", ".s", ".o", ".out", 0 };
 char inputs[256] = "";
 char *cpp[] = {
 	LCCDIR "cpp", "-D__STDC__=1",
