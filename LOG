@@ -2,6 +2,8 @@ From lcc 3.6 to 4.0:
 
 Changes:
 
+see doc/4.html for changes in the code-generation interface.
+
 on the SPARC, lcc now emits .type and .size directives unconditionally.
 
 Errors fixed:
@@ -9,12 +11,22 @@ Errors fixed:
 -A -A erroneously complained about static main's that didn't conform to
 the ANSI-mandated `int main(void)' or `int main(int, char **)'.
 
+lcc silently generated incorrect code for a structure copy with a
+post-incremented target, eg,
+struct { int x; } data = {1}, copy[2], *q = copy;
+main() { *q++ = data; }
+
 Generated incorrect values in some expressions with constant pointers.
+
+on the MIPS, sometimes generated an incorrect frame size and thus a
+crash when floating-point registers were saved.
 
 on the SPARC, erroneously reused a register variable as a temporary when
 the variable is compiler-generated.
 
 on the SPARC with -b, emitted incorrect code for returning structs.
 
+on the x86, conversion from float to int rounded instead of truncated
+with the default floating-point mode.
 
 $Id$
