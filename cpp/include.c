@@ -84,7 +84,7 @@ syntax:
 void
 genline(void)
 {
-	static Token ta = { UNCLASS, NULL, 0, 0 };
+	static Token ta = { UNCLASS };
 	static Tokenrow tr = { &ta, &ta, &ta+1, 1 };
 	uchar *p;
 
