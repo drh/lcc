@@ -1,3 +1,4 @@
+.\" $Id$
 .TH LCC 1 "local \- 2/21/97"
 .SH NAME
 lcc \- local ANSI C compiler
@@ -14,15 +15,15 @@ lcc \- local ANSI C compiler
 .I lcc
 is a local ANSI C compiler for a variety of platforms.
 .PP
-Arguments whose names end with `.c' are taken to be
+Arguments whose names end with `.c' (plus `.C' under Windows) are taken to be
 C source programs; they are preprocessed, compiled, and
 each object program is left on the file
 whose name is that of the source with `.o' (UNIX) or `.obj' (Windows)
-substituted for `.c'.
+substituted for the extension.
 Arguments whose names end with `.i' are treated similarly,
 except they are not preprocessed.
 In the same way,
-arguments whose names end with `.s' are taken to be assembly source programs
+are taken to be assembly source programs
 and are assembled, producing a `.o' (UNIX) or `.obj' (Windows) file.
 If there are no arguments,
 .I lcc
@@ -30,7 +31,7 @@ prints a message summarizing its options on the standard error.
 .PP
 .I lcc
 deletes a `.o' (UNIX) or `.obj' (Windows) file if and only if exactly one
-source file (`.c', `.s', or `.i' file) is mentioned and no other file
+source file is mentioned and no other file
 (source, object, library) or
 .B \-l
 option is mentioned.
@@ -40,7 +41,7 @@ If the environment variable
 is set,
 .I lcc
 assumes it gives a colon-separated list of directories in which to
-look for `.c', `.i', `.s', and `.o' files whose names do not begin with `/'.
+look for source and object files whose names do not begin with `/'.
 These directories are also added to the list of directories
 searched for libraries.
 If
@@ -49,10 +50,7 @@ is defined, it must contain `.' in order for the current directory
 to be searched for input files.
 .PP
 .I lcc
-uses ANSI standard header files
-in preference to the `old-style' header files normally found in
-.B /usr/include
-(see `FILES' below).
+uses ANSI standard header files (see `FILES' below).
 Include files not found in the ANSI header files
 are taken from the normal default include areas,
 which usually includes
@@ -100,14 +98,12 @@ Generate jump tables for switches whose density is at least
 a floating point constant between zero and one.
 The default is 0.5.
 .TP
-.SM
 .B \-A
 Warns about
 declarations and casts of function types without prototypes,
 assignments between pointers to ints and pointers to enums, and
 conversions from pointers to smaller integral types.
 A second
-.SM
 .B \-A
 warns about
 unrecognized control lines,
@@ -120,7 +116,6 @@ ANSI environmental limits, like more than 257 cases in switches.
 It also arranges for duplicate global definitions in separately compiled
 files to cause loader errors.
 .TP
-.SM
 .B \-P
 Writes declarations for all defined globals on standard error.
 Function declarations include prototypes;
@@ -134,16 +129,13 @@ that tests for dereferencing zero pointers.
 The code reports the offending file and line number and calls
 .IR abort (3).
 .TP
-.SM
 .B \-O
 is ignored.
 .TP
-.SM
 .B \-S
 Compile the named C programs, and leave the
 assembler-language output on corresponding files suffixed `.s'.
 .TP
-.SM
 .B \-E
 Run only the preprocessor on the named C programs
 and unsuffixed file arguments,
@@ -171,61 +163,50 @@ are given with more than one source file and ignores the
 .B \-o
 option.
 .TP
-.SM
-.BI \-D \*Sname=def
+.BI \-D name=def
 .br
 .ns
 .TP
-.SM
-.BI \-D \*Sname
+.BI \-D name
 Define the
 .I name
 to the preprocessor, as if by `#define'.
 If no definition is given, the name is defined as "1".
 .TP
-.SM
-.BI \-U \*Sname
+.BI \-U name
 Remove any initial definition of
 .IR name .
 .TP
-.SM
-.BI \-I \*Sdir
+.BI \-I dir
 `#include' files
 whose names do not begin with `/' are always
 sought first in the directory of the
 .I file
 arguments, then in directories named in
-.SM
 .B \-I
 options, then in directories on a standard list.
 .TP
-.SM
 .B \-N
 Do not search
 .I any
 of the standard directories for `#include' files.
 Only those directories specified by subsequent explicit
-.SM
 .B \-I
 options will be searched, in the order given.
 .TP
-.SM
-.BI \-B \*Sstr
+.BI \-B str
 Use the compiler \fIstr\fP\fBrcc\fP instead of the default version.
 Note that
 .I str
 often requires a trailing slash.
 On Sparcs only,
-.SM
 .B \-Bstatic
 and
-.SM
 .BI \-Bdynamic
 are passed to the loader; see
 .IR ld (1).
 .TP
-.SM
-.BI \-Wo\-lccdir= \*Sdir
+.BI \-Wo\-lccdir= dir
 Find the preprocessor, compiler proper, and include directory
 in the directory \fIdir\fP/.
 .I lcc
@@ -290,12 +271,10 @@ warns when
 .B \-pg
 is unsupported.
 .TP
-.SM
-.BI \-t \*Sname
+.BI \-t name
 .br
 .ns
 .TP
-.SM
 .BI \-t
 Produce code to print the name of the function, an activation number,
 and the name and value of each argument at function entry.
@@ -310,13 +289,11 @@ For null
 .I char*
 values, "(null)" is printed. 
 On Sparcs only,
-.SM
 .BI \-target
 .I name
 is accepted, but ignored.
 .TP
-.SM
-.BI \-W \*Sx \fIarg\fP
+.BI \-W x \fIarg\fP
 pass argument
 .I arg
 to the program indicated by
@@ -334,30 +311,11 @@ the assembler, and the loader.
 is passed as given; if a
 .B \-
 is expected, it must be given explicitly.
-.SM
-.BI \-W \*So \fIarg\fP
+.BI \-W o \fIarg\fP
 specifies a system-specific option,
 .IR arg .
 .TP
-.SM
-.BI \-pipe
-.br
-.ns
-.TP
-.SM
-.BI \-nopipe
-forces
-.I lcc
-to pipe the preprocessor output directly to the compiler
-or to use temporary files.
-The default is usually
-.BR \-pipe ,
-but might be
-.B \-nopipe
-in some installations.
-.TP
-.SM
-.BI \-tempdir= \*Sdir
+.BI \-tempdir= dir
 Store temporary files in the directory \fIdir\fP/.
 The default is usually
 .BR /tmp .
@@ -413,18 +371,19 @@ combinations may include
 .RS
 .ta \w'sparc/solarisxx'u
 .nf
+alpha/osf	ALPHA, OSF 3.2
 mips/irix	big-endian MIPS, IRIX 4.0
 mips/ultrix	little-endian MIPS, ULTRIX 4.3
 sparc/sun	SPARC, SunOS 4.1
 sparc/solaris	SPARC, Solaris 2.3
-x86/dos	[345]86, Windows 6.0
+x86/win32	Windows NT 4.0/Windows 95
 symbolic	textual rendition of the generated code
 null		no output
 .fi
 .RE
 .PP
 The
-.I \-v
+.B \-v
 option lists the
 .I target/os
 combinations supported by specific installations of
@@ -437,7 +396,6 @@ as described in the ANSI standard.
 If
 .I lcc
 is used with the GNU C preprocessor, the
-.SM
 .B \-Wp-trigraphs
 option is required to enable trigraph sequences.
 .PP
@@ -483,19 +441,19 @@ with the
 option.
 .PP
 .RS
-.ta \w'/usr/local/lib/lcc/bbexit.oXX'u
+.ta \w'/usr/local/lib/lcc/liblcc.{a,lib}XX'u
 .nf
-file.c	input file
+file.{c,C}	input file
+file.{s,asm}	assembly-language file
 file.{o,obj}	object file
 a.{out,exe}	loaded output
 /tmp/lcc*	temporaries
 /usr/local/lib/lcc/cpp	preprocessor
 /usr/local/lib/lcc/rcc	compiler
-/usr/local/lib/lcc/bbexit.o	exit() for profiling
-/usr/local/lib/lcc/liblcc.o	\fIlcc\fP-specific library
-/lib/crt0.o	runtime startup
-/lib/[gm]crt0.o	startups for profiling
-/lib/libc.a	standard library
+/usr/local/lib/lcc/liblcc.{a,lib}	\fIlcc\fP-specific library
+/lib/crt0.o	runtime startup (UNIX)
+/lib/[gm]crt0.o	startups for profiling (UNIX)
+/lib/libc.a	standard library (UNIX)
 /usr/local/lib/lcc/include	ANSI standard headers
 /usr/local/include	local headers
 /usr/include	traditional headers
@@ -506,8 +464,7 @@ gmon.out	file produced for \fIgprof\fR(1)
 .RE
 .PP
 .I lcc
-predefines the macro `__LCC__' on all systems and
-the macros `unix' on UNIX systems.
+predefines the macro `__LCC__' on all systems.
 It may also predefine some installation-dependent symbols; option
 .B \-v
 exposes them.
