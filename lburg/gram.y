@@ -3,13 +3,14 @@
 #include "lburg.h"
 static char rcsid[] = "$Id$";
 /*lint -e616 -e527 -e652 -esym(552,yynerrs) -esym(563,yynewstate,yyerrlab) */
+static int yylineno = 0;
 %}
 %union {
 	int n;
 	char *string;
 	Tree tree;
 }
-%term TERM
+%term TERMINAL
 %term START
 %term PPERCENT
 
@@ -26,7 +27,7 @@ decls	: /* lambda */
 	| decls decl
 	;
 
-decl	: TERM  blist '\n'
+decl	: TERMINAL  blist '\n'
 	| START nonterm '\n'		{
 		if (nonterm($2)->number != 1)
 			yyerror("redeclaration of the start symbol\n");
@@ -66,7 +67,6 @@ int errcnt = 0;
 FILE *infp = NULL;
 FILE *outfp = NULL;
 static char buf[BUFSIZ], *bp = buf;
-static int yylineno = 0;
 static int ppercent = 0;
 static int code = 0;
 
@@ -141,7 +141,7 @@ int yylex(void) {
 		} else if (c == '%' && strncmp(bp, "term", 4) == 0
 		&& isspace(bp[4])) {
 			bp += 4;
-			return TERM;
+			return TERMINAL;
 		} else if (c == '%' && strncmp(bp, "start", 5) == 0
 		&& isspace(bp[5])) {
 			bp += 5;
