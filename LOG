@@ -1,39 +1,9 @@
-From lcc 3.2 to 3.3:
+From lcc 3.3 to 3.4:
 
 Changes:
-The driver no longer accepts -C, because not all preprocessors
-implement it; use -Wp-C to pass -C to preprocessors that accept -C.
+The MIPS back end now generates position-independent code and thus
+supports dynamic linking. -Wf-pic=1 (the default under IRIX) and
+-Wf-pic=0 (the default under Ultrix) enable and disable
+position-independent code.
 
-Errors fixed:
-Erroneously interpreted x as a typedef in
-typedef int x; void f(signed x) {}
-
-Generated the wrong constant when folding a != comparison of two
-double constants, eg, i = (4.5 != 5.0), or a conditional with
-double and float arms, eg, 1 == 2 ? 5.6 : 3.4F.
-
-Assertion failed on
-struct cdata_struct{int*a,b;}c;
-void f(int*T){if(c.a[c.b]<(((int*)T[1]-T)));}
-
-Looped when -Wf-a was specified.
-
-Failed to diagnose illegal occurrences of comma expressions in some
-constant expressions, eg, static int d = (1,2);
-
-When compiling for the SPARC, the program below caused spillr to
-dereference a null pointer:
-   f4(int *v) {
-      int cB;
-      cB = !v[16] & !v[11] & !v[10] & !v[9] & !v[6] & v[5]
-      | v[11] & !v[5] | v[10] & v[6]  | v[11] &  v[6]  | v[12] & v[7]
-      | v[10] &  v[8] | v[11] & v[8]  | v[12] & !v[9]  | v[10] & v[9]
-      | v[11] &  v[9] | v[11] & v[10] | v[12] &  v[10] | v[12];
-      return 0;
-   }
-
-Generated incorrect x86 code for some structure copies from an address
-returned by a function, eg,
-main(){struct {int i;} *f(), *p; *p = *f(p);}
-
-Fri Jun  2 11:42:02 EDT 1995
+Wed Jul 12 13:17:42 EDT 1995
