@@ -476,19 +476,19 @@ static void help(void) {
 "-Dname -Dname=def	define the preprocessor symbol `name'\n",
 "-E	run only the preprocessor on the named C programs and unsuffixed files\n",
 "-g	produce symbol table information for debuggers\n",
-"-help or -?	print this message\n",
+"-help or -?	print this message on standard error\n",
 "-Idir	add `dir' to the beginning of the list of #include directories\n",	
 "-lx	search library `x'\n",
+"-M	emit makefile dependencies; implies -E\n",
 "-N	do not search the standard directories for #include files\n",
 "-n	emit code to check for dereferencing zero pointers\n",
 "-O	is ignored\n",
 "-o file	leave the output in `file'\n",
-"-P	print ANSI-style declarations for globals\n",
+"-P	print ANSI-style declarations for globals on standard error\n",
 "-p -pg	emit profiling code; see prof(1) and gprof(1)\n",
 "-S	compile to assembly language\n",
-#ifdef linux
 "-static	specify static libraries (default is dynamic)\n",
-#endif
+"-dynamic	specify dynamically linked libraries\n",
 "-t -tname	emit function tracing calls to printf or to `name'\n",
 "-target name	is ignored\n",
 "-tempdir=dir	place temporary files in `dir/'", "\n"
@@ -590,9 +590,14 @@ xx(unsigned_int,4)
 			}
 		fprintf(stderr, "%s: %s ignored\n", progname, arg);
 		return;
-	case 'd':	/* -dn */
-		arg[1] = 's';
-		clist = append(arg, clist);
+	case 'd':	/* -dn -dynamic */
+		if (strcmp(arg, "-dynamic") == 0) {
+			if (!option(arg))
+				fprintf(stderr, "%s: %s ignored\n", progname, arg);
+		} else {
+			arg[1] = 's';
+			clist = append(arg, clist);
+		}
 		return;
 	case 't':	/* -t -tname -tempdir=dir */
 		if (strncmp(arg, "-tempdir=", 9) == 0)
@@ -639,14 +644,14 @@ xx(unsigned_int,4)
 			printed = 1;
 			return;
 		}
-#ifdef linux
+		break;
 	case 's':
-		if (strcmp(arg,"-static") == 0) {
+		if (strcmp(arg, "-static") == 0) {
 			if (!option(arg))
 				fprintf(stderr, "%s: %s ignored\n", progname, arg);
 			return;
 		}
-#endif         
+		break;
 	}
 	if (arg[2] == 0)
 		switch (arg[1]) {	/* single-character options */
@@ -677,6 +682,10 @@ xx(unsigned_int,4)
 			return;
 		case 'c':
 			cflag++;
+			return;
+		case 'M':
+			Eflag++;	/* -M implies -E */
+			plist = append(arg, plist);
 			return;
 		case 'N':
 			if (strcmp(basepath(cpp[0]), "gcc-cpp") == 0)
