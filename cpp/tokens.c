@@ -77,7 +77,10 @@ void
 maketokenrow(int size, Tokenrow *trp)
 {
 	trp->max = size;
-	trp->bp = (Token *)domalloc(size*sizeof(Token));
+	if (size>0)
+		trp->bp = (Token *)domalloc(size*sizeof(Token));
+	else
+		trp->bp = NULL;
 	trp->tp = trp->bp;
 	trp->lp = trp->bp;
 }
