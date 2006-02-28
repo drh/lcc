@@ -16,7 +16,6 @@ WARRANTY. IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
 REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
 OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
 
-
 lcc is not public-domain software, shareware, and it is not protected
 by a `copyleft' agreement, like the code from the Free Software
 Foundation.
@@ -50,13 +49,15 @@ profit from what is primarily our work, requires a license agreement
 with Addison-Wesley.  Per-copy and unlimited use licenses are
 available; for more information, contact
 
-	Mike Hendrickson
-	Addison Wesley Professional
-	75 Arlington St.
-	Boston, MA 02116
-	617/848-6522 FAX: 617/848-6569 mikeh@awl.com
+   Peter Gordon
+   Addison Wesley
+   75 Arlington St., Suite 300
+   Boston, MA 02116
+   617/848-6520 peter.gordon@pearsoned.com
 
+   Assistant: Kim Boedigheimer
+   617/848-6559 kim.boedigheimer@pearsoned.com
 -----
-Chris Fraser / cwfraser@microsoft.com
-David Hanson / drh@microsoft.com
+Chris Fraser / cwf@aya.yale.edu
+David Hanson / drh@drhanson.net
 $Revision$ $Date$
