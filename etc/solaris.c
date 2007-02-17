@@ -28,7 +28,6 @@ char *ld[] = { "/usr/ccs/bin/ld", "-o", "$3", "$1",
 	"-L" LCCDIR, "-llcc", "-lm", "-lc", SUNDIR "crtn.o", 0 };
 
 extern char *concat(char *, char *);
-extern int access(const char *, int);
 
 int option(char *arg) {
 	if (strncmp(arg, "-lccdir=", 8) == 0) {

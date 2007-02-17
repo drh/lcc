@@ -1,0 +1,609 @@
+<!DOCTYPE HTML PUBLIC "-//SQ//DTD HTML 2.0 + all extensions//EN" "hmpro3.dtd">
+<HTML>
+<HEAD><LINK HREF="mailto:drh@microsoft.com" REV="made" TITLE="David R. Hanson">
+<TITLE>The lcc 4.0 Code-Generation Interface</TITLE></HEAD>
+<BODY>
+<H1>The lcc 4.0 Code-Generation Interface</H1>
+<P ALIGN="LEFT"><B><A HREF="http://www.research.microsoft.com/~cwfraser/">Christopher
+W. Fraser</A> and <A HREF="http://www.research.microsoft.com/~drh/">David R.
+Hanson</A>, <A HREF="http://www.research.microsoft.com/">Microsoft Research</A></B></P>
+<H2>Contents</H2>
+<DIR>
+<LI><A HREF="#intro">Introduction</A>
+</LI>
+<LI><A HREF="#metrics">5.1 Type Metrics</A></LI>
+<LI><A HREF="#symbols">5.3 Symbols</A>
+</LI>
+<LI><A HREF="#operators">5.5 Dag Operators</A>
+</LI>
+<LI><A HREF="#definitions">5.8 Definitions</A></LI>
+<LI><A HREF="#constants">5.9 Constants</A></LI>
+<LI><A HREF="#upcalls">5.12 Upcalls</A></LI></DIR>
+<H2><A NAME="intro">Introduction</A></H2>
+<P>Version 4.0 is the latest release of
+<A HREF="http://www.cs.princeton.edu/software/lcc/">lcc</A>, the ANSI C
+compiler described in our book
+<CITE>A Retargetable C Compiler: Design and Implementation</CITE>
+(Addison-Wesley, 1995, ISBN 0-8053-1670-1). This document summarizes the
+differences between the 4.0 code-generation interface and the 3.x interface
+described in Chap. 5 of <CITE>A Retargetable C Compiler</CITE>.</P>
+<P>Previous versions of lcc supported only three sizes of integers, two sizes
+of floats, and insisted that pointers fit in unsigned integers (see Sec. 5.1 of
+<CITE>A Retargetable C Compiler</CITE>). These assumptions simplified the
+compiler, and were suitable for 32-bit architectures. But on 64-bit
+architectures, such as the DEC ALPHA, it's natural to have four sizes of
+integers and perhaps three sizes of floats, and on 16-bit architectures, 32-bit
+pointers don't fit in unsigned integers. Also, the 3.x constaints limited the
+use of lcc's back ends for other languages, such as Java.</P>
+<P>Version 4.0 removes all of these restrictions: It supports any number of
+sizes for integers and floats, and the size of pointers need not be related to
+the size of any of the integer types. The major changes in the code-generation
+interface are:</P>
+<UL>
+<LI>The number of  type suffixes has been reduced to 6.</LI>
+<LI>Dag operators are composed of a generic operator, a type suffix, and a
+size.</LI>
+<LI>Unsigned variants of several operators have been added.</LI>
+<LI>Several interface functions have new signatures.</LI></UL>
+<P>In addition, version 4.0 is written in ANSI C and uses the standard I/O
+library and other standard C functions.</P>
+<P>The sections below parallel the subsections of Chap. 5 of <CITE>A
+Retargetable C Compiler</CITE> and summarize the differences between the 3.x and
+4.0 code-generation interface. Unaffected subsections are omitted. Page
+citations refer to pages in <CITE>A Retargetable C Compiler</CITE>.</P>
+<H2><A NAME="metrics">5.1 Type Metrics</A></H2>
+<P>There are now 9 metrics in an interface record:</P>
+<PRE>Metrics charmetric;
+Metrics shortmetric;
+Metrics intmetric;
+Metrics longmetric;
+Metrics floatmetric;
+Metrics doublemetric;
+Metrics longdoublemetric;
+Metrics ptrmetric;
+Metrics structmetric;</PRE>
+<P>Each of these specifies the size and alignment of the corresponding type.
+<CODE>ptrmetric</CODE> describes all pointers.</P>
+<H2><A NAME="symbols">5.3 Symbols</A></H2>
+<P>The actual value of a constant is stored in the <CODE>u.c.v</CODE> field of
+a symbol, which holds a <CODE>Value</CODE>:</P>
+<PRE>typedef union value {
+	long i;
+	unsigned long u;
+	long double d;
+	void *p;
+	void (*g)(void);
+} Value;</PRE>
+<P>The value is stored in the appropriate field according to its type, which is
+given by the symbol's <CODE>type</CODE> field.</P>
+<H2><A NAME="operators">5.5 Dag Operators</A></H2>
+<P>The <CODE>op</CODE> field a of <CODE>node</CODE> structure holds a dag
+operator, which consists of a generic operator, a type suffix, and a size
+indicator. The type suffixes are:</P>
+<PRE>enum {
+	F=FLOAT,
+	I=INT,
+	U=UNSIGNED,
+	P=POINTER,
+	V=VOID,
+	B=STRUCT
+};
+
+#define sizeop(n) ((n)&lt;&lt;10)</PRE>
+<P>Given a generic operator <CODE>o</CODE>, a type suffix <CODE>t</CODE>, and
+a size
+<CODE>s</CODE>, a type- and size-specific operator is formed by <CODE>o+t+sizeop(s)</CODE>.
+For example, <CODE>ADD+F+sizeop(4)</CODE> forms the operator <CODE>ADDF4</CODE>,
+which denotes the sum of two 4-byte floats. Similarly, <CODE>ADD+F+sizeop(8)</CODE>
+forms <CODE>ADDF8</CODE>, which denotes 8-byte floating addition. In the 3.x
+code-generation interface, <CODE>ADDF</CODE> and <CODE>ADDD</CODE> denoted
+these operations. There was no size indicator in the 3.x opeators because the
+type suffix supplied both a type and a size.</P>
+<P>Table 5.1 lists each generic operator, its valid type suffixes, and the
+number of <CODE>kids</CODE> and <CODE>syms</CODE> that it uses; multiple
+values for
+<CODE>kids</CODE> indicate type-specific variants. The notations in the <B>syms</B>
+column give the number of  <CODE>syms</CODE> values and a one-letter code that
+suggests their uses: 1V indicates that <CODE>syms[0]</CODE> points to a symbol
+for a variable, 1C indicates that <CODE>syms[0]</CODE> is a constant, and 1L
+indicates that <CODE>syms[0]</CODE> is a label. For 1S, <CODE>syms[0]</CODE>
+is a constant whose value is a size in bytes; 2S adds <CODE>syms[1]</CODE>,
+which is a constant whose value is an alignment. For most operators, the type
+suffix and size indicator denote the type and size of operation to perform and
+the type and size of the result.</P>
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD COLSPAN="6" ALIGN="CENTER"><STRONG>Table 5.1<IMG
+SRC="/~drh/resources/dot_clear.gif" ALT="|" WIDTH="18" HEIGHT="1">Node
+Operators.</STRONG></TD></TR>
+<TR>
+<TD><STRONG>syms</STRONG></TD>
+<TD><STRONG>kids</STRONG></TD>
+<TD><STRONG>Operator</STRONG></TD>
+<TD><STRONG>Type Suffixes</STRONG></TD>
+<TD><STRONG>Sizes</STRONG></TD>
+<TD><STRONG>Operation</STRONG></TD></TR>
+<TR>
+<TD>1V</TD>
+<TD>0</TD>
+<TD><CODE>ADDRF</CODE></TD>
+<TD><CODE>...P..</CODE></TD>
+<TD>p</TD>
+<TD>address of a parameter</TD></TR>
+<TR>
+<TD>1V</TD>
+<TD>0</TD>
+<TD><CODE>ADDRG</CODE></TD>
+<TD><CODE>...P..</CODE></TD>
+<TD>p</TD>
+<TD>address of a global</TD></TR>
+<TR>
+<TD>1V</TD>
+<TD>0</TD>
+<TD><CODE>ADDRL</CODE></TD>
+<TD><CODE>...P..</CODE></TD>
+<TD>p</TD>
+<TD>address of a local</TD></TR>
+<TR>
+<TD>1C</TD>
+<TD>0</TD>
+<TD><CODE>CNST</CODE></TD>
+<TD><CODE>FIUP..</CODE></TD>
+<TD>fdx csilh p</TD>
+<TD>constant</TD></TR>
+<TR ALIGN="LEFT" VALIGN="TOP">
+<TD><IMG SRC="/~drh/resources/dot_clear.gif" ALT="|" WIDTH="1" HEIGHT="12"></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD></TR>
+<TR>
+<TD></TD>
+<TD>1</TD>
+<TD><CODE>BCOM</CODE></TD>
+<TD><CODE>.IU...</CODE></TD>
+<TD>ilh</TD>
+<TD>bitwise complement</TD></TR>
+<TR>
+<TD>1S</TD>
+<TD>1</TD>
+<TD><CODE>CVF</CODE></TD>
+<TD><CODE>FI....</CODE></TD>
+<TD>fdx ilh</TD>
+<TD>convert from float</TD></TR>
+<TR>
+<TD>1S</TD>
+<TD>1</TD>
+<TD><CODE>CVI</CODE></TD>
+<TD><CODE>FIU...</CODE></TD>
+<TD>fdx csilh csilhp</TD>
+<TD>convert from signed integer</TD></TR>
+<TR>
+<TD>1S</TD>
+<TD>1</TD>
+<TD><CODE>CVP</CODE></TD>
+<TD><CODE>..U..</CODE></TD>
+<TD>p</TD>
+<TD>convert from pointer</TD></TR>
+<TR>
+<TD>1S</TD>
+<TD>1</TD>
+<TD><CODE>CVU</CODE></TD>
+<TD><CODE>.IUP..</CODE></TD>
+<TD>csilh p</TD>
+<TD>convert from unsigned integer</TD></TR>
+<TR>
+<TD></TD>
+<TD>1</TD>
+<TD><CODE>INDIR</CODE></TD>
+<TD><CODE>FIUP.B</CODE></TD>
+<TD>fdx csilh p</TD>
+<TD>fetch</TD></TR>
+<TR>
+<TD></TD>
+<TD>1</TD>
+<TD><CODE>NEG</CODE></TD>
+<TD><CODE>FI....</CODE></TD>
+<TD>fdx ilh</TD>
+<TD>negation</TD></TR>
+<TR>
+<TD><IMG SRC="/~drh/resources/dot_clear.gif" ALT="|" WIDTH="1" HEIGHT="12"></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD></TR>
+<TR>
+<TD></TD>
+<TD>2</TD>
+<TD><CODE>ADD</CODE></TD>
+<TD><CODE>FIUP..</CODE></TD>
+<TD>fdx ilh ilhp p</TD>
+<TD>addition</TD></TR>
+<TR>
+<TD></TD>
+<TD>2</TD>
+<TD><CODE>BAND</CODE></TD>
+<TD><CODE>.IU...</CODE></TD>
+<TD>ilh</TD>
+<TD>bitwise AND</TD></TR>
+<TR>
+<TD></TD>
+<TD>2</TD>
+<TD><CODE>BOR</CODE></TD>
+<TD><CODE>.IU...</CODE></TD>
+<TD>ilh</TD>
+<TD>bitwise inclusive OR</TD></TR>
+<TR>
+<TD></TD>
+<TD>2</TD>
+<TD><CODE>BXOR</CODE></TD>
+<TD><CODE>.IU...</CODE></TD>
+<TD>ilh</TD>
+<TD>bitwise exclusive OR</TD></TR>
+<TR>
+<TD></TD>
+<TD>2</TD>
+<TD><CODE>DIV</CODE></TD>
+<TD><CODE>FIU...</CODE></TD>
+<TD>fdx ilh</TD>
+<TD>division</TD></TR>
+<TR>
+<TD></TD>
+<TD>2</TD>
+<TD><CODE>LSH</CODE></TD>
+<TD><CODE>.IU...</CODE></TD>
+<TD>ilh</TD>
+<TD>left shift</TD></TR>
+<TR>
+<TD></TD>
+<TD>2</TD>
+<TD><CODE>MOD</CODE></TD>
+<TD><CODE>.IU...</CODE></TD>
+<TD>ilh</TD>
+<TD>modulus</TD></TR>
+<TR>
+<TD></TD>
+<TD>2</TD>
+<TD><CODE>MUL</CODE></TD>
+<TD><CODE>FIU...</CODE></TD>
+<TD>fdx ilh</TD>
+<TD>multiplication</TD></TR>
+<TR>
+<TD></TD>
+<TD>2</TD>
+<TD><CODE>RSH</CODE></TD>
+<TD><CODE>.IU...</CODE></TD>
+<TD>ilh</TD>
+<TD>right shift</TD></TR>
+<TR>
+<TD></TD>
+<TD>2</TD>
+<TD><CODE>SUB</CODE></TD>
+<TD><CODE>FIUP..</CODE></TD>
+<TD>fdx ilh ilhp p</TD>
+<TD>subtraction</TD></TR>
+<TR>
+<TD><IMG SRC="/~drh/resources/dot_clear.gif" ALT="|" WIDTH="1" HEIGHT="12"></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD></TR>
+<TR>
+<TD>2S</TD>
+<TD>2</TD>
+<TD><CODE>ASGN</CODE></TD>
+<TD><CODE>FIUP.B</CODE></TD>
+<TD>fdx csilh p</TD>
+<TD>assignment</TD></TR>
+<TR>
+<TD>1L</TD>
+<TD>2</TD>
+<TD><CODE>EQ</CODE></TD>
+<TD><CODE>FIU...</CODE></TD>
+<TD>fdx ilh ilhp</TD>
+<TD>jump if equal</TD></TR>
+<TR>
+<TD>1L</TD>
+<TD>2</TD>
+<TD><CODE>GE</CODE></TD>
+<TD><CODE>FIU...</CODE></TD>
+<TD>fdx ilh ilhp</TD>
+<TD>jump if greater than or equal</TD></TR>
+<TR>
+<TD>1L</TD>
+<TD>2</TD>
+<TD><CODE>GT</CODE></TD>
+<TD><CODE>FIU...</CODE></TD>
+<TD>fdx ilh ilhp</TD>
+<TD>jump if greater than</TD></TR>
+<TR>
+<TD>1L</TD>
+<TD>2</TD>
+<TD><CODE>LE</CODE></TD>
+<TD><CODE>FIU...</CODE></TD>
+<TD>fdx ilh ilhp</TD>
+<TD>jump if less than or equal</TD></TR>
+<TR>
+<TD>1L</TD>
+<TD>2</TD>
+<TD><CODE>LT</CODE></TD>
+<TD><CODE>FIU...</CODE></TD>
+<TD>fdx ilh ilhp</TD>
+<TD>jump if less than</TD></TR>
+<TR>
+<TD>1L</TD>
+<TD>2</TD>
+<TD><CODE>NE</CODE></TD>
+<TD><CODE>FIU...</CODE></TD>
+<TD>fdx ilh ilhp</TD>
+<TD>jump if not equal</TD></TR>
+<TR>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD></TR>
+<TR>
+<TD>2S</TD>
+<TD>1</TD>
+<TD><CODE>ARG</CODE></TD>
+<TD><CODE>FIUP.B</CODE></TD>
+<TD>fdx ilh p</TD>
+<TD>argument</TD></TR>
+<TR>
+<TD>1</TD>
+<TD>1 or 2</TD>
+<TD><CODE>CALL</CODE></TD>
+<TD><CODE>FIUPVB</CODE></TD>
+<TD>fdx ilh p</TD>
+<TD>function call</TD></TR>
+<TR>
+<TD></TD>
+<TD>1</TD>
+<TD><CODE>RET</CODE></TD>
+<TD><CODE>FIUPV.</CODE></TD>
+<TD>fdx ilh p</TD>
+<TD>return from function</TD></TR>
+<TR>
+<TD><IMG SRC="/~drh/resources/dot_clear.gif" ALT="|" WIDTH="1" HEIGHT="12"></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD>
+<TD></TD></TR>
+<TR>
+<TD></TD>
+<TD>1</TD>
+<TD><CODE>JUMP</CODE></TD>
+<TD><CODE>....V.</CODE></TD>
+<TD></TD>
+<TD>unconditional jump</TD></TR>
+<TR>
+<TD>1L</TD>
+<TD>0</TD>
+<TD><CODE>LABEL</CODE></TD>
+<TD><CODE>....V.</CODE></TD>
+<TD></TD>
+<TD>label definition</TD></TR></TABLE>
+<P>The entries in the <B>Sizes</B> column indicate sizes of the operators that
+back ends must implement. Letters denote the size of float (f), double (d), long
+double (x), character (c), short integer (s), integer (i), long integer (l), &quot;long
+long&quot; integer (h) , and pointer (p). These sizes are separated into sets
+for each type suffix, except that a single set is used for both I and U when the
+set for I is identical to the set for  U.</P>
+<P>The actual values for the size indicators, fdxcsilhp, depend on the target.
+A specification like <CODE>ADDF</CODE>f denotes the operator <CODE>ADD+F+sizeop(</CODE>f<CODE>)</CODE>,
+where &quot;f&quot; is replaced by a target-dependent value, e.g., <CODE>ADDF4</CODE>
+and <CODE>ADDF8</CODE>. For example, back ends must implement the following
+<CODE>CVI</CODE> and <CODE>MUL</CODE> operators.</P>
+<BLOCKQUOTE>
+<P><CODE>CVIF</CODE>f <CODE>CVIF</CODE>d <CODE>CVIF</CODE>x<BR><CODE>CVII</CODE>c
+<CODE>CVII</CODE>s
+<CODE>CVII</CODE>i <CODE>CVII</CODE>l <CODE>CVII</CODE>h<BR><CODE>CVIU</CODE>c
+<CODE>CVIU</CODE>s
+<CODE>CVIU</CODE>i <CODE>CVIU</CODE>l <CODE>CVIU</CODE>h <CODE>CVIU</CODE>p<BR><BR><CODE>MULF</CODE>f
+<CODE>MULF</CODE>d <CODE>MULF</CODE>x<BR><CODE>MULI</CODE>i <CODE>MULI</CODE>l
+<CODE>MULI</CODE>h<BR><CODE>MULU</CODE>i
+<CODE>MULU</CODE>l <CODE>MULU</CODE>h</P></BLOCKQUOTE>
+<P>On most platforms, there are fewer than three sizes of floats and six sizes
+of integers, and pointers are usually the same size as one of the integers. And
+lcc doesn't support the &quot;long long&quot; type, so h is not currently used.
+So the set of platform-specific operators is usually smaller than the list above
+suggests. For example, the X86, SPARC, and MIPS back ends implement the
+following
+<CODE>CVI</CODE> and <CODE>MUL</CODE> operators.</P>
+<BLOCKQUOTE>
+<P><CODE>CVIF</CODE>4 <CODE>CVIF</CODE>8<BR><CODE>CVII</CODE>1 <CODE>CVII</CODE>2
+<CODE>CVII</CODE>4<BR><CODE>CVIU</CODE>1
+<CODE>CVIU</CODE>2 <CODE>CVIU</CODE>4 <BR><BR><CODE>MULF</CODE>4 <CODE>MULF</CODE>8<BR><CODE>MULI</CODE>4<BR><CODE>MULU</CODE>4</P></BLOCKQUOTE>
+<P> The set of operators is thus target-dependent; for example, <CODE>ADDI8</CODE>
+appears only if the target supports an 8-byte integer type.
+<A HREF="ftp://ftp.cs.princeton.edu/pub/packages/lcc/contrib/ops.c"><CODE>ops.c</CODE></A>
+is a program that, given a set of sizes, prints the required operators and their
+values, e.g.,</P>
+<BLOCKQUOTE>
+<PRE>% <EM>ops c=1 s=2 i=4 l=4 h=4 f=4 d=8 x=8 p=4</EM>
+...
+ CVIF4=4225 CVIF8=8321
+ CVII1=1157 CVII2=2181 CVII4=4229
+ CVIU1=1158 CVIU2=2182 CVIU4=4230
+...
+ MULF4=4561 MULF8=8657
+ MULI4=4565
+ MULU4=4566
+...
+130 operators</PRE></BLOCKQUOTE>
+<P>The type suffix for a conversion operator denotes the type of the result and
+the size indicator gives the size of the result. For example, <CODE>CVUI4</CODE>
+converts an unsigned (<CODE>U</CODE>) to a 4-byte signed integer (<CODE>I4</CODE>).
+ The <CODE>syms[0]</CODE> field points to a symbol-table entry for a integer
+constant that gives the size of the source operand. For example, if <CODE>syms[0]</CODE>
+in a <CODE>CVUI4</CODE> points to a symbol-table entry for 2, the conversion
+widens a 2-byte unsigned integer to a 4-byte signed integer. Conversions that
+widen unsigned integers zero-extend; those that widen signed integers
+sign-extend.</P>
+<P>The front end composes conversions between types <EM>T</EM><SUB>1</SUB>
+and <EM>T</EM><SUB>2</SUB> by widening <EM>T</EM><SUB>1</SUB> to it's &quot;supertype&quot;,
+if necessary, converting that result to <EM>T</EM><SUB>2</SUB>'s supertype,
+then narrowing the result to <EM>T</EM><SUB>2</SUB>, if necessary. The
+following table lists the supertypes; omitted entries are their own supertypes.</P>
+<BLOCKQUOTE>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD><STRONG>Type</STRONG></TD>
+<TD><IMG SRC="/~drh/resources/dot_clear.gif" ALT="|" WIDTH="24" HEIGHT="1"></TD>
+<TD><STRONG>Supertype</STRONG></TD></TR>
+<TR>
+<TD>signed char</TD>
+<TD></TD>
+<TD>int</TD></TR>
+<TR>
+<TD>signed short</TD>
+<TD></TD>
+<TD>int</TD></TR>
+<TR ALIGN="LEFT" VALIGN="TOP">
+<TD>unsigned char</TD>
+<TD></TD>
+<TD>int, if sizeof (char) &lt; sizeof (int)<BR> unsigned, otherwise</TD></TR>
+<TR ALIGN="LEFT" VALIGN="TOP">
+<TD>unsigned short</TD>
+<TD></TD>
+<TD>int, if sizeof (short) &lt; sizeof (int)<BR>unsigned, otherwise</TD></TR>
+<TR ALIGN="LEFT" VALIGN="TOP">
+<TD>void *</TD>
+<TD></TD>
+<TD>an unsigned type as large as a pointer</TD></TR></TABLE></BLOCKQUOTE>
+<P>Pointers are converted to an unsigned type of the same size, even when that
+type is not one of the integer types.</P>
+<P>For example, the front end converts a signed short to a float by first
+converting it to an int and then to a float. It converts an unsigned short to an
+int with a single <CODE>CVUI</CODE>i conversion, when shorts are smaller than
+ints.</P>
+<P>There are now signed and unsigned variants of <CODE>ASGN</CODE>, <CODE>INDIR</CODE>,
+<CODE>BCOM</CODE>, <CODE>BOR</CODE>, <CODE>BXOR</CODE>, <CODE>BAND</CODE>,
+<CODE>ARG</CODE>, <CODE>CALL</CODE>, and <CODE>RET</CODE> to simplify code
+generation on platforms that use different instructions or register set for
+signed and unsigned operations. Likewise there are now pointer variants of
+<CODE>ASGN</CODE>, <CODE>INDIR</CODE>, <CODE>ARG</CODE>, <CODE>CALL</CODE>,
+and <CODE>RET</CODE>.</P>
+<H2><A NAME="definitions">5.8 Definitions</A></H2>
+<P>The front end announces local variables by calling</P>
+<PRE>void (*local)(Symbol);</PRE>
+<P>It announces temporaries likewise; these have the symbol's <CODE>temporary</CODE>
+flag set, which indicates that the symbol will be used only in the next call to
+<CODE>gen</CODE>. If a temporary's <CODE>u.t.cse</CODE> field is nonnull, it
+points to the node that computes the value assigned to the temporary; see page
+346.</P>
+<H2><A NAME="constants">5.9 Constants</A></H2>
+<P>The interface function</P>
+<PRE>void (*defconst)(int suffix, int size, Value v);</PRE>
+<P>initializes constants. defconst emits directives to define a cell and
+initialize it to a constant value. v is the constant value, suffix identifies
+the type of the value, and size is the size of the value in bytes. The value of
+suffix indicates which field of v holds the value, as shown in the following
+table.</P>
+<BLOCKQUOTE>
+<TABLE BORDER="0" CELLPADDING="1" CELLSPACING="1">
+<TR>
+<TD><STRONG>suffix</STRONG></TD>
+<TD><IMG SRC="/~drh/resources/dot_clear.gif" ALT="|" WIDTH="24" HEIGHT="1"></TD>
+<TD><STRONG>v Field</STRONG></TD>
+<TD><IMG SRC="/~drh/resources/dot_clear.gif" ALT="|" WIDTH="24" HEIGHT="1"></TD>
+<TD><STRONG>size</STRONG></TD></TR>
+<TR>
+<TD><CODE>F</CODE></TD>
+<TD></TD>
+<TD><CODE>v.d</CODE></TD>
+<TD></TD>
+<TD>float, double, long double</TD></TR>
+<TR>
+<TD><CODE>I</CODE></TD>
+<TD></TD>
+<TD><CODE>v.i</CODE></TD>
+<TD></TD>
+<TD>signed char, signed short, signed int, signed long</TD></TR>
+<TR>
+<TD><CODE>U</CODE></TD>
+<TD></TD>
+<TD><CODE>v.u</CODE></TD>
+<TD></TD>
+<TD>unsigned char, unsigned short, unsigned int, unsigned long</TD></TR>
+<TR>
+<TD><CODE>P</CODE></TD>
+<TD></TD>
+<TD><CODE>v.p</CODE></TD>
+<TD></TD>
+<TD>void *</TD></TR></TABLE></BLOCKQUOTE>
+<P><CODE>defconst</CODE> must narrow <CODE>v.</CODE>x when <CODE>size</CODE>
+is less than <CODE>sizeof</CODE> <CODE>v.</CODE>x; e.g., to emit an unsigned
+char, <CODE>defconst</CODE> should emit <CODE>(unsigned char)v.i</CODE>.</P>
+<H2><A NAME="upcalls">5.12 Upcalls</A></H2>
+<P>lcc 4.0 uses standard I/O and its I/O functions have been changed
+accordingly. lcc reads input from the standard input, emits code to the standard
+output, and writes diagnostics to the standard error output. It uses <CODE>freopen</CODE>
+to redirect these streams to explicit files, when necessary.</P>
+<P><CODE>bp</CODE>, <CODE>outflush</CODE>, and <CODE>outs</CODE> have been
+eliminated.</P>
+<PRE>extern void fprint(FILE *f, const char *fmt, ...);
+extern void  print(const char *fmt, ...);</PRE>
+<P>print formatted data to file <CODE>f</CODE> (<CODE>fprint</CODE>) or the
+standard output (<CODE>print</CODE>). These functions are like standard C's
+<CODE>printf</CODE> and <CODE>fprintf</CODE>, but support only some of the
+standard conversion specifiers and do not support flags, precision, and
+field-width specifications. They support the following new conversion specifiers
+in addition to those described on page 99.</P>
+<BLOCKQUOTE>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR>
+<TD><STRONG>Specifiers</STRONG></TD>
+<TD><IMG SRC="/~drh/resources/dot_clear.gif" ALT="|" WIDTH="24" HEIGHT="1"></TD>
+<TD><STRONG>Corresponding printf Specifiers</STRONG></TD></TR>
+<TR>
+<TD><CODE>%c</CODE></TD>
+<TD></TD>
+<TD><CODE>%c</CODE></TD></TR>
+<TR>
+<TD><CODE>%d %D</CODE></TD>
+<TD></TD>
+<TD><CODE>%d %ld</CODE></TD></TR>
+<TR>
+<TD><CODE>%u %U</CODE></TD>
+<TD></TD>
+<TD><CODE>%u %lu</CODE></TD></TR>
+<TR>
+<TD><CODE>%x %X</CODE></TD>
+<TD></TD>
+<TD><CODE>%x %lx</CODE></TD></TR>
+<TR>
+<TD><CODE>%f %e %g</CODE></TD>
+<TD></TD>
+<TD><CODE>%e %f %g</CODE></TD></TR>
+<TR ALIGN="LEFT" VALIGN="TOP">
+<TD><CODE>%p</CODE></TD>
+<TD></TD>
+<TD>Converts the corresponding void * argument to unsigned long and prints it
+with the <CODE>printf</CODE> <CODE>%#x</CODE> specifier or just <CODE>%x</CODE>
+when the argument is null.</TD></TR>
+<TR ALIGN="LEFT" VALIGN="TOP">
+<TD><CODE>%I</CODE></TD>
+<TD></TD>
+<TD>Prints the number of spaces given by the corresponding argument.</TD></TR></TABLE></BLOCKQUOTE>
+<PRE>#define generic(op)  ((op)&amp;0x3F0)
+#define specific(op) ((op)&amp;0x3FF)</PRE>
+<P><CODE>generic(op)</CODE> returns the generic variant of <CODE>op</CODE>;
+that is, without its type suffix and size indicator. <CODE>specific(op)</CODE>
+returns the type-specific variant of <CODE>op</CODE>; that is, without its size
+indicator.</P>
+<P><CODE>newconst</CODE> has been replaced by</P>
+<PRE>extern Symbol intconst(int n);</PRE>
+<P>which installs the integer constant <CODE>n</CODE> in the symbol table, if
+necessary, and returns a pointer to the symbol-table entry.</P>
+<HR>
+<ADDRESS><A HREF="http://www.research.microsoft.com/~cwfraser/">Chris Fraser</A> / <A
+HREF="mailto:cwfraser@microsoft.com">cwfraser@microsoft.com</A><BR><A
+HREF="http://www.research.microsoft.com/~drh/">David Hanson</A> / <A
+HREF="mailto:drh@microsoft.com">drh@microsoft.com</A><BR>$Revision: 1.6 $ $Date: 1997/06/06 18:54:56 $</ADDRESS></BODY></HTML>
