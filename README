@@ -4,7 +4,7 @@ lcc version 3.x is described in the book "A Retargetable C Compiler:
 Design and Implementation" (Addison-Wesley, 1995, ISBN 0-8053-1670-1).
 There are significant differences between 3.x and 4.x, most notably in
 the intermediate code. For details, see
-http://www.research.microsoft.com/~drh/pubs/interface4.pdf.
+http://storage.webhop.net/documents/interface4.pdf.
 
 VERSION 4.2 IS INCOMPATIBLE WITH EARLIER VERSIONS OF LCC. DO NOT
 UNLOAD THIS DISTRIBUTION ON TOP OF A 3.X DISTRIBUTION.
