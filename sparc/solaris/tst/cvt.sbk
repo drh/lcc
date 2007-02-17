@@ -1,0 +1,678 @@
+.global print
+.section ".text"
+.align 4
+.proc 4
+print:
+save %sp,-128,%sp
+set .L2,%o0
+set c,%i5
+ldsb [%i5],%o1
+set s,%i5
+ldsh [%i5],%o2
+set i,%i5
+ld [%i5],%o3
+set l,%i5
+ld [%i5],%o4
+set C,%i5
+ldub [%i5],%i5
+mov %i5,%o5
+set S,%i5
+lduh [%i5],%i5
+st %i5,[%sp+4*6+68]
+set I,%i5
+ld [%i5],%i5
+st %i5,[%sp+4*7+68]
+set L,%i5
+ld [%i5],%i5
+st %i5,[%sp+4*8+68]
+set f,%i5
+ld [%i5],%f31
+fstod %f31,%f30
+st %f30,[%sp+4*9+68]
+st %f31,[%sp+4*10+68]
+set d,%i5
+ld2 [%i5],%f30
+st %f30,[%sp+4*11+68]
+st %f31,[%sp+4*12+68]
+set D,%i5
+ld2 [%i5],%f30
+st %f30,[%sp+4*13+68]
+st %f31,[%sp+4*14+68]
+call printf; nop
+.L1:
+ret; restore
+.global main
+.align 4
+.proc 4
+main:
+save %sp,-104,%sp
+set c,%i5
+set 1,%i4
+stb %i4,[%i5]
+ldsb [%i5],%i5
+set s,%i4
+sth %i5,[%i4]
+set i,%i4
+st %i5,[%i4]
+set l,%i4
+st %i5,[%i4]
+mov %i5,%i4
+set C,%i3
+stb %i4,[%i3]
+set S,%i3
+sth %i4,[%i3]
+set I,%i3
+st %i4,[%i3]
+set L,%i3
+st %i4,[%i3]
+st %i5,[%sp+64]; ld [%sp+64],%f30; fitod %f30,%f30
+set f,%i5
+fdtos %f30,%f29
+st %f29,[%i5]
+set d,%i5
+st2 %f30,[%i5]
+set D,%i5
+st2 %f30,[%i5]
+call print; nop
+set s,%i5
+set 2,%i4
+sth %i4,[%i5]
+ldsh [%i5],%i5
+set c,%i4
+stb %i5,[%i4]
+set i,%i4
+st %i5,[%i4]
+set l,%i4
+st %i5,[%i4]
+mov %i5,%i4
+set C,%i3
+stb %i4,[%i3]
+set S,%i3
+sth %i4,[%i3]
+set I,%i3
+st %i4,[%i3]
+set L,%i3
+st %i4,[%i3]
+st %i5,[%sp+64]; ld [%sp+64],%f30; fitod %f30,%f30
+set f,%i5
+fdtos %f30,%f29
+st %f29,[%i5]
+set d,%i5
+st2 %f30,[%i5]
+set D,%i5
+st2 %f30,[%i5]
+call print; nop
+set i,%i5
+set 3,%i4
+st %i4,[%i5]
+ld [%i5],%i5
+set c,%i4
+stb %i5,[%i4]
+set s,%i4
+sth %i5,[%i4]
+set l,%i4
+st %i5,[%i4]
+mov %i5,%i4
+set C,%i3
+stb %i4,[%i3]
+set S,%i3
+sth %i4,[%i3]
+set I,%i3
+st %i4,[%i3]
+set L,%i3
+st %i4,[%i3]
+st %i5,[%sp+64]; ld [%sp+64],%f30; fitod %f30,%f30
+set f,%i5
+fdtos %f30,%f29
+st %f29,[%i5]
+set d,%i5
+st2 %f30,[%i5]
+set D,%i5
+st2 %f30,[%i5]
+call print; nop
+set l,%i5
+set 4,%i4
+st %i4,[%i5]
+ld [%i5],%i5
+set c,%i4
+stb %i5,[%i4]
+set s,%i4
+sth %i5,[%i4]
+set i,%i4
+st %i5,[%i4]
+mov %i5,%i4
+set C,%i3
+stb %i4,[%i3]
+set S,%i3
+sth %i4,[%i3]
+set I,%i3
+st %i4,[%i3]
+set L,%i3
+st %i4,[%i3]
+st %i5,[%sp+64]; ld [%sp+64],%f30; fitod %f30,%f30
+set f,%i5
+fdtos %f30,%f29
+st %f29,[%i5]
+set d,%i5
+st2 %f30,[%i5]
+set D,%i5
+st2 %f30,[%i5]
+call print; nop
+set C,%i5
+set 5,%i4
+stb %i4,[%i5]
+ldub [%i5],%i5
+set c,%i3
+stb %i5,[%i3]
+set s,%i3
+sth %i5,[%i3]
+set i,%i3
+st %i5,[%i3]
+set l,%i3
+st %i5,[%i3]
+set S,%i4
+sth %i5,[%i4]
+set I,%i4
+st %i5,[%i4]
+set L,%i4
+st %i5,[%i4]
+set .L4,%i4
+ld2 [%i4],%f30
+srl %i5,1,%i4
+st %i4,[%sp+64]; ld [%sp+64],%f28; fitod %f28,%f28
+fmuld %f30,%f28,%f30
+set 1,%i4
+and %i5,%i4,%i5
+st %i5,[%sp+64]; ld [%sp+64],%f28; fitod %f28,%f28
+faddd %f30,%f28,%f30
+set f,%i5
+fdtos %f30,%f29
+st %f29,[%i5]
+set d,%i5
+st2 %f30,[%i5]
+set D,%i5
+st2 %f30,[%i5]
+call print; nop
+set S,%i5
+set 6,%i4
+sth %i4,[%i5]
+lduh [%i5],%i5
+set c,%i3
+stb %i5,[%i3]
+set s,%i3
+sth %i5,[%i3]
+set i,%i3
+st %i5,[%i3]
+set l,%i3
+st %i5,[%i3]
+set C,%i4
+stb %i5,[%i4]
+set I,%i4
+st %i5,[%i4]
+set L,%i4
+st %i5,[%i4]
+set .L4,%i4
+ld2 [%i4],%f30
+srl %i5,1,%i4
+st %i4,[%sp+64]; ld [%sp+64],%f28; fitod %f28,%f28
+fmuld %f30,%f28,%f30
+set 1,%i4
+and %i5,%i4,%i5
+st %i5,[%sp+64]; ld [%sp+64],%f28; fitod %f28,%f28
+faddd %f30,%f28,%f30
+set f,%i5
+fdtos %f30,%f29
+st %f29,[%i5]
+set d,%i5
+st2 %f30,[%i5]
+set D,%i5
+st2 %f30,[%i5]
+call print; nop
+set I,%i5
+set 7,%i4
+st %i4,[%i5]
+ld [%i5],%i5
+set c,%i3
+stb %i5,[%i3]
+set s,%i3
+sth %i5,[%i3]
+set i,%i3
+st %i5,[%i3]
+set l,%i3
+st %i5,[%i3]
+set C,%i4
+stb %i5,[%i4]
+set S,%i4
+sth %i5,[%i4]
+set L,%i4
+st %i5,[%i4]
+set .L4,%i4
+ld2 [%i4],%f30
+srl %i5,1,%i4
+st %i4,[%sp+64]; ld [%sp+64],%f28; fitod %f28,%f28
+fmuld %f30,%f28,%f30
+set 1,%i4
+and %i5,%i4,%i5
+st %i5,[%sp+64]; ld [%sp+64],%f28; fitod %f28,%f28
+faddd %f30,%f28,%f30
+set f,%i5
+fdtos %f30,%f29
+st %f29,[%i5]
+set d,%i5
+st2 %f30,[%i5]
+set D,%i5
+st2 %f30,[%i5]
+call print; nop
+set L,%i5
+set 8,%i4
+st %i4,[%i5]
+ld [%i5],%i5
+set c,%i3
+stb %i5,[%i3]
+set s,%i3
+sth %i5,[%i3]
+set i,%i3
+st %i5,[%i3]
+set l,%i3
+st %i5,[%i3]
+set C,%i4
+stb %i5,[%i4]
+set S,%i4
+sth %i5,[%i4]
+set I,%i3
+lduh [%i4],%i4
+st %i4,[%i3]
+set .L4,%i4
+ld2 [%i4],%f30
+srl %i5,1,%i4
+st %i4,[%sp+64]; ld [%sp+64],%f28; fitod %f28,%f28
+fmuld %f30,%f28,%f30
+set 1,%i4
+and %i5,%i4,%i5
+st %i5,[%sp+64]; ld [%sp+64],%f28; fitod %f28,%f28
+faddd %f30,%f28,%f30
+set f,%i5
+fdtos %f30,%f29
+st %f29,[%i5]
+set d,%i5
+st2 %f30,[%i5]
+set D,%i5
+st2 %f30,[%i5]
+call print; nop
+set f,%i1
+set .L5,%i0
+ld [%i0],%f31
+st %f31,[%i1]
+ld [%i1],%f31
+fstod %f31,%f30
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%i1
+set c,%i0
+stb %i1,[%i0]
+set s,%i0
+sth %i1,[%i0]
+set i,%i0
+st %i1,[%i0]
+set l,%i0
+st %i1,[%i0]
+set .L9,%i1
+ld2 [%i1],%f28
+fcmped %f30,%f28; nop; fbul .L7; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%i1
+set 0x80000000,%i0
+add %i1,%i0,%i5
+ba .L8; nop
+.L7:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%i1
+mov %i1,%i5
+.L8:
+set C,%i1
+stb %i5,[%i1]
+set f,%i1
+ld [%i1],%f31
+fstod %f31,%f30
+set .L9,%i1
+ld2 [%i1],%f28
+fcmped %f30,%f28; nop; fbul .L11; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%i1
+set 0x80000000,%i0
+add %i1,%i0,%i4
+ba .L12; nop
+.L11:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%i1
+mov %i1,%i4
+.L12:
+set S,%i1
+sth %i4,[%i1]
+set f,%i1
+ld [%i1],%f31
+fstod %f31,%f30
+set .L9,%i1
+ld2 [%i1],%f28
+fcmped %f30,%f28; nop; fbul .L14; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%i1
+set 0x80000000,%i0
+add %i1,%i0,%i3
+ba .L15; nop
+.L14:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%i1
+mov %i1,%i3
+.L15:
+set I,%i1
+st %i3,[%i1]
+set f,%i1
+ld [%i1],%f31
+fstod %f31,%f30
+set .L9,%i1
+ld2 [%i1],%f28
+fcmped %f30,%f28; nop; fbul .L17; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%i1
+set 0x80000000,%i0
+add %i1,%i0,%i2
+ba .L18; nop
+.L17:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%i1
+mov %i1,%i2
+.L18:
+set L,%i1
+st %i2,[%i1]
+set f,%i1
+ld [%i1],%f31
+fstod %f31,%f30
+set d,%i1
+st2 %f30,[%i1]
+set D,%i1
+st2 %f30,[%i1]
+call print; nop
+set d,%l5
+set .L19,%l4
+ld2 [%l4],%f30
+st2 %f30,[%l5]
+ld2 [%l5],%f30
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%l5
+set c,%l4
+stb %l5,[%l4]
+set s,%l4
+sth %l5,[%l4]
+set i,%l4
+st %l5,[%l4]
+set l,%l4
+st %l5,[%l4]
+set .L9,%l5
+ld2 [%l5],%f28
+fcmped %f30,%f28; nop; fbul .L21; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%l5
+set 0x80000000,%l4
+add %l5,%l4,%i1
+ba .L22; nop
+.L21:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%l5
+mov %l5,%i1
+.L22:
+set C,%l5
+stb %i1,[%l5]
+set d,%l5
+ld2 [%l5],%f30
+set .L9,%l5
+ld2 [%l5],%f28
+fcmped %f30,%f28; nop; fbul .L24; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%l5
+set 0x80000000,%l4
+add %l5,%l4,%i0
+ba .L25; nop
+.L24:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%l5
+mov %l5,%i0
+.L25:
+set S,%l5
+sth %i0,[%l5]
+set d,%l5
+ld2 [%l5],%f30
+set .L9,%l5
+ld2 [%l5],%f28
+fcmped %f30,%f28; nop; fbul .L27; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%l5
+set 0x80000000,%l4
+add %l5,%l4,%l7
+ba .L28; nop
+.L27:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%l5
+mov %l5,%l7
+.L28:
+set I,%l5
+st %l7,[%l5]
+set d,%l5
+ld2 [%l5],%f30
+set .L9,%l5
+ld2 [%l5],%f28
+fcmped %f30,%f28; nop; fbul .L30; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%l5
+set 0x80000000,%l4
+add %l5,%l4,%l6
+ba .L31; nop
+.L30:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%l5
+mov %l5,%l6
+.L31:
+set L,%l5
+st %l6,[%l5]
+set d,%l5
+ld2 [%l5],%f30
+set f,%l5
+fdtos %f30,%f29
+st %f29,[%l5]
+set D,%l5
+st2 %f30,[%l5]
+call print; nop
+set D,%l3
+set .L32,%l2
+ld2 [%l2],%f30
+st2 %f30,[%l3]
+ld2 [%l3],%f30
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%l3
+set c,%l2
+stb %l3,[%l2]
+set s,%l2
+sth %l3,[%l2]
+set i,%l2
+st %l3,[%l2]
+set l,%l2
+st %l3,[%l2]
+set .L9,%l3
+ld2 [%l3],%f28
+fcmped %f30,%f28; nop; fbul .L34; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%l3
+set 0x80000000,%l2
+add %l3,%l2,%l5
+ba .L35; nop
+.L34:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%l3
+mov %l3,%l5
+.L35:
+set C,%l3
+stb %l5,[%l3]
+set D,%l3
+ld2 [%l3],%f30
+set .L9,%l3
+ld2 [%l3],%f28
+fcmped %f30,%f28; nop; fbul .L37; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%l3
+set 0x80000000,%l2
+add %l3,%l2,%l4
+ba .L38; nop
+.L37:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%l3
+mov %l3,%l4
+.L38:
+set S,%l3
+sth %l4,[%l3]
+set D,%l3
+ld2 [%l3],%f30
+set .L9,%l3
+ld2 [%l3],%f28
+fcmped %f30,%f28; nop; fbul .L40; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%l3
+set 0x80000000,%l2
+add %l3,%l2,%l3
+st %l3,[%fp+-4]
+ba .L41; nop
+.L40:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%l3
+st %l3,[%fp+-4]
+.L41:
+set I,%l3
+ld [%fp+-4],%l2
+st %l2,[%l3]
+set D,%l3
+ld2 [%l3],%f30
+set .L9,%l3
+ld2 [%l3],%f28
+fcmped %f30,%f28; nop; fbul .L43; nop
+fsubd %f30,%f28,%f28
+fdtoi %f28,%f0; st %f0,[%sp+64]; ld [%sp+64],%l3
+set 0x80000000,%l2
+add %l3,%l2,%l3
+st %l3,[%fp+-8]
+ba .L44; nop
+.L43:
+fdtoi %f30,%f0; st %f0,[%sp+64]; ld [%sp+64],%l3
+st %l3,[%fp+-8]
+.L44:
+set L,%l3
+ld [%fp+-8],%l2
+st %l2,[%l3]
+set D,%l3
+ld2 [%l3],%f30
+set f,%l3
+fdtos %f30,%f29
+st %f29,[%l3]
+set d,%l3
+st2 %f30,[%l3]
+call print; nop
+set p,%l3
+mov %g0,%l2
+st %l2,[%l3]
+st %l2,[%l3]
+st %l2,[%l3]
+st %l2,[%l3]
+set P,%l1
+ld [%l1],%l0
+st %l0,[%l3]
+st %l2,[%l1]
+st %l2,[%l1]
+st %l2,[%l1]
+st %l2,[%l1]
+ld [%l3],%l3
+st %l3,[%l1]
+mov %g0,%i0
+.L3:
+ret; restore
+.section ".bss"
+.global P
+.type P,#object
+.common P,4,4
+.global p
+.type p,#object
+.common p,4,4
+.global D
+.type D,#object
+.common D,8,8
+.global d
+.type d,#object
+.common d,8,8
+.global f
+.type f,#object
+.common f,4,4
+.global L
+.type L,#object
+.common L,4,4
+.global I
+.type I,#object
+.common I,4,4
+.global S
+.type S,#object
+.common S,2,2
+.global C
+.type C,#object
+.common C,1,1
+.global l
+.type l,#object
+.common l,4,4
+.global i
+.type i,#object
+.common i,4,4
+.global s
+.type s,#object
+.common s,2,2
+.global c
+.type c,#object
+.common c,1,1
+.section ".rodata"
+.align 8
+.L32:
+.word 0x40260000
+.word 0x0
+.align 8
+.L19:
+.word 0x40240000
+.word 0x0
+.align 8
+.L9:
+.word 0x41e00000
+.word 0x0
+.align 4
+.L5:
+.word 0x41100000
+.align 8
+.L4:
+.word 0x40000000
+.word 0x0
+.align 1
+.L2:
+.byte 37
+.byte 100
+.byte 32
+.byte 37
+.byte 100
+.byte 32
+.byte 37
+.byte 100
+.byte 32
+.byte 37
+.byte 108
+.byte 100
+.byte 32
+.byte 37
+.byte 117
+.byte 32
+.byte 37
+.byte 117
+.byte 32
+.byte 37
+.byte 117
+.byte 32
+.byte 37
+.byte 108
+.byte 117
+.byte 32
+.byte 37
+.byte 102
+.byte 32
+.byte 37
+.byte 102
+.byte 32
+.byte 37
+.byte 108
+.byte 102
+.byte 10
+.byte 0

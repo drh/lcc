@@ -1,0 +1,700 @@
+.global main
+.section ".text"
+.align 4
+.proc 4
+main:
+save %sp,-96,%sp
+set .L6,%i5
+ba .L5; nop
+.L2:
+ldsb [%i5],%o0
+call backslash; nop
+mov %o0,%i3
+set .L7,%o0
+ldsb [%i5],%o1
+mov %i3,%o2
+call printf; nop
+.L3:
+add %i5,1,%i5
+.L5:
+ldsb [%i5],%i3
+cmp %i3,0; bne .L2; nop
+call f; nop
+call g; nop
+call h; nop
+set 16777216,%i4
+ba .L11; nop
+.L8:
+mov %i4,%o0
+call big; nop
+.L9:
+set 16777216,%i3
+add %i4,%i3,%i4
+.L11:
+set 0x7000000,%i3
+and %i4,%i3,%i3
+cmp %i3,0; bne .L8; nop
+call limit; nop
+mov %g0,%i0
+.L1:
+ret; restore
+.global backslash
+.align 4
+.proc 4
+backslash:
+cmp %o0,102; be .L17; nop
+cmp %o0,102; bg .L23; nop
+.L22:
+cmp %o0,98; be .L16; nop
+ba .L14; nop
+.L23:
+cmp %o0,110; be .L18; nop
+cmp %o0,110; bl .L14; nop
+.L24:
+cmp %o0,114; be .L19; nop
+cmp %o0,116; be .L20; nop
+cmp %o0,118; be .L21; nop
+ba .L14; nop
+.L16:
+set 8,%o0
+ba .L13; nop
+.L17:
+set 12,%o0
+ba .L13; nop
+.L18:
+set 10,%o0
+ba .L13; nop
+.L19:
+set 13,%o0
+ba .L13; nop
+.L20:
+set 9,%o0
+ba .L13; nop
+.L21:
+set 11,%o0
+ba .L13; nop
+.L14:
+.L13:
+retl; nop
+.global f
+.align 4
+.proc 4
+f:
+save %sp,-96,%sp
+mov %g0,%i4
+set .L28,%o0
+call printf; nop
+mov %g0,%i5
+.L29:
+mov %i5,%i3
+cmp %i5,1; bl .L33; nop
+cmp %i5,20; bg .L33; nop
+sll %i5,2,%i2
+set .L45-4,%i1
+ld [%i2+%i1],%i2
+jmp %i2; nop
+.section ".rodata"
+.align 4
+.L45:
+.word .L35
+.word .L36
+.word .L33
+.word .L33
+.word .L33
+.word .L33
+.word .L37
+.word .L38
+.word .L39
+.word .L33
+.word .L33
+.word .L33
+.word .L33
+.word .L33
+.word .L33
+.word .L40
+.word .L41
+.word .L42
+.word .L43
+.word .L44
+.section ".text"
+.L35:
+mov %i5,%i4
+ba .L34; nop
+.L36:
+mov %i5,%i4
+ba .L34; nop
+.L37:
+mov %i5,%i4
+ba .L34; nop
+.L38:
+mov %i5,%i4
+ba .L34; nop
+.L39:
+mov %i5,%i4
+ba .L34; nop
+.L40:
+mov %i5,%i4
+ba .L34; nop
+.L41:
+mov %i5,%i4
+ba .L34; nop
+.L42:
+mov %i5,%i4
+ba .L34; nop
+.L43:
+mov %i5,%i4
+ba .L34; nop
+.L44:
+mov %i5,%i4
+.L33:
+.L34:
+set .L47,%o0
+mov %i4,%o1
+call printf; nop
+.L30:
+add %i5,1,%i5
+cmp %i5,20; ble .L29; nop
+.L27:
+ret; restore
+.global g
+.align 4
+.proc 4
+g:
+save %sp,-96,%sp
+set .L49,%o0
+call printf; nop
+set 1,%i5
+.L50:
+cmp %i5,1001; bl .L67; nop
+cmp %i5,1004; bg .L68; nop
+sll %i5,2,%i4
+set .L69-4004,%i3
+ld [%i4+%i3],%i4
+jmp %i4; nop
+.section ".rodata"
+.align 4
+.L69:
+.word .L63
+.word .L63
+.word .L63
+.word .L63
+.section ".text"
+.L67:
+cmp %i5,1; bl .L54; nop
+cmp %i5,8; bg .L54; nop
+sll %i5,2,%i4
+set .L71-4,%i3
+ld [%i4+%i3],%i4
+jmp %i4; nop
+.section ".rodata"
+.align 4
+.L71:
+.word .L56
+.word .L56
+.word .L58
+.word .L58
+.word .L58
+.word .L60
+.word .L60
+.word .L60
+.section ".text"
+.L68:
+cmp %i5,3001; bl .L54; nop
+cmp %i5,3004; bg .L54; nop
+sll %i5,2,%i4
+set .L73-12004,%i3
+ld [%i4+%i3],%i4
+jmp %i4; nop
+.section ".rodata"
+.align 4
+.L73:
+.word .L65
+.word .L65
+.word .L65
+.word .L65
+.section ".text"
+.L56:
+set .L57,%o0
+mov %i5,%o1
+call printf; nop
+ba .L55; nop
+.L58:
+set .L59,%o0
+mov %i5,%o1
+call printf; nop
+ba .L55; nop
+.L60:
+set .L61,%o0
+mov %i5,%o1
+call printf; nop
+.L54:
+set .L62,%o0
+mov %i5,%o1
+call printf; nop
+ba .L55; nop
+.L63:
+set .L64,%o0
+mov %i5,%o1
+call printf; nop
+ba .L55; nop
+.L65:
+set .L66,%o0
+mov %i5,%o1
+call printf; nop
+.L55:
+.L51:
+add %i5,1,%i5
+cmp %i5,10; ble .L50; nop
+.L48:
+ret; restore
+.global h
+.align 4
+.proc 4
+h:
+save %sp,-96,%sp
+mov %g0,%i4
+set .L76,%o0
+call printf; nop
+set 1,%i5
+.L77:
+cmp %i5,264; be .L89; nop
+cmp %i5,264; bg .L97; nop
+.L96:
+cmp %i5,120; be .L87; nop
+cmp %i5,120; bg .L99; nop
+.L98:
+cmp %i5,8; be .L86; nop
+cmp %i5,8; bl .L81; nop
+.L100:
+cmp %i5,16; be .L85; nop
+ba .L81; nop
+.L99:
+cmp %i5,128; be .L83; nop
+cmp %i5,128; bl .L81; nop
+.L101:
+cmp %i5,248; be .L90; nop
+ba .L81; nop
+.L97:
+cmp %i5,288; be .L94; nop
+cmp %i5,288; bg .L103; nop
+.L102:
+cmp %i5,272; be .L91; nop
+cmp %i5,272; bl .L81; nop
+.L104:
+cmp %i5,280; be .L88; nop
+ba .L81; nop
+.L103:
+cmp %i5,304; be .L92; nop
+cmp %i5,304; bg .L106; nop
+.L105:
+cmp %i5,296; be .L93; nop
+ba .L81; nop
+.L106:
+cmp %i5,312; be .L95; nop
+ba .L81; nop
+.L81:
+add %i4,1,%i4
+ba .L78; nop
+.L83:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L85:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L86:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L87:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L88:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L89:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L90:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L91:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L92:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L93:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L94:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+ba .L82; nop
+.L95:
+set .L84,%o0
+mov %i5,%o1
+call printf; nop
+.L82:
+.L78:
+add %i5,1,%i5
+cmp %i5,500; ble .L77; nop
+set .L107,%o0
+mov %i4,%o1
+call printf; nop
+.L75:
+ret; restore
+.global big
+.align 4
+.proc 4
+big:
+save %sp,-96,%sp
+set 0x6000000,%i4
+and %i0,%i4,%i5
+set 33554432,%i3
+cmp %i5,%i3; be .L121; nop
+cmp %i5,%i3; bg .L125; nop
+.L124:
+cmp %i5,-2; be .L119; nop
+cmp %i5,-1; be .L119; nop
+cmp %i5,0; be .L119; nop
+ba .L116; nop
+.L125:
+set 67108864,%i4
+cmp %i5,%i4; be .L122; nop
+ba .L116; nop
+.L119:
+set .L120,%o0
+mov %i0,%o1
+call printf; nop
+ba .L117; nop
+.L121:
+set .L120,%o0
+mov %i0,%o1
+call printf; nop
+ba .L117; nop
+.L122:
+set .L120,%o0
+mov %i0,%o1
+call printf; nop
+ba .L117; nop
+.L116:
+set .L123,%o0
+mov %i0,%o1
+call printf; nop
+.L117:
+.L115:
+ret; restore
+.global limit
+.align 4
+.proc 4
+limit:
+save %sp,-96,%sp
+set -2147483648,%i5
+.L130:
+set -2147483648,%i4
+cmp %i5,%i4; bl .L134; nop
+set -2147483644,%i3
+cmp %i5,%i3; bg .L134; nop
+sll %i5,2,%i3
+sll %i4,2,%i4
+sub %i3,%i4,%i4
+set .L147,%i3
+ld [%i4+%i3],%i4
+jmp %i4; nop
+.section ".rodata"
+.align 4
+.L147:
+.word .L136
+.word .L138
+.word .L140
+.word .L142
+.word .L144
+.section ".text"
+.L136:
+set .L137,%o0
+call printf; nop
+ba .L135; nop
+.L138:
+set .L139,%o0
+call printf; nop
+ba .L135; nop
+.L140:
+set .L141,%o0
+call printf; nop
+ba .L135; nop
+.L142:
+set .L143,%o0
+call printf; nop
+ba .L135; nop
+.L144:
+set .L145,%o0
+call printf; nop
+ba .L135; nop
+.L134:
+set .L146,%o0
+call printf; nop
+.L135:
+.L131:
+add %i5,1,%i5
+set -2147483643,%i4
+cmp %i5,%i4; ble .L130; nop
+set 2147483647,%i5
+.L148:
+set 2147483643,%i4
+cmp %i5,%i4; bl .L152; nop
+set 2147483647,%i3
+cmp %i5,%i3; bg .L152; nop
+sll %i5,2,%i3
+sll %i4,2,%i4
+sub %i3,%i4,%i4
+set .L159,%i3
+ld [%i4+%i3],%i4
+jmp %i4; nop
+.section ".rodata"
+.align 4
+.L159:
+.word .L158
+.word .L157
+.word .L156
+.word .L155
+.word .L154
+.section ".text"
+.L154:
+set .L137,%o0
+call printf; nop
+ba .L153; nop
+.L155:
+set .L139,%o0
+call printf; nop
+ba .L153; nop
+.L156:
+set .L141,%o0
+call printf; nop
+ba .L153; nop
+.L157:
+set .L143,%o0
+call printf; nop
+ba .L153; nop
+.L158:
+set .L145,%o0
+call printf; nop
+ba .L153; nop
+.L152:
+set .L146,%o0
+call printf; nop
+.L153:
+.L149:
+sub %i5,1,%i5
+set 2147483642,%i4
+cmp %i5,%i4; bge .L148; nop
+.L129:
+ret; restore
+.section ".rodata"
+.align 1
+.L146:
+.byte 53
+.byte 10
+.byte 0
+.align 1
+.L145:
+.byte 52
+.byte 10
+.byte 0
+.align 1
+.L143:
+.byte 51
+.byte 10
+.byte 0
+.align 1
+.L141:
+.byte 50
+.byte 10
+.byte 0
+.align 1
+.L139:
+.byte 49
+.byte 10
+.byte 0
+.align 1
+.L137:
+.byte 48
+.byte 10
+.byte 0
+.align 1
+.L123:
+.byte 120
+.byte 32
+.byte 61
+.byte 32
+.byte 48
+.byte 120
+.byte 37
+.byte 120
+.byte 32
+.byte 40
+.byte 100
+.byte 101
+.byte 102
+.byte 97
+.byte 117
+.byte 108
+.byte 116
+.byte 41
+.byte 10
+.byte 0
+.align 1
+.L120:
+.byte 120
+.byte 32
+.byte 61
+.byte 32
+.byte 48
+.byte 120
+.byte 37
+.byte 120
+.byte 10
+.byte 0
+.align 1
+.L107:
+.byte 37
+.byte 100
+.byte 32
+.byte 100
+.byte 101
+.byte 102
+.byte 97
+.byte 117
+.byte 108
+.byte 116
+.byte 115
+.byte 10
+.byte 0
+.align 1
+.L84:
+.byte 105
+.byte 32
+.byte 61
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L76:
+.byte 104
+.byte 58
+.byte 10
+.byte 0
+.align 1
+.L66:
+.byte 54
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L64:
+.byte 53
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L62:
+.byte 100
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L61:
+.byte 51
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L59:
+.byte 50
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L57:
+.byte 49
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L49:
+.byte 103
+.byte 58
+.byte 10
+.byte 0
+.align 1
+.L47:
+.byte 120
+.byte 32
+.byte 61
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L28:
+.byte 102
+.byte 58
+.byte 10
+.byte 0
+.align 1
+.L7:
+.byte 37
+.byte 99
+.byte 32
+.byte 61
+.byte 32
+.byte 48
+.byte 120
+.byte 37
+.byte 120
+.byte 10
+.byte 0
+.align 1
+.L6:
+.byte 98
+.byte 102
+.byte 110
+.byte 114
+.byte 116
+.byte 118
+.byte 120
+.byte 0

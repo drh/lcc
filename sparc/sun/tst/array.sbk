@@ -1,0 +1,164 @@
+.global _main
+.seg "text"
+.align 4
+.proc 4
+_main:
+save %sp,-144,%sp
+mov %g0,%i4
+L2:
+mov %g0,%i5
+L6:
+sll %i5,2,%i2
+sll %i4,4,%i1
+set _x,%i0
+add %i1,%i0,%i1
+smul %i4,1000,%i0
+add %i0,%i5,%i0
+st %i0,[%i2+%i1]
+L7:
+add %i5,1,%i5
+cmp %i5,4; bl L6; nop
+sll %i4,2,%i2
+set _y,%i1
+sll %i4,4,%i0
+set _x,%l7
+add %i0,%l7,%i0
+st %i0,[%i2+%i1]
+L3:
+add %i4,1,%i4
+cmp %i4,3; bl L2; nop
+call _f; nop
+mov %g0,%i4
+L10:
+sll %i4,4,%i2
+add -48,%fp,%i1
+add %i2,%i1,%i3
+sll %i4,2,%i2
+set _y,%i1
+st %i3,[%i2+%i1]
+mov %g0,%i5
+L14:
+sll %i5,2,%i2
+sll %i4,4,%i1
+set _x,%i0
+add %i1,%i0,%i1
+ld [%i2+%i1],%i1
+st %i1,[%i2+%i3]
+L15:
+add %i5,1,%i5
+cmp %i5,4; bl L14; nop
+L11:
+add %i4,1,%i4
+cmp %i4,3; bl L10; nop
+add -48,%fp,%o0
+set _y,%o1
+call _g; nop
+mov %g0,%i0
+L1:
+ret; restore
+.global _f
+.align 4
+.proc 4
+_f:
+save %sp,-96,%sp
+mov %g0,%i4
+L21:
+mov %g0,%i5
+L25:
+set L29,%o0
+sll %i5,2,%i3
+sll %i4,4,%i2
+set _x,%i1
+add %i2,%i1,%i2
+ld [%i3+%i2],%o1
+call _printf; nop
+L26:
+add %i5,1,%i5
+cmp %i5,4; bl L25; nop
+L22:
+add %i4,1,%i4
+cmp %i4,3; bl L21; nop
+set L30,%o0
+call _printf; nop
+mov %g0,%i4
+L31:
+mov %g0,%i5
+L35:
+set L29,%o0
+sll %i5,2,%i3
+sll %i4,2,%i2
+set _y,%i1
+ld [%i2+%i1],%i2
+ld [%i3+%i2],%o1
+call _printf; nop
+L36:
+add %i5,1,%i5
+cmp %i5,4; bl L35; nop
+L32:
+add %i4,1,%i4
+cmp %i4,3; bl L31; nop
+set L30,%o0
+call _printf; nop
+L20:
+ret; restore
+.global _g
+.align 4
+.proc 4
+_g:
+save %sp,-96,%sp
+mov %g0,%i4
+L41:
+mov %g0,%i5
+L45:
+set L29,%o0
+sll %i5,2,%i3
+sll %i4,4,%i2
+add %i2,%i0,%i2
+ld [%i3+%i2],%o1
+call _printf; nop
+L46:
+add %i5,1,%i5
+cmp %i5,4; bl L45; nop
+L42:
+add %i4,1,%i4
+cmp %i4,3; bl L41; nop
+set L30,%o0
+call _printf; nop
+mov %g0,%i4
+L49:
+mov %g0,%i5
+L53:
+set L29,%o0
+sll %i5,2,%i3
+sll %i4,2,%i2
+ld [%i2+%i1],%i2
+ld [%i3+%i2],%o1
+call _printf; nop
+L54:
+add %i5,1,%i5
+cmp %i5,4; bl L53; nop
+L50:
+add %i4,1,%i4
+cmp %i4,3; bl L49; nop
+set L30,%o0
+call _printf; nop
+L40:
+ret; restore
+.seg "bss"
+.global _y
+.align 4
+.common _y,12
+.global _x
+.align 4
+.common _x,48
+.seg "text"
+.align 1
+L30:
+.byte 10
+.byte 0
+.align 1
+L29:
+.byte 32
+.byte 37
+.byte 100
+.byte 0

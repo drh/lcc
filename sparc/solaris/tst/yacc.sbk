@@ -1,0 +1,2169 @@
+.section ".data"
+.global yyin
+.type yyin,#object
+.align 4
+yyin:
+.word __iob
+.global yyout
+.type yyout,#object
+.align 4
+yyout:
+.word __iob+16
+.global yylex
+.section ".text"
+.align 4
+.proc 4
+yylex:
+save %sp,-96,%sp
+ba .L5; nop
+.L4:
+.L7:
+cmp %i5,-1; bl .L8; nop
+cmp %i5,4; bg .L8; nop
+sll %i5,2,%i4
+set .L19+4,%i3
+ld [%i4+%i3],%i4
+jmp %i4; nop
+.section ".rodata"
+.align 4
+.L19:
+.word .L9
+.word .L10
+.word .L13
+.word .L14
+.word .L9
+.word .L16
+.section ".text"
+.L10:
+call yywrap; nop
+cmp %o0,0; be .L9; nop
+mov %g0,%i0
+ba .L3; nop
+.L13:
+set 257,%i0
+ba .L3; nop
+.L14:
+set 258,%i0
+ba .L3; nop
+.L16:
+set yytext,%i4
+ldsb [%i4],%i0
+ba .L3; nop
+.L8:
+set yyout,%i4
+ld [%i4],%o0
+set .L18,%o1
+mov %i5,%o2
+call fprintf; nop
+.L9:
+.L5:
+call yylook; nop
+mov %o0,%i5
+cmp %o0,0; bge .L4; nop
+mov %g0,%i0
+.L3:
+ret; restore
+.section ".data"
+.global yyvstop
+.type yyvstop,#object
+.align 4
+yyvstop:
+.word 0
+.word 4
+.word 0
+.word 3
+.word 4
+.word 0
+.word 2
+.word 4
+.word 0
+.word 1
+.word 4
+.word 0
+.word 2
+.word 0
+.word 1
+.word 0
+.word 0
+.global yycrank
+.type yycrank,#object
+.align 1
+yycrank:
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 1
+.byte 3
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 1
+.byte 4
+.byte 1
+.byte 3
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 1
+.byte 5
+.byte 5
+.byte 7
+.byte 5
+.byte 7
+.byte 5
+.byte 7
+.byte 5
+.byte 7
+.byte 5
+.byte 7
+.byte 5
+.byte 7
+.byte 5
+.byte 7
+.byte 5
+.byte 7
+.byte 5
+.byte 7
+.byte 5
+.byte 7
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 1
+.byte 6
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 6
+.byte 8
+.byte 0
+.byte 0
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 6
+.byte 8
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.global yysvec
+.type yysvec,#object
+.align 4
+yysvec:
+.word 0x0
+.word 0x0
+.word 0x0
+.word yycrank-2
+.word 0x0
+.word 0x0
+.word yycrank
+.word yysvec+12
+.word 0x0
+.word yycrank
+.word 0x0
+.word yyvstop+4
+.word yycrank
+.word 0x0
+.word yyvstop+12
+.word yycrank+4
+.word 0x0
+.word yyvstop+24
+.word yycrank+38
+.word 0x0
+.word yyvstop+36
+.word yycrank
+.word yysvec+60
+.word yyvstop+48
+.word yycrank
+.word yysvec+72
+.word yyvstop+56
+.word 0x0
+.word 0x0
+.word 0x0
+.global yytop
+.type yytop,#object
+.align 4
+yytop:
+.word yycrank+282
+.global yybgin
+.type yybgin,#object
+.align 4
+yybgin:
+.word yysvec+12
+.global yymatch
+.type yymatch,#object
+.align 1
+yymatch:
+.byte 0
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 9
+.byte 10
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 9
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 48
+.byte 48
+.byte 48
+.byte 48
+.byte 48
+.byte 48
+.byte 48
+.byte 48
+.byte 48
+.byte 48
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 65
+.byte 1
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 65
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 1
+.byte 0
+.global yyextra
+.type yyextra,#object
+.align 1
+yyextra:
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.byte 0
+.global yylineno
+.type yylineno,#object
+.align 4
+yylineno:
+.word 1
+.global yysptr
+.type yysptr,#object
+.align 4
+yysptr:
+.word yysbuf
+.global yyprevious
+.type yyprevious,#object
+.align 4
+yyprevious:
+.word 10
+.global yylook
+.section ".text"
+.align 4
+.proc 4
+yylook:
+save %sp,-96,%sp
+set yymorfg,%l6
+ld [%l6],%l6
+cmp %l6,0; bne .L38; nop
+set yytext,%i2
+ba .L39; nop
+.L38:
+set yymorfg,%l6
+st %g0,[%l6]
+set yyleng,%l6
+ld [%l6],%l6
+set yytext,%l5
+add %l6,%l5,%i2
+.L39:
+.L40:
+set yylstate,%i4
+set yybgin,%l6
+ld [%l6],%l6
+mov %l6,%i5
+set yyestate,%l5
+st %l6,[%l5]
+set yyprevious,%l6
+ld [%l6],%l6
+cmp %l6,10; bne .L44; nop
+add %i5,12,%i5
+.L44:
+.L46:
+ld [%i5],%i3
+set yycrank,%l6
+cmp %i3,%l6; bne .L50; nop
+ld [%i5+4],%l7
+cmp %l7,%g0; bne .L52; nop
+ba .L97; nop
+.L52:
+ld [%l7],%l6
+set yycrank,%l5
+cmp %l6,%l5; bne .L54; nop
+ba .L97; nop
+.L54:
+.L50:
+mov %i2,%l3
+add %l3,1,%i2
+set yysptr,%l2
+ld [%l2],%l2
+set yysbuf,%l1
+cmp %l2,%l1; bleu .L64; nop
+set yysptr,%l2
+ld [%l2],%l1
+add %l1,-1,%l1
+st %l1,[%l2]
+ldsb [%l1],%l4
+ba .L65; nop
+.L64:
+set yyin,%l2
+ld [%l2],%l2
+ld [%l2],%l1
+sub %l1,1,%l1
+st %l1,[%l2]
+cmp %l1,0; bge .L66; nop
+set yyin,%l2
+ld [%l2],%o0
+call __filbuf; nop
+mov %o0,%l2
+st %l2,[%fp+-4]
+ba .L67; nop
+.L66:
+set yyin,%l2
+ld [%l2],%l2
+add %l2,4,%l2
+ld [%l2],%l1
+add %l1,1,%l0
+st %l0,[%l2]
+ldub [%l1],%l2
+st %l2,[%fp+-4]
+.L67:
+ld [%fp+-4],%l4
+.L65:
+set yytchar,%l2
+st %l4,[%l2]
+cmp %l4,10; bne .L62; nop
+set yylineno,%l2
+ld [%l2],%l1
+add %l1,1,%l1
+st %l1,[%l2]
+set yytchar,%l2
+ld [%l2],%l5
+ba .L63; nop
+.L62:
+set yytchar,%l2
+ld [%l2],%l5
+.L63:
+cmp %l5,-1; bne .L60; nop
+mov %g0,%l6
+ba .L61; nop
+.L60:
+set yytchar,%l2
+ld [%l2],%l6
+.L61:
+mov %l6,%i1
+stb %l6,[%l3]
+.L68:
+mov %i3,%i0
+set yycrank,%l3
+cmp %i3,%l3; bleu .L69; nop
+sll %i1,1,%l3
+add %l3,%i0,%i3
+set yytop,%l3
+ld [%l3],%l3
+cmp %i3,%l3; bgu .L70; nop
+ldsb [%i3],%l3
+smul %l3,12,%l3
+set yysvec,%l2
+add %l3,%l2,%l3
+cmp %l3,%i5; bne .L70; nop
+set yysvec,%l3
+ldsb [%i3+1],%l2
+smul %l2,12,%l2
+add %l2,%l3,%l2
+cmp %l2,%l3; bne .L73; nop
+add %i2,-1,%l3
+mov %l3,%i2
+set yytchar,%l2
+ldsb [%l3],%l3
+st %l3,[%l2]
+ld [%l2],%l3
+cmp %l3,10; bne .L75; nop
+set yylineno,%l3
+ld [%l3],%l2
+sub %l2,1,%l2
+st %l2,[%l3]
+.L75:
+set yysptr,%l3
+ld [%l3],%l2
+add %l2,1,%l1
+st %l1,[%l3]
+set yytchar,%l3
+ld [%l3],%l3
+stb %l3,[%l2]
+ba .L97; nop
+.L73:
+mov %i4,%l3
+add %l3,4,%i4
+ldsb [%i3+1],%l2
+smul %l2,12,%l2
+set yysvec,%l1
+add %l2,%l1,%i5
+st %i5,[%l3]
+ba .L46; nop
+.L69:
+set yycrank,%l3
+cmp %i3,%l3; bgeu .L78; nop
+set yycrank,%l3
+sub %l3,%i3,%l2
+sra %l2,31,%g1; wr %g0,%g1,%y; nop; nop; nop; sdiv %l2,2,%l2
+sll %l2,1,%l2
+add %l2,%l3,%l3
+mov %l3,%i0
+mov %l3,%i3
+sll %i1,1,%l3
+add %l3,%i3,%i3
+set yytop,%l3
+ld [%l3],%l3
+cmp %i3,%l3; bgu .L80; nop
+ldsb [%i3],%l3
+smul %l3,12,%l3
+set yysvec,%l2
+add %l3,%l2,%l3
+cmp %l3,%i5; bne .L80; nop
+set yysvec,%l3
+ldsb [%i3+1],%l2
+smul %l2,12,%l2
+add %l2,%l3,%l2
+cmp %l2,%l3; bne .L82; nop
+add %i2,-1,%l3
+mov %l3,%i2
+set yytchar,%l2
+ldsb [%l3],%l3
+st %l3,[%l2]
+ld [%l2],%l3
+cmp %l3,10; bne .L84; nop
+set yylineno,%l3
+ld [%l3],%l2
+sub %l2,1,%l2
+st %l2,[%l3]
+.L84:
+set yysptr,%l3
+ld [%l3],%l2
+add %l2,1,%l1
+st %l1,[%l3]
+set yytchar,%l3
+ld [%l3],%l3
+stb %l3,[%l2]
+ba .L97; nop
+.L82:
+mov %i4,%l3
+add %l3,4,%i4
+ldsb [%i3+1],%l2
+smul %l2,12,%l2
+set yysvec,%l1
+add %l2,%l1,%i5
+st %i5,[%l3]
+ba .L46; nop
+.L80:
+set yymatch,%l3
+ldsb [%i1+%l3],%l3
+sll %l3,1,%l3
+add %l3,%i0,%i3
+set yytop,%l3
+ld [%l3],%l3
+cmp %i3,%l3; bgu .L86; nop
+ldsb [%i3],%l3
+smul %l3,12,%l3
+set yysvec,%l2
+add %l3,%l2,%l3
+cmp %l3,%i5; bne .L86; nop
+set yysvec,%l3
+ldsb [%i3+1],%l2
+smul %l2,12,%l2
+add %l2,%l3,%l2
+cmp %l2,%l3; bne .L88; nop
+add %i2,-1,%l3
+mov %l3,%i2
+set yytchar,%l2
+ldsb [%l3],%l3
+st %l3,[%l2]
+ld [%l2],%l3
+cmp %l3,10; bne .L90; nop
+set yylineno,%l3
+ld [%l3],%l2
+sub %l2,1,%l2
+st %l2,[%l3]
+.L90:
+set yysptr,%l3
+ld [%l3],%l2
+add %l2,1,%l1
+st %l1,[%l3]
+set yytchar,%l3
+ld [%l3],%l3
+stb %l3,[%l2]
+ba .L97; nop
+.L88:
+mov %i4,%l3
+add %l3,4,%i4
+ldsb [%i3+1],%l2
+smul %l2,12,%l2
+set yysvec,%l1
+add %l2,%l1,%i5
+st %i5,[%l3]
+ba .L46; nop
+.L86:
+.L78:
+.L70:
+ld [%i5+4],%l3
+mov %l3,%i5
+cmp %l3,%g0; be .L92; nop
+ld [%i5],%l3
+mov %l3,%i3
+set yycrank,%l2
+cmp %l3,%l2; be .L92; nop
+ba .L68; nop
+.L92:
+add %i2,-1,%l3
+mov %l3,%i2
+set yytchar,%l2
+ldsb [%l3],%l3
+st %l3,[%l2]
+ld [%l2],%l3
+cmp %l3,10; bne .L94; nop
+set yylineno,%l3
+ld [%l3],%l2
+sub %l2,1,%l2
+st %l2,[%l3]
+.L94:
+set yysptr,%l3
+ld [%l3],%l2
+add %l2,1,%l1
+st %l1,[%l3]
+set yytchar,%l3
+ld [%l3],%l3
+stb %l3,[%l2]
+ba .L97; nop
+.L96:
+mov %i2,%l6
+add %l6,-1,%i2
+stb %g0,[%l6]
+ld [%i4],%l6
+cmp %l6,%g0; be .L99; nop
+set yyfnd,%l4
+ld [%l6+8],%l6
+st %l6,[%l4]
+cmp %l6,%g0; be .L99; nop
+ld [%l4],%l6
+ld [%l6],%l6
+cmp %l6,0; ble .L99; nop
+set yyolsp,%l6
+st %i4,[%l6]
+set yyfnd,%l6
+ld [%l6],%l6
+ld [%l6],%l6
+set yyextra,%l5
+ldsb [%l6+%l5],%l6
+cmp %l6,0; be .L101; nop
+ba .L104; nop
+.L103:
+add %i4,-4,%i4
+mov %i2,%l6
+add %l6,-1,%i2
+set yytchar,%l5
+ldsb [%l6],%l6
+st %l6,[%l5]
+ld [%l5],%l6
+cmp %l6,10; bne .L106; nop
+set yylineno,%l6
+ld [%l6],%l5
+sub %l5,1,%l5
+st %l5,[%l6]
+.L106:
+set yysptr,%l6
+ld [%l6],%l5
+add %l5,1,%l4
+st %l4,[%l6]
+set yytchar,%l6
+ld [%l6],%l6
+stb %l6,[%l5]
+.L104:
+ld [%i4],%l6
+ld [%l6+8],%o0
+set yyfnd,%l6
+ld [%l6],%l6
+ld [%l6],%l6
+neg %l6,%o1
+call yyback; nop
+cmp %o0,1; be .L108; nop
+set yylstate,%l6
+cmp %i4,%l6; bgu .L103; nop
+.L108:
+.L101:
+set yyprevious,%l6
+ldsb [%i2],%l5
+st %l5,[%l6]
+set yylsp,%l6
+st %i4,[%l6]
+set yyleng,%l6
+set yytext,%l5
+sub %i2,%l5,%l4
+add %l4,1,%l4
+st %l4,[%l6]
+ld [%l6],%l6
+stb %g0,[%l6+%l5]
+set yyfnd,%l6
+ld [%l6],%l5
+add %l5,4,%l4
+st %l4,[%l6]
+ld [%l5],%i0
+ba .L37; nop
+.L99:
+set yytchar,%l6
+ldsb [%i2],%l5
+st %l5,[%l6]
+ld [%l6],%l6
+cmp %l6,10; bne .L109; nop
+set yylineno,%l6
+ld [%l6],%l5
+sub %l5,1,%l5
+st %l5,[%l6]
+.L109:
+set yysptr,%l6
+ld [%l6],%l5
+add %l5,1,%l4
+st %l4,[%l6]
+set yytchar,%l6
+ld [%l6],%l6
+stb %l6,[%l5]
+.L97:
+mov %i4,%l6
+add %l6,-4,%i4
+set yylstate,%l5
+cmp %l6,%l5; bgu .L96; nop
+set yytext,%l6
+ldsb [%l6],%l6
+cmp %l6,0; bne .L111; nop
+set yysptr,%l6
+set yysbuf,%l5
+st %l5,[%l6]
+mov %g0,%i0
+ba .L37; nop
+.L111:
+set yysptr,%l3
+ld [%l3],%l3
+set yysbuf,%l2
+cmp %l3,%l2; bleu .L121; nop
+set yysptr,%l3
+ld [%l3],%l2
+add %l2,-1,%l2
+st %l2,[%l3]
+ldsb [%l2],%l4
+ba .L122; nop
+.L121:
+set yyin,%l3
+ld [%l3],%l3
+ld [%l3],%l2
+sub %l2,1,%l2
+st %l2,[%l3]
+cmp %l2,0; bge .L123; nop
+set yyin,%l3
+ld [%l3],%o0
+call __filbuf; nop
+mov %o0,%l3
+st %l3,[%fp+-4]
+ba .L124; nop
+.L123:
+set yyin,%l3
+ld [%l3],%l3
+add %l3,4,%l3
+ld [%l3],%l2
+add %l2,1,%l1
+st %l1,[%l3]
+ldub [%l2],%l3
+st %l3,[%fp+-4]
+.L124:
+ld [%fp+-4],%l4
+.L122:
+set yytchar,%l3
+st %l4,[%l3]
+cmp %l4,10; bne .L119; nop
+set yylineno,%l3
+ld [%l3],%l2
+add %l2,1,%l2
+st %l2,[%l3]
+set yytchar,%l3
+ld [%l3],%l5
+ba .L120; nop
+.L119:
+set yytchar,%l3
+ld [%l3],%l5
+.L120:
+cmp %l5,-1; bne .L117; nop
+mov %g0,%l6
+ba .L118; nop
+.L117:
+set yytchar,%l3
+ld [%l3],%l6
+.L118:
+set yytext,%l2
+stb %l6,[%l2]
+set yyprevious,%l2
+sll %l6,24,%l3; sra %l3,24,%l3
+st %l3,[%l2]
+set yyprevious,%l3
+ld [%l3],%l3
+cmp %l3,0; ble .L125; nop
+set yyout,%l3
+ld [%l3],%l3
+ld [%l3],%l2
+sub %l2,1,%l2
+st %l2,[%l3]
+cmp %l2,0; bge .L128; nop
+set yyprevious,%l3
+ld [%l3],%l3
+and %l3,0xff,%o0
+set yyout,%l3
+ld [%l3],%o1
+call __flsbuf; nop
+ba .L129; nop
+.L128:
+set yyout,%l3
+ld [%l3],%l3
+add %l3,4,%l3
+ld [%l3],%l2
+add %l2,1,%l1
+st %l1,[%l3]
+set yyprevious,%l3
+ld [%l3],%l3
+stb %l3,[%l2]
+.L129:
+.L125:
+set yytext,%i2
+ba .L40; nop
+.L37:
+ret; restore
+.global yyback
+.align 4
+.proc 4
+yyback:
+cmp %o0,%g0; bne .L211; nop
+mov %g0,%o0
+ba .L207; nop
+.L210:
+mov %o0,%o5
+add %o5,4,%o0
+ld [%o5],%o5
+cmp %o5,%o1; bne .L213; nop
+set 1,%o0
+ba .L207; nop
+.L213:
+.L211:
+ld [%o0],%o5
+cmp %o5,0; bne .L210; nop
+mov %g0,%o0
+.L207:
+retl; nop
+.global yyinput
+.align 4
+.proc 4
+yyinput:
+save %sp,-96,%sp
+set yysptr,%i1
+ld [%i1],%i1
+set yysbuf,%i0
+cmp %i1,%i0; bleu .L225; nop
+set yysptr,%i1
+ld [%i1],%i0
+add %i0,-1,%i0
+st %i0,[%i1]
+ldsb [%i0],%i3
+ba .L226; nop
+.L225:
+set yyin,%i1
+ld [%i1],%i1
+ld [%i1],%i0
+sub %i0,1,%i0
+st %i0,[%i1]
+cmp %i0,0; bge .L227; nop
+set yyin,%i1
+ld [%i1],%o0
+call __filbuf; nop
+mov %o0,%i1
+mov %i1,%i2
+ba .L228; nop
+.L227:
+set yyin,%i1
+ld [%i1],%i1
+add %i1,4,%i1
+ld [%i1],%i0
+add %i0,1,%l7
+st %l7,[%i1]
+ldub [%i0],%i1
+mov %i1,%i2
+.L228:
+mov %i2,%i3
+.L226:
+set yytchar,%i1
+st %i3,[%i1]
+cmp %i3,10; bne .L223; nop
+set yylineno,%i1
+ld [%i1],%i0
+add %i0,1,%i0
+st %i0,[%i1]
+set yytchar,%i1
+ld [%i1],%i4
+ba .L224; nop
+.L223:
+set yytchar,%i1
+ld [%i1],%i4
+.L224:
+cmp %i4,-1; bne .L221; nop
+mov %g0,%i5
+ba .L222; nop
+.L221:
+set yytchar,%i1
+ld [%i1],%i5
+.L222:
+mov %i5,%i0
+.L216:
+ret; restore
+.global yyoutput
+.align 4
+.proc 4
+yyoutput:
+save %sp,-96,%sp
+set yyout,%i5
+ld [%i5],%i5
+ld [%i5],%i4
+sub %i4,1,%i4
+st %i4,[%i5]
+cmp %i4,0; bge .L239; nop
+and %i0,0xff,%o0
+set yyout,%i5
+ld [%i5],%o1
+call __flsbuf; nop
+ba .L240; nop
+.L239:
+set yyout,%i5
+ld [%i5],%i5
+add %i5,4,%i5
+ld [%i5],%i4
+add %i4,1,%i3
+st %i3,[%i5]
+stb %i0,[%i4]
+.L240:
+.L237:
+ret; restore
+.global yyunput
+.align 4
+.proc 4
+yyunput:
+set yytchar,%o5
+st %o0,[%o5]
+ld [%o5],%o5
+cmp %o5,10; bne .L246; nop
+set yylineno,%o5
+ld [%o5],%o4
+sub %o4,1,%o4
+st %o4,[%o5]
+.L246:
+set yysptr,%o5
+ld [%o5],%o4
+add %o4,1,%o3
+st %o3,[%o5]
+set yytchar,%o5
+ld [%o5],%o5
+stb %o5,[%o4]
+.L245:
+retl; nop
+.global main
+.align 4
+.proc 4
+main:
+save %sp,-96,%sp
+call yyparse; nop
+mov %g0,%i0
+.L252:
+ret; restore
+.global yyerror
+.align 4
+.proc 4
+yyerror:
+save %sp,-96,%sp
+set .L254,%o0
+call printf; nop
+.L253:
+ret; restore
+.section ".data"
+.global yyexca
+.type yyexca,#object
+.align 2
+yyexca:
+.half -1
+.half 1
+.half 0
+.half -1
+.half -2
+.half 0
+.global yyact
+.type yyact,#object
+.align 2
+yyact:
+.half 12
+.half 2
+.half 9
+.half 8
+.half 17
+.half 11
+.half 25
+.half 17
+.half 15
+.half 18
+.half 16
+.half 10
+.half 18
+.half 17
+.half 15
+.half 7
+.half 16
+.half 13
+.half 18
+.half 5
+.half 3
+.half 1
+.half 0
+.half 19
+.half 20
+.half 0
+.half 0
+.half 21
+.half 22
+.half 23
+.half 24
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 6
+.half 14
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 0
+.half 4
+.half 6
+.global yypact
+.type yypact,#object
+.align 2
+yypact:
+.half -1000
+.half -9
+.half -1000
+.half 5
+.half -7
+.half -59
+.half -1000
+.half -1000
+.half -1000
+.half -40
+.half -29
+.half -40
+.half -40
+.half -1000
+.half -1000
+.half -40
+.half -40
+.half -40
+.half -40
+.half -38
+.half -35
+.half -38
+.half -38
+.half -1000
+.half -1000
+.half -1000
+.global yypgo
+.type yypgo,#object
+.align 2
+yypgo:
+.half 0
+.half 21
+.half 20
+.half 17
+.half 11
+.global yyr1
+.type yyr1,#object
+.align 2
+yyr1:
+.half 0
+.half 1
+.half 1
+.half 1
+.half 1
+.half 2
+.half 4
+.half 4
+.half 4
+.half 4
+.half 4
+.half 4
+.half 4
+.half 4
+.half 3
+.global yyr2
+.type yyr2,#object
+.align 2
+yyr2:
+.half 0
+.half 0
+.half 2
+.half 3
+.half 3
+.half 3
+.half 3
+.half 3
+.half 3
+.half 3
+.half 2
+.half 3
+.half 1
+.half 1
+.half 1
+.global yychk
+.type yychk,#object
+.align 2
+yychk:
+.half -1000
+.half -1
+.half 10
+.half -2
+.half 256
+.half -3
+.half 257
+.half 10
+.half 10
+.half 61
+.half -4
+.half 45
+.half 40
+.half -3
+.half 258
+.half 43
+.half 45
+.half 42
+.half 47
+.half -4
+.half -4
+.half -4
+.half -4
+.half -4
+.half -4
+.half 41
+.global yydef
+.type yydef,#object
+.align 2
+yydef:
+.half 1
+.half -2
+.half 2
+.half 0
+.half 0
+.half 0
+.half 14
+.half 3
+.half 4
+.half 0
+.half 5
+.half 0
+.half 0
+.half 12
+.half 13
+.half 0
+.half 0
+.half 0
+.half 0
+.half 10
+.half 0
+.half 6
+.half 7
+.half 8
+.half 9
+.half 11
+.global yychar
+.type yychar,#object
+.align 4
+yychar:
+.word -1
+.global yynerrs
+.type yynerrs,#object
+.align 4
+yynerrs:
+.word 0
+.global yyerrflag
+.type yyerrflag,#object
+.align 2
+yyerrflag:
+.half 0
+.global yyparse
+.section ".text"
+.align 4
+.proc 4
+yyparse:
+save %sp,-392,%sp
+mov %g0,%i4
+set yychar,%l5
+set -1,%l4
+st %l4,[%l5]
+set yynerrs,%l5
+st %g0,[%l5]
+set yyerrflag,%l5
+sth %i4,[%l5]
+add -302,%fp,%i3
+set yyv-4,%i1
+.L258:
+add %i3,2,%l5
+mov %l5,%i3
+add 0,%fp,%l4
+cmp %l5,%l4; bleu .L259; nop
+set .L262,%o0
+call yyerror; nop
+set 1,%i0
+ba .L255; nop
+.L259:
+sth %i4,[%i3]
+add %i1,4,%i1
+set yyval,%l5
+ld [%l5],%l5
+st %l5,[%i1]
+.L263:
+sll %i4,16,%l5; sra %l5,16,%l5
+sll %l5,1,%l5
+set yypact,%l4
+ldsh [%l5+%l4],%i2
+sll %i2,16,%l5; sra %l5,16,%l5
+cmp %l5,-1000; bg .L264; nop
+ba .L266; nop
+.L264:
+set yychar,%l5
+ld [%l5],%l5
+cmp %l5,0; bge .L267; nop
+call yylex; nop
+set yychar,%l4
+st %o0,[%l4]
+cmp %o0,0; bge .L269; nop
+set yychar,%l5
+st %g0,[%l5]
+.L269:
+.L267:
+sll %i2,16,%l5; sra %l5,16,%l5
+set yychar,%l4
+ld [%l4],%l4
+add %l5,%l4,%l5
+mov %l5,%i2
+sll %l5,16,%l5; sra %l5,16,%l5
+cmp %l5,0; bl .L273; nop
+sll %i2,16,%l5; sra %l5,16,%l5
+cmp %l5,249; bl .L271; nop
+.L273:
+ba .L266; nop
+.L271:
+sll %i2,16,%l5; sra %l5,16,%l5
+sll %l5,1,%l5
+set yyact,%l4
+ldsh [%l5+%l4],%l5
+mov %l5,%i2
+sll %l5,16,%l5; sra %l5,16,%l5
+sll %l5,1,%l5
+set yychk,%l4
+ldsh [%l5+%l4],%l5
+set yychar,%l4
+ld [%l4],%l4
+cmp %l5,%l4; bne .L274; nop
+set yychar,%l5
+set -1,%l4
+st %l4,[%l5]
+set yyval,%l5
+set yylval,%l4
+ld [%l4],%l4
+st %l4,[%l5]
+mov %i2,%i4
+set yyerrflag,%l5
+ldsh [%l5],%l5
+cmp %l5,0; ble .L258; nop
+set yyerrflag,%l5
+ldsh [%l5],%l4
+sub %l4,1,%l4
+sth %l4,[%l5]
+ba .L258; nop
+.L274:
+.L266:
+sll %i4,16,%l5; sra %l5,16,%l5
+sll %l5,1,%l5
+set yydef,%l4
+ldsh [%l5+%l4],%l5
+mov %l5,%i2
+sll %l5,16,%l5; sra %l5,16,%l5
+cmp %l5,-2; bne .L278; nop
+set yychar,%l5
+ld [%l5],%l5
+cmp %l5,0; bge .L280; nop
+call yylex; nop
+set yychar,%l4
+st %o0,[%l4]
+cmp %o0,0; bge .L282; nop
+set yychar,%l5
+st %g0,[%l5]
+.L282:
+.L280:
+set yyexca,%i0
+ba .L287; nop
+.L284:
+.L285:
+add %i0,4,%i0
+.L287:
+ldsh [%i0],%l5
+cmp %l5,-1; bne .L284; nop
+ldsh [%i0+2],%l5
+sll %i4,16,%l4; sra %l4,16,%l4
+cmp %l5,%l4; bne .L284; nop
+ba .L289; nop
+.L288:
+ldsh [%i0],%l5
+set yychar,%l4
+ld [%l4],%l4
+cmp %l5,%l4; bne .L291; nop
+ba .L290; nop
+.L291:
+.L289:
+add %i0,4,%l5
+mov %l5,%i0
+ldsh [%l5],%l5
+cmp %l5,0; bge .L288; nop
+.L290:
+ldsh [%i0+2],%l5
+mov %l5,%i2
+sll %l5,16,%l5; sra %l5,16,%l5
+cmp %l5,0; bge .L293; nop
+mov %g0,%i0
+ba .L255; nop
+.L293:
+.L278:
+sll %i2,16,%l5; sra %l5,16,%l5
+cmp %l5,0; bne .L295; nop
+set yyerrflag,%l4
+ldsh [%l4],%l5
+cmp %l5,0; bl .L297; nop
+cmp %l5,3; bg .L297; nop
+sll %l5,2,%l4
+set .L313,%l3
+ld [%l4+%l3],%l4
+jmp %l4; nop
+.section ".rodata"
+.align 4
+.L313:
+.word .L300
+.word .L303
+.word .L303
+.word .L310
+.section ".text"
+.L300:
+set .L301,%o0
+call yyerror; nop
+.L302:
+set yynerrs,%l4
+ld [%l4],%l3
+add %l3,1,%l3
+st %l3,[%l4]
+.L303:
+set yyerrflag,%l4
+set 3,%l3
+sth %l3,[%l4]
+ba .L305; nop
+.L304:
+ldsh [%i3],%l4
+sll %l4,1,%l4
+set yypact,%l3
+ldsh [%l4+%l3],%l4
+add %l4,256,%l4
+mov %l4,%i2
+sll %i2,16,%l4; sra %l4,16,%l4
+cmp %l4,0; bl .L307; nop
+cmp %l4,249; bge .L307; nop
+sll %l4,1,%l4
+set yyact,%l3
+ldsh [%l4+%l3],%l4
+sll %l4,1,%l4
+set yychk,%l3
+ldsh [%l4+%l3],%l4
+cmp %l4,256; bne .L307; nop
+sll %i2,16,%l4; sra %l4,16,%l4
+sll %l4,1,%l4
+set yyact,%l3
+ldsh [%l4+%l3],%i4
+ba .L258; nop
+.L307:
+ldsh [%i3],%l4
+sll %l4,1,%l4
+set yypact,%l3
+ldsh [%l4+%l3],%i2
+add %i3,-2,%i3
+add %i1,-4,%i1
+.L305:
+add -300,%fp,%l4
+cmp %i3,%l4; bgeu .L304; nop
+.L309:
+set 1,%i0
+ba .L255; nop
+.L310:
+set yychar,%l4
+ld [%l4],%l4
+cmp %l4,0; bne .L311; nop
+ba .L309; nop
+.L311:
+set yychar,%l4
+set -1,%l3
+st %l3,[%l4]
+ba .L263; nop
+.L297:
+.L295:
+sll %i2,16,%l5; sra %l5,16,%l5
+sll %l5,1,%l5
+set yyr2,%l4
+add %l5,%l4,%l4
+ldsh [%l4],%l3
+sll %l3,1,%l3
+sub %i3,%l3,%i3
+mov %i1,%i5
+ldsh [%l4],%l4
+sll %l4,2,%l4
+sub %i1,%l4,%i1
+set yyval,%l4
+ld [%i1+4],%l3
+st %l3,[%l4]
+mov %i2,%l6
+set yyr1,%l4
+ldsh [%l5+%l4],%i2
+sll %i2,16,%l5; sra %l5,16,%l5
+sll %l5,1,%l5
+set yypgo,%l4
+ldsh [%l5+%l4],%l5
+ldsh [%i3],%l4
+add %l5,%l4,%l5
+add %l5,1,%l5
+mov %l5,%l7
+sll %l7,16,%l5; sra %l5,16,%l5
+cmp %l5,249; bge .L316; nop
+sll %l5,1,%l5
+set yyact,%l4
+ldsh [%l5+%l4],%l5
+mov %l5,%i4
+sll %l5,16,%l5; sra %l5,16,%l5
+sll %l5,1,%l5
+set yychk,%l4
+ldsh [%l5+%l4],%l5
+sll %i2,16,%l4; sra %l4,16,%l4
+neg %l4,%l4
+cmp %l5,%l4; be .L314; nop
+.L316:
+sll %i2,16,%l5; sra %l5,16,%l5
+sll %l5,1,%l5
+set yypgo,%l4
+ldsh [%l5+%l4],%l5
+sll %l5,1,%l5
+set yyact,%l4
+ldsh [%l5+%l4],%i4
+.L314:
+sll %l6,16,%l5; sra %l5,16,%l5
+cmp %l5,4; bl .L258; nop
+cmp %l5,14; bg .L258; nop
+sll %l5,2,%l4
+set .L338-16,%l3
+ld [%l4+%l3],%l4
+jmp %l4; nop
+.section ".rodata"
+.align 4
+.L338:
+.word .L320
+.word .L321
+.word .L323
+.word .L325
+.word .L327
+.word .L329
+.word .L331
+.word .L258
+.word .L333
+.word .L335
+.word .L337
+.section ".text"
+.L320:
+set yyerrflag,%l4
+sth %g0,[%l4]
+ba .L258; nop
+.L321:
+set .L322,%o0
+call printf; nop
+ba .L258; nop
+.L323:
+set .L324,%o0
+call printf; nop
+ba .L258; nop
+.L325:
+set .L326,%o0
+call printf; nop
+ba .L258; nop
+.L327:
+set .L328,%o0
+call printf; nop
+ba .L258; nop
+.L329:
+set .L330,%o0
+call printf; nop
+ba .L258; nop
+.L331:
+set .L332,%o0
+call printf; nop
+ba .L258; nop
+.L333:
+set .L334,%o0
+call printf; nop
+ba .L258; nop
+.L335:
+set .L336,%o0
+set yytext,%o1
+call printf; nop
+ba .L258; nop
+.L337:
+set .L254,%o0
+set yytext,%o1
+call printf; nop
+ba .L258; nop
+.L255:
+ret; restore
+.global yywrap
+.align 4
+.proc 4
+yywrap:
+set 1,%o0
+.L361:
+retl; nop
+.section ".bss"
+.global yyv
+.type yyv,#object
+.common yyv,600,4
+.global yyfnd
+.type yyfnd,#object
+.common yyfnd,4,4
+.global yyolsp
+.type yyolsp,#object
+.common yyolsp,4,4
+.global yylsp
+.type yylsp,#object
+.common yylsp,4,4
+.global yylstate
+.type yylstate,#object
+.common yylstate,800,4
+.global yyestate
+.type yyestate,#object
+.common yyestate,4,4
+.global yytchar
+.type yytchar,#object
+.common yytchar,4,4
+.global yysbuf
+.type yysbuf,#object
+.common yysbuf,200,1
+.global yymorfg
+.type yymorfg,#object
+.common yymorfg,4,4
+.global yytext
+.type yytext,#object
+.common yytext,200,1
+.global yyleng
+.type yyleng,#object
+.common yyleng,4,4
+.global yyval
+.type yyval,#object
+.common yyval,4,4
+.global yylval
+.type yylval,#object
+.common yylval,4,4
+.section ".rodata"
+.align 1
+.L336:
+.byte 112
+.byte 117
+.byte 115
+.byte 104
+.byte 32
+.byte 37
+.byte 115
+.byte 10
+.byte 0
+.align 1
+.L334:
+.byte 108
+.byte 111
+.byte 97
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L332:
+.byte 110
+.byte 101
+.byte 103
+.byte 97
+.byte 116
+.byte 101
+.byte 10
+.byte 0
+.align 1
+.L330:
+.byte 100
+.byte 105
+.byte 118
+.byte 105
+.byte 100
+.byte 101
+.byte 10
+.byte 0
+.align 1
+.L328:
+.byte 109
+.byte 117
+.byte 108
+.byte 116
+.byte 105
+.byte 112
+.byte 108
+.byte 121
+.byte 10
+.byte 0
+.align 1
+.L326:
+.byte 110
+.byte 101
+.byte 103
+.byte 97
+.byte 116
+.byte 101
+.byte 10
+.byte 97
+.byte 100
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L324:
+.byte 97
+.byte 100
+.byte 100
+.byte 10
+.byte 0
+.align 1
+.L322:
+.byte 115
+.byte 116
+.byte 111
+.byte 114
+.byte 101
+.byte 10
+.byte 0
+.align 1
+.L301:
+.byte 115
+.byte 121
+.byte 110
+.byte 116
+.byte 97
+.byte 120
+.byte 32
+.byte 101
+.byte 114
+.byte 114
+.byte 111
+.byte 114
+.byte 0
+.align 1
+.L262:
+.byte 121
+.byte 97
+.byte 99
+.byte 99
+.byte 32
+.byte 115
+.byte 116
+.byte 97
+.byte 99
+.byte 107
+.byte 32
+.byte 111
+.byte 118
+.byte 101
+.byte 114
+.byte 102
+.byte 108
+.byte 111
+.byte 119
+.byte 0
+.align 1
+.L254:
+.byte 37
+.byte 115
+.byte 10
+.byte 0
+.align 1
+.L18:
+.byte 98
+.byte 97
+.byte 100
+.byte 32
+.byte 115
+.byte 119
+.byte 105
+.byte 116
+.byte 99
+.byte 104
+.byte 32
+.byte 121
+.byte 121
+.byte 108
+.byte 111
+.byte 111
+.byte 107
+.byte 32
+.byte 37
+.byte 100
+.byte 0

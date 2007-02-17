@@ -1,0 +1,185 @@
+.global main
+.section ".text"
+.align 4
+.proc 4
+main:
+.L1:
+retl; nop
+.global f
+.align 4
+.proc 4
+f:
+save %sp,-96,%sp
+call f; nop
+mov %o0,%i5
+call f; nop
+add %i5,%o0,%i0
+.L2:
+ret; restore
+.global f2
+.align 4
+.proc 4
+f2:
+save %sp,-96,%sp
+call f; nop
+mov %o0,%i4
+cmp %i0,0; be .L7; nop
+call f; nop
+mov %o0,%i3
+mov %i3,%i5
+ba .L8; nop
+.L7:
+set 1,%i5
+.L8:
+add %i4,%i5,%i0
+.L5:
+ret; restore
+.global f3
+.align 4
+.proc 4
+f3:
+save %sp,-104,%sp
+mov %g0,%i5
+mov %g0,%i4
+mov %g0,%i3
+mov %g0,%i2
+mov %g0,%l7
+mov %g0,%l6
+mov %g0,%l5
+mov %g0,%l4
+st %g0,[%fp+-4]
+st %g0,[%fp+-8]
+mov %i1,%l3
+add %l3,4,%i1
+cmp %i0,0; be .L13; nop
+call f; nop
+mov %o0,%l2
+st %l2,[%fp+-12]
+ba .L14; nop
+.L13:
+st %g0,[%fp+-12]
+.L14:
+ld [%fp+-12],%l2
+st %l2,[%l3]
+.L11:
+ret; restore
+.global f4
+.align 4
+.proc 4
+f4:
+save %sp,-96,%sp
+mov %g0,%i5
+mov %g0,%i4
+mov %g0,%i3
+mov %g0,%i2
+mov %g0,%i1
+mov %g0,%i0
+set i,%l6
+ld [%l6],%l6
+sll %l6,3,%l5
+set a,%l4
+add %l5,%l4,%l4
+ld2 [%l4],%f30
+set b,%l4
+add %l5,%l4,%l5
+ld2 [%l5],%f28
+set .L21,%l5
+ld2 [%l5],%f26
+faddd %f30,%f28,%f24
+fcmped %f24,%f26; nop; fbue .L19; nop
+cmp %l6,0; be .L19; nop
+fsubd %f30,%f28,%f30
+fcmped %f30,%f26; nop; fbue .L19; nop
+set 1,%l7
+ba .L20; nop
+.L19:
+mov %g0,%l7
+.L20:
+set i,%l6
+st %l7,[%l6]
+.L17:
+ret; restore
+.global f5
+.align 4
+.proc 4
+f5:
+save %sp,-96,%sp
+set x,%i5
+set k,%i4
+ld [%i4],%i4
+set m,%i3
+ld [%i3],%i3
+set A,%i2
+ld [%i2],%i2
+smul %i3,%i4,%i1
+sll %i1,3,%i1
+add %i1,%i2,%i1
+set j,%i0
+ld [%i0],%i0
+smul %i3,%i0,%i3
+sll %i3,3,%i3
+add %i3,%i2,%i3
+set n,%i2
+ld [%i2],%i2
+set B,%l7
+ld [%l7],%l7
+smul %i2,%i4,%i4
+sll %i4,3,%i4
+add %i4,%l7,%i4
+smul %i2,%i0,%i2
+sll %i2,3,%i2
+add %i2,%l7,%i2
+ld2 [%i1],%f30
+ld2 [%i3],%f28
+fmuld %f30,%f28,%f30
+ld2 [%i4],%f28
+ld2 [%i2],%f26
+fmuld %f28,%f26,%f28
+faddd %f30,%f28,%f30
+st2 %f30,[%i5]
+ld2 [%i1],%f30
+ld2 [%i2],%f28
+fmuld %f30,%f28,%f30
+ld2 [%i4],%f28
+ld2 [%i3],%f26
+fmuld %f28,%f26,%f28
+fsubd %f30,%f28,%f30
+st2 %f30,[%i5]
+.L27:
+ret; restore
+.section ".bss"
+.global x
+.type x,#object
+.common x,8,8
+.global B
+.type B,#object
+.common B,4,4
+.global A
+.type A,#object
+.common A,4,4
+.global n
+.type n,#object
+.common n,4,4
+.global m
+.type m,#object
+.common m,4,4
+.global k
+.type k,#object
+.common k,4,4
+.global j
+.type j,#object
+.common j,4,4
+.global i
+.type i,#object
+.common i,4,4
+.global b
+.type b,#object
+.common b,80,8
+.global a
+.type a,#object
+.common a,80,8
+.section ".rodata"
+.align 8
+.L21:
+.word 0x0
+.word 0x0

@@ -1,0 +1,211 @@
+.global main
+.section ".text"
+.align 4
+.proc 4
+main:
+save %sp,-96,%sp
+mov %g0,%o0
+call exit; nop
+.L1:
+ret; restore
+.global nested
+.align 4
+.proc 4
+nested:
+cmp %o0,4; bge .L6; nop
+cmp %o1,114; be .L9; nop
+.L6:
+cmp %o0,1; bne .L8; nop
+cmp %o1,104; be .L9; nop
+cmp %o1,105; be .L9; nop
+.L8:
+cmp %o0,2; bne .L3; nop
+cmp %o1,111; be .L9; nop
+cmp %o1,121; bne .L3; nop
+.L9:
+mov %o1,%o0
+.L3:
+.L2:
+retl; nop
+.global s
+.align 4
+.proc 4
+s:
+.L10:
+retl; nop
+.section ".data"
+.global Dy
+.type Dy,#object
+.align 4
+Dy:
+.word 0
+.skip 4
+.global Dz
+.type Dz,#object
+.align 4
+Dz:
+.word 1
+.skip 4
+.global Dfunc
+.section ".text"
+.align 4
+.proc 4
+Dfunc:
+save %sp,-96,%sp
+ret; restore
+.global f
+.align 4
+.proc 4
+f:
+retl; nop
+.global f1
+.align 4
+.proc 4
+f1:
+retl; nop
+.global f2
+.align 4
+.proc 4
+f2:
+save %sp,-96,%sp
+ret; restore
+.global g
+.align 4
+.proc 4
+g:
+save %sp,-96,%sp
+ret; restore
+.global h
+.align 4
+.proc 4
+h:
+save %sp,-96,%sp
+ret; restore
+.global h1
+.align 4
+.proc 4
+h1:
+save %sp,-96,%sp
+ret; restore
+.global h2
+.align 4
+.proc 4
+h2:
+retl; nop
+.section ".data"
+.align 4
+.21:
+.word 1
+.global set1
+.section ".text"
+.align 4
+.proc 4
+set1:
+retl; nop
+.section ".data"
+.align 4
+.23:
+.word 2
+.global set2
+.section ".text"
+.align 4
+.proc 4
+set2:
+retl; nop
+.align 4
+.proc 4
+goo:
+retl; nop
+.global sss
+.align 4
+.proc 4
+sss:
+retl; nop
+.section ".bss"
+.local .27
+.common .27,4,4
+.global rrr
+.section ".text"
+.align 4
+.proc 4
+rrr:
+retl; nop
+.global setstatic
+.align 4
+.proc 4
+setstatic:
+retl; nop
+.global gx1
+.align 4
+.proc 4
+gx1:
+save %sp,-96,%sp
+st %r24,[%fp+68]
+st %r25,[%fp+72]
+ret; restore
+.global ff1
+.align 4
+.proc 4
+ff1:
+save %sp,-96,%sp
+st %r24,[%fp+68]
+st %r25,[%fp+72]
+ret; restore
+.global gg1
+.align 4
+.proc 4
+gg1:
+retl; nop
+.global hh1
+.align 4
+.proc 4
+hh1:
+retl; nop
+.global cmp
+.align 4
+.proc 4
+cmp:
+save %sp,-96,%sp
+ret; restore
+.global sort
+.align 4
+.proc 4
+sort:
+save %sp,-96,%sp
+ret; restore
+.global onearg
+.align 4
+.proc 4
+onearg:
+save %sp,-96,%sp
+ret; restore
+.section ".bss"
+.global ss4
+.type ss4,#object
+.common ss4,4,4
+.local ss2
+.common ss2,4,4
+.local ss5
+.common ss5,4,4
+.global ss3
+.type ss3,#object
+.common ss3,4,4
+.local ss1
+.common ss1,4,4
+.local yy
+.common yy,4,4
+.global z
+.type z,#object
+.common z,4,4
+.global y
+.type y,#object
+.common y,4,4
+.global x
+.type x,#object
+.common x,4,4
+.global b
+.type b,#object
+.common b,4,4
+.global a
+.type a,#object
+.common a,4,4
