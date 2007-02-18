@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: prof.nw,v 2.9 1997/05/22 22:44:00 drh Exp $";
+static char rcsid[] = "$Id$";
 
 struct callsite {
         char *file, *name;

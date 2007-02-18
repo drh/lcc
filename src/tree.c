@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: tree.nw,v 2.4 1997/05/16 00:01:53 drh Exp $";
+static char rcsid[] = "$Id$";
 
 int where = STMT;
 static int nid = 1;             /* identifies trees & nodes in debugging output */

@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: input.nw,v 2.9 1997/05/30 22:37:13 drh Exp $";
+static char rcsid[] = "$Id$";
 
 static void pragma(void);
 static void resynch(void);

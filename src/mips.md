@@ -1113,4 +1113,4 @@ Interface mipsebIR = {
 
         }
 };
-static char rcsid[] = "$Id: mips.nw,v 2.18 1997/05/23 22:05:41 cwfraser Exp $";
+static char rcsid[] = "$Id$";

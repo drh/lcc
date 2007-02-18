@@ -1,7 +1,7 @@
 #include "c.h"
 #include <stdio.h>
 
-static char rcsid[] = "$Id: inter.nw,v 2.21 1997/05/29 00:42:48 drh Exp $";
+static char rcsid[] = "$Id$";
 
 static Node *tail;
 static int off, maxoff;

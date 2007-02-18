@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: event.nw,v 1.8 1997/02/16 21:13:34 drh Exp $";
+static char rcsid[] = "$Id$";
 
 struct entry {
         Apply func;

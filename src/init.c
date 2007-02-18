@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: init.nw,v 2.4 1997/05/10 00:53:49 drh Exp $";
+static char rcsid[] = "$Id$";
 
 static int curseg;              /* current segment */
 

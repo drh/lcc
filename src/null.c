@@ -19,7 +19,7 @@ static void progend(void) {}
 static void segment(int s) {}
 static void space(int n) {}
 
-static char rcsid[] = "$Id: inter.nw,v 2.21 1997/05/29 00:42:48 drh Exp $";
+static char rcsid[] = "$Id$";
 
 Interface nullIR = {
         1, 1, 0,        /* char */

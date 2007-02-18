@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: string.nw,v 1.9 1997/05/02 20:32:31 drh Exp $";
+static char rcsid[] = "$Id$";
 
 static struct string {
         char *str;

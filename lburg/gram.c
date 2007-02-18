@@ -24,7 +24,7 @@ YYCONST static char yysccsid[] = "@(#)yaccpar	1.8 (Berkeley +Cygnus.28) 01/20/91
 #line 2 "gram.y"
 #include <stdio.h>
 #include "lburg.h"
-static char rcsid[] = "$Id: gram.y,v 2.1 1994/11/30 21:53:18 drh Exp $";
+static char rcsid[] = "$Id$";
 /*lint -e616 -e527 -e652 -esym(552,yynerrs) -esym(563,yynewstate,yyerrlab) */
 #line 7 "gram.y"
 typedef union {
