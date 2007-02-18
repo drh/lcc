@@ -3,7 +3,7 @@ at CS Dept., Princeton University */
 
 #include <string.h>
 
-static char rcsid[] = "$Id: ultrix.c,v 1.2 1996/09/28 21:57:41 drh Exp $";
+static char rcsid[] = "$Id$";
 
 #ifndef LCCDIR
 #define LCCDIR "/usr/local/lib/lcc/"

@@ -8,7 +8,7 @@
  * annotate listings of files with prof.out data
  */
 
-static char rcsid[] = "$Id: bprint.nw,v 1.4 1996/02/28 22:29:55 drh Exp $";
+static char rcsid[] = "$Id$";
 
 #define ARGS(list) list
 #define NDIRS (sizeof dirs/sizeof dirs[0] - 1)

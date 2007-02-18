@@ -38,7 +38,7 @@ static Symbol quo, rem;
 
 /*
 generated at Fri Oct 18 20:46:05 1996
-by $Id: lburg.c,v 2.2.1.2 1995/12/20 19:09:53 drh Exp $
+by $Id$
 */
 static void _kids ARGS((NODEPTR_TYPE, int, NODEPTR_TYPE[]));
 static void _label ARGS((NODEPTR_TYPE));

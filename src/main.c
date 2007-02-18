@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "lcc $Name: v3_6 $($Id: main.nw,v 3.3.1.7 1995/12/14 23:11:39 drh Exp $)";
+static char rcsid[] = "lcc $Name: v3_6 $($Id$)";
 
 static void compile ARGS((char *));
 static int doargs ARGS((int, char **));

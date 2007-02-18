@@ -2,7 +2,7 @@
 # line 2 "lburg/gram.y"
 #include <stdio.h>
 #include "lburg.h"
-static char rcsid[] = "$Id: gram.y,v 2.1 1994/11/30 21:53:18 drh Exp $";
+static char rcsid[] = "$Id$";
 /*lint -e616 -e527 -e652 -esym(552,yynerrs) -esym(563,yynewstate,yyerrlab) */
 
 # line 7 "lburg/gram.y"

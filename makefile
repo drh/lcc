@@ -1,4 +1,4 @@
-# $Id: makefile,v 1.4 1996/10/19 13:18:34 drh Exp $
+# $Id$
 SHELL=/bin/sh
 
 what:
