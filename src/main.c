@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Name: v4_1 $($Id: main.nw,v 4.17 1997/09/25 23:07:49 drh Exp $)";
+static char rcsid[] = "$Name: v4_1 $($Id$)";
 
 static void typestab(Symbol, void *);
 

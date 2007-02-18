@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: expr.nw,v 2.29 1998/09/09 00:43:24 drh Exp $";
+static char rcsid[] = "$Id$";
 
 static char prec[] = {
 #define xx(a,b,c,d,e,f,g) c,

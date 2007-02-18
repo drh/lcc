@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: dag.nw,v 2.30 1998/09/21 21:24:47 drh Exp $";
+static char rcsid[] = "$Id$";
 
 #define iscall(op) (generic(op) == CALL \
 	|| IR->mulops_calls \

@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: tree.nw,v 2.8 1998/09/03 16:49:01 drh Exp $";
+static char rcsid[] = "$Id$";
 
 int where = STMT;
 static int warn;

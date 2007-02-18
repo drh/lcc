@@ -1,4 +1,4 @@
-# $Id: nt.m4,v 1.5 1997/07/31 23:58:20 drh Exp $
+# $Id$
 HOSTFILE=etc/win32.c
 TARGET=x86\win32
 TEMPDIR=\\temp
@@ -12,7 +12,7 @@ LDFLAGS=-Zi -MLd -Fd$(BUILDDIR)^\
 B=$(BUILDDIR)^\
 T=$B$(TARGET)\tst^\
 C=$Blcc -Wo-lccdir=$(BUILDDIR) -Wf-target=$(TARGET) -I$B$(TARGET)/include
-# $Id: makefile.m4,v 1.12 1998/09/08 23:47:23 drh Exp $
+# $Id$
 
 what:
 	-@echo make all rcc lburg cpp lcc bprint liblcc triple clean clobber

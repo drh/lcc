@@ -1,4 +1,4 @@
-# $Id: unix.m4,v 1.4 1997/07/03 16:16:52 drh Exp $
+# $Id$
 TEMPDIR=/tmp
 A=.a
 O=.o
@@ -17,7 +17,7 @@ include $(CUSTOM)
 B=$(BUILDDIR)/
 T=$(TSTDIR)/
 
-# $Id: makefile.m4,v 1.12 1998/09/08 23:47:23 drh Exp $
+# $Id$
 
 what:
 	-@echo make all rcc lburg cpp lcc bprint liblcc triple clean clobber

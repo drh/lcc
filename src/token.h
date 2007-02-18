@@ -1,4 +1,4 @@
-/* $Id: lex.nw,v 2.18 1998/05/26 20:36:20 drh Exp $ */
+/* $Id$ */
 /*
 xx(symbol,	value,	prec,	op,	optree,	kind,	string)
 */

@@ -1,7 +1,7 @@
 #ifndef __STDDEF
 #define __STDDEF
 
-/* $Id: stddef.m4,v 1.2 1998/04/30 20:41:07 drh Exp $ */
+/* $Id$ */
 
 #define NULL 0
 #define offsetof(ty,mem) ((size_t)((char*)&((ty*)0)->mem - (char*)0))

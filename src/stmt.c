@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: stmt.nw,v 2.12 1998/06/29 21:57:35 drh Exp $";
+static char rcsid[] = "$Id$";
 
 #define SWSIZE 512
 

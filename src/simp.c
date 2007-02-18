@@ -1,7 +1,7 @@
 #include "c.h"
 #include <float.h>
 
-static char rcsid[] = "$Id: simp.nw,v 2.18 1998/07/02 00:23:05 drh Exp $";
+static char rcsid[] = "$Id$";
 
 #define foldcnst(TYPE,VAR,OP) \
 	if (l->op == CNST+TYPE && r->op == CNST+TYPE) \

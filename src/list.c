@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: list.nw,v 2.1 1995/07/17 14:31:52 drh Exp $";
+static char rcsid[] = "$Id$";
 
 static List freenodes;		/* free list nodes */
 

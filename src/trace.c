@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: trace.nw,v 2.6 1997/09/05 20:36:26 drh Exp $";
+static char rcsid[] = "$Id$";
 
 static char *fmt, *fp, *fmtend;	/* format string, current & limit pointer */
 static Tree args;		/* printf arguments */

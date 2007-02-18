@@ -1188,5 +1188,5 @@ Interface alphaIR = {
 };
 
 
-static char rcsid[] = "$Id: alpha.nw,v 2.16 1997/09/17 00:09:06 drh Exp $";
+static char rcsid[] = "$Id$";
 

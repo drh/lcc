@@ -1,5 +1,5 @@
 /*      @(#)stab.h 1.11 92/05/11 SMI      */
-/* $Id: sparc.nw,v 2.31 1998/09/10 22:40:19 drh Exp $ */
+/* $Id$ */
 /*
  * Copyright (c) 1990 by Sun Microsystems, Inc.
  */

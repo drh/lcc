@@ -1,4 +1,4 @@
-/* $Id: intro.nw,v 2.8 1998/09/15 23:17:18 drh Exp $ */
+/* $Id$ */
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>

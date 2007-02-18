@@ -1,4 +1,4 @@
-/* $Id: gen.nw,v 2.36 1998/09/09 00:44:23 drh Exp $ */
+/* $Id$ */
 typedef struct {
 	unsigned char max_unaligned_load;
 	Symbol (*rmap)(int);

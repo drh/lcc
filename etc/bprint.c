@@ -8,7 +8,7 @@
  * annotate listings of files with prof.out data
  */
 
-static char rcsid[] = "$Id: bprint.nw,v 1.5 1997/05/29 00:43:26 drh Exp $";
+static char rcsid[] = "$Id$";
 
 #define NDIRS (sizeof dirs/sizeof dirs[0] - 1)
 #define NEW(p,a) ((p) = alloc(sizeof *(p)))

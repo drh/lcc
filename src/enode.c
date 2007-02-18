@@ -1,6 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id: enode.nw,v 2.15 1998/07/02 00:23:01 drh Exp $";
+static char rcsid[] = "$Id$";
 
 static Tree addtree(int, Tree, Tree);
 static Tree andtree(int, Tree, Tree);
