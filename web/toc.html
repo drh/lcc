@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+		<link title="David R. Hanson" href="http://drh.home.dyndns.org" rev="made">
+		<link href="style.css" rel="stylesheet" type="text/css" media="all">
+		<title>Table of Contents: A Retargetable C Compiler</title>
+	</head>
+
+	<body>
+		<p><span class="banner"><a href="http://www.cs.princeton.edu">Princeton CS</a> &raquo; <a href="http://www.cs.princeton.edu/software">Software</a> &raquo; <a href="http://www.cs.princeton.edu/software/lcc/">lcc, A Retargetable C Compiler</a> &raquo; Table of Contents</span></p>
+		<h1>A Retargetable C Compiler: Design and Implementation</h1>
+		<h1>Table of Contents</h1>
+		<dl>
+			<dt><b>1. Introduction</b>
+			<dd>Literate Programs. How to Read This Book. Overview. Design. Common Declarations. Syntax Specifications. Errors.
+			<dt><b>2. Storage Management</b>
+			<dd>Memory Management Interface. Arena Representation. Allocating Space. Deallocating Space. Strings.
+			<dt><b>3. Symbol Management</b>
+			<dd>Representing Symbols. Representing Symbol Tables. Changing Scope. Finding and Installing Identifiers. Labels. Constants. Generated Variables.
+			<dt><b>4. Types</b>
+			<dd>Representing Types. Type Management. Type Predicates. Type Constructors. Function Types. Structure and Enumeration Types. Type-Checking Functions. Type Mapping.
+			<dt><b>5. Code Generation Interface</b>
+			<dd>Type Metrics. Interface Records. Symbols. Types. Dag Operators. Interface Flags. Initialization. Definitions. Constants. Functions. Interface Binding. Upcalls.
+			<dt><b>6. Lexical Analysis</b> <a href="doc/06.pdf"><i>Download/view this chapter</i></a> (PDF, 339KB)
+			<dd>Input. Recognizing Tokens. Recognizing Keywords. Recognizing Identifiers. Recognizing Numbers. Recognizing Character Constants and Strings.
+			<dt><b>7. Parsing</b>
+			<dd>Languages and Grammars. Ambiguity and Parse Trees. Top-Down Parsing. FIRST and FOLLOW Sets. Writing Parsing Functions. Handling Syntax Errors.
+			<dt><b>8. Expressions</b>
+			<dd>Representing Expressions. Parsing Expressions. Parsing C Expressions. Assignment Expressions. Conditional Expressions. Binary Expressions. Unary and Postfix Expressions. Primary Expressions.
+			<dt><b>9. Expression Semantics</b>
+			<dd>Conversions. Unary and Postfix Operators. Function Calls. Binary Operators. Assignments. Conditionals. Constant Folding.
+			<dt><b>10. Statements</b>
+			<dd>Representing Code. Execution Points. Recognizing Statements. If Statements. Labels and Gotos. Loops. Switch Statements. Return Statements. Managing Labels and Jumps.
+			<dt><b>11. Declarations</b>
+			<dd>Translation Units. Declarations. Declarators. Function Declarators. Structure Specifiers. Function Definitions. Compound Statements. Finalization. The Main Program.
+			<dt><b>12. Generating Intermediate Code</b>
+			<dd>Eliminating Common Subexpressions. Building Nodes. Flow of Control. Assignments. Function Calls. Enforcing Evaluation Order. Driving Code Generation. Eliminating Multiply Referenced Nodes.
+			<dt><b>13. Structuring the Code Generator</b>
+			<dd>Organization of the Code Generator. Interface Extensions. Upcalls. Node Extensions. Symbol Extensions. Frame Layout. Generating Code to Copy Blocks. Initialization.
+			<dt><b>14. Selecting and Emitting Instructions</b>
+			<dd>Specifications. Labelling the Tree. Reducing the Tree. Cost Functions. Debugging. The Emitter. Register Targeting. Coordinating Instruction Selection. Shared Rules.
+			<dt><b>15. Register Allocation</b>
+			<dd>Organization. Tracking the Register State. Allocating Registers. Spilling.
+			<dt><b>16. Generating MIPS R3000 Code</b>
+			<dd>Registers. Selecting Instructions. Implementing Functions. Defining Data. Segments. Copying Blocks.
+			<dt><b>17. Generating SPARC Code</b>
+			<dd>Registers. Selecting Instructions. Implementing Functions. Defining Data. Copying Blocks.
+			<dt><b>18. Generating Intel X86 Code</b>
+			<dd>Registers. Selecting Instructions. Implementing Functions. Defining Data.
+			<dt><b>19. Retrospective</b>
+			<dd>Data Structures. Interface. Syntactic and Semantic Analyses. Code Generation and Optimization. Testing and Validation.
+		</dl>
+		<hr>
+		<address><a href="http://cwfraser.webhop.net">Chris Fraser</a><br>
+			<a href="http://drh.home.dyndns.org">David Hanson</a><br>
+			$Revision$ $Date$</address>
+	</body>
+
+</html>
