@@ -323,7 +323,7 @@ the generated assembly code into <code>.asm</code> files.</p>
 
 <p>The <code>inputs</code> array holds a null-terminated string of directories separated
 by colons or semicolons. These are used as the default value of <code>LCCINPUTS</code>, if
-the environment variable <code>LCCINPUTS</code> is not set; see the <a HREF="lcc.pdf">man
+the environment variable <code>LCCINPUTS</code> is not set; see the <a HREF="lcc.1">man
 page</a>.</p>
 
 <p>Each command template is an array of pointers to strings terminated with a null
@@ -362,7 +362,7 @@ includes the string &quot;<code>win32</code>&quot;, the driver assumes it's runn
 Windows. lcc can generate code for <em>all</em> of the <em>target</em><code>/</code><em>os</em>
 combinations listed in the file <code>src/bind.c</code>. The <code>-target</code> option
 specifies the default combination. The driver's <code>-Wf</code> option can be used to
-specify other combinations; the <a HREF="lcc.pdf">man page</a> elaborates.</p>
+specify other combinations; the <a HREF="lcc.1">man page</a> elaborates.</p>
 
 <p><code>as</code> gives the command for invoking the assembler. On Linux, you must be
 running at least version 2.8.1 of the GNU assembler; earlier versions mis-assemble some
@@ -740,8 +740,8 @@ Chapter 1 of <cite>A Retargetable C Compiler: Design and Implementation</cite>.
     some construct, please include the corrupt assembly code in the comments and flag the
     incorrect instructions if you can.</li>
   <li>Confirm that your error hasn't been fixed already. The latest version of lcc is available at
-    <a href="http://drh.svnrepository.com/svn/lcc/trunk/"><code>http://drh.svnrepository.com/svn/lcc/trunk/</code></a>.
-    The <a HREF="../LOG"><code>LOG</code></a> file reports what errors
+    <a href="http://github.com/drh/lcc"><code>http://github.com/drh/lcc</code></a>.
+    The <code>LOG</code></a> file there reports what errors
     were fixed and when they were fixed. If you report a error that's been fixed, you might
     get a canned reply.</li>
   <li>Post your program to the newsgroup <a href="news:comp.compilers.lcc"><code>comp.compilers.lcc</code></a> 
@@ -763,8 +763,7 @@ which also includes an archive of recent postings.</p>
 
 <address>
   <a HREF="http://cwfraser.webhop.net">Chris Fraser</a><br>
-  <a HREF="http://drh.home.dyndns.org">David Hanson</a><br>
-  $Revision$ $Date$ 
+  <a HREF="http://drh.home.dyndns.org">David Hanson</a>
 </address>
 </body>
 </html>
