@@ -60,7 +60,7 @@ static void acaller(char *caller, char *file, int x, int y, int count, struct fu
 		q->y = y;
 		q->count = 0;
 		for (r = &callee->callers; *r && (strcmp(q->name, (*r)->name) > 0
-			|| strcmp(q->file, (*r)->file) > 0 || q->y > (*r)->y || q->y > (*r)->y); r = &(*r)->link)
+			|| strcmp(q->file, (*r)->file) > 0 || q->y > (*r)->y); r = &(*r)->link)
 			;
 		q->link = *r;
 		*r = q;
