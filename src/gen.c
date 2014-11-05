@@ -824,7 +824,7 @@ int getregnum(Node p) {
 
 
 unsigned regloc(Symbol p) {
-	assert(p && p->sclass == REGISTER && p->sclass == REGISTER && p->x.regnode);
+	assert(p && p->sclass == REGISTER && p->x.regnode);
 	return p->x.regnode->set<<8 | p->x.regnode->number;
 }
 
