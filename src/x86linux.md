@@ -664,17 +664,18 @@ stmt: CALLV(addrj)   "call %0\naddl $%a-4,%%esp\n"      hasargs(a) + !isstruct(f
 stmt: CALLV(addrj)   "call %0\naddl $%a,%%esp\n"        hasargs(a) +  isstruct(freturn(a->syms[1]->type))
 stmt: CALLV(addrj)   "call %0\n"                        1
 
-freg: CALLF4(addrj)  "call %0\naddl $%a,%%esp\n"        hasargs(a)
-freg: CALLF4(addrj)  "call %0\n"                        1
-
 stmt: CALLF4(addrj)  "call %0\naddl $%a,%%esp\nfstp %%st(0)\n"  hasargs(a)
 stmt: CALLF4(addrj)  "call %0\nfstp %%st(0)\n"                  1
+
+stmt: CALLF8(addrj)  "call %0\naddl $%a,%%esp\nfstp %%st(0)\n"  hasargs(a)
+stmt: CALLF8(addrj)  "call %0\nfstp %%st(0)\n"                  1
+
+freg: CALLF4(addrj)  "call %0\naddl $%a,%%esp\n"        hasargs(a)
+freg: CALLF4(addrj)  "call %0\n"                        1
 
 freg: CALLF8(addrj)  "call %0\naddl $%a,%%esp\n"        hasargs(a)
 freg: CALLF8(addrj)  "call %0\n"                        1
 
-stmt: CALLF8(addrj)  "call %0\naddl $%a,%%esp\nfstp %%st(0)\n"  hasargs(a)
-stmt: CALLF8(addrj)  "call %0\nfstp %%st(0)\n"                  1
 
 stmt: RETI4(reg)  "# ret\n"
 stmt: RETU4(reg)  "# ret\n"
