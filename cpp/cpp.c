@@ -73,7 +73,7 @@ process(Tokenrow *trp)
 			trp->tp += 1;
 			control(trp);
 		} else if (!skipping && anymacros)
-			expandrow(trp, NULL);
+			expandrow(trp, NULL, Notinmacro);
 		if (skipping)
 			setempty(trp);
 		puttokens(trp);
@@ -217,7 +217,7 @@ control(Tokenrow *trp)
 
 	case KLINE:
 		trp->tp = tp+1;
-		expandrow(trp, "<line>");
+		expandrow(trp, "<line>", Notinmacro);
 		tp = trp->bp+2;
 	kline:
 		if (tp+1>=trp->lp || tp->type!=NUMBER || tp+3<trp->lp

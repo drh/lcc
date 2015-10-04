@@ -117,7 +117,7 @@ eval(Tokenrow *trp, int kw)
 	}
 	ntok = trp->tp - trp->bp;
 	kwdefined->val = KDEFINED;	/* activate special meaning of defined */
-	expandrow(trp, "<if>");
+	expandrow(trp, "<if>", Notinmacro);
 	kwdefined->val = NAME;
 	vp = vals;
 	op = ops;
@@ -441,7 +441,7 @@ tokval(Token *tp)
 			if (*p=='u' || *p=='U')
 				v.type = UNS;
 			else if (*p=='l' || *p=='L')
-				;
+				{}
 			else {
 				error(ERROR,
 				  "Bad number %t in #if/#elif", tp);
