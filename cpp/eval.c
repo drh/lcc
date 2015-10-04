@@ -159,7 +159,7 @@ eval(Tokenrow *trp, int kw)
 				if (tp->type==MINUS)
 					*op++ = UMINUS;
 				if (tp->type==STAR || tp->type==AND) {
-					error(ERROR, "Illegal operator * or & in #if/#elsif");
+					error(ERROR, "Illegal operator * or & in #if/#elif");
 					return 0;
 				}
 				continue;
@@ -197,7 +197,7 @@ eval(Tokenrow *trp, int kw)
 			continue;
 
 		default:
-			error(ERROR,"Bad operator (%t) in #if/#elsif", tp);
+			error(ERROR,"Bad operator (%t) in #if/#elif", tp);
 			return 0;
 		}
 	}
@@ -206,14 +206,14 @@ eval(Tokenrow *trp, int kw)
 	if (evalop(priority[END])!=0)
 		return 0;
 	if (op!=&ops[1] || vp!=&vals[1]) {
-		error(ERROR, "Botch in #if/#elsif");
+		error(ERROR, "Botch in #if/#elif");
 		return 0;
 	}
 	if (vals[0].type==UND)
 		error(ERROR, "Undefined expression value");
 	return vals[0].val;
 syntax:
-	error(ERROR, "Syntax error in #if/#elsif");
+	error(ERROR, "Syntax error in #if/#elif");
 	return 0;
 }
 
@@ -444,7 +444,7 @@ tokval(Token *tp)
 				;
 			else {
 				error(ERROR,
-				  "Bad number %t in #if/#elsif", tp);
+				  "Bad number %t in #if/#elif", tp);
 				break;
 			}
 		}
@@ -508,7 +508,7 @@ tokval(Token *tp)
 		break;
 
 	case STRING:
-		error(ERROR, "String in #if/#elsif");
+		error(ERROR, "String in #if/#elif");
 		break;
 	}
 	return v;
