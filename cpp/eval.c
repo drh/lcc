@@ -485,7 +485,7 @@ tokval(Token *tp)
 				}
 			} else {
 				static char cvcon[]
-				  = "b\bf\fn\nr\rt\tv\v''\"\"??\\\\";
+				  = "a\ab\bf\fn\nr\rt\tv\v''\"\"??\\\\";
 				for (i=0; i<sizeof(cvcon); i+=2) {
 					if (*p == cvcon[i]) {
 						n = cvcon[i+1];
