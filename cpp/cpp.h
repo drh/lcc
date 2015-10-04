@@ -98,6 +98,7 @@ Source	*setsource(char *, FILE *, char *);
 void	unsetsource(void);
 void	puttokens(Tokenrow *);
 void	process(Tokenrow *);
+void	*dorealloc(void *, int);
 void	*domalloc(int);
 void	dofree(void *);
 void	error(enum errtype, char *, ...);
