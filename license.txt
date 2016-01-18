@@ -1,0 +1,86 @@
+MSIL backend for lcc v4.2, version 1.0
+
+This Microsoft Research end user license agreement ("MSR-EULA") is a
+legal agreement between you and Microsoft Corporation (“Microsoft” or
+“we”) for the software or data identified above, which may include
+source code, and any associated materials, text or speech files,
+associated media and "online" or electronic documentation (together,
+the "Software"). 
+
+By installing, copying, or otherwise using the Software, found at
+http://research.microsoft.com/downloads, you agree to be bound by the
+terms of this MSR-EULA. If you do not agree, do not install, copy or
+use the Software. The Software is protected by copyright and other
+intellectual property laws and is licensed, not sold. 
+
+If Software is in object code:
+
+* Upon your agreement to the terms below, you may install one copy of
+the Software on your personal computer and use such copy at no charge
+for your non-commercial research or non-commercial teaching purposes,
+only in an academic or other noncommercial research setting. In
+return, we ask that you agree to the following:
+
+* NO TRANSFER RIGHTS: That you will not copy, sell, rent, lease,
+distribute, sublicense, assign, or otherwise transfer (including by
+loan or gift) the Software and will not attempt to modify it, or to
+reverse engineer or decompile it, except and only to the extent
+authorized. 
+
+* To leave in place all copyright notices and licensing information
+that you might find in the Software. 
+
+* That you will not use the Software in a live operating environment
+where it may be relied upon to perform in the same manner as a
+commercially released product, or with data that has not been
+sufficiently backed up. 
+
+* That any feedback about the Software provided by you to us is
+voluntarily given, and Microsoft shall be free to use the feedback as
+it sees fit without obligation or restriction of any kind, even if the
+feedback is designated by you as confidential.
+
+* NO WARRANTIES WHATSOEVER: That the Software comes “AS IS”, with all
+faults and with no warranties, conditions or representations. The
+implied warranties of merchantability and fitness for a particular
+purpose, and any warranty against interference with your enjoyment of
+the Software or against infringement, do not apply to the Software.
+The entire risk as to satisfactory quality, performance, accuracy, and
+effort concerning the Software is assumed by you. There is no warranty
+that this Software will fulfill any of your particular purposes or
+needs.
+
+* That we have no duty of reasonable care or lack of negligence, and
+we are not obligated to (and will not) provide technical support for
+the Software. 
+
+* That we will not be liable for any damages, including those known as
+direct, indirect, special, consequential, or incidental damages
+related to the Software, this MSR-EULA, or under any legal theory
+(such as negligence), to the maximum extent that overriding applicable
+law permits.
+
+* That if you sue or threaten to sue anyone over patents that you
+think may apply to the Software, or if you breach this MSR-EULA in any
+way, your license to the Software ends automatically. 
+
+* That this MSR-EULA shall be construed and controlled by the laws of
+the State of Washington, USA, without regard to conflicts of law.
+
+If Software is in data form or source code, these additional rights
+and restrictions apply: 
+
+* You may do anything you want with the Software source code or data
+for non-commercial research or non-commercial teaching purposes free
+of charge, provided that you agree to the following: 
+
+* To make freely available to others the source code or data of any
+modifications or additions you make to the Software, and any related
+documentation, solely and exclusively under the same terms as this
+License. 
+
+* That Microsoft is granted back, without limitations, the rights to
+reproduce, install, use, modify, distribute and transfer your
+modifications to the Software source code or data. 
+
+Copyright © Microsoft Corporation. All rights reserved.
