@@ -1,0 +1,12 @@
+add_executable(cpp
+               cpp.c 
+               lex.c 
+               nlist.c 
+               tokens.c 
+               macro.c 
+               eval.c
+               include.c 
+               hideset.c 
+               getopt.c 
+               unix.c
+               )
