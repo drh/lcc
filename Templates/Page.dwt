@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>lcc, A Retargetable Compiler for ANSI C</title>
+<!-- TemplateEndEditable -->
+<link href="../style.css" rel="stylesheet" type="text/css">
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+</head>
+<body>
+<div>
+<h2>lcc, A Retargetable Compiler for ANSI C</h2>
+	<p class="top-menu"><a href="../index.html">Home</a> &middot;
+		<a href="https://github.com/drh/lcc">Code</a> &middot;
+		<a href="../current/doc/install.html">Installation</a> &middot;
+		<a href="../faq.html">FAQ</a> &middot;
+		<a href="https://github.com/drh/lcc/releases">Releases</a> &middot;
+		<a href="../docs.html">Docs</a> &middot;
+                <a href="../extras/index.html">Extras</a></p>
+	</div>
+<!-- TemplateBeginEditable name="body" -->
+<!-- TemplateEndEditable -->
+	<hr>
+<p style="margin: 0;"><a href="http://cwfraser.webhop.net"><em>Chris Fraser</em></a> &middot; <a href="http://drh.webhop.net"><em>David Hanson</em></a></p>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html><!-- InstanceBegin template="/Templates/Page.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta charset="UTF-8">
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Preface</title>
+<!-- InstanceEndEditable -->
+<link href="style.css" rel="stylesheet" type="text/css">
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+</head>
+<body>
+<div>
+<h2>lcc, A Retargetable Compiler for ANSI C</h2>
+	<p class="top-menu"><a href="index.html">Home</a> &middot;
+		<a href="https://github.com/drh/lcc">Code</a> &middot;
+		<a href="current/doc/install.html">Installation</a> &middot;
+		<a href="faq.html">FAQ</a> &middot;
+		<a href="https://github.com/drh/lcc/releases">Releases</a> &middot;
+		<a href="docs.html">Docs</a> &middot;
+                <a href="extras/index.html">Extras</a></p>
+	</div>
+<!-- InstanceBeginEditable name="body" -->
+<h3>Preface</span></h3>
+
+<p>The compiler is the linchpin of the programmer's toolbox. Working programmers use
+compilers every day and count heavily on their correctness and reliability. A compiler must
+accept the standard definition of the programming language so that source code will be
+portable across platforms. A compiler must generate efficient object code. Perhaps more
+importantly, a compiler must generate correct object code; an application is only as reliable
+as the compiler that compiled it.</p>
+
+<p>A compiler is itself a large and complex application
+that is worthy of study in its own right. This book tours most of the implementation of lcc,
+a compiler for the ANSI C programming language. It tries to be to compiling what Software
+Tools by B. W. Kernighan and P. J. Plauger (Addison-Wesley, 1976), which tours practical
+tools for tasks like text editing and macro processing, is to text processing. Software
+design and implementation are best learned through experience with real tools. This book
+explains in detail and shows most of the code for a real compiler. The source code for the
+complete compiler is available for download.</p>
+
+<p>lcc is a production compiler, not a toy.
+It's been used to compile production programs since 1988 and is now used by hundreds of C
+programmers daily. Detailing most of a production compiler in a book leaves little room for
+supporting material, so we present only the theory needed for the implementation at hand and
+leave the broad survey of compiling techniques to existing texts. The book omits a few
+language features—those with mundane or repetitive implementations and those deliberately
+left as exercises—but the full compiler is available for download, and the book makes it
+understandable.</p>
+
+<p>The obvious use for this book is to learn more about compiler
+construction. But only few programmers need to know how to design and implement compilers.
+Most work on applications and other aspects of systems programming. There are four reasons
+why this majority of C programmers may benefit from this book.</p>
+
+<p>First, programmers who
+understand how a C compiler works are often better programmers in general and better C
+programmers in particular. The compiler writer must understand even the darkest corners of
+the C language; touring the implementation of those corners reveals much about the language
+itself and its efficient realization on modern computers.</p>
+
+<p>Second, most texts on
+programming must necessarily use small examples, which often demonstrate techniques simply
+and elegantly. Most programmers, however, work on large programs that have evolved&mdash;or
+degenerated&mdash;over time. There are few well documented examples of this kind of
+"programming-in-the-large" that can serve as reference examples. lcc isn't perfect, but this
+book documents both its good and bad points in detail and thus provides one such reference
+point.</p>
+
+<p>Third, a compiler is one of the best demonstrations in computer science of the
+interaction between theory and practice. lcc displays both the places where this interaction
+is smooth and the results are elegant and where practical demands strain the theory, which
+shows in the resulting code. Exploring these interactions in a real program helps programmers
+understand when, where, and how to apply different techniques. lcc also illustrates numerous
+C programming techniques.</p>
+
+<p>Fourth, this book is an example of a "literate program".
+Like TeX: The Program by D. E. Knuth (Addison-Wesley, 1986), this book is lcc&rsquo;s source
+code and the prose that describes it. The code is presented in the order that best suits
+understanding, not in the order dictated by the C programming language. The source code that
+appears on the diskette is extracted automatically from the book's text files.</p>
+
+<p>This
+book is well suited to self-study in both academic and professional settings. The book and
+its distribution offer complete documented source code for lcc, so they may interest
+practitioners who wish to experiment with compilation or those working in application areas
+that use or implement language-based tools and techniques, such as user interfaces.</p>
+<p>The book shows a large software system, warts and all. It could thus be the subject of a
+post-mortem in a software engineering course, for example.</p>
+
+<p>For compiler courses, this
+book complements traditional compiler texts. This book shows <em>one</em> way of implementing
+a C compiler while traditional texts survey algorithms for solving the broad range of
+problems encountered in compiling. Limited space prevents such texts from including more than
+a toy compiler. Code generation is often treated at a particularly high level to avoid tying
+the book to a specific computer.</p>
+
+<p>As a result, many instructors assign a substantial
+programming project to give their students some practical experience. These instructors
+usually must write these compilers from scratch; students duplicate large portions and have
+to use the rest with only limited documentation. The situation is trying for both and
+unsatisfying to boot, because the compilers are still toys. By documenting most of a real
+compiler and providing the source code, this book offers an alternative.</p>
+
+<p>This book
+presents full code generators for the MIPS R3000, SPARC, and Intel 386 and successor
+architectures. It exploits recent research that produces code generators from compact
+specifications. These methods allow us to present complete code generators for several
+machines, which no other books do. Presenting several code generators avoids tying the book
+to a single machine and helps students appreciate engineering retargetable software.</p>
+
+<p>Assignments can add language features, optimizations, and targets. When used with a
+traditional survey text, assignments could also replace existing modules with those using
+alternate algorithms. Such assignments come closer to the actual practice of compiler
+engineering than assignments that implement most of toy compiler, where too much time goes to
+low-level infra-structure and accommodating repetitive language features. Many of the
+exercises pose just these kinds of engineering problems.</p>
+
+<p>lcc has also been adapted for
+purposes other than conventional compilation. For example, it&rsquo;s been used for building
+a C browser and for generating remote-procedure-call stubs from declarations. It could also
+be used to experiment with language extensions, proposed computer architectures, and code
+generator technologies.</p>
+
+<p>We assume readers are fluent in C and assembly language for
+some computer, know what a compiler is and have a general understanding of one does, and have
+a working understanding of data structures and algorithms at the level covered in typical
+undergraduate courses; the material covered by Algorithms in C by R. Sedgewick
+(Addison-Wesley, 1990), for example, is more than sufficient for understanding lcc.</p>
+
+<!-- InstanceEndEditable -->
+	<hr>
+<p style="margin: 0;"><a href="http://cwfraser.webhop.net"><em>Chris Fraser</em></a> &middot; <a href="http://drh.webhop.net"><em>David Hanson</em></a></p>
+</body>
+<!-- InstanceEnd --></html>

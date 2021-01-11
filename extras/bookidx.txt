@@ -1,0 +1,2068 @@
+A Retargetable C Compiler: Design and Implementation
+Index
+
+
+abstract-declarator, 270, 308
+<abstract function>, 267, 270
+abstract machine code, 99
+abstract syntax trees, 5, 147, 530
+	dags in, 312, 318, 342
+	operators specific to, 149, 313
+	prefix form for, 148
+<access the field described by q>, 182-83
+activation record, see frame
+ADA, 127
+ADD+D, 6
+ADDD, 82, 376, 439, 480, 514
+ADDF, 82, 376, 439, 480, 514
+ADD, 82, 84, 109, 158, 177, 181, 183, 192, 204-5, 209, 211-12, 242, 318
+add, 205, 206, 283-84
+ADD+I, 148-49
+ADDI, 82, 149, 373, 376, 387, 393, 404, 430, 436, 438, 470-71, 474, 504-7
+addlocal, 211, 219, 234, 319, 325
+ADDP, 82-83, 376, 386, 404, 436, 438, 470-71, 474, 504-7
+<ADD+P transformations>, 209, 210-12
+address calculations
+	MIPS, 436
+	SPARC, 470
+	X86, 503
+addressed, 49, 58, 61, 77, 95, 179, 210, 296, 327, 449, 483, 486
+<Address>, 217, 219
+Address, 211, 217, 219, 338, 339-40, 341
+address, 89, 90, 211, 217, 219, 339-40, 457, 458, 490, 521, 522
+<address of>, 164, 179
+ADDRF, 84, 168, 169, 179, 319, 388, 399
+ADDRF+P, 5-6
+ADDRFP, 86, 347, 351, 361, 376, 388, 436, 469, 470, 504
+<ADDRG,ADDRF>, 319
+ADDRG, 84, 168, 169, 179, 319, 327, 340, 469
+ADDRG+P, 148
+ADDRGP, 6, 8, 83, 247, 351, 376, 436, 442, 469, 475-76, 503, 515
+<ADDRL>, 319
+ADDRL, 84, 168, 169, 179, 319, 388, 399, 420
+ADDRLP, 346, 347, 351, 361, 376, 377, 388, 396, 404, 425-26, 436, 469, 470-72, 504
+addrof, 189, 190, 191
+<ADD..RSH>, 318, 319
+addrtree, 210, 211, 212, 219, 328, 339
+addtree, 109, 155, 159, 192
+ADD+U, 204
+ADDU, 82, 376, 404, 436, 438, 470-71, 474, 504-7
+<affirmation>, 164
+Aflag, 62, 159, 160, 180, 188, 221, 225, 235, 243, 260, 262, 266, 280, 290-91, 297, 459, 492
+<a fragment label>, 1-2
+aggregate types, 54
+-A, 62, 124, 160, 244, 263, 281, 292, 296, 459, 492
+-a, 220
+align, 26-27, 54, 56-58, 61-63, 72, 78, 79, 182, 282-83, 285, 328, 334, 348, 365-66, 449, 458, 492, 524
+alignment
+	of allocated memory, 27
+	of structures and unions, 283, 285
+<allocate a new block>, 27, 28
+allocate, 24-25, 26, 27, 28, 31, 32-34, 97
+<allocate registers>, 402, 415, 417
+allocating registers, 354, 408, 413, 417
+allocation arenas, see arenas
+<alloc.c>, 25
+alloc.c, 15-16
+ambiguous languages, 129
+ANDAND, 109, 163
+<AND>, 318, 323
+AND, 109, 149, 160, 174, 225, 313, 318, 322-23, 335
+andtree, 109, 192, 322
+<an identifier>, 167, 170
+<announce q>, 211
+<announce the constant, if necessary>, 48, 49
+append, 34, 73, 271, 274, 294-95, 299
+applicative functions, 150
+apply, 41, 42
+arena, 25, 26, 44
+arenas, 23, 97, 150, 224, 229, 254
+ARG+B, 185, 246
+ARGB, 82, 88, 355, 367, 376, 434, 446, 447, 465, 483, 513, 529
+argc, 89, 305-6, 307, 370, 433, 458, 466, 498
+ARGD, 82, 376, 444-46, 478, 479, 514
+ARGF, 82, 376, 444-46, 478, 514
+<ARG>, 318, 334
+ARG, 82-83, 84-86, 88, 150, 184-86, 188, 318, 332, 333, 334-36, 357, 359, 403, 405, 445, 477-79
+ARG+I, 185
+ARGI, 83, 376, 444-46, 477, 512
+argoffset, 358, 366, 366, 445
+ARGP, 83, 332, 376, 444-46, 477, 512
+argreg, 444, 445-46, 449
+ARGS, 17, 18
+argument-build area, 94, 366
+	MIPS, 452
+	SPARC, 477, 487
+argument evaluation order, 88, 183, 332
+argument transmission, 356
+	MIPS, 444, 449-50
+	SPARC, 477
+	X86, 512, 519
+argv, 89, 305-6, 307, 370, 433, 458, 466, 498
+arithmetic conversions, 173
+arithmetic types, 54
+_arity, 389
+<array>, 267, 268
+ARRAY, 49, 54, 57, 60, 62-63, 69, 72-73, 109, 266, 268
+array, 61, 62, 72, 123, 182, 242, 266, 302, 304
+arrays
+	parsing declarations of, 268
+	sizes of initialized, 264
+	structures in, 285
+<arrives in an i-register, belongs in memory>, 486
+ASGN+B, 246
+ASGNB, 83, 85, 88, 355, 367, 434, 446-47, 482, 484, 512
+ASGNC, 389, 401, 437, 471-72, 512
+ASGN+F, 5
+ASGNF, 8, 401, 438, 471-72, 514
+<ASGN>, 318, 328-29
+ASGN, 83-86, 157-58, 190, 197, 198, 245, 316, 318, 320, 328-29, 334, 336, 343, 348, 352, 361, 385, 396, 399, 402, 405, 422, 425, 472, 529, 555
+asgn, 191, 202, 234, 302, 339
+ASGN+I, 166, 331, 350
+ASGNI, 86, 374, 387, 400, 401, 437, 471-72, 507-8, 512, 515
+asgnnode, 348
+ASGNP, 86, 401, 437, 471-72, 507, 512
+<asgntree>, 197-99
+asgntree, 157, 192, 196, 197, 245, 282, 350
+askfixedreg, 409, 411
+askreg, 409-10, 411, 412-13, 433
+<askregvar>, 412-13
+askregvar, 357, 410-11, 412, 418, 447, 450-51, 483, 486, 518
+assembler templates, 8, 354, 376, 392
+	question mark in, 506
+assert{(0), 3
+assertions, use of, 3
+<assign field offsets>, 280, 282, 285
+<assign>, 196
+assign, 188, 195, 196, 197, 244
+assigning registers, 354, 408
+<assign location for argument i>, 449-50
+assignment-expression, 154, 157
+assignments
+	dags for, 328
+	multiple, 331
+	of arguments to parameters, 338
+	of structures, 199
+	results of, 198
+	to bit fields, 198, 329
+	to pointers, 196
+	to qualified types, 198
+	values of, 328
+<assign offset to argument i>, 519, 520
+<assign output register>, 417, 418
+<assign r to nodes>, 418, 419
+associativity, 130, 152
+AST, see abstract syntax trees
+atop, 62, 174, 193, 275, 327
+<augmented assignment>, 157, 158
+augmented assignments, 158, 312
+AUTO, 39, 80, 94-95, 187, 191, 211, 255-56, 261-63, 264, 275, 287, 291, 294, 295, 297, 304, 412-13, 423, 449, 486, 518, 520
+<auto local>, 299
+autos, 294, 294-95, 299, 484, 486-87
+avail, 25, 26-27
+
+backpatching, 349
+backslash, 124, 126
+backtracking, 133
+BAND, 84, 177, 198, 207, 209, 318, 330-31
+basic blocks, 313
+BCOM, 84, 318
+BCOMI, 83
+BCOMU, 83, 439, 474-75, 508
+-b, 220, 249
+big endian, 87, 370, 431
+binary-expression, 154, 161
+binary, 173, 192-93, 200
+<bind.c>, 96
+bind.c, 96
+Binding, 96
+bindings, 96, 306
+bitcount, 452
+bit fields, 13, 66
+	and endianness, 66, 87
+	assigning constants to, 330
+	assignments to, 329, 350
+	extracting, 320
+	postincrementing, 336
+	sign extending, 320
+	simplifying references to, 208
+	storage layout of, 279
+	types permitted for, 281
+	unnamed, 309
+bittree, 192, 198, 209, 215, 330-31, 332
+BLANK, 110, 111-12
+<blkcopy>, 367-68
+blkcopy, 357, 367, 368, 372, 434, 446-47, 460, 482, 494
+blkfetch, 355, 356, 368-69, 460, 461, 492, 493, 513
+blkloop, 355, 356, 367-69, 460, 493, 513
+blkreg, 434, 447
+blkstore, 355, 356, 368, 460, 461, 493, 513
+blkunroll, 367, 368, 371, 493
+<Blockbeg>, 217, 219
+Blockbeg, 7, 217, 219, 293, 294, 295, 338, 339, 341
+blockbeg, 93, 95, 339, 355, 365
+<Blockend>, 217, 220
+Blockend, 7, 217, 219, 293, 294, 338, 339, 341
+blockend, 93, 95, 339, 355, 365, 366
+block moves, 199, 355, 367
+	MIPS, 434, 446, 460
+	SPARC, 482, 492
+	X86, 512
+BOR, 84, 318, 330-31
+Borland International, Inc., 496
+bottom-up hashing, 349
+bottom-up parsing, 127, 145
+bp, 97, 392
+branch, 224, 225, 227, 230, 232, 237, 243, 244, 246, 247
+branch tables
+	density of, 238, 250
+	emitting, 342
+	generated code for, 242
+	 MIPS indirect jumps for, 441
+	overhead of, 241
+	SPARC indirect jumps for, 475
+	traversing, 238, 240, 251
+	X86 indirect jumps for, 515
+<break statement>, 221, 232
+bsize, 105, 106-107
+BSS, 91, 265, 300, 304, 458, 459, 491, 492, 501, 524
+btot, 50, 74, 346
+buffer, 105, 106, 107
+BUFSIZE, 105, 105, 107, 112, 122, 125
+<build an ADD+P tree>, 192, 193
+<build the prototype>, 273, 274
+__builtin_va_alist, 484
+BURM, 373, see also lburg
+<BURM signature>, 378-81, 389-91, 406
+BXOR, 84, 318
+
+C++, 527
+CALL+B, 184-86, 189-90, 245-46, 332-33
+CALLB, 85, 88, 186, 332, 465, 476, 483, 529
+CALLD, 86, 442, 443, 476-77, 518
+callee, 93, 94, 286, 290, 292-93, 337-38, 448-49, 451, 453, 484-85, 487-88, 518-20
+callee-saved registers
+	MIPS, 452, 454
+	SPARC, 468
+caller, 93, 94, 286, 292-93, 337-38, 448-49, 451, 453, 484-85, 487-89, 518, 520
+caller-saved registers, 410, 428
+	MIPS, 444
+	SPARC, 468
+CALLF, 86, 442, 443, 476-77, 518
+<CALL>, 318, 332
+CALL, 84-86, 88, 151, 171, 184, 186, 189, 199, 245, 316, 318, 332, 333, 336, 343, 344, 361, 366, 396, 402, 417, 427, 429, 445, 512, 529
+call, 186, 190, 199, 335, 476
+CALL+I, 185-86, 190, 245
+CALLI, 86, 400, 403, 417, 442, 443-44, 476-77, 517
+calling conventions, 93, 94, 184, 338, 529
+	MIPS, 432, 449
+	SPARC, 465, 468
+	X86, 496
+CALLP, 86
+calls, 85
+	as common subexpressions, 347
+<calls>, 166, 186
+calltree, 187, 189, 190
+CALL+V, 186
+CALLV, 85, 332, 333, 442, 476-77, 517
+<case label>, 221, 234
+caselabel, 234, 235
+<cases for one-character operators and punctuation>, 112
+<cases for two-character operators>, 112
+cast, 174, 175, 177, 178, 179, 180, 181, 188, 189, 192-94, 197, 202-3, 210, 212, 214, 233-34, 235, 242, 245, 331
+<cast l and r to type ty>, 192, 193-95
+casts, 179
+cfields, 65, 66, 197, 282
+cfoldcnst, 208, 209
+cfunc, 243, 244, 290, 291, 293-94, 333
+chain rules, 376
+<changes flow of control?>, 416, 417
+character-constant, 122
+characters
+	classifications of, 110
+	signed vs. unsigned, 206, 257
+CHAR, 48, 54, 58, 60, 69, 73, 82, 109, 115, 175, 253, 256, 257, 271, 280, 295
+charmetric, 58, 78
+chartype, 57, 58, 74, 123, 177, 207
+<check for floating constant>, 117
+<check for inconsistent linkage>, 261, 262
+<check for invalid use of the specifier>, 255, 256
+<check for legal statement termination>, 221, 222
+<check for redefinition of tag>, 67
+<check for unreachable code>, 218
+<check if prototype is upward compatible>, 70, 71
+checklab, 227, 293, 309
+<checkref>, 296-97
+checkref, 292-93, 296, 297, 299, 303, 348
+<c.h>, 16
+c.h, 16, 18
+%c, 392
+CISC, 496
+ck, 388
+ckstack, 502, 503, 525
+<classify SPARC parameter>, 485, 486
+<clear register state>, 410, 448, 485, 519
+clobber, 357, 396, 410, 417, 424-25, 427, 429, 435, 444, 468, 477, 479, 502, 517
+<close a scope in a parameter list>, 272
+closures, 42
+cmp, 242, 251
+cmptree, 109, 192, 193, 194, 195
+CNSTC, 82, 388, 389, 403, 437, 470, 473
+CNST+D, 6
+<CNST>, 318, 327
+CNST, 82, 84, 167, 177, 193-94, 198, 202, 203-5, 234, 318, 326-27, 330, 388, 473, 508
+CNSTI, 82, 378, 388, 403, 437, 439, 470, 473-74, 504, 508
+code generator, overview of, 353
+code-generator generators, 13, 373
+codehead, 217, 291, 338, 339, 341
+CODE, 91, 265, 293, 342, 452, 459, 491, 501
+Code, 211, 217, 218, 220, 233, 246-47, 291, 293, 338, 341
+code, 211, 217, 218, 219-20, 233, 243, 246-47, 294, 311
+codelist, 217, 218, 236-37, 243, 246-47, 249, 291, 338, 339
+code lists, 7, 217, 291, 311, 528
+	appending forests to, 223, 311
+	codes for entries in, 218
+	emitting code from, 341
+	generating code from, 337
+command-line options, 307
+	-A, 62, 124, 160, 244, 263, 281, 292, 296, 459, 492
+	-a, 220
+	-b, 220, 249
+	-d, 238, 370
+	-g, 219, 341
+	-G, 458
+	-P, 75, 304
+	-p, 466
+	-pg, 466
+	-target, 96, 306
+	-x, 51
+comma operator, 156, 335
+<comment or />, 112
+common subexpressions, 6, 80, 223, 312, 313, 342, 418
+	allocating registers for, 343
+	bonus match for, 383
+	invalidating, 223, 316, 321, 323, 326, 328
+	recomputing, 360, 382
+commutative operators, 204
+commute, 204, 204, 207, 208
+comparing strings, 29, 45
+compatible, 193, 194
+compiler-construction tools, 12
+<complement>, 164
+compose, 72, 72, 261, 298
+composing conversions, 174
+composite types, 71
+<compound>, 294-96
+compound, 221, 245, 291-92, 293, 298
+compound-statement, 216, 285, 293
+compound statements, 339, 365
+computed, 197, 210, 211, 328
+computed symbols, 90, 210, 339, see also Address
+<compute p->offset>, 282, 283-84
+<compute ty>, 255, 257
+<concrete function>, 267, 268
+<COND>, 318, 325-26
+COND, 149, 159-60, 190, 200, 318, 322, 324-26, 335
+cond, 174, 200, 206, 225, 322
+conditional-expression, 154, 157, 159
+conditional, 224, 225, 229, 326
+conditionals, 200, 224
+	values of, 326
+<condtree>, 200-202
+condtree, 159, 192, 200
+<config.h>, 355, 357-58, 361-62, 365, 377
+config.h, 16, 79, 81-82, 95
+constant, 115
+constant-expression, 202
+constant expressions, 203
+	overflow in, 205
+constant folding, 147, 202
+	of conversions, 206
+constant, 47, 49, 119, 168, 327
+constants, 80
+	enumeration, 68
+	floating point, 47, 92, 456
+	initializing, 91, 305
+	installing, 98
+	integer, 49
+	out-of-line, 47, 49, 78, 327
+	overflow of, 117
+	representing, 47
+<constants>, 38, 47
+CONSTANTS, 38, 40, 47, 48, 80, 89, 303, 521
+constants, 39, 40, 47, 48, 51, 303, 305, 313
+constexpr, 202, 203, 234
+CONST, 54, 60, 63, 69, 72-73, 109, 180, 183, 201, 256-57, 266, 268, 302
+const, 48
+const locations, 197
+consttree, 160, 165-67, 170, 174, 177, 183, 193, 198, 201, 208-9, 242, 320, 330-31
+continued fragments, 2
+<continue statement>, 221, 228
+conventions, see calling conventions
+conversions
+	between unsigneds and doubles, 176
+	MIPS arguments, 450
+	narrowing, 440, 472, 511
+	of conditionals to values, 160
+	of values to conditionals, 174
+	preserving value or sign, 173
+<convert p to super(pty)>, 175
+<convert p to super(ty)>, 175, 176
+<convert p to ty>, 175, 177
+Coordinate, 37, 38, 39, 41, 51-52, 80, 99, 108, 159, 162, 186, 220, 228, 258, 260, 274, 277, 286, 290, 298, 338, 341
+<copy argument to another register?>, 450-51
+costs
+	in tree grammars, 374
+	lburg, 376, 388
+	of chain rules, 376
+count, 81, 82, 85, 315, 343, 346-48, 502
+<count uses of temporaries>, 382, 384
+cover, tree, 373, 377
+<cp points to a Jump to lab>, 246, 247
+<cp points to a Label != lab>, 247, 248
+cross-compiler, 14, 79, 370
+cross-reference lists, 51
+cseg, 459, 491, 492, 501, 523-24
+cse, 346, 384-85, 400, 413, 416, 418-19, 508
+<CVx,NEG,BCOM>, 318, 319
+CVC, 84, 175, 206, 318
+CVCI, 387, 404, 437, 438, 439, 472, 475, 499, 510-11
+CVCU, 437, 438, 439, 472, 475, 510-11
+CVD+F, 5
+CVDF, 8, 440, 451, 481, 514-15
+CVD, 84, 176-77, 207, 318
+CVD+I, 6
+CVDI, 440, 441, 481, 515
+CVFD, 440, 481, 513, 515
+CVF, 84, 175, 318
+CVIC, 440, 472-73, 511
+CVID, 440, 462, 481, 515
+CVI, 84, 176-77, 206-7, 318
+CVIU, 403, 440, 472, 510, 529
+CVP, 84, 175, 206, 318
+CVP+U, 176
+CVPU, 86, 404, 440, 472, 510
+CVS, 84, 175, 318
+CVSI, 83, 437, 438, 439, 472, 475, 510-11
+CVSU, 83, 437, 438, 439, 472, 475, 510-11
+cvtcnst, 206
+cvtconst, 207, 327
+CVU, 84, 176-77, 206, 318
+CVUI, 83, 404, 440, 473, 510, 529
+CVU+P, 245
+CVUP, 86, 404, 440, 473, 510
+
+d6, 433, 445
+dag.c, 311
+dag, 314, 315-16
+dagnode, 315
+dags, 6, 78, 81, 342
+	allocating and initializing, 98, 315
+	argument operators, 85
+	assignment operators, 83
+	avoiding, 89, 340, 343
+	back-end extension to, 82
+	conversion operators, 83
+	converting trees to, 223, 311
+	execution order of, 86
+	forests of, 223, 311
+	jumps, 83
+	multiplicative operators as calls, 87, 319, 343
+	operators, 81-82, 84, 98
+	references to, 81
+	roots, see root nodes
+	searching for, 315
+dalign, 358, 368, 369, 446, 447, 461, 482, 483
+dangling-else ambiguity, 131
+DATA, 91, 264, 265, 458, 459, 491, 501
+<dclglobal>, 260, 261-63
+dclglobal, 253, 260, 261-63, 290, 298
+<dcllocal>, 298-99, 301
+dcllocal, 253, 260, 263, 294, 295, 297, 298, 303, 309
+<dclparam>, 274, 275
+dclparam, 253, 271, 272, 274, 275, 287-88, 298
+dclr1, 265, 266, 267, 268, 270, 308
+dclr, 258-59, 265, 266, 268-70, 273, 281, 308-9
+dead jumps, 246
+<deallocate arenas>, 253, 254
+deallocate, 24, 25, 27, 28, 32-33, 223, 224, 254, 311
+<debugger extension>, 38
+debuggers, 217, 249
+	symbol tables for, 39, 51, 79, 219-20, 341, 432, 465
+<debugging implementation>, 25
+decimal-constant, 116
+<decimal constant>, 116, 117
+declaration, 254
+declaration-before-use rule, 308, 530
+declarations, 254
+declaration-specifiers, 254
+declarator, 266
+<declare a parameter and append it to list>, 273
+<declare id a typedef for ty1>, 260
+<declare id with type ty1>, 258, 260
+decl.c, 253
+decl, 253, 257, 258, 265, 269, 285-86, 287, 295, 298
+DECR, 109, 110, 164, 166
+defaddress, 91, 92, 242, 251, 342, 456, 490, 522, 523
+default argument promotions, 71, 189, 288
+<default label>, 221, 234
+defconst, 91, 92, 305, 371, 455, 456, 490, 522, 523-24, 527
+defglobal, 264, 265, 300, 304-5, 342
+<define L, if necessary, and L+1>, 233, 236
+<define an initialized global>, 458
+<define an uninitialized global>, 458, 459
+defined, 48, 50, 67, 90, 210, 219, 226, 261, 264, 271-72, 274-75, 278, 288, 290, 294, 297, 299-300, 302, 304-5, 346
+<define function id>, 259
+definelab, 224, 225, 226, 230, 234, 236, 241, 246, 247, 291, 292, 312
+definept, 220, 221-22, 224, 227-30, 232-33, 243, 291, 292, 302
+defining constants, 91
+	MIPS, 455
+	SPARC, 490
+	X86, 522
+definitions, 254
+<Defpoint>, 217, 220
+Defpoint, 7, 217, 220, 338, 341
+defpoint, 229
+defstring, 92, 305, 456, 490, 523
+defsymbol, 46, 49-50, 89, 90, 242, 263, 300, 303, 457, 491, 520, 521
+delay slots, 475, 481, 494
+density, 238, 239, 250
+DEREF, 109, 166
+deref, 61, 169, 182
+derivations, 128
+deterministic finite automaton, 107
+dflag, 358, 370
+diagnostics, see errors, reporting
+-d, 238
+digit, 114
+Digital Equipment Corporation, 431
+DIGIT, 110, 111, 113-14, 117, 119-21
+directed acyclic graphs, see dags
+discarding tokens, 140, 144
+DIV, 84, 109, 318, 319, 344
+div, 206
+<DIV..MOD>, 318
+doarg, 356, 357, 403, 445, 446-47, 477, 512
+doargs, 306, 307
+docall, 366, 367, 402-3, 445, 512
+doconst, 303, 305, 327
+doextern, 264, 303, 308
+doglobal, 303, 304, 308
+<do statement>, 221
+DOUBLE, 49, 54, 58, 60, 69, 73, 82, 109, 175, 256-57
+doublemetric, 58, 79
+<double the size of values and labels>, 235
+<double-to-unsigned conversion>, 176
+doubletype, 57, 58, 74, 93, 121, 173, 175-77, 189, 202, 288
+dumpcover, 390, 406
+dumpmatches, 406
+dumprule, 390
+dumptree, 389, 390
+dynamic programming, 374, 379
+
+EAX, 498, 499-500, 508-10, 517-18
+EBNF, 20
+EBX, 498, 499-500
+ECX, 498, 499-500, 508, 510, 513
+EDI, 498, 499-500, 512-13
+EDX, 498, 499-500, 509, 518
+<eliminate or plant the jump>, 248, 249
+emit2, 353-54, 356, 392-93, 444, 446-47, 478, 479, 482-83, 510, 511
+<emitasm>, 391, 392
+emitasm, 353-54, 391, 392, 394
+<emitcode Blockbeg>, 341
+<emitcode Blockend>, 341
+<emitcode Defpoint>, 341
+<emitcode Gen,Jump,Label>, 341, 342
+emitcode, 93, 217, 243, 286, 311, 337, 341, 342, 353-54, 448, 454, 484, 490, 520, 528-29
+<emitcode Local>, 341
+<emitcode Switch>, 341, 342
+<emit epilogue>, 93
+emit, 92, 93, 96, 100-101, 340-41, 342, 353-56, 391-92, 393, 477, 506
+<emit leaf prologue>, 488
+<emit profiling code>, 490
+<emit prologue>, 93
+emitter, 394
+emitting instructions, 354, 356, 391
+<emit unrolled loop>, 368, 369
+enclosing scope, see nested scopes
+endianness, 87, 370, 431
+<end of input>, 112, 124
+enode.c, 147, 155, 171
+<ensure there are at least MAXLINE characters>, 114, 115, 116, 120
+enterscope, 42, 51, 269, 271, 287, 294
+entry sequence, 9, 341, 354, 366
+	MIPS, 452
+	SPARC, 488
+	X86, 519
+<enum constants>, 38, 69
+enumdcl, 256-57, 310
+enumeration-constant, 115
+enumeration constants, 68
+ENUM, 39, 54, 60, 68, 69, 73, 109, 170, 175, 256, 301, 310
+enum-specifier, 310
+Env, 95, 219, 339, 365
+EOI, 5, 112, 134, 144, 222, 253
+epilogue, see also exit sequence
+	lburg, 375
+EQ, 84, 160, 174, 318, 322, 340, 417
+EQI, 441, 475, 516
+<EQ..LT>, 318, 321
+eqtree, 192, 194, 195, 209, 242
+eqtype, 48, 69, 70-71, 72, 194-95, 200, 261, 263, 289-90, 298, 301
+equal, 248, 248
+equated, 340, 341, 342, 351
+equatedto, 46, 248, 341
+<equate LABEL to L+1>, 325
+equatelab, 247, 248, 323, 325, 340, 350-51
+ERANGE, 120, 121
+errcnt, 142-43, 305, 338, 341
+errno, 120, 121
+error.c, 141
+error, 142, 143
+errors
+	detecting, 140
+	recovering from, 140
+	reporting, 20, 142
+escape-sequence, 122
+escape sequences, 121, 126
+ESI, 498, 499-500, 512-13
+evaluation order, 166, 172, 312, 326, 335
+event.c, 14
+event hooks, 160, 244, 293
+execution ordering, 354, 359, 409, 413, 428
+execution points, 217, 220
+exitparams, 259, 269-70, 272, 274
+exitscope, 42, 44, 51, 59, 259, 269, 272, 274, 292-94
+exit sequence, 10, 244, 292, 354, 366
+	MIPS, 454
+	SPARC, 490
+	X86, 520
+expanded basic blocks, 313
+expect, 141, 142, 145, 158, 165, 180, 187, 222, 224, 226, 228-29, 233-34, 268, 270-71, 293-95, 302
+explicit conversions, 179
+export, 90, 265, 293, 456, 490, 501, 523
+expr0, 141, 156, 222, 223, 229, 350
+expr1, 153, 155, 156, 157, 158, 163, 188, 202, 203, 276, 302
+expr2, 153, 157, 159, 161, 203
+expr3, 153, 158, 159, 161, 162, 163, 171, 191
+expr.c, 147
+expression, 154
+expressions, rearranging, 212
+<expression statement>, 221, 222
+expr, 153, 155, 156, 159, 164-65, 172, 181, 224, 225, 233, 243, 350
+extended Backus-Naur form, see EBNF
+extension
+	to interface records, 354
+	to nodes, 358
+	to symbols, 362
+external identifiers, 263, 299
+	consistency of declarations for, 300
+	definitions of, 304
+	importing, 303
+	MIPS, 456
+	SPARC, 490
+	X86, 523
+external linkage, 261
+externals, 39, 40, 171, 263, 297, 300-301, 303
+EXTERN, 39, 80, 168, 211, 256, 259, 261-64, 297-301, 304-5, 457, 521
+<extern local>, 299, 300
+
+fatal, 143
+fcon, 117, 120
+%F, 392, 436
+<FIELD>, 319, 320
+FIELD, 149, 165, 183, 197-98, 209, 313, 319, 320, 328, 329, 336-37
+Field, 65, 66, 68, 76, 182-83, 280, 282, 329
+field, 66, 76, 182, 182-83, 198, 209, 279-82, 320, 329
+fieldleft, 66, 320
+fieldmask, 66, 198, 209, 329
+fieldref, 68, 76, 182
+fieldright, 66, 209, 329, 331
+fields
+	computing offsets and alignments of, 282, 309
+	qualified, 282
+	references to, 181
+	simplifying references to, 211
+	storage layout of, 279
+fields, 276
+<fields for registers>, 362-63
+<fields for temporaries>, 362
+fields, 68, 277, 278, 279, 280, 283, 285, 309-10
+fieldsize, 66, 198, 320, 329
+file, 38, 104, 105, 111, 125, 142
+file scope, 35
+fillbuf, 103-105, 106, 111-12, 115, 124
+finalize, 168, 263, 297, 303, 305, 307, 327
+findlabel, 46, 222, 224, 230, 234-36, 246-47, 322-23, 325
+finite automaton, 107
+firstarg, 332, 333, 334
+firstfile, 104, 105, 142
+first, 25, 26, 28
+FIRST sets, 134, 143, 146
+fixup, 340, 341, 351
+flist, 65, 66, 68, 282
+FLOAT, 48, 54, 58, 73, 82, 109, 175, 256
+floating-constant, 120
+floating types, 54
+floatmetric, 58, 79
+floattype, 57, 58, 71, 74, 93, 121, 173, 177, 189, 207, 288
+flow graphs, 313, 531
+FLTRET, 443, 444
+FLTTMP, 434, 443-44
+FLTVAR, 434
+foldaddp, 209, 210
+foldcnst, 204, 205, 207, 208-9
+foldcond, 230, 250
+f.oldstyle, 63, 189
+FOLLOW sets, 136, 140, 146
+foreach, 41, 42, 68, 269, 288, 292-93, 296, 303
+forest, 220, 246-49, 311, 321, 325, 328, 334, 340, 342-43, 402, 414-15, 417
+forests
+	circularly linked lists for, 311
+	generating code for, 337
+formals
+	MIPS, 436
+	MIPS register, 450
+	offsets for, 362
+	SPARC, 469, 485
+	X86, 519
+format codes, 99
+	%S, 118
+	%t, 62
+<for statement>, 221, 228
+<forstmt>, 229-30
+forstmt, 221, 228, 230, 250
+fprint, 97, 142, 144, 306-7, 389-90
+f.proto, 63, 189
+fragment definitions, 1
+fragment uses, 2
+frame, 93, 354, 364
+	MIPS, 447, 452
+	SPARC, 487
+	X86, 520
+frame pointer, 9, 364
+	SPARC, 467
+	X86, 498
+framesize, 358, 366, 392, 452-55, 487-88, 520
+freeblocks, 27, 27-28, 33
+free, 23, 25, 32-33
+<free input registers>, 417, 418
+freemask, 358, 365-66, 410, 410, 428
+freg2, 433, 434, 443-44, 467, 476
+FREG, 361, 365-66, 434, 443-44, 451-52, 454, 467-68, 477, 488, 500-501
+freg, 467, 476
+freturn, 64, 97, 186, 243-44, 286, 294, 487
+<funcdefn>, 286, 290-93
+funcdefn, 41, 227, 259, 272, 274, 285, 286, 290-94, 333, 337, 348
+FUNC, 41, 46, 49, 97, 205, 210, 218, 226, 229, 233, 239, 254, 260, 271, 274-75, 287, 292, 295, 299, 315, 424
+func, 64, 73, 186, 266, 290
+funcname, 159, 186, 187-89, 225
+function-definition, 285
+<function definition?>, 259
+FUNCTION, 49, 54, 57, 59-60, 64, 69, 72-73, 109, 266, 268, 270
+function, 85, 89-90, 92, 93-94, 100, 211, 216, 252, 276, 286, 287, 289, 292, 293, 294, 311, 333, 337, 341, 353-54, 362, 366, 410, 443, 447, 448, 451-54, 463, 484, 485-90, 518, 519-20, 529, 531
+function pointers, 176, 193
+functions
+	declarations of, 270
+	definitions of, 259, 270, 285, see also funcdefn
+	emitting code for, 92
+	leaf, 487
+	order of evaluating arguments to, 88
+	passing structures to, 88, 169, 183, 185, 190
+	returning structures from, 85, 88, 183, 187, 245, 292, 294, 332, 529, see also retv
+	returning structures from on the SPARC, 484
+	variadic, see variadic functions
+	with no arguments, 64
+function scope, 37
+<function symbols>, 38, 290
+function types, 54
+
+garbage collection, 32
+gcc, 4, 533
+GE, 84, 160, 174, 318, 322, 340, 417, 441
+<gencode Address>, 338, 339
+<gencode Blockbeg>, 338, 339
+<gencode Blockend>, 338, 339
+<gencode Gen,Jump,Label>, 338, 340
+gencode, 93-95, 216, 219, 286, 292, 299, 311, 337, 338, 341, 343, 353-54, 447, 451, 484, 487, 520, 528-29
+<generate a linear search>, 241
+<generate an indirect jump and a branch table>, 241, 242-43
+<generate an initialized static t1>, 302
+<generate a temporary to hold e, if necessary>, 233
+<generate caller to callee assignments>, 338
+generated code
+	for branch tables, 242
+	for conditional expressions, 324
+	for if statements, 224
+	for loops, 227
+	for switch selection, 236, see also branch tables
+	for switch statements, 231
+	for &&, 322
+generated, 46, 49, 50, 80, 197, 210, 305, 457, 491, 521
+generated symbols, 47, 49, 80, 168
+	MIPS, 457
+	SPARC, 491
+<generate nodes for e++>, 335, 336-37
+<generate the selection code>, 233, 236-37
+generic, 97, 98, 151
+generic operators, 84, 149, 203
+Gen, 7, 217, 220, 223, 225, 311, 313, 338, 340, 341
+gen, 79, 81, 92, 93, 95-96, 100-101, 340-41, 343, 353-56, 385, 388, 402, 403, 409, 414, 445, 447, 484, 487, 531
+genident, 49, 50, 168, 234, 242, 291, 294, 302, 327
+genlabel, 45, 46, 49, 67-68, 98, 210, 222, 224, 227-28, 232, 234, 241, 278, 281, 290, 323, 325, 457, 460, 491, 521
+<genreload>, 426
+genreload, 409, 420, 424-25, 426
+<genspill>, 424-25
+genspill, 396, 409, 420, 423, 424
+<get a new block>, 26, 27
+getchr, 108, 126, 226, 295
+getreg, 409-10, 412, 418, 422, 427, 500
+getrule, 382, 390-91, 419
+<gettok cases>, 111, 112-14, 116, 119, 122
+gettok, 108, 110, 111, 115, 117, 119, 123, 125, 134, 142
+-g, 219, 341
+GLOBAL, 38, 40, 41, 42, 49, 58-59, 61, 62, 80, 89, 168, 211, 253, 256, 259, 261-62, 289, 297, 300, 302, 303, 327, 457, 521
+global, 51, 90, 265, 458, 459, 492, 524
+global optimization, 531
+<globals>, 38, 265
+globals, 39, 40, 41, 262, 301
+GNU C compiler, see gcc
+gnum, 458
+<goto statement>, 221, 227
+gp, 433, 458
+grammars, 19
+	tree, 373
+greg, 466, 467, 473, 488
+GT, 84, 160, 174, 242, 318, 322, 340, 417, 441
+
+<h <- hash code for str, end <- 1 past end of str>, 30, 31
+hascall, 151, 171, 186, 187-88
+hashing strings, 30
+<hash op and ty>, 56, 57
+HASHSIZE, 40, 44-46, 48
+hash tables, 30, 40, 314
+hasproto, 75, 260
+hexadecimal-constant, 126
+<hexadecimal constant>, 116
+HEX, 110, 111
+
+ICON, 102, 116, 123, 167
+icon, 117, 126
+<id, ty1 <- the first declarator>, 258
+<id, ty1 <- the next declarator>, 258
+<ident>, 267
+identifier, 114
+identifiers, number of references to, 296, see also refinc
+identifiers, 39, 40, 41, 44, 68, 115, 219, 260, 270, 272, 275, 288, 292, 294, 296-97, 298-99, 303-4, 310
+identities, eliminating, 207
+identity, 207, 208, 209, 210
+<id>, 275
+ID, 109, 114, 115, 155, 157, 167, 182, 221-22, 227, 229, 234, 253, 256, 258, 267-68, 271, 277, 295
+idtree, 168, 170, 185, 189, 191, 199, 222, 225, 242, 245, 292, 296, 302, 326-27, 339
+IEEE floating point, 370, 456
+IF, 108, 113, 155, 157, 221-22, 229, 234, 271, 277, 280, 295
+<if statement>, 221, 224
+ifstmt, 224, 225, 228, 326
+<illegal character>, 111
+immediate instructions
+	MIPS, 438, 443, 463
+	SPARC, 463, 469
+imm, 469, 470-72
+implicit conversions, 6, 172
+import, 90, 264, 303, 456, 457, 491, 523, 524
+incomplete types, 56
+<increment sum>, 1
+incr, 158, 165-66, 171, 192
+INDIRB, 348, 446, 447, 482, 513
+INDIRC, 86, 400, 437-38, 471-72, 505, 510
+INDIR+D, 5
+INDIRD, 6, 8, 401, 438, 471-72, 513
+<indirection>, 164, 179
+INDIR+F, 6
+<INDIR>, 319
+INDIR, 83-84, 86, 169, 178-79, 181, 190, 191, 233, 316, 319-21, 336-37, 343, 345, 346, 347, 349, 361, 383, 384, 395, 399, 415, 422, 425-26, 507-8
+INDIR+I, 148, 336
+INDIRI, 86, 317, 383, 400, 401, 437, 471, 505, 515
+INDIRP, 86, 95, 321, 347, 401, 437, 471, 505
+infd, 104, 105, 106, 307
+infile, 307
+inheritance, 527
+init.c, 14
+initglobal, 264, 299, 300, 302, 309
+<initialize for a struct function>, 187
+<initialize>, 93
+<initialize MIPS register structures>, 433, 434
+<initialize new-style parameters>, 287
+<initialize old-style parameters>, 287-89
+initializer, 254
+initializer, 264
+initializers, 263
+<initialize SPARC register structures>, 466, 467-68
+input buffer sentinel, 103, 106
+input.c, 125
+inputInit, 105, 106, 307
+install, 44, 45, 51, 58-59, 61, 67, 226-27, 260, 262, 275, 299-300
+<install new string str>, 30, 31
+<install token in stmtlabs, if necessary>, 226, 227
+instructions
+	emitting, 391
+	MIPS samples, 430
+	ordering, 409, 413, 428
+	scheduling, 428, 463, 475, 481, 494, 531
+	selecting, 354, 373, 402, 531
+	SPARC samples, 463
+	two-operand, 393, 419
+	X86 samples, 496
+instruction trees
+	projecting, 359, 385, 426
+intconst, 49, 328, 334, 348, 367, 445, 477
+integer-constant, 116
+integral promotions, 71, 172, 189
+integral types, 54
+Intel Corporation, 496
+<interface flags>, 79, 87-89
+<interface>, 16, 78-79, 96
+Interface, 79, 96, 306, 431, 464, 497
+interface record, 79, 252
+	back-end extension to, 354
+	binding to a specific, 96, 306
+<interface routine names>, 432, 464, 497
+<interface to instruction selector>, 356, 379
+internal linkage, 261
+intexpr, 203, 268, 281
+INT, 48, 54, 58, 69, 73-74, 82, 109, 113, 175, 256-57
+intmetric, 58, 78, 79
+INT_MIN, 29, 30, 205, 207
+INTRET, 443, 444
+INTTMP, 434, 443-44
+inttype, 57, 60, 66, 173
+INTVAR, 434
+inverted type, 265
+IREG, 361, 365-66, 434, 443-46, 449, 451-52, 454-55, 467-68, 477, 479-80, 488, 498-500, 509, 513, 517-18
+ireg, 433, 434, 437, 443, 445, 467, 476, 485-86, 489-90
+IR, 46, 49, 50, 58, 61, 96, 168, 188, 211, 242, 263, 265, 282, 284, 291-94, 300, 303-5, 306, 333-34, 338-40, 342, 344, 346, 368-69, 371, 382, 389-92, 400, 402-3, 417, 419
+IRIX operating system, 431
+isaddrop, 179, 191, 197, 199, 210-12, 233, 316, 328
+isarith, 60, 178, 180, 192-93, 196, 200
+isarray, 60, 62-64, 81, 168, 174, 179, 181-83, 189, 193, 264, 275, 298, 302, 304-5, 327
+iscallb, 191, 199, 245, 246
+iscall, 343, 344, 347
+ischar, 60
+isconst, 60, 63, 73, 180, 183, 196-97, 201, 264, 282, 302
+isdouble, 60, 173, 489
+isenum, 60, 61, 71, 74, 180, 189-90, 195
+isfloat, 60, 449, 483, 486, 490, 518
+isfunc, 60, 62-65, 159, 165, 168, 174, 176, 179, 186, 192, 194-95, 201, 225, 259, 261, 263-64, 275, 282, 289-90, 296, 298, 302, 304-5, 457
+isint, 60, 71, 74, 180, 189, 192, 194, 203, 233-34, 451, 453, 521
+isnullptr, 194, 195-96, 201
+<is p->kids[1] a constant common subexpression?>, 508
+ispow2, 208
+isptr, 60, 61, 175, 177, 179-82, 186, 190, 192, 194-97, 201, 245, 319, 521
+isqual, 60, 63
+isscalar, 60, 297, 302, 412, 483
+isstruct, 60, 168, 182, 187-89, 196-97, 199, 275, 286, 291-94, 298, 302, 319, 449, 485, 487, 529
+<is this a simple leaf function?>, 487-88
+istypename, 115, 164-65, 256, 259, 270-71, 273, 278, 280, 287, 295
+isunion, 60
+isunsigned, 60, 71, 118, 169, 173, 178, 197-98, 346
+isvoidptr, 194, 195-96, 201
+isvolatile, 60, 63, 73, 180, 183, 196, 201, 233, 275, 282, 296, 298, 319
+
+<JUMP>, 318, 321
+JUMP, 84, 242, 318, 340, 341, 343
+Jump, 217, 218, 220, 227, 246, 247, 249, 291, 311, 338, 340, 341
+jump, 247, 312, 325, 327
+jumps to jumps, 247
+JUMPV, 83, 227, 247, 321, 417, 441, 475, 516
+
+keyword, 113
+keywords, 102
+%k, 99
+_kids, 381, 406
+kids, 81, 83, 86, 98, 149, 359, 386-87, 409, 422, 426-27
+kill, 316, 317, 328, 349
+kind, 115, 143, 143-44, 217-18, 222, 229, 246-49, 253, 259, 268, 271, 287, 291, 295, 338, 341
+K&R C, see pre-ANSI C compilers
+
+<l, r <- for a bit-field assignment>, 328, 329
+<Label, Gen, Jump>, 217, 220
+LABEL, 83-84, 343, 396
+Label, 7, 217, 218, 220, 226, 246, 247-48, 291, 311, 338, 340, 341
+_label, 353-54, 378, 379, 388
+labelnode, 323, 325
+labels, 80
+	appending code-list entries for, 246
+	appending dags to the forest for, 323
+	case and default, 234
+	compiler-generated, 45-46
+	equality of, 248
+	equated, 248, 340
+	exit-point, 292
+	local, 222
+	removing dags from the forest for, 325
+	source-language, 45-46, 226
+	true and false, 225, 312, 321
+	undefined, 227
+<labels>, 38, 46
+LABELS, 38, 46, 80, 89, 227, 242, 291, 293, 491
+labels, 40, 41, 46-47, 230, 232-33, 235, 243, 291, 342
+LABELV, 101, 226, 246, 248-49, 323-24, 325, 417, 441, 475, 516
+lburg, 13, 373
+	approximate costs, 441
+	arity of terminals, 376
+	chain rules, 376
+	configuration, 375
+	costs, 376, 388
+	dags versus trees, 373
+	epilogue, 375
+	guidelines, 404, 436, 438
+	labeller, 374, 377
+	MIPS nonterminals, 435
+	nonterminals, 373
+	prologue, 375
+	reducers, 374, 379, 381
+	SPARC nonterminals, 469
+	specifications, 375
+	subtrees, 380
+	terminals, 373
+	tree cover, 377
+	X86 nonterminals, 503
+Llburg_MAX, 377, 388-89, 404, 507
+<lburg prefix>, 375, 431, 463, 496
+leaf functions, 487
+<leave argument in place?>, 449, 450
+LEFT_CHILD, 375
+left factoring, 139
+leftmost derivation, 128
+left_to_right, 88, 183, 186, 332, 333, 334, 351, 498
+LE, 84, 109, 160, 174, 318, 322, 340, 417, 441
+length, 34, 274, 295
+LEQ, 109
+LETTER, 110, 111, 113-14, 119
+level, 40-41, 42, 44, 62, 67, 187, 191, 202, 219, 234, 253, 256, 259-60, 269, 272, 275, 278, 292, 294, 296-300
+lexical analyzer, 5, 102
+	generators, 107, 124
+lifetimes of allocated objects, 23
+limit, 17, 25-26, 28, 103, 104, 105-107, 111, 112, 115, 122, 123-24
+limits.h, 30
+<linearize forest>, 402, 414
+linearize, 353-54, 409, 413, 413-14, 425, 428
+line boundaries, 103
+line, 104, 105, 106, 107, 111
+lineno, 104, 105, 111, 125, 215
+linkage, 261
+linked lists, use of, 34
+<list CALL+B arguments>, 333
+list.c, 14, 34
+listed nodes, see root nodes
+List, 34, 37, 51, 52, 73, 271, 294
+list, 17, 34, 271, 274, 321, 321, 325, 327-28, 333-34, 336-37
+<listnodes cases>, 318
+listnodes, 171, 186, 222, 223, 225, 242, 311-13, 315, 317, 318, 319, 320-23, 325, 326, 328-30, 331, 332, 333, 334-37, 342, 349-50
+literate programming, see noweb
+LIT, 91, 264, 265, 302, 305, 342, 459, 491, 501
+little endian, 87, 370, 431
+little_endian, 87, 284, 371
+LOADD, 439, 482
+LOAD, 361, 398, 400, 417, 420, 473, 477
+LOADI, 400, 439, 473, 506
+<Local>, 217, 219
+LOCAL, 38, 49-50, 80, 89, 260, 269, 294, 297-98, 299, 325, 346, 457, 491, 521
+Local, 217, 219, 319, 338, 339, 341, 346
+local, 50, 85, 89, 90, 93, 95, 98, 211, 217, 338, 339, 346, 410, 447, 483, 487, 518, 528-29
+locals, 217, 294
+	assigning registers to, 296
+	declared explicitly as registers, 297
+	declared extern, 300
+	initialization of, 302
+	MIPS, 436, 447
+	offsets for, 362
+	SPARC, 469, 483
+	X86, 518
+loci, 52
+locus, 52
+<logical not>, 164
+longdouble, 57, 58, 121, 257
+LONG, 54, 109, 256-57
+long input lines, 103, 105, 122, 125
+long string literals, 2
+longtype, 57, 58, 71, 118, 257
+lookup, 45, 51, 67, 115, 226, 260-61, 263, 275, 278, 289-90, 297-98, 300, 301, 303
+loop handles, 222, 228, 293
+LSH, 84, 198, 208, 318, 320, 331
+LT, 84, 160, 174, 242, 318, 322, 340, 417, 441
+ltov, 34, 73, 271, 272, 274, 295
+lvalue, 169, 174, 178, 179, 181, 190, 191, 197, 329, 331
+lvalues, 53, 169
+
+main.c, 305
+<main>, 305, 306-7
+main, 305, 306-7
+malloc, 23, 25, 27, 28, 32-33
+map, 110, 111, 112, 117, 119-21, 123-24
+<map initializer>, 110
+mask, 329-31, 361, 363, 395, 410-12, 417-19, 422-23, 427-28, 477, 509
+<mask out some input registers>, 418, 419
+maxargoffset, 358, 366, 367, 448, 451-52, 454, 485, 487, 512
+maxlevel, 59, 59, 67
+MAXLINE, 105, 105, 112, 114, 115, 116, 122, 126
+maxoffset, 358, 365, 366, 448, 452, 487, 520
+MAXTOKEN, 111, 114, 124
+max_unaligned_load, 355
+<mayrecalc>, 385
+mayrecalc, 357, 361, 384, 385
+memcmp, 34
+memop, 507, 507
+memset, 24, 57, 317
+<metrics>, 78, 79
+Metrics, 78, 79
+<M>, 15
+Microsoft Corporation, 496
+mini-indices, 4
+MIPS
+	address calculations, 436
+	argument-build area, 452
+	argument transmission, 444, 449-50
+	block moves, 434, 446, 460
+	callee-saved registers, 452, 454
+	caller-saved registers, 444
+	calling conventions, 432, 449
+	defining constants, 455
+	entry sequence, 452
+	exit sequence, 454
+	external identifiers, 456
+	formals, 436
+	frame, 447, 452
+	generated symbols, 457
+	immediate instructions, 438, 443, 463
+	instruction suffixes, 436
+	lburg nonterminals, 435
+	locals, 436, 447
+	pseudo-instructions, 432, 441
+	register formals, 450
+	registers, 432
+	register variables, 432, 434
+	return address, 432, 442-43, 455
+	return register, 432, 443
+	sample instructions, 430
+	scratch registers, 432, 434, 443
+	segments, 459
+	stack pointer, 432, 434
+	structure arguments, 449, 454
+	variadic functions, 448-49, 453
+	wildcards, 434
+	zero register, 432, 437
+mips.c, 373, 430
+<MIPS clobber>, 435, 443
+<MIPS defconst>, 455-56
+<MIPS defsymbol>, 457
+mipsebIR, 96, 431
+mipselIR, 96, 431
+<MIPS emit2>, 444, 446-47
+<MIPS function>, 448-49, 451-55
+<MIPS interface definition>, 431
+<mips.md>, 431
+<MIPS rules>, 431, 436-44, 446
+<MIPS target>, 435, 437, 443, 445, 447
+<MIPS type metrics>, 431
+missing tokens, 141
+mkactual, 357, 366, 445, 477, 512
+mkauto, 357, 364, 365, 447, 483, 518
+mkreg, 358, 362, 363, 434-35, 467, 498-500, 509
+mkwildcard, 358, 363, 434, 467, 500
+ML, 74, 530
+MOD, 84, 318, 319, 344
+Modula-3, 308, 527, 530
+modules in lcc, 15
+monolithic compilers, 529
+move, 358, 394, 439, 472, 506, 510
+moveself, 353-54, 393, 394, 395, 406, 416, 472, 477, 506
+<move the tail portion>, 106, 107
+MS-DOS, 496
+MUL, 84, 109, 177, 193, 208, 318, 319, 344
+mul, 206
+MUL+I, 148
+mulops_calls, 87, 171, 319, 343, 344, 350, 465, 480
+multiple assignments, 331
+multiple-pass compilation, 530
+multree, 109, 192, 193, 215
+
+<n <- *ty's size>, 193
+name, 37, 44-46, 48-49, 58, 66-68, 76, 80, 96, 170, 182, 197, 210, 263-64, 281-82, 286-88, 290, 297-98, 300, 303-4, 306, 362, 389, 449, 457, 484, 491, 521
+name spaces, 36
+navigating fragment definitions, 2
+ncalls, 93, 290, 293, 333, 448-49, 451, 484, 487
+needconst, 202, 203, 205, 207, 234, 235
+NeedsReg, 398, 417
+<negation>, 164, 178
+NEGD, 439, 482, 514
+NEG, 84, 178, 318
+NE, 84, 160, 174, 208, 318, 322, 340, 417
+NEI, 441, 475, 516
+NELEMS, 19, 30, 31, 40, 56, 59, 315-16, 392, 413, 415, 418-19, 422-23, 428, 502
+nested calls, 183, 186, 335
+nested scopes, 35
+nesting levels, see scope, levels
+NEW0, 24, 41, 44, 46, 48-49, 68, 150, 210, 266, 315, 363, 424
+newarray, 24-25, 28, 233, 239, 274, 287, 290, 292
+newconst, 98
+newfield, 68, 281
+NEW, 24, 31, 33, 57, 218, 287, 292
+NEWLINE, 110, 111, 123-24
+newnode, 98, 246, 311, 312, 315, 316-17, 320, 328, 333-34, 346-48, 400, 425-26
+newstruct, 66, 67, 68, 77, 277, 278, 310
+<new-style argument>, 188
+new-style functions, 63, 187-88, 270, 272, 287
+	and old-style declarations, 286, 289
+newtemp, 50, 98, 423
+nextline, 103-104, 105, 106, 111, 112, 122, 124, 125
+nodecount, 222, 223, 314, 315-16, 317
+Node, 81
+node, 81, 149, 313, 314, 315, 317, 318-20, 327, 349, 353, 358, 361, 397, 402, 527-28
+NODEPTR_TYPE, 375, 378, 381
+nodes, back-end extension to, 358
+nondigit, 114
+nonterminals, 19
+	lburg, 373
+	MIPS lburg, 435
+	SPARC lburg, 469
+	X86 lburg, 503
+notangle, 1-2, 16
+notarget, 358, 403, 404, 440, 473
+<NOT>, 318, 322
+NOT, 149, 160, 174, 225, 318, 322
+noweave, 1
+noweb, 1, 14, 21
+nstack, 502
+nstate, 502
+_ntname, 406
+_nts, 380-81
+null characters, 123
+nullcheck, 179, 181-82, 215
+null-pointer errors, 179, 214
+null pointers, 194, 196, 201
+number, 361, 363, 446, 453-54, 488-90
+<numeric constants>, 167
+
+Oberon-2, 527
+object-oriented languages, 527
+object pointers, 176, 193
+octal-constant, 126
+<octal constant>, 116
+offset, 66, 183, 211, 219, 283, 339, 358, 362, 364, 365, 366, 444-45, 448-49, 451, 485, 487, 489-90, 519, 520
+offsets
+	for formals, 362
+	for locals, 362
+	initializing, 365
+oldparam, 288
+<old-style argument>, 188, 189
+old-style functions, 188, 270-71, 287
+	and new-style declarations, 286, 289
+oldstyle, 63, 64, 73, 187, 189, 259, 266, 272-73, 286
+<omit leading register copy?>, 392, 393
+omitted assertions, 3
+omitted fragments, 3
+omitted modules, 14
+one-pass compilation, 529
+opaque types, 39, 56
+<open a scope in a parameter list>, 268, 269, 270
+operating systems
+	IRIX, 431
+	MS-DOS, 496
+	Ultrix, 431
+operators, 528
+<operators>, 82
+oper, 155, 157, 158, 163
+opindex, 98, 151, 315, 398, 417
+OP_LABEL, 375, 376
+_opname, 389
+optree, 155, 158, 163, 174, 177, 181, 191, 212, 242
+optype, 74, 98, 151, 203, 322, 398, 400, 417-18, 423-24, 426, 445-46, 477, 502
+ordering instructions, 359
+oreg, 467, 476-77, 480, 489
+<OR>, 318
+OR, 109, 149, 160, 174, 225, 318, 322-23, 335, 349
+OROR, 109, 163
+OTHER, 110, 111
+outfile, 307
+outflush, 17, 97, 98, 99, 293, 307
+outofline, 58, 61, 78, 79
+output buffer, 97
+output.c, 14, 16, 18, 392
+outs, 16, 17, 97, 99, 392
+outtype, 75
+
+<p <- unary>, 164, 165
+parameters, see also formals
+	representing with two arrays, 286, 337
+parameters, 259, 268, 270, 271, 274, 286-88
+PARAM, 38, 67, 80, 89, 168, 269, 272, 288, 291, 293, 296-98
+<parse fields>, 280
+parseflags, 358, 370, 458, 498
+<parse -G flag>, 433, 458
+<parse new-style parameter list>, 271, 273
+<parse old-style parameter list>, 271
+<parse one argument>, 187, 188
+<parse one field>, 280, 281-82
+parser, tree, 373
+parser generators, 127, 145
+<parse SPARC flags>, 466
+parse trees, 129, 147
+parsing functions, 133, 137, 151
+	simplifying, 139, 161
+partitioning case labels, 239, 250
+<pass a structure directly>, 188, 191
+patterns, tree, 373
+peephole optimization, 406, 531, 534
+perfect hashing, 114, 125
+PERM, 31, 48-49, 57-59, 61, 67-68, 73, 97, 254, 260, 262, 274, 290, 300, 363
+-P, 75, 304
+<plant an event hook for a call>, 187
+<plant an event hook for a struct return>, 245
+<plant an event hook for return p>, 245
+<plant event hook for return>, 244
+<plant event hook>, 221
+<plant event hooks for ?:>, 159
+<plant event hooks for &&>, 163
+pointer, 267
+<pointer->field>, 166, 182
+<pointer>, 267, 268
+POINTER, 49, 54, 60-61, 69, 72-73, 82, 109, 175, 266, 268
+pointer, 155, 156, 159, 163, 165, 173, 174, 178-82, 186, 188, 197, 242, 244
+pointers
+	additions of integers to, 192
+	assignments to, 196
+	comparing, 201
+	simplifying additions involving, 209
+	types for, 54, 528
+pointersym, 61
+<pointer-to-pointer conversion>, 175, 176
+position-independent code, 251
+<postdecrement>, 166
+postfix-expression, 154, 164
+postfix, 153, 164-65, 166, 186, 214, 336
+<postincrement>, 166
+PostScript, 533
+pp-number, 119
+ppnumber, 118, 119, 120
+pre-ANSI C compilers, 16, 122
+precedence, 131, 152
+prec, 152-53, 155, 157, 162
+<predecrement>, 164
+<preincrement>, 164, 165
+<prelabel case for ASGN>, 399
+<prelabel>, 398-400
+prelabel, 353-54, 397, 398, 399-400, 402, 418, 420
+preload, 398
+preprocessing numbers, 119
+preprocessor, ANSI C, 4
+preprocessor output, 4, 125
+primary-expression, 154, 166
+primary, 123, 164, 166, 167
+<print an ANSI declaration for p>, 304, 305
+printdecl, 75-76, 305
+printf, 2, 99, 142, 188
+print, 18, 97, 99, 352, 469, 520
+printproto, 75, 76
+procedure activation record, see frame
+productions, 19, 127
+prof.c, 14
+profiling, 220
+profio.c, 14
+progbeg, 89, 305, 307, 399, 410, 433, 447, 466, 467, 498, 501-2, 518
+progend, 89, 305, 307, 433, 466, 501, 502
+program, 253, 305, 307
+projecting instruction trees, 359, 385, 426
+prologue, see also entry sequence
+	lburg, 375
+promote, 71, 172-73, 174, 178, 189-90, 193, 233, 245, 287-88
+promoting subword arguments, 338
+prototypes
+	in types, see types
+	printing, 75
+<prune>, 386-87
+prune, 353-54, 385, 386, 387, 402, 409, 425-27
+pseudo-instructions
+	MIPS, 432, 441
+	SPARC, 463, 470
+<p->syms[2] <- a generated temporary>, 346, 348
+ptr, 61, 61, 64, 72, 169-70, 174, 179, 182-83, 191, 201, 266, 275, 291, 293-94, 515
+ptrmetric, 61, 79
+<put even lightly used locals in registers>, 483
+putreg, 409, 410, 417-18, 424
+
+<q <- the r.h.s. tree>, 329, 330-31
+<*q represents p's rvalue>, 316
+qual, 62, 63, 72-73, 180, 183, 201, 257, 266, 302
+qualified types, 54, 182, 197
+<qualify ty, when necessary>, 182, 183
+question mark
+	in assembler templates, 506
+quick-fit allocation, 32
+quo, 509, 509
+
+ralloc, 353-54, 409-10, 417, 418-19, 424, 425, 462, 477
+range, 358, 388, 389, 437, 439, 443, 469, 473-74, 504, 508
+rcp, 111, 112-17, 119-20
+readsreg, 395, 396
+<recompute maxlevel>, 59, 60
+recursive-descent parsing, 127, 133
+recursive structure declarations, 276
+redeclaration errors, 67, 252, 260-61, 269, 275, 278, 298
+reduce, 353-54, 382, 384-85, 387, 402, 470
+<reduce k?>, 368, 369
+reducers, 379, 381
+ref, 38, 168, 211, 221, 224, 230, 236, 246-49, 294, 296-98, 302-3, 322, 339, 346, 523, 524
+<refill buffer>, 105, 106
+refinc, 168, 169, 220, 221, 222, 224, 225, 229, 233, 290, 291
+regcount, 291, 297, 299
+reg, 356, 400-401, 403, 404, 405, 436-44, 446, 460-61, 469-78, 480-82, 484-86, 489-90, 492-93, 504-6, 508-11, 513-18
+register allocation, 354
+	by graph coloring, 428, 531
+register allocator
+	overview, 409
+register assignment, 354
+REGISTER, 39, 80, 94-95, 179, 202, 234, 256, 270, 273, 275, 296, 297-99, 346-47, 348, 399, 412, 417-18, 424, 450, 451, 453, 483, 486, 488
+<register local>, 299
+registers
+	allocation of, 408, 413, 417
+	assigning variables to, 94
+	assignment of, 408
+	caller-saved, 410, 428
+	floating-point, 361
+	general-purpose, 361
+	global allocation, 408
+	MIPS, 432
+	MIPS callee-saved, 452, 454
+	MIPS caller-saved, 444
+	MIPS formals, 450
+	MIPS return, 432, 443
+	MIPS scratch, 432, 434, 443
+	MIPS zero, 432, 437
+	reloading spilled, 425
+	SPARC, 465, 476
+	SPARC callee-saved, 468
+	SPARC caller-saved, 468
+	SPARC return, 476
+	SPARC scratch, 467-68
+	SPARC zero, 465, 473
+	spilling, 357, 409, 420, 472, 502
+	targeting, 357
+	X86, 498
+	X86 return, 517
+	X86 scratch, 500
+register sets, see wildcards
+registers, 294, 295, 299
+register symbols, 362
+	initializing, 362
+register targeting, 397
+register-to-register copies, 354, 360, 394, 397, 415, see also moveself and requate
+register variables, 361, 399, 418
+	MIPS, 434
+	SPARC, 468, 483
+	X86, 500
+register windows on the SPARC, 463, 465
+Regnode, 361, 362, 411, 422
+relink, 413, 414
+rem, 509, 509
+<remove the entry at cp>, 246, 247
+<remove types with u.sym->scope >= lev>, 59
+rename, 488, 489, 490
+reprune, 409, 426, 426-27
+<requate>, 395-96
+requate, 353-54, 393, 394, 395-97, 407, 472, 506
+reset, 311, 317, 321, 323-24, 325, 326, 328-29, 333
+<reset refinc if -a was specified>, 221
+<result>, 511
+resynch, 106, 125
+resynchronization directives, 106, 125
+retargeting lcc, 357
+RET+B, 245
+RETB, 85
+<retcode>, 244-45
+retcode, 243, 244, 290, 291, 295
+<RET>, 318
+RET, 84-86, 244, 245, 318, 350, 417, 443, 476
+RET+I, 6, 245
+RETI, 86, 400, 443, 476, 517-18
+RET+P, 245
+RETP, 86
+retstruct, 484, 487
+return address
+	MIPS, 432, 442-43, 455
+	SPARC, 475, 490
+	X86, 519
+<return a structure>, 245
+<return a tree for a struct parameter>, 168, 170
+returning structures, see also functions, returning structures from
+	SPARC, 487
+return register
+	MIPS, 432, 443
+	SPARC, 476
+	X86, 517
+<return statement>, 221, 243
+<return the symbol if p's value == v>, 48
+retv, 245-46, 291, 291-92, 294-95
+retype, 151, 171, 174-77, 179, 181-82, 197, 202, 209, 233
+reuse, 382-83, 384, 390-91, 406
+rewrite, 353-54, 402, 403, 425
+RIGHT_CHILD, 375
+right context, 136
+<RIGHT>, 318, 335
+RIGHT, 149, 151, 155, 156, 166, 171, 181, 184-86, 187-89, 190, 191, 199-200, 208, 212-13, 245, 318, 324, 333, 335-36
+rightkid, 151, 160, 165, 171, 174
+RISC, 430, 463
+rmap, 358, 398, 399, 417, 434, 447, 450, 467, 483, 500, 518
+rmtypes, 42, 44, 59, 67
+root, 155, 156, 190, 191, 200, 208, 302, 350
+root nodes, 321, 343
+roundup, 19, 26, 99, 283, 285, 365-66, 449, 451-53, 485, 487, 490, 520
+RSH, 84, 177, 198, 318, 320
+RSH+I, 320
+RSHI, 331, 439, 474, 508
+RSH+U, 320
+rtarget, 358, 400, 401, 435, 443, 445, 447, 468, 476, 477, 480, 508, 512-13, 517
+_rule, 379, 380-82
+rule, 391
+rules, in tree grammars, 373
+rvalue, 169, 169, 174, 179, 181-83, 242, 245, 331
+rvalues, 53, 168
+RX, 362, 384-86, 392-96, 399-400, 404, 415-20, 423-24, 428, 477, 479, 508, 511
+
+salign, 358, 368, 369, 446-47, 460, 461, 482, 483
+sametree, 507
+sample instructions
+	MIPS, 430
+	SPARC, 463
+	X86, 496
+<save argument i>, 453
+<save argument in a register>, 453, 454
+<save argument in stack>, 453, 454
+scanner, see lexical analyzer
+<scan one string literal>, 122, 123
+<scan past a floating constant>, 120, 121
+<scan past a run of digits>, 121
+scatter, 31
+scheduling instructions, 428, 475, 481, 494
+sclass, 38, 39, 80, 93-95, 399, 450-51, 483, 486, 520
+scope, 35, 80
+	in parameter lists, 67, 259, 269
+	interrupted, 36
+	levels, 38
+scope, 37, 41, 44, 46, 47, 48-49, 59-60, 67, 80, 89, 168, 210-11, 219, 227, 260-62, 275, 278, 289, 296-98, 300, 457, 491, 521
+scratch registers
+	MIPS, 432, 434, 443
+	SPARC, 467-68
+	X86, 500
+<search for an existing type>, 57
+seg, 265, 458, 492, 524
+segment, 90, 91, 265, 452, 459, 491, 501, 502, 523, 524
+segments, 90
+	MIPS, 459
+	SPARC, 491
+	X86, 501
+selecting instructions, 354, 373, 402
+<select instructions for p>, 402
+selection code, 236
+semantic errors, 140
+<semicolon>, 221, 222
+sentential forms, 128
+Sethi-Ullman numbering, 428
+set, 141, 143-44, 361, 363, 395, 410-12, 418-19, 422, 428, 445-46, 449, 453
+<set p and ty>, 255, 256
+setreg, 358, 398, 399, 400, 435, 437, 443, 468, 473, 476-77, 480, 508, 517
+<set tval's type and value>, 120, 121
+<set tval's value>, 118
+<set tval and return ICON or SCON>, 123
+<shared interface definition>, 431, 432
+<shared progbeg>, 371, 433, 466, 498
+<shared rules>, 400, 403, 431, 463, 496
+short-circuit evaluation, 322, 335
+SHORT, 48, 54, 58, 69, 73, 82, 109, 175, 256-57
+shortmetric, 58, 78
+shorttype, 57, 58, 74, 177, 207, 257
+shtree, 192, 198, 215, 320, 331
+%S, 99, 118
+side effects, 156
+signedchar, 57, 58, 177, 257
+Silicon Graphics Corporation, 431
+simp.c, 147
+<simplify cases>, 203, 204-9
+simplify, 175, 176, 183, 192-95, 203, 204, 207, 208, 212, 214-15, 235, 250, 326, 342
+<sizeof>, 164, 165
+size_t, 24, 165
+skipto, 141, 143, 144, 222, 271
+<skip white space>, 111, 112
+source-code fragments, 1
+source coordinates, 5, 38, 51, 99, 102, 338
+space, 92, 300, 304, 459, 491, 492, 524
+SPARC
+	address calculation, 470
+	argument-build area, 487
+	argument transmission, 477
+	block moves, 482, 492
+	branch tables, 475
+	calling conventions, 465, 468
+	defining constants, 490
+	entry sequence, 488
+	exit sequence, 490
+	external identifiers, 490
+	formals, 469, 485
+	frame, 487
+	frame pointer, 467
+	generated symbols, 491
+	immediate instructions, 463, 469
+	lburg nonterminals, 469
+	locals, 469, 483
+	pseudo-instructions, 463, 470
+	registers, 476
+	register variables, 468, 483
+	register windows, 463, 465
+	return address, 475, 490
+	returning structures, 484, 487
+	return register, 476
+	sample instructions, 463
+	scratch registers, 467-68
+	segments, 491
+	stack pointer, 467
+	variadic functions, 478, 484-85, 489
+	wildcards, 467
+	zero register, 465, 473
+<SPARC blkloop>, 493, 494
+sparc.c, 373, 463
+<SPARC clobber>, 468, 477, 479-80
+<SPARC emit2>, 478, 479, 482
+<SPARC function>, 484-85, 487-90
+<SPARC interface definition>, 464
+sparcIR, 96, 464
+<sparc.md>, 463
+<SPARC rules>, 463, 469-78, 480-82
+<SPARC target>, 468, 473, 476-77, 480
+<SPARC type metrics>, 464, 465
+specifier, 255, 256-57, 258, 265, 273, 280
+spillee, 409, 412, 420, 422, 429
+<spill floats and doubles from i0-i5>, 489
+<spill>, 428
+spill, 357, 358, 409-10, 412, 427, 435, 443, 444, 468, 472, 477, 479, 502, 513, 517-18
+spilling registers, 357, 409, 420, 472, 502
+<spillr>, 423
+spillr, 409, 420, 423, 428
+sprintf, 64-65, 75
+src, 108, 110, 220, 338
+stabblock, 80, 464
+stabend, 80
+stabfend, 80
+stabinit, 80, 432, 464
+stabline, 80, 432, 464
+stabsym, 80, 432, 464
+stabtype, 80, 464
+stack pointer, 364
+	MIPS, 432, 434
+	SPARC, 467
+	X86, 498
+%start, 376
+Start, 7, 217, 217-18, 290, 339
+start nonterminal, 127
+_state, 379, 384
+state, 358, 379, 384
+STATE_LABEL, 375
+statement, 216
+statement, 221, 222, 224-25, 226, 228, 230, 232, 233-35, 236, 290, 294, 295
+<statement label or fall thru to default>, 221, 226
+statements
+	break, 232
+	case labels, 234
+	continue, 228
+	for, 228
+	if, 224
+	loop, 227
+	missing values in return, 244
+	nesting level, 222, 293
+	return, 225, 243, 291
+	selection code for switch, 236
+	switch, 230
+	using semicolons to terminate, 216
+STATIC, 39, 48, 80, 168, 211, 242, 253, 256, 258-59, 261-62, 263, 271, 287, 293, 295, 297, 299-300, 302, 304, 327, 457, 459, 491-92, 521
+<static local>, 299, 300
+stdarg.h, 17
+__STDC__, 17-18
+<still in a new-style prototype?>, 187, 188
+STMT, 97, 150, 223, 224, 229, 254, 266, 295, 311
+stmt, 376, 401, 403, 405, 437-38, 441-44, 446, 471-72, 475-78, 481-82, 507-8, 512-18
+stmtlabel, 226
+stmtlabs, 226, 226, 291, 293, 309
+strength reduction, 208
+string.c, 28
+<string constants>, 167, 168
+stringd, 29, 33, 46, 49, 67-68, 99, 210, 274, 281, 365, 449, 458, 484, 486, 522
+stringf, 99, 275, 363, 457, 467, 491, 520-21
+_string, 390
+string, 29, 29, 58-59, 61, 99, 123
+string-literal, 122
+string literals, 103, 122
+stringn, 29, 30, 33-34, 56, 102, 114, 123, 168
+strings, storing, 29
+string table, 30
+strtod, 120-21, 125
+structarg, 80, 88, 292, 293
+<structdcl>, 277-78
+structdcl, 66-67, 256-57, 277, 310
+<struct.field>, 166
+STRUCT, 54, 60, 69, 73, 82, 109, 256
+structmetric, 79, 282
+struct-or-union-specifier, 276
+structure arguments, see also functions, passing structures to
+	MIPS, 449, 454
+<structure return block?>, 483, 484
+SUB, 84, 109, 178, 212, 242, 318
+sub, 206
+subinstructions, 354, 385, 409
+subject tree, 373
+SUBP, 83, 438, 474, 506-7
+<subscript>, 166, 181
+subscripting, 181
+subtree, lburg, 380
+subtree, 109, 192, 215
+SUBU, 438, 474, 506
+Sun Microsystems, Inc., 463
+super, 175, 177, 214
+supertypes, 174
+swap, 358, 371, 456, 522
+<swcode>, 240, 241
+swcode, 239, 240, 241, 251, 342
+swgen, 237, 239, 240, 250
+switch branch tables, see branch tables
+<Switch>, 217, 242
+switch handles, 222, 232, 293
+Switch, 217, 218, 232, 233, 236, 242, 243, 249, 338, 341, 342
+<switch statement>, 221, 232
+SWSIZE, 232, 233
+swstmt, 232, 233, 236
+Swtch, 221, 224, 228, 231, 235, 239-40
+swtoseg, 265, 293, 342
+<symbol flags>, 38, 50, 179, 211, 292
+Symbol, 37, 39, 52, 110
+symbol, 37, 40, 55, 65, 68, 78, 80, 117, 274, 362, 527
+symbols
+	back-end extension to, 39, 81
+	computed, see computed symbols
+	target-specific names for, 89
+symbols, 52
+<symbol-table emitters>, 497, 498
+symbol tables, 35
+sym.c, 51, 55
+syms, 81, 83, 98, 362
+syntax-directed translation, 349
+
+Table, 39, 40, 44-45, 52, 219, 226
+table, 39-40, 41, 44, 242-43, 291, 342
+tables, 52
+tags, see types
+tail, 233, 236-37, 343, 348
+-target, 96, 306
+target, 357, 435, 437, 443-46, 468, 473, 476-77, 480, 502, 512
+targeting registers, 357, 397
+templates, assembler, 354, 376, 392
+temporaries, 46, 50, 80, 90, 98, 158, 319, 339
+	for common subexpressions, 340, 344, 346
+	for conditionals, 326
+	for structure return values, 185, 332
+	for switch expressions, 231
+	linking uses of, 362, 415
+<temporaries>, 38, 346
+temporary, 50, 80, 90, 187, 191, 202, 210, 319, 346, 384, 386, 396, 413, 415, 418-19
+tentative definitions, 255, 303
+%term, 376
+<terminal declarations>, 376, 431, 463, 496
+terminals, 19
+	lburg, 373
+<terminate list for a varargs function>, 273, 274
+<test for correct termination>, 155, 156, 157
+test, 141, 142, 145, 156, 229, 235, 258, 278, 280
+test suites, 532
+texpr, 150, 229-30
+%t, 62, 99
+t, 108
+tmask, 358, 410, 417, 422, 434, 468, 500
+tmpnode, 346, 347, 348
+tmpregs, 434, 446, 482
+tnode, 266, 268, 270
+token, 108
+token codes, 5, 99, 102
+	associated values for, 102, 110, 113
+	definitions of, 110
+<token.h>, 109
+token.h, 60, 109, 110, 143, 155, 191
+	including, 109, 143, 155, 191
+token, 108, 110, 114-16, 117, 123, 142, 182, 226-27, 267, 271, 277
+tokens, 5, 19, 102
+top-down parsing, 128
+<tp is a tree for e++>, 335, 336
+trace.c, 14
+translation-unit, 253
+trashes, 385
+tree
+	cover, 373, 377
+	parser, 373
+	partial cover, 374
+	 patterns, 373
+	subject, 373
+	transformations, 12
+tree.c, 147, 150
+tree grammars, 8, 373
+	ambiguity in, 374
+	costs in, 374
+Tree, 148
+tree, 148, 150, 155, 166-70, 176, 177, 181, 183, 187-91, 193, 197, 199-200, 203, 211-12, 229, 242, 245, 327, 333
+<tsym <- type named by token>, 114, 115
+tsym, 108, 110, 112, 113, 115, 117, 120, 123, 164-65, 167-68, 170, 256, 259, 270-71, 273, 278, 280, 287, 295
+ttob, 73, 73-74, 81, 99, 167, 169, 193-94, 197, 203-7, 209, 305, 346, 447, 449-50, 453, 483, 518
+tval, 117, 118, 120-21, 123
+<ty is an enumeration or has a tag>, 258
+<type cast>, 164, 180-81
+<type-check e>, 233
+type-checking, 53, 147, 172
+	actual arguments, 189
+	pointer comparisons, 201
+type constructors, 53
+TYPEDEF, 39, 115, 170, 256, 259-61, 301
+typedef, 34, 37-39, 47, 54, 66, 78-79, 81, 96, 148, 217, 231, 355, 358, 361-62, 365
+<typedefs>, 16
+typeerror, 178, 192, 194, 197, 201
+Type, 39, 47-48, 54, 55, 57, 63, 73, 75, 149, 180
+type, 56, 57, 61, 69, 76, 78, 80-81, 85, 93, 450-51
+<typeInit>, 58-59, 61
+typeInit, 58, 59-60, 306, 327
+type metrics, 58, 78
+type-name, 308
+typename, 165, 180, 309
+type predicates, 53
+type-qualifier, 254
+types
+	alignments of, 55, 78, 81
+	assumptions about, 58, 79, 527
+	back-end extension to, 55
+	categories of, 54
+	compatible, 69
+	composite, 71
+	decaying to other types, 62, 173
+	enumeration, 68
+	equality of, 56, 69
+	incomplete, 264
+	intermediate, 53
+	metrics, 58, 78
+	new-style function, 63
+	old-style function, 63
+	opaque, see opaque types
+	operators, 54, 60, 74
+	parameter prototypes in, 63, 75
+	predefined, 58
+	predicates, 98
+	prefix form for, 55
+	qualified, 60, 267
+	scope of, 59
+	sizes of, 55, 78, 81
+	tags, 55, 65, 276
+	typedefs for, 115, 256
+	unqualified, 60
+types.c, 75
+types, 40, 41, 44, 55, 58, 59, 61, 66, 67, 219, 278, 294
+type-specifier, 254
+typestring, 75-76
+type suffixes, 50, 73, 82, 91, 98
+<type suffix for tmp->type>, 346, 348
+<types with names or tags>, 54, 55
+typetable, 56, 56-58, 59, 67
+<typical function>, 93
+
+u.block, 295
+u.c, 371
+u.c.loc, 81
+u.c.v, 80
+u.c.v.sc, 389
+u.c.v.uc, 389
+u.f, 290
+<u fields for Tree variants>, 149, 168, 183
+u.i, 371
+UINT_MAX, 117
+u.l.label, 80
+Ultrix operating system, 431
+unary-expression, 154, 163
+unary, 153, 157, 161, 162, 164, 165, 166, 180, 214
+unary operators, 153
+undag, 340, 342, 343, 348
+<undeclared identifier>, 170
+uninitialized objects, 304
+union-find, 351
+UNION, 54, 60, 69, 73, 109, 256, 283
+unlist, 325, 350
+unqual, 48, 60, 60-62, 71, 73, 168-69, 175, 180, 182, 186-87, 190-91, 193-95, 197, 200-202, 281, 288-89, 319, 327
+unreachable code, 218, 246
+unreferenced identifiers, 292, 296, 298
+unsignedchar, 57, 58, 177, 257
+UNSIGNED, 48, 54, 58, 60, 69, 73, 82, 109, 175, 256-57
+unsignedlong, 57, 58, 117-18, 257
+unsigned operands of unary -, 178
+unsigned-preserving conversions, 173
+unsignedshort, 58, 177, 206, 257
+<unsigned-to-double conversion>, 176, 177
+unsignedtype, 58, 66, 74, 118, 165, 173, 175-78, 190, 194-95, 198, 202, 204, 206-9, 245, 257, 281, 283-84, 330-31
+upcalls, 97
+	in the back end, 357
+usedmask, 358, 410, 410, 428, 451, 454-55, 488
+u.seg, 80, 90
+use, 51, 52, 170, 227, 256, 278, 290
+uses, 37, 38-39, 51, 422
+u.s.flist, 279
+u.t.cse, 80, 412
+u.value, 310
+
+va_alist, 18, 142, 449
+va_init, 17, 18, 142
+Value, 47, 49, 91, 168, 204, 455, 522
+value, 47, 69, 155, 156, 157, 160, 169-70, 174, 175, 188-89
+value numbering, 349
+value-preserving conversions, 173
+varargs.h, 17
+VARARGS, 18, 142
+variadic functions, 17, 64, 99, 187, 274
+	MIPS, 448-49, 453
+	SPARC, 478, 484-85, 489
+variadic, 65, 71, 99, 449, 484
+va_start, 17
+vbl, 361, 412, 424, 485, 489
+vfields, 65, 66, 282, 319
+visibility, see scope
+<visit>, 345, 346-48
+visit, 343, 344, 345, 347, 351
+<visit the operands>, 347, 348
+vmask, 358, 410, 413, 434, 468, 500, 518
+VOID, 54-55, 59, 73, 82, 109, 256
+void pointers, 194, 196, 201
+voidptype, 58, 61, 74, 201, 242
+voidtype, 58, 59, 61-62, 65, 168-69, 181, 186-87, 188, 194, 197, 202, 242-43, 273-74, 291
+VOLATILE, 54, 60, 63, 69, 72-73, 109, 180, 183, 201, 256-57, 266, 268
+volatile, 48
+volatile variables, 319
+v.p, 92
+VREG, 361, 384, 395, 399, 420, 508
+VREGP, 383, 400-401
+v.sc, 91
+v.ss, 91
+vtoa, 48
+v.uc, 91
+v.us, 91
+
+walk, 223-25, 227-28, 229, 232, 234, 242, 244, 245-47, 294, 296, 302, 311, 312, 339, 348
+	ending a basic block with, 223
+wants_argb, 80, 88, 168, 169-70, 183-85, 188, 190, 292, 483, 486, 529
+wants_callb, 85, 88, 183, 185-86, 245, 291-92, 294-95, 332, 333, 483, 529
+wants_dag, 80, 82, 85, 89, 340, 343, 353, 373
+<warn about non-ANSI literals>, 123
+<warn about overflow>, 120, 121
+<warn if more than 127 identifiers>, 44
+<warn if p denotes the address of a local>, 245
+warning, 143
+warnings, see errors, reporting
+wchar_t, 122, 126
+where, 150
+<while statement>, 221
+%w, 99
+wide-character constants, 121
+<wide-character constants>, 112
+widen, 73, 74, 188, 190, 245
+widening, 185
+wildcard, 363, 398-99
+wildcards, 363, 399
+	initializing, 363
+	MIPS, 434
+	SPARC, 467
+	X86, 500
+word-addressed machines, 528
+
+X86
+	address calculations, 503
+	argument transmission, 512, 519
+	assemblers, 496
+	block moves, 512
+	branch tables, 515
+	calling conventions, 496
+	defining constants, 522
+	entry sequence, 519
+	exit sequence, 520
+	external identifiers, 523
+	formals, 519
+	frame, 520
+	frame pointer, 498
+	lburg nonterminals, 503
+	locals, 518
+	registers, 498
+	register variables, 500
+	return address, 519
+	return register, 517
+	sample instructions, 496
+	scratch registers, 500
+	segments, 501
+	stack pointer, 498
+	wildcards, 500
+x86.c, 373, 496
+<X86 clobber>, 502, 513, 517-18
+<X86 defconst>, 522
+<X86 defsymbol>, 521
+<X86 emit2>, 511
+<X86 function>, 519-20
+<X86 interface definition>, 497
+x86IR, 96, 497, 513
+<x86.md>, 496
+<X86 progbeg>, 498, 499-501, 509
+<X86 rules>, 497, 503-18
+<X86 target>, 502, 508-10, 512-13, 517
+x.argno, 359, 445-46
+x.blkfetch, 355, 369
+x.blkloop, 356, 368
+x.blkstore, 356, 369
+x.clobber, 357, 417
+x.copy, 360, 394, 416, 419
+x.doarg, 356, 357, 403
+x.emit2, 356, 392
+x.emitted, 360, 392, 394
+x.equatable, 360, 393, 394, 419, 420
+xfoldcnst, 205
+-x, 51
+x.inst, 358, 359, 382, 385, 386, 394, 419, 427, 470
+<Xinterface>, 355-57
+Xinterface, 79, 355
+<Xinterface initializer>, 355, 379, 432, 464, 498
+x.isinstruction, 382
+x.kids, 359, 385, 386-87, 394-95, 400, 409, 413, 415-16, 418-19, 422, 426-27, 446-47, 479, 482, 502, 511
+x.lastuse, 362, 415-16, 418, 420, 423
+x.listed, 359, 385, 403, 417
+x.max_unaligned_load, 355, 369, 483, 493
+x.mayrecalc, 360, 384, 385
+x.name, 90, 362, 363, 365, 392, 394, 396, 413, 424, 434, 449, 452, 455-56, 457-58, 484, 486, 488, 491, 511, 519, 520, 522
+x.next, 359, 393, 395-96, 413-14, 422-23, 425, 428
+<Xnode fields>, 358-59
+<Xnode flags>, 358, 359-61
+Xnode, 81, 82, 358
+x.offset, 362, 365, 388, 449, 453-54, 457-58, 484, 486, 520
+x.prev, 359, 413-14
+x.prevuse, 359, 415, 419, 423
+x.registered, 360, 417, 419, 423-24, 428, 437, 473, 476
+x.regnode, 362, 363, 395, 410-11, 412, 419, 422-24, 428, 445-46, 449, 453-54, 477, 485, 488-90, 509
+x.state, 358, 375, 382, 384
+Xsymbol, 38, 81, 89-90, 93, 362
+x.target, 357, 400
+x._templates, 390, 419
+<*xty has all of *yty's qualifiers>, 196
+Xtype, 54, 55
+x.usecount, 362, 384, 386-87
+x.wildcard, 363, 400, 404, 411, 422
+
+YYnull, 179, 181-82, 214
+_YYnull, 215
+
+zerofield, 208, 209
+zero register
+	MIPS, 432, 437
+	SPARC, 465, 473

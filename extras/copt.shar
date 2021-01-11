@@ -1,0 +1,334 @@
+# To unbundle, sh this file
+echo copt.1 1>&2
+sed 's/.//' >copt.1 <<'//GO.SYSIN DD copt.1'
+-.de DS
+-.nf
+-.in +3
+-.sp
+-..
+-.de DE
+-.sp
+-.in -3
+-.fi
+-..
+-.TH copt 1
+-.SH NAME
+-copt \- peephole optimizer
+-.SH SYNOPSIS
+-\fBcopt\fP \fIfile\fP ...
+-.SH DESCRIPTION
+-\fIcopt\fP is a general-purpose peephole optimizer.
+-It reads code from its standard input
+-and writes an improved version to its standard output.
+-\fIcopt\fP reads the named files for its optimizations,
+-which are encoded as follows:
+-.DS
+-<pattern for input line 1>
+-<pattern for input line 2>
+- ...
+-<pattern for input line n>
+-=
+-<pattern for output line 1>
+-<pattern for output line 2>
+- ...
+-<pattern for output line m>
+-<blank line>
+-.DE
+-Pattern matching uses literal string comparison, with one exception:
+-``%%'' matches the ``%'' character,
+-and ``%'' followed by a digit matches everything
+-up to the next occurrence of the next pattern character,
+-though all occurrences of %\fIn\fP must denote the same string.
+-For example, the pattern ``%1=%1.'' matches exactly those strings
+-that begin with a string X, followed by a ``='' (the first),
+-followed by a second occurrence of X, followed by a period.
+-In this way, the input/output pattern
+-.DS
+-mov $%1,r%2
+-mov *r%2,r%2
+-=
+-mov %1,r%2
+-.DE
+-commands \fIcopt\fP to replace runs like
+-.DS
+-mov $_a,r3
+-mov *r3,r3
+-.DE
+-with
+-.DS
+-mov _a,r3
+-.DE
+-Note that a tab or newline can terminate a %\fIn\fP variable.
+-.LP
+-\fIcopt\fP compares each run of input patterns 
+-with the current input instruction and its predecessors.
+-If no match is found, it advances to the next input instruction and tries again.
+-Otherwise, it replaces the input instructions
+-with the corresponding output patterns, pattern variables instantiated,
+-and resumes its search with the \fIfirst\fP instruction of the replacement.
+-\fIcopt\fP matches input patterns in reverse order 
+-to cascade optimizations without backing up.
+-.SH BUGS
+-Errors in optimization files are always possible.
+//GO.SYSIN DD copt.1
+echo copt.c 1>&2
+sed 's/.//' >copt.c <<'//GO.SYSIN DD copt.c'
+-/* copt version 1.00 (C) Copyright Christopher W. Fraser 1984 */
+-
+-#include <ctype.h>
+-#include <stdio.h>
+-#define HSIZE 107
+-#define MAXLINE 100
+-
+-int debug = 0;
+-
+-struct lnode {
+-	char *l_text;
+-	struct lnode *l_prev, *l_next;
+-};
+-
+-struct onode {
+-	struct lnode *o_old, *o_new;
+-	struct onode *o_next;
+-} *opts = 0;
+-
+-/* connect - connect p1 to p2 */
+-connect(p1, p2) struct lnode *p1, *p2; {
+-	if (p1 == 0 || p2 == 0)
+-		error("connect: can't happen\n");
+-	p1->l_next = p2;
+-	p2->l_prev = p1;
+-}
+-
+-/* error - report error and quit */
+-error(s) char *s; {
+-	fputs(s, stderr);
+-	exit(1);
+-}
+-
+-/* getlst - link lines from fp in between p1 and p2 */
+-getlst(fp, quit, p1, p2) FILE *fp; char *quit; struct lnode *p1, *p2; {
+-	char *install(), lin[MAXLINE];
+-
+-	connect(p1, p2);
+-	while (fgets(lin, MAXLINE, fp) != NULL && strcmp(lin, quit))
+-		insert(install(lin), p2);
+-}
+-
+-/* init - read patterns file */
+-init(fp) FILE *fp; {
+-	struct lnode head, tail;
+-	struct onode *p, **next;
+-
+-	next = &opts;
+-	while (*next)
+-		next = &((*next)->o_next);
+-	while (!feof(fp)) {
+-		p = (struct onode *) malloc((unsigned) sizeof(struct onode));
+-
+-		getlst(fp, "=\n", &head, &tail);
+-		head.l_next->l_prev = 0;
+-		if (tail.l_prev)
+-			tail.l_prev->l_next = 0;
+-		p->o_old = tail.l_prev;
+-
+-		getlst(fp, "\n", &head, &tail);
+-		tail.l_prev->l_next = 0;
+-		if (head.l_next)
+-			head.l_next->l_prev = 0;
+-		p->o_new = head.l_next;
+-
+-		*next = p;
+-		next = &p->o_next;
+-	}
+-	*next = 0;
+-}
+-
+-/* insert - insert a new node with text s before node p */
+-insert(s, p) char *s; struct lnode *p; {
+-	struct lnode *n;
+-
+-	n = (struct lnode *) malloc(sizeof *n);
+-	n->l_text = s;
+-	connect(p->l_prev, n);
+-	connect(n, p);
+-}
+-
+-/* install - install str in string table */
+-char *install(str) char *str; {
+-	register struct hnode *p;
+-	register char *p1, *p2, *s;
+-	register int i;
+-	static struct hnode {
+-		char *h_str;
+-		struct hnode *h_ptr;		  
+-	} *htab[HSIZE] = {0};
+-	
+-	s = str;
+-	for (i = 0; *s; i += *s++)
+-		;
+-	i %= HSIZE;
+-
+-	for (p = htab[i]; p; p = p->h_ptr) 
+-		for (p1=str, p2=p->h_str; *p1++ == *p2++; )
+-			if (p1[-1] == '\0') 
+-				return (p->h_str);
+-
+-	p = (struct hnode *) malloc(sizeof *p);
+-	p->h_str = (char *) malloc((s-str)+1);
+-	strcpy(p->h_str, str);
+-	p->h_ptr = htab[i];
+-	htab[i] = p;
+-	return (p->h_str);
+-}
+-
+-/* main - peephole optimizer */
+-main(argc, argv) int argc; char **argv; {
+-	FILE *fp;
+-	int i;
+-	struct lnode head, *p, *opt(), tail;
+-
+-	for (i = 1; i < argc; i++)
+-		if (strcmp(argv[i], "-D") == 0)
+-			debug = 1;
+-		else if ((fp=fopen(argv[i], "r")) == NULL) 
+-			error("copt: can't open patterns file\n");
+-		else
+-			init(fp);
+-
+-	getlst(stdin, "", &head, &tail);
+-	head.l_text = tail.l_text = "";
+-
+-	for (p = head.l_next; p != &tail; p = opt(p))
+-		;
+-
+-	for (p = head.l_next; p != &tail; p = p->l_next)
+-		fputs(p->l_text, stdout);
+-}
+-
+-/* match - match ins against pat and set vars */
+-int match(ins, pat, vars) char *ins, *pat, **vars; {
+-	char *p, lin[MAXLINE];
+-
+-	while (*ins && *pat)
+-		if (pat[0] == '%' && isdigit(pat[1])) {
+-			for (p = lin; *ins && *ins != pat[2];)
+-				*p++ = *ins++;
+-			*p = 0;
+-			p = install(lin);
+-			if (vars[pat[1]-'0'] == 0)
+-				vars[pat[1]-'0'] = p;
+-			else if (vars[pat[1]-'0'] != p)
+-				return 0;
+-			pat += 2;
+-		}
+-		else if (*pat++ != *ins++)
+-			return 0;
+-	return *pat==*ins;
+-}
+-
+-/* opt - replace instructions ending at r if possible */
+-struct lnode *opt(r) struct lnode *r; {
+-	char *vars[10];
+-	int i;
+-	struct lnode *c, *p, *rep();
+-	struct onode *o;
+-
+-	for (o = opts; o; o = o->o_next) {
+-		c = r;
+-		p = o->o_old;
+-		for (i = 0; i < 10; i++)
+-			vars[i] = 0;
+-		while (p && c && match(c->l_text, p->l_text, vars)) {
+-			p = p->l_prev;
+-			c = c->l_prev;
+-		}
+-		if (p == 0)
+-			return rep(c, r->l_next, o->o_new, vars);
+-	}
+-	return r->l_next;
+-}
+-
+-/* rep - substitute vars into new and replace lines between p1 and p2 */
+-struct lnode *rep(p1, p2, new, vars) struct lnode *p1, *p2, *new; char **vars; {
+-	char *args[10], *exec(), *subst(); 
+-	int i;
+-	struct bnode *b;
+-	struct lnode *p, *psav;
+-
+-	for (p = p1->l_next; p != p2; p = psav) {
+-		psav = p->l_next;
+-		if (debug)
+-			fputs(p->l_text, stderr);
+-		free(p);
+-	}
+-	connect(p1, p2);
+-	if (debug)
+-		fputs("=\n", stderr);
+-	for (; new; new = new->l_next) {
+-		for (i = 0; i < 10; i++)
+-			args[i] = 0;
+-		insert(subst(new->l_text, vars), p2);
+-		if (debug)
+-			fputs(p2->l_prev->l_text, stderr);
+-	}
+-	if (debug)
+-		putc('\n', stderr);
+-	return p1->l_next;
+-}
+-
+-/* subst - return result of substituting vars into pat */
+-char *subst(pat, vars) char *pat, **vars; {
+-	char *install(), lin[MAXLINE], *s;
+-	int i;
+-
+-	i = 0;
+-	for (;;)
+-		if (pat[0] == '%' && isdigit(pat[1])) {
+-			for (s = vars[pat[1]-'0']; i < MAXLINE && (lin[i] = *s++); i++)
+-				;
+-			pat += 2;
+-		}
+-		else if (i >= MAXLINE)
+-			error("line too long\n");
+-		else if (!(lin[i++] = *pat++))
+-			return install(lin);
+-}
+//GO.SYSIN DD copt.c
+echo rules 1>&2
+sed 's/.//' >rules <<'//GO.SYSIN DD rules'
+-mov $0,%0
+-=
+-clr %0
+-
+-add $0,%0
+-=
+-
+-jeq %0
+-jmp %1
+-%0:
+-=
+-jne %1
+-%0:
+-
+-add $%1,r%0
+-mov *r%0,%2
+-=
+-mov %1(r%0),%2
+-add $%1,r%0
+-
+-%1 %2,r%3
+-j%4
+-=
+-j%4
+//GO.SYSIN DD rules
+echo test.s 1>&2
+sed 's/.//' >test.s <<'//GO.SYSIN DD test.s'
+-mov $0,r2
+-add $0,r2
+-add $4,r2
+-mov *r2,r2
+-jeq L1
+-jmp L2
+-L1:
+//GO.SYSIN DD test.s

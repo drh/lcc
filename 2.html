@@ -1,0 +1,161 @@
+<!doctype html>
+<html><!-- InstanceBegin template="/Templates/Page.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta charset="UTF-8">
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>2nd Printing Errata</title>
+<!-- InstanceEndEditable -->
+<link href="style.css" rel="stylesheet" type="text/css">
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+</head>
+<body>
+<div>
+<h2>lcc, A Retargetable Compiler for ANSI C</h2>
+	<p class="top-menu"><a href="index.html">Home</a> &middot;
+		<a href="https://github.com/drh/lcc">Code</a> &middot;
+		<a href="current/doc/install.html">Installation</a> &middot;
+		<a href="faq.html">FAQ</a> &middot;
+		<a href="https://github.com/drh/lcc/releases">Releases</a> &middot;
+		<a href="docs.html">Docs</a> &middot;
+                <a href="extras/index.html">Extras</a></p>
+	</div>
+<!-- InstanceBeginEditable name="body" -->
+<h3>2nd Printing Errata</span></h3>
+<p>In the lists below, line +<em>n</em> and line -<em>n</em> refer to the <em>n</em>th line from the top and bottom of the indicated page.</p>
+<p>Page 342, lines +12..15: this code should read</p>
+<blockquote><pre>
+defglobal(cp-&gt;u.swtch.table, LIT);
+(*IR-&gt;defaddress)(equated(cp-&gt;u.swtch.labels[0]));
+for (i = 1; i &lt; cp-&gt;u.swtch.size; i++) {
+        long k = cp-&gt;u.swtch.values[i-1];
+        while (++k &lt; cp-&gt;u.swtch.values[i])</pre>
+</blockquote>
+<p><a name="first"></a>The errors below also appear in the <a href="1.html">1st printing</a>.</p>
+<p>Page 8, line -22: Change `ADDRGP' to `ADDRFP'.</p>
+<p>Page 15, line +7: In Table 1.1, `ops.h' should be `c.h'.</p>
+<p>Page 18, line +1: `va_dcl;' should be `va_dcl'.</p>
+<p>Page 24, line +12: Change `disasterous' to `disastrous'.</p>
+<p>Page 24, line -12: Change `incidently' to `incidentally'.</p>
+<p>Page 26, line -8: To avoid invalid pointers, the condition should read `n &gt; ap-&gt;limit - ap-&gt;avail'.</p>
+<p>Page 28, line +3: Change `10*1024' to `roundup(10*1024, sizeof (union align))'.</p>
+<p>Page 31, line +20: To avoid invalid pointers, the condition should read `len + 1 &gt;= strlimit - next'.</p>
+<p>Page 52, line +5: `tables' should be `symbols'.</p>
+<p>Page 56, line +11: `40 4' should be `4 40'.</p>
+<p>Page 56, line -17: Change `can' to `can be'.</p>
+<p>Page 57, line +3: Change `NEW' to `NEW0'.</p>
+<p>Page 57, line +9: Delete.</p>
+<p>Page 64, lines -6..-3: Change these lines to</p>
+<blockquote>Internally, the prototype for functions with no arguments is empty;<br>
+  it consists of only the terminating null. Thus, the type of f<br>
+  is depicted as
+  <blockquote>
+    <pre>(FUNCTION (VOID) {})</pre>
+  </blockquote>
+</blockquote>
+<p>Page 65, line +1: The correct prototype for sprintf is</p>
+<blockquote>
+  <pre>int sprintf(char *, const char *, ...)</pre>
+</blockquote>
+<p>Page 65, line +8: `(CHAR)' should read `(CONST (CHAR))'.</p>
+<p>Page 65, line -15: Change `one or more' to `zero or more'.</p>
+<p>Page 65, lines -13..-12: Change `one-element prototype {(VOID)}' to `zero-length prototype {}'.</p>
+<p>Page 71, line +22: Change to</p>
+<blockquote><pre>
+if (promote(ty) != (isenum(ty) ? ty-&gt;type : ty)
+|| ty == floattype)</pre>
+</blockquote>
+<p>Page 74, line -9: Change `the bit strings' to `bit strings'.</p>
+<p>Page 82, line +5: Change `exceed' to `exceeds'.</p>
+<p>Page 83, lines +13..14: Should read `ADDP, in which an integer operand in kids[1] is added to a pointer operand in kids[0],'</p>
+<p>Page 97, lines +5..6: Change `Exercises 5.2 and 5.1' to 'Exercises 5.1 and 5.2'.</p>
+<p>Page 106, lines +9..16: Change to</p>
+<blockquote><pre>
+        } else {
+                lineno++;
+                for (line = (char *)cp; *cp==' ' || *cp=='\t'; cp++)
+                        ;
+                if (*cp == '#') {
+                        resynch();
+                        nextline();
+                }
+        }
+} while (*cp == '\n' &amp;&amp; cp == limit);</pre>
+</blockquote>
+<p>Page 113, line +5: Change `28' to `32'.</p>
+<p>Page 113, line +8: Add the line</p>
+<blockquote>
+  <pre>case        enum      register  typedef</pre>
+</blockquote>
+<p>Page 118, lines +6 and +11: Change `LONG_MAX' to `~(1&lt;&lt;8*longtype-&gt;size - 1)'.</p>
+<p>Page 118, line +13: Change `INT_MAX' to `~(1&lt;&lt;8*inttype-&gt;size - 1)'.</p>
+<p>Page 118, line +20: Change to</p>
+<blockquote><pre>
+n = ~(1&lt;&lt;8*longtype-&gt;size - 1);
+tval.type = longtype;</pre>
+</blockquote>
+<p>Page 124, line +21: `&amp;cbuf[sizeof cbuf] - 2' should read `&amp;cbuf[sizeof cbuf] - 1'.</p>
+<p>Page 134, line +10: `return 1' should read `return 0'.</p>
+<p>Pages 155-182: Occurrences of &lt;<em>tree.c data</em>&gt;, &lt;<em>tree.c exported macros</em>&gt;, and &lt;<em>tree.c functions</em>&gt; should be changed to &lt;<em>expr.c data</em>&gt;, &lt;<em>expr.c exported macros</em>&gt;, and &lt;<em>expr.c functions</em>&gt;.</p>
+<p>Page 173, line -1: `(POINTER <em>T</em>) decay into (FUNCTION <em>T</em>)' should read `(FUNCTION <em>T</em>) decay into (POINTER <em>T</em>)'.</p>
+<p>Page 181, line -7: `which is has' should be `which has'.</p>
+<p>Page 186, line +23: Change to</p>
+<blockquote><pre>
+ty = func(voidtype, NULL, 1);
+p = retype(p, ptr(ty));</pre>
+</blockquote>
+<p>Page 227, line -4: `<em>expression</em> != 0' should be `<em>expression</em> == 0'.</p>
+<p>Page 229, lines +13, -1: `defpoint' should be `definept'.</p>
+<p>Page 256, line -1: Change to</p>
+<blockquote><pre>
+ty = tsym-&gt;type;
+if (isqual(ty)
+&amp;&amp; ty-&gt;size != ty-&gt;type-&gt;size) {
+        ty = unqual(ty);
+        if (isconst(tsym-&gt;type))
+                ty = qual(CONST, ty);
+                if (isvolatile(tsym-&gt;type))
+                        ty = qual(VOLATILE, ty);
+                        tsym-&gt;type = ty;
+}</pre>
+</blockquote>
+<p>Page 289, lines +17..18: Change to</p>
+<blockquote> <pre>
+{
+        Type ty = unqual(proto[i]);
+        if (eqtype(isenum(ty) ? ty-&gt;type : ty,
+                unqual(caller[i]-&gt;type), 1) == 0)
+                        break;
+}</pre>
+</blockquote>
+<p>Page 320, lines -4, -18: `32 - <em>m</em>' to `32 - <em>m</em> - <em>s</em>' (the definition of fieldleft on p. 66 is correct).</p>
+<p>Page 345, line -14: `*t2' should be `t2'. </p>
+<p>Page 349, line +19: Change `similer' to `similar'.</p>
+<p>Page 354, line +8: Change `emit' to `emitcode'.</p>
+<p>Page 373, lines -4, -7, -8: Change `ADDI' to `ADDP'.</p>
+<p>Page 374, Figure 14.1: Change `ADDP(addr,con)' to `ADDP(reg,con)'.</p>
+<p>Page 375, line -19: Change `BURM.' to `BURM'.</p>
+<p>Page 380, line +10: Change `5' to `4'.</p>
+<p>Page 383, lines -6..-7: Change `value of i' to `value of q-&gt;b' and `x[0]' to `p-&gt;b'.</p>
+<p>Page 398, line +10: `preload' should be `prelabel'.</p>
+<p>Page 411, line +1: Change `askfixedregr' to `askfixedreg'.</p>
+<p>Page 411, line -3: Change `askregvar' to `askreg'.</p>
+<p>Page 445, line +7: Change `placement' to `placement of'.</p>
+<p>Page 451, line -7: Change `4' to `usedmask[FREG] ? 8 : 4'.</p>
+<p>Page 488, line +10: Change to</p>
+<blockquote>
+  <pre>print(".align 4\n%s:\n", f-&gt;x.name);</pre>
+</blockquote>
+<p>Page 489, lines -10: Change to</p>
+<blockquote>
+  <p>{ &lt;<em>spill floats and doubles from </em>i0-i5 489&gt; }</p>
+</blockquote>
+<p>Page 493, lines -6, -4 and<br>
+  Page 494, lines +14, +15: Change occurrences of `tmp' to `tmps'.</p>
+<p>Page 502, lines -18, -15: Change occurrences of `nstate' to `nstack'.</p>
+<p>Thanks to Nelson Beebe, Franklin Chen, Ming Chen, Amnon Cohen, Russ Cox, Marcin Ciura, Guy Laden, Jonathan Litt, Paul Mattal, Scott Nicholas, Richard O'Keefe, Norman Ramsey, Sukyoung Ryu, Duane Sand, Bernie Solomon, Reuben Thomas, Gary Tyson, and Lei Zhou for finding some of these errors.</p>
+<!-- InstanceEndEditable -->
+	<hr>
+<p style="margin: 0;"><a href="http://cwfraser.webhop.net"><em>Chris Fraser</em></a> &middot; <a href="http://drh.webhop.net"><em>David Hanson</em></a></p>
+</body>
+<!-- InstanceEnd --></html>

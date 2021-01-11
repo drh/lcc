@@ -1,0 +1,114 @@
+<!doctype html>
+<html><!-- InstanceBegin template="/Templates/Page.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta charset="UTF-8">
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>1st Printing</title>
+<!-- InstanceEndEditable -->
+<link href="style.css" rel="stylesheet" type="text/css">
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+</head>
+<body>
+<div>
+<h2>lcc, A Retargetable Compiler for ANSI C</h2>
+	<p class="top-menu"><a href="index.html">Home</a> &middot;
+		<a href="https://github.com/drh/lcc">Code</a> &middot;
+		<a href="current/doc/install.html">Installation</a> &middot;
+		<a href="faq.html">FAQ</a> &middot;
+		<a href="https://github.com/drh/lcc/releases">Releases</a> &middot;
+		<a href="docs.html">Docs</a> &middot;
+                <a href="extras/index.html">Extras</a></p>
+	</div>
+<!-- InstanceBeginEditable name="body" -->
+<h3>1st Printing Errata</h3>
+<p>In the lists below, line +<em>n</em> and line -<em>n</em> refer to the <em>n</em>th line from the top and bottom of the indicated page. Additional errors are listed in the errata for the <a href="2.html">2nd printing</a>.</p>
+<p>Page 2, line +18: missing `last'; the sentence should read `...the next link on the last definition is omitted.'</p>
+<p>Page 17, line -2: remove the semicolon.</p>
+<p>Page 24, line -13: Change `NEW(a[i++])' to `NEW(a[i++], PERM)'.</p>
+<p>Page 48, line -16: missing `by'; the sentence should read `..., the string returned by vtoa.'</p>
+<p>Page 78, line +11: `19 functions' should be `18 functions.'</p>
+<p>Page 79, line -7: `19 interface functions' should be `18 interface functions.'</p>
+<p>Page 87, line -5: `zero' should be `one'; the sentence should read `It should be one if the hardware leaves these operations to library routines.'</p>
+<p>Page 88, line -2: missing `is'; the sentence should read `If left_to_right is zero, ...'</p>
+<p>Page 99, line -5: extraneous `it'; the sentence should read `..., which the back end reads and translates to target code.'</p>
+<p>Page 131, lines +9..+10: `+' operators should be `*'; the righthand sides of the last two derivation steps should read</p>
+<blockquote>
+  <p>a + b * c <em>Y</em><br>
+    a + b * c <em>epsilon</em></p>
+</blockquote>
+<p>where <em>epsilon</em> denotes the lowercase Greek symbol by the same name.</p>
+<p>Page 170, lines -6..-5: extraneous `used'; the sentence should read `... describes the technique as it is used in lcc.'</p>
+<p>Page 186, line +13: extraneous `to'; the sentence should read `... and lets call do most of the work:'</p>
+<p>Page 202, lines +4 and +8: retype should be cast.</p>
+<p>Page 231, line +13: `where n &gt;= 4' should be `where n &gt;= 1.'</p>
+<p>Page 256, line -4: the if statement should read</p>
+<blockquote>
+  <pre>if (istypename(t, tsym) &amp;&amp; type == 0 &amp;&amp; sign == 0 &amp;&amp; size == 0) {</pre>
+</blockquote>
+<p>Page 322, line +17: the if statement should read `if (forest &amp;&amp; forest-&gt;syms[0])'.</p>
+<p>Page 323, line +6, +15: insert `if (depth++ == 0) reset();' after line 6, and insert `depth--;' after line 15. depth is a static integer declared in dag.c.</p>
+<p>Page 323, line +16: Add the sentence `Exercise 12.15 explains the purpose of the static integer depth and the call to reset.'</p>
+<p>Page 342, line +12: the declaration should read</p>
+<blockquote>
+  <pre>int i; unsigned k = cp-&gt;u.swtch.values[0];</pre>
+</blockquote>
+<p>Page 342, line +14..+15: the nested loops should read</p>
+<blockquote>
+  <pre>for (i = 0; i &lt; cp-&gt;u.swtch.size; i++, k++) {    for ( ; k &lt; (unsigned)cp-&gt;u.swtch.values[i]; k++)</pre>
+</blockquote>
+<p>Page 351, line -1: Add exercise 12.15:</p>
+<blockquote>
+  <p>12.15 The code for &lt;AND&gt; begins by calling reset if depth is zero and incrementing depth, and this case ends by decrementing depth. The case for OR does the same. Thus, depth counts the number of nested AND or OR operators. The call to reset is needed for the same reason that it is needed in the case for COND, as explained on page 326. Show that without calling reset, lcc generates incorrect code for the assignment</p>
+  <blockquote>
+    <pre>x[i] = (n || (n=i), n);</pre>
+  </blockquote>
+  <p>Calling reset has no effect on the usual use of &amp;&amp; and || as illustrated in Figure 12.3; explain why.</p>
+</blockquote>
+<p>Page 371, line +3: `hexidecimal' should be `hexadecimal'.</p>
+<p>Page 373, lines +15..+16: missing `it'; the sentence should read `..., so it emits one BURM into each of ...'</p>
+<p>Page 386, line +21: the code should read</p>
+<blockquote>
+  <pre>p-&gt;x.kids[0] = p-&gt;x.kids[1] = p-&gt;x.kids[2] = NULL;</pre>
+</blockquote>
+<p>Page 400, line +12: the if statement should read</p>
+<blockquote>
+  <pre>if (r != q-&gt;syms[RX] &amp;&amp; !q-&gt;syms[RX]-&gt;x.wildcard) {</pre>
+</blockquote>
+<p>Page 412, line +2: `unsigned integers' should be `integer registers'.</p>
+<p>Page 422, line +18: the first line of the if statement should read</p>
+<blockquote>
+  <pre>if (ri != NULL &amp;&amp; ri-&gt;x.lastuse</pre>
+</blockquote>
+<p>Page 423, lines +13..+14: replace these lines with</p>
+<blockquote>
+  <pre>Symbol tmp; Node p = r-&gt;x.lastuse;</pre>
+</blockquote>
+<p>Page 423, lines +23..+25: remove the extraneous braces.</p>
+<p>Page 423, line -10: insert the assignment</p>
+<blockquote>
+  <pre>tmp = newtemp(AUTO, optype(p-&gt;op));</pre>
+</blockquote>
+<p>before the call to genspill. (The changes on page 423 were made to accommodate an added assert(p), which isn't shown in the book.)</p>
+<p>Page 426, line -1: change the declaration to</p>
+<blockquote>
+  <pre>struct node x, *q = *pp;</pre>
+</blockquote>
+<p>Page 427, lines +6..+10: change these lines to</p>
+<blockquote>
+  <pre>if (k == n) { *pp = p-&gt;x.kids[n]; 	x = *p; 	(IR-&gt;x.target)(&amp;x); } return k + 1; </pre>
+</blockquote>
+<p>Page 427, line -10: change `update.' to `update, and x confines the change to the reload.'</p>
+<p>Page 463, line -19: `code generator' should be `assembler'.</p>
+<p>Page 512, line -4: this line should read</p>
+<blockquote>
+  <pre>rtarget(p-&gt;kids[1], 0, intreg[ESI]);</pre>
+</blockquote>
+<p>Page 534, line 7: change `research.att.com' to `ftp.cs.princeton.edu in pub/lcc/contrib'.</p>
+<p>Thanks to Nelson Beebe, Franklin Chen, Amnon Cohen, Russ Cox, Guy Laden, Jonathan Litt, Paul Mattal, Scott Nicholas, Richard O'Keefe, Norman Ramsey, Duane Sand, Bernie Solomon, and Gary Tyson for finding some of these errors.</p>
+          
+<!-- InstanceEndEditable -->
+	<hr>
+<p style="margin: 0;"><a href="http://cwfraser.webhop.net"><em>Chris Fraser</em></a> &middot; <a href="http://drh.webhop.net"><em>David Hanson</em></a></p>
+</body>
+<!-- InstanceEnd --></html>
