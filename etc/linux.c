@@ -8,6 +8,10 @@ static char rcsid[] = "$Id$";
 #define LCCDIR "/usr/local/lib/lcc/"
 #endif
 
+#ifndef USRLIBDIR
+#define USRLIBDIR "/usr/lib/"
+#endif
+
 char *suffixes[] = { ".c", ".i", ".s", ".o", ".out", 0 };
 char inputs[256] = "";
 char *cpp[] = { LCCDIR "gcc/cpp",
@@ -17,18 +21,18 @@ char *cpp[] = { LCCDIR "gcc/cpp",
 	"$1", "$2", "$3", 0 };
 char *include[] = {"-I" LCCDIR "include", "-I" LCCDIR "gcc/include", "-I/usr/include", 0 };
 char *com[] = {LCCDIR "rcc", "-target=x86/linux", "$1", "$2", "$3", 0 };
-char *as[] = { "/usr/bin/as", "-o", "$3", "$1", "$2", 0 };
+char *as[] = { "/usr/bin/as", "-32", "-o", "$3", "$1", "$2", 0 };
 char *ld[] = {
 	/*  0 */ "/usr/bin/ld", "-m", "elf_i386", "-dynamic-linker",
 	/*  4 */ "/lib/ld-linux.so.2", "-o", "$3",
-	/*  7 */ "/usr/lib/crt1.o", "/usr/lib/crti.o",
+	/*  7 */ USRLIBDIR "crt1.o", USRLIBDIR "crti.o",
 	/*  9 */ LCCDIR "/gcc/crtbegin.o", 
                  "$1", "$2",
 	/* 12 */ "-L" LCCDIR,
 	/* 13 */ "-llcc",
 	/* 14 */ "-L" LCCDIR "/gcc", "-lgcc", "-lc", "-lm",
 	/* 18 */ "",
-	/* 19 */ LCCDIR "/gcc/crtend.o", "/usr/lib/crtn.o",
+	/* 19 */ LCCDIR "/gcc/crtend.o", USRLIBDIR "crtn.o",
 	0 };
 
 extern char *concat(char *, char *);
@@ -45,7 +49,7 @@ int option(char *arg) {
 		ld[19] = concat(&arg[8], "/gcc/crtend.o");
 		com[0] = concat(&arg[8], "/rcc");
 	} else if (strcmp(arg, "-p") == 0 || strcmp(arg, "-pg") == 0) {
-		ld[7] = "/usr/lib/gcrt1.o";
+		ld[7] = USRLIBDIR "gcrt1.o";
 		ld[18] = "-lgmon";
 	} else if (strcmp(arg, "-b") == 0) 
 		;
