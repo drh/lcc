@@ -1,0 +1,938 @@
+// file=tst/cvt.c uname=
+.class private value explicit ansi sealed 'int8[]' { .pack 1 .size 37 }
+.method public hidebysig static void 'print'() cil managed {
+.maxstack 15
+ldsflda valuetype 'int8[]' $_2
+ldsfld int8 'c'
+conv.i4
+ldsfld int16 's'
+conv.i4
+ldsfld int32 'i'
+ldsfld int32 'l'
+ldsfld int8 'C'
+conv.i4
+ldsfld int16 'S'
+conv.i4
+ldsfld int32 'I'
+ldsfld int32 'L'
+ldsfld float32 'f'
+conv.r8
+ldsfld float64 'd'
+ldsfld float64 'D'
+call int32 'printf'(void*,int32,int32,int32,int32,int32,int32,int32,int32,float64,float64,float64)
+pop
+$L1:
+ret
+}
+.method public hidebysig static int32 'main'() cil managed {
+.locals ([0] void* '1')
+.locals ([1] int32 '2')
+.locals ([2] int32 '3')
+.locals ([3] float64 '4')
+.locals ([4] void* '5')
+.locals ([5] int32 '6')
+.locals ([6] int32 '7')
+.locals ([7] float64 '8')
+.locals ([8] void* '9')
+.locals ([9] int32 '10')
+.locals ([10] int32 '11')
+.locals ([11] float64 '12')
+.locals ([12] void* '13')
+.locals ([13] int32 '14')
+.locals ([14] int32 '15')
+.locals ([15] float64 '16')
+.locals ([16] void* '17')
+.locals ([17] int32 '18')
+.locals ([18] int32 '19')
+.locals ([19] float64 '20')
+.locals ([20] void* '21')
+.locals ([21] int32 '22')
+.locals ([22] int32 '23')
+.locals ([23] float64 '24')
+.locals ([24] void* '25')
+.locals ([25] int32 '26')
+.locals ([26] int32 '27')
+.locals ([27] float64 '28')
+.locals ([28] void* '29')
+.locals ([29] int32 '30')
+.locals ([30] int32 '31')
+.locals ([31] void* '32')
+.locals ([32] float64 '33')
+.locals ([33] int32 '19')
+.locals ([34] int32 '24')
+.locals ([35] int32 '27')
+.locals ([36] int32 '30')
+.locals ([37] void* '34')
+.locals ([38] float32 '35')
+.locals ([39] int32 '36')
+.locals ([40] float32 '37')
+.locals ([41] float32 '38')
+.locals ([42] float32 '39')
+.locals ([43] float32 '40')
+.locals ([44] float32 '41')
+.locals ([45] float32 '42')
+.locals ([46] float32 '43')
+.locals ([47] float64 '44')
+.locals ([48] int32 '35')
+.locals ([49] int32 '39')
+.locals ([50] int32 '42')
+.locals ([51] int32 '45')
+.locals ([52] void* '45')
+.locals ([53] float64 '46')
+.locals ([54] int32 '47')
+.locals ([55] float64 '48')
+.locals ([56] float64 '49')
+.locals ([57] float64 '50')
+.locals ([58] float64 '51')
+.locals ([59] float64 '52')
+.locals ([60] float64 '53')
+.locals ([61] float64 '54')
+.locals ([62] float64 '55')
+.locals ([63] int32 '49')
+.locals ([64] int32 '53')
+.locals ([65] int32 '56')
+.locals ([66] int32 '59')
+.locals ([67] void* '56')
+.locals ([68] float64 '57')
+.locals ([69] int32 '58')
+.locals ([70] float64 '59')
+.locals ([71] float64 '60')
+.locals ([72] float64 '61')
+.locals ([73] float64 '62')
+.locals ([74] float64 '63')
+.locals ([75] float64 '64')
+.locals ([76] float64 '65')
+.locals ([77] float64 '66')
+.locals ([78] void* '67')
+.locals ([79] void* '68')
+.locals ([80] void* '69')
+.locals ([81] void* '70')
+.maxstack 5
+ldsflda int8 'c'
+stloc 0
+ldloc 0
+ldc.i4 1
+stind.i1
+ldloc 0
+ldind.i1
+conv.i4
+stloc 1
+ldloc 1
+conv.i2
+stsfld int16 's'
+ldloc 1
+stsfld int32 'i'
+ldloc 1
+stsfld int32 'l'
+ldloc 1
+conv.u4
+stloc 2
+ldloc 2
+conv.u1
+stsfld int8 'C'
+ldloc 2
+conv.u2
+stsfld int16 'S'
+ldloc 2
+stsfld int32 'I'
+ldloc 2
+stsfld int32 'L'
+ldloc 1
+conv.r4
+stsfld float32 'f'
+ldloc 1
+conv.r8
+stloc 3
+ldloc 3
+stsfld float64 'd'
+ldloc 3
+stsfld float64 'D'
+call void 'print'()
+ldsflda int16 's'
+stloc 4
+ldloc 4
+ldc.i4 2
+stind.i2
+ldloc 4
+ldind.i2
+conv.i4
+stloc 5
+ldloc 5
+conv.i1
+stsfld int8 'c'
+ldloc 5
+stsfld int32 'i'
+ldloc 5
+stsfld int32 'l'
+ldloc 5
+conv.u4
+stloc 6
+ldloc 6
+conv.u1
+stsfld int8 'C'
+ldloc 6
+conv.u2
+stsfld int16 'S'
+ldloc 6
+stsfld int32 'I'
+ldloc 6
+stsfld int32 'L'
+ldloc 5
+conv.r4
+stsfld float32 'f'
+ldloc 5
+conv.r8
+stloc 7
+ldloc 7
+stsfld float64 'd'
+ldloc 7
+stsfld float64 'D'
+call void 'print'()
+ldsflda int32 'i'
+stloc 8
+ldloc 8
+ldc.i4 3
+stind.i4
+ldloc 8
+ldind.i4
+stloc 9
+ldloc 9
+conv.i1
+stsfld int8 'c'
+ldloc 9
+conv.i2
+stsfld int16 's'
+ldloc 9
+stsfld int32 'l'
+ldloc 9
+conv.u4
+stloc 10
+ldloc 10
+conv.u1
+stsfld int8 'C'
+ldloc 10
+conv.u2
+stsfld int16 'S'
+ldloc 10
+stsfld int32 'I'
+ldloc 10
+stsfld int32 'L'
+ldloc 9
+conv.r4
+stsfld float32 'f'
+ldloc 9
+conv.r8
+stloc 11
+ldloc 11
+stsfld float64 'd'
+ldloc 11
+stsfld float64 'D'
+call void 'print'()
+ldsflda int32 'l'
+stloc 12
+ldloc 12
+ldc.i4 4
+stind.i4
+ldloc 12
+ldind.i4
+stloc 13
+ldloc 13
+conv.i1
+stsfld int8 'c'
+ldloc 13
+conv.i2
+stsfld int16 's'
+ldloc 13
+stsfld int32 'i'
+ldloc 13
+conv.u4
+stloc 14
+ldloc 14
+conv.u1
+stsfld int8 'C'
+ldloc 14
+conv.u2
+stsfld int16 'S'
+ldloc 14
+stsfld int32 'I'
+ldloc 14
+stsfld int32 'L'
+ldloc 13
+conv.r4
+stsfld float32 'f'
+ldloc 13
+conv.r8
+stloc 15
+ldloc 15
+stsfld float64 'd'
+ldloc 15
+stsfld float64 'D'
+call void 'print'()
+ldsflda int8 'C'
+stloc 16
+ldloc 16
+ldc.i4 5
+stind.i1
+ldloc 16
+ldind.u1
+conv.i4
+stloc 17
+ldloc 17
+conv.i1
+stsfld int8 'c'
+ldloc 17
+conv.i2
+stsfld int16 's'
+ldloc 17
+stsfld int32 'i'
+ldloc 17
+stsfld int32 'l'
+ldloc 17
+conv.u4
+stloc 18
+ldloc 18
+conv.u2
+stsfld int16 'S'
+ldloc 18
+stsfld int32 'I'
+ldloc 18
+stsfld int32 'L'
+ldloc 17
+conv.r4
+stsfld float32 'f'
+ldloc 17
+conv.r8
+stloc 19
+ldloc 19
+stsfld float64 'd'
+ldloc 19
+stsfld float64 'D'
+call void 'print'()
+ldsflda int16 'S'
+stloc 20
+ldloc 20
+ldc.i4 6
+stind.i2
+ldloc 20
+ldind.u2
+conv.i4
+stloc 21
+ldloc 21
+conv.i1
+stsfld int8 'c'
+ldloc 21
+conv.i2
+stsfld int16 's'
+ldloc 21
+stsfld int32 'i'
+ldloc 21
+stsfld int32 'l'
+ldloc 21
+conv.u4
+stloc 22
+ldloc 22
+conv.u1
+stsfld int8 'C'
+ldloc 22
+stsfld int32 'I'
+ldloc 22
+stsfld int32 'L'
+ldloc 21
+conv.r4
+stsfld float32 'f'
+ldloc 21
+conv.r8
+stloc 23
+ldloc 23
+stsfld float64 'd'
+ldloc 23
+stsfld float64 'D'
+call void 'print'()
+ldsflda int32 'I'
+stloc 24
+ldloc 24
+ldc.i4 7
+stind.i4
+ldloc 24
+ldind.u4
+stloc 25
+ldloc 25
+conv.i4
+stloc 26
+ldloc 26
+conv.i1
+stsfld int8 'c'
+ldloc 26
+conv.i2
+stsfld int16 's'
+ldloc 26
+stsfld int32 'i'
+ldloc 26
+stsfld int32 'l'
+ldloc 25
+conv.u1
+stsfld int8 'C'
+ldloc 25
+conv.u2
+stsfld int16 'S'
+ldloc 25
+stsfld int32 'L'
+ldc.r8 2.000000e+000
+ldloc 25
+ldc.i4 1
+shr.un
+conv.i4
+conv.r8
+mul
+ldloc 25
+ldc.i4 1
+and
+conv.i4
+conv.r8
+add
+conv.r8
+stloc 27
+ldloc 27
+conv.r4
+stsfld float32 'f'
+ldloc 27
+stsfld float64 'd'
+ldloc 27
+stsfld float64 'D'
+call void 'print'()
+ldsflda int32 'L'
+stloc 28
+ldloc 28
+ldc.i4 8
+stind.i4
+ldloc 28
+ldind.u4
+stloc 29
+ldloc 29
+conv.i4
+stloc 30
+ldloc 30
+conv.i1
+stsfld int8 'c'
+ldloc 30
+conv.i2
+stsfld int16 's'
+ldloc 30
+stsfld int32 'i'
+ldloc 30
+stsfld int32 'l'
+ldloc 29
+conv.u1
+stsfld int8 'C'
+ldsflda int16 'S'
+stloc 31
+ldloc 31
+ldloc 29
+conv.u2
+stind.i2
+ldloc 31
+ldind.u2
+conv.i4
+conv.u4
+stsfld int32 'I'
+ldc.r8 2.000000e+000
+ldloc 29
+ldc.i4 1
+shr.un
+conv.i4
+conv.r8
+mul
+ldloc 29
+ldc.i4 1
+and
+conv.i4
+conv.r8
+add
+conv.r8
+stloc 32
+ldloc 32
+conv.r4
+stsfld float32 'f'
+ldloc 32
+stsfld float64 'd'
+ldloc 32
+stsfld float64 'D'
+call void 'print'()
+ldsflda float32 'f'
+stloc 37
+ldloc 37
+ldc.r4 9.000000e+000
+stind.r4
+ldloc 37
+ldind.r4
+stloc 38
+ldloc 38
+conv.i4
+stloc 39
+ldloc 39
+conv.i1
+stsfld int8 'c'
+ldloc 39
+conv.i2
+stsfld int16 's'
+ldloc 39
+stsfld int32 'i'
+ldloc 39
+stsfld int32 'l'
+ldc.r4 2.147484e+009
+stloc 40
+ldloc 38
+ldloc 40
+blt $L20
+ldloc 38
+ldloc 40
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 33
+br $L21
+$L20:
+ldloc 38
+conv.i4
+conv.u4
+stloc 33
+$L21:
+ldloc 33
+conv.u1
+stsfld int8 'C'
+ldsfld float32 'f'
+stloc 41
+ldc.r4 2.147484e+009
+stloc 42
+ldloc 41
+ldloc 42
+blt $L25
+ldloc 41
+ldloc 42
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 34
+br $L26
+$L25:
+ldloc 41
+conv.i4
+conv.u4
+stloc 34
+$L26:
+ldloc 34
+conv.u2
+stsfld int16 'S'
+ldsfld float32 'f'
+stloc 43
+ldc.r4 2.147484e+009
+stloc 44
+ldloc 43
+ldloc 44
+blt $L28
+ldloc 43
+ldloc 44
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 35
+br $L29
+$L28:
+ldloc 43
+conv.i4
+conv.u4
+stloc 35
+$L29:
+ldloc 35
+stsfld int32 'I'
+ldsfld float32 'f'
+stloc 45
+ldc.r4 2.147484e+009
+stloc 46
+ldloc 45
+ldloc 46
+blt $L31
+ldloc 45
+ldloc 46
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 36
+br $L32
+$L31:
+ldloc 45
+conv.i4
+conv.u4
+stloc 36
+$L32:
+ldloc 36
+stsfld int32 'L'
+ldsfld float32 'f'
+conv.r8
+stloc 47
+ldloc 47
+stsfld float64 'd'
+ldloc 47
+stsfld float64 'D'
+call void 'print'()
+ldsflda float64 'd'
+stloc 52
+ldloc 52
+ldc.r8 1.000000e+001
+stind.r8
+ldloc 52
+ldind.r8
+stloc 53
+ldloc 53
+conv.i4
+stloc 54
+ldloc 54
+conv.i1
+stsfld int8 'c'
+ldloc 54
+conv.i2
+stsfld int16 's'
+ldloc 54
+stsfld int32 'i'
+ldloc 54
+stsfld int32 'l'
+ldc.r8 2.147484e+009
+stloc 55
+ldloc 53
+ldloc 55
+blt $L36
+ldloc 53
+ldloc 55
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 48
+br $L37
+$L36:
+ldloc 53
+conv.i4
+conv.u4
+stloc 48
+$L37:
+ldloc 48
+conv.u1
+stsfld int8 'C'
+ldsfld float64 'd'
+stloc 56
+ldc.r8 2.147484e+009
+stloc 57
+ldloc 56
+ldloc 57
+blt $L40
+ldloc 56
+ldloc 57
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 49
+br $L41
+$L40:
+ldloc 56
+conv.i4
+conv.u4
+stloc 49
+$L41:
+ldloc 49
+conv.u2
+stsfld int16 'S'
+ldsfld float64 'd'
+stloc 58
+ldc.r8 2.147484e+009
+stloc 59
+ldloc 58
+ldloc 59
+blt $L43
+ldloc 58
+ldloc 59
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 50
+br $L44
+$L43:
+ldloc 58
+conv.i4
+conv.u4
+stloc 50
+$L44:
+ldloc 50
+stsfld int32 'I'
+ldsfld float64 'd'
+stloc 60
+ldc.r8 2.147484e+009
+stloc 61
+ldloc 60
+ldloc 61
+blt $L46
+ldloc 60
+ldloc 61
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 51
+br $L47
+$L46:
+ldloc 60
+conv.i4
+conv.u4
+stloc 51
+$L47:
+ldloc 51
+stsfld int32 'L'
+ldsfld float64 'd'
+stloc 62
+ldloc 62
+conv.r4
+stsfld float32 'f'
+ldloc 62
+stsfld float64 'D'
+call void 'print'()
+ldsflda float64 'D'
+stloc 67
+ldloc 67
+ldc.r8 1.100000e+001
+stind.r8
+ldloc 67
+ldind.r8
+stloc 68
+ldloc 68
+conv.i4
+stloc 69
+ldloc 69
+conv.i1
+stsfld int8 'c'
+ldloc 69
+conv.i2
+stsfld int16 's'
+ldloc 69
+stsfld int32 'i'
+ldloc 69
+stsfld int32 'l'
+ldc.r8 2.147484e+009
+stloc 70
+ldloc 68
+ldloc 70
+blt $L50
+ldloc 68
+ldloc 70
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 63
+br $L51
+$L50:
+ldloc 68
+conv.i4
+conv.u4
+stloc 63
+$L51:
+ldloc 63
+conv.u1
+stsfld int8 'C'
+ldsfld float64 'D'
+stloc 71
+ldc.r8 2.147484e+009
+stloc 72
+ldloc 71
+ldloc 72
+blt $L54
+ldloc 71
+ldloc 72
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 64
+br $L55
+$L54:
+ldloc 71
+conv.i4
+conv.u4
+stloc 64
+$L55:
+ldloc 64
+conv.u2
+stsfld int16 'S'
+ldsfld float64 'D'
+stloc 73
+ldc.r8 2.147484e+009
+stloc 74
+ldloc 73
+ldloc 74
+blt $L57
+ldloc 73
+ldloc 74
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 65
+br $L58
+$L57:
+ldloc 73
+conv.i4
+conv.u4
+stloc 65
+$L58:
+ldloc 65
+stsfld int32 'I'
+ldsfld float64 'D'
+stloc 75
+ldc.r8 2.147484e+009
+stloc 76
+ldloc 75
+ldloc 76
+blt $L60
+ldloc 75
+ldloc 76
+sub
+conv.i4
+conv.u4
+ldc.i4 2147483648
+add
+stloc 66
+br $L61
+$L60:
+ldloc 75
+conv.i4
+conv.u4
+stloc 66
+$L61:
+ldloc 66
+stsfld int32 'L'
+ldsfld float64 'D'
+stloc 77
+ldloc 77
+conv.r4
+stsfld float32 'f'
+ldloc 77
+stsfld float64 'd'
+call void 'print'()
+ldsflda void* 'p'
+stloc 78
+ldc.i4 0
+stloc 79
+ldloc 78
+ldloc 79
+stind.i4
+ldloc 78
+ldloc 79
+stind.i4
+ldloc 78
+ldloc 79
+stind.i4
+ldloc 78
+ldloc 79
+stind.i4
+ldsflda method void *() 'P'
+stloc 80
+ldloc 78
+ldloc 80
+ldind.u4
+stind.i4
+ldc.i4 0
+stloc 81
+ldloc 80
+ldloc 81
+stind.i4
+ldloc 80
+ldloc 81
+stind.i4
+ldloc 80
+ldloc 81
+stind.i4
+ldloc 80
+ldloc 81
+stind.i4
+ldloc 80
+ldloc 78
+ldind.u4
+stind.i4
+ldc.i4 0
+$L7:
+ret
+}
+.field public static method void *() 'P' at $P
+.data $P = {
+int32 (0)
+}
+.field public static void* 'p' at $p
+.data $p = {
+int32 (0)
+}
+.field public static float64 'D' at $D
+.data $D = {
+int32 (0),
+int32 (0)
+}
+.field public static float64 'd' at $d
+.data $d = {
+int32 (0),
+int32 (0)
+}
+.field public static float32 'f' at $f
+.data $f = {
+int32 (0)
+}
+.field public static int32 'L' at $L
+.data $L = {
+int32 (0)
+}
+.field public static int32 'I' at $I
+.data $I = {
+int32 (0)
+}
+.field public static int16 'S' at $S
+.data $S = {
+int16 (0)
+}
+.field public static int8 'C' at $C
+.data $C = {
+int8 (0)
+}
+.field public static int32 'l' at $l
+.data $l = {
+int32 (0)
+}
+.field public static int32 'i' at $i
+.data $i = {
+int32 (0)
+}
+.field public static int16 's' at $s
+.data $s = {
+int16 (0)
+}
+.field public static int8 'c' at $c
+.data $c = {
+int8 (0)
+}
+.field public static valuetype 'int8[]' $_2 at $65
+.data $65 = {
+bytearray ( 25 64 20 25 64 20 25 64 20 25 6c 64 20 25 75 20 25 75 20 25 75 20 25 6c 75 20 25 66 20 25
+ 66 20 25 6c 66 a 0 )
+}

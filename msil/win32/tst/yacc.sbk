@@ -1,0 +1,3334 @@
+// file=tst/yacc.c uname=
+.field public static void* 'yyin' at $yyin
+.data $yyin = {
+int32 (0)
+}
+.field public static void* 'yyout' at $yyout
+.data $yyout = {
+int32 (0)
+}
+.class private value explicit ansi sealed 'int8[]' { .pack 1 .size 0 }
+.method public hidebysig static int32 'yylex'() cil managed {
+.locals ([0] int32 'nstr')
+.locals ([1] int32 '2')
+.locals ([2] int32 '3')
+.locals ([3] int32 '4')
+.locals ([4] int32 '5')
+.locals ([5] int32 '6')
+.locals ([6] int32 '7')
+.locals ([7] int32 '1')
+.locals ([8] int32 '8')
+.maxstack 3
+br $L3
+$L2:
+$L5:
+ldc.i4 1
+stloc 2
+ldloc 0
+ldloc 2
+beq $L13
+ldloc 0
+ldloc 2
+bgt $L23
+$L22:
+ldc.i4 -1
+stloc 4
+ldloc 0
+ldloc 4
+beq $L7
+ldloc 0
+ldloc 4
+blt $L6
+$L24:
+ldloc 0
+ldc.i4 0
+beq $L8
+br $L6
+$L23:
+ldc.i4 3
+stloc 6
+ldloc 0
+ldloc 6
+beq $L7
+ldloc 0
+ldloc 6
+bgt $L27
+$L26:
+ldloc 0
+ldc.i4 2
+beq $L15
+br $L6
+$L27:
+ldloc 0
+ldc.i4 4
+beq $L18
+br $L6
+$L8:
+call int32 'yywrap'()
+stloc 7
+ldloc 7
+ldc.i4 0
+beq $L7
+ldc.i4 0
+br $L1
+$L13:
+ldc.i4 257
+br $L1
+$L15:
+ldc.i4 258
+br $L1
+$L18:
+ldsflda valuetype 'int8[]' 'yytext'
+ldind.i1
+conv.i4
+br $L1
+$L6:
+ldsfld void* 'yyout'
+ldsflda valuetype 'int8[]' $_21
+ldloc 0
+call vararg int32 'fprintf'(void*,void*,...,int32)
+pop
+$L7:
+$L3:
+call int32 'yylook'()
+stloc 8
+ldloc 8
+stloc 0
+ldloc 8
+ldc.i4 0
+bge $L2
+ldc.i4 0
+$L1:
+ret
+}
+.class private value explicit ansi sealed 'int32[]' { .pack 1 .size 0 }
+.field public static valuetype 'int32[]' 'yyvstop' at $yyvstop
+.data $yyvstop = {
+int32 (0),
+int32 (4),
+int32 (0),
+int32 (3),
+int32 (4),
+int32 (0),
+int32 (2),
+int32 (4),
+int32 (0),
+int32 (1),
+int32 (4),
+int32 (0),
+int32 (2),
+int32 (0),
+int32 (1),
+int32 (0),
+int32 (0)
+}
+.class private value explicit ansi sealed 'syywork{i1i1}' { .pack 1 .size 2 }
+.class private value explicit ansi sealed 'syywork{i1i1}[]' { .pack 1 .size 0 }
+.field public static valuetype 'syywork{i1i1}[]' 'yycrank' at $yycrank
+.data $yycrank = {
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (1),
+int8 (3),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (1),
+int8 (4),
+int8 (1),
+int8 (3),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (1),
+int8 (5),
+int8 (5),
+int8 (7),
+int8 (5),
+int8 (7),
+int8 (5),
+int8 (7),
+int8 (5),
+int8 (7),
+int8 (5),
+int8 (7),
+int8 (5),
+int8 (7),
+int8 (5),
+int8 (7),
+int8 (5),
+int8 (7),
+int8 (5),
+int8 (7),
+int8 (5),
+int8 (7),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (1),
+int8 (6),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (6),
+int8 (8),
+int8 (0),
+int8 (0),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (6),
+int8 (8),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0),
+int8 (0)
+}
+.class private value explicit ansi sealed 'syysvf{ppp}' { .pack 1 .size 12 }
+.class private value explicit ansi sealed 'syysvf{ppp}[]' { .pack 1 .size 0 }
+.field public static valuetype 'syysvf{ppp}[]' 'yysvec' at $yysvec
+.data $yysvec = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+&($yycrank),
+int32 (0),
+int32 (0),
+&($yycrank),
+int32 (0),
+int32 (0),
+&($yycrank),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+&($yycrank),
+int32 (0),
+int32 (0),
+&($yycrank),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static void* 'yytop' at $yytop
+.data $yytop = {
+int32 (0)
+}
+.field public static void* 'yybgin' at $yybgin
+.data $yybgin = {
+int32 (0)
+}
+.field public static valuetype 'int8[]' 'yymatch' at $yymatch
+.data $yymatch = {
+bytearray ( 0 1 1 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 1 9 a 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 9 1 1 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 30 30 30 30 ),
+bytearray ( 30 30 30 30 ),
+bytearray ( 30 30 1 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 1 41 41 41 ),
+bytearray ( 41 41 41 41 ),
+bytearray ( 41 41 41 41 ),
+bytearray ( 41 41 41 41 ),
+bytearray ( 41 41 41 41 ),
+bytearray ( 41 41 41 41 ),
+bytearray ( 41 41 41 1 ),
+bytearray ( 1 1 1 41 ),
+bytearray ( 1 41 41 41 ),
+bytearray ( 41 41 41 41 ),
+bytearray ( 41 41 41 41 ),
+bytearray ( 41 41 41 41 ),
+bytearray ( 41 41 41 41 ),
+bytearray ( 41 41 41 41 ),
+bytearray ( 41 41 41 1 ),
+bytearray ( 1 1 1 1 ),
+bytearray ( 0 )
+}
+.field public static valuetype 'int8[]' 'yyextra' at $yyextra
+.data $yyextra = {
+bytearray ( 0 0 0 0 ),
+bytearray ( 0 0 0 0 ),
+bytearray ( 0 )
+}
+.field public static int32 'yylineno' at $yylineno
+.data $yylineno = {
+int32 (1)
+}
+.field public static void* 'yysptr' at $yysptr
+.data $yysptr = {
+&($yysbuf)
+}
+.field public static int32 'yyprevious' at $yyprevious
+.data $yyprevious = {
+int32 (10)
+}
+.class private value explicit ansi sealed 'void*[]' { .pack 1 .size 800 }
+.method public hidebysig static int32 'yylook'() cil managed {
+.locals ([0] void* 'yystate')
+.locals ([1] void* 'lsp')
+.locals ([2] void* 'yyt')
+.locals ([3] void* 'yylastch')
+.locals ([4] int32 'yych')
+.locals ([5] void* 'yyr')
+.locals ([6] void* 'yyz')
+.locals ([7] void* '1')
+.locals ([8] int32 '68')
+.locals ([9] int32 '67')
+.locals ([10] int32 '66')
+.locals ([11] void* '2')
+.locals ([12] void* '3')
+.locals ([13] void* '4')
+.locals ([14] int32 '5')
+.locals ([15] int32 '6')
+.locals ([16] void* '7')
+.locals ([17] int32 '8')
+.locals ([18] void* '9')
+.locals ([19] void* '10')
+.locals ([20] void* '11')
+.locals ([21] void* '12')
+.locals ([22] void* '13')
+.locals ([23] void* '14')
+.locals ([24] void* '16')
+.locals ([25] void* '15')
+.locals ([26] void* '17')
+.locals ([27] void* '18')
+.locals ([28] void* '19')
+.locals ([29] int32 '20')
+.locals ([30] void* '21')
+.locals ([31] void* '22')
+.locals ([32] void* '23')
+.locals ([33] void* '24')
+.locals ([34] void* '25')
+.locals ([35] void* '26')
+.locals ([36] void* '28')
+.locals ([37] void* '27')
+.locals ([38] void* '29')
+.locals ([39] void* '30')
+.locals ([40] void* '31')
+.locals ([41] void* '32')
+.locals ([42] void* '33')
+.locals ([43] void* '34')
+.locals ([44] void* '35')
+.locals ([45] void* '37')
+.locals ([46] void* '36')
+.locals ([47] void* '38')
+.locals ([48] void* '39')
+.locals ([49] void* '40')
+.locals ([50] void* '41')
+.locals ([51] void* '42')
+.locals ([52] void* '43')
+.locals ([53] void* '44')
+.locals ([54] void* '46')
+.locals ([55] void* '45')
+.locals ([56] void* '47')
+.locals ([57] void* '48')
+.locals ([58] int32 '49')
+.locals ([59] void* '50')
+.locals ([60] void* '51')
+.locals ([61] void* '52')
+.locals ([62] void* '53')
+.locals ([63] void* '54')
+.locals ([64] void* '56')
+.locals ([65] void* '55')
+.locals ([66] int32 '57')
+.locals ([67] void* '58')
+.locals ([68] void* '59')
+.locals ([69] void* '60')
+.locals ([70] void* '62')
+.locals ([71] void* '61')
+.locals ([72] void* '63')
+.locals ([73] void* '64')
+.locals ([74] void* '66')
+.locals ([75] void* '65')
+.locals ([76] void* '67')
+.locals ([77] int32 '127')
+.locals ([78] int32 '126')
+.locals ([79] int32 '125')
+.locals ([80] void* '68')
+.locals ([81] void* '69')
+.locals ([82] int32 '70')
+.locals ([83] int32 '71')
+.locals ([84] void* '72')
+.locals ([85] int8 '73')
+.maxstack 3
+ldsfld int32 'yymorfg'
+ldc.i4 0
+bne.un $L45
+ldsflda valuetype 'int8[]' 'yytext'
+stloc 3
+br $L46
+$L45:
+ldc.i4 0
+stsfld int32 'yymorfg'
+ldsfld int32 'yyleng'
+ldsflda valuetype 'int8[]' 'yytext'
+add
+stloc 3
+$L46:
+$L47:
+ldsflda valuetype 'void*[]' 'yylstate'
+stloc 1
+ldsfld void* 'yybgin'
+stloc 7
+ldloc 7
+stloc 0
+ldloc 7
+stsfld void* 'yyestate'
+ldsfld int32 'yyprevious'
+ldc.i4 10
+bne.un $L51
+ldloc 0
+ldc.i4 12
+add
+stloc 0
+$L51:
+$L55:
+ldloc 0
+ldind.u4
+stloc 2
+ldloc 2
+conv.u4
+ldsflda valuetype 'syywork{i1i1}[]' 'yycrank'
+conv.u4
+bne.un $L59
+ldloc 0
+ldc.i4 4
+add
+ldind.u4
+stloc 6
+ldloc 6
+conv.u4
+ldc.i4 0
+bne.un $L61
+br $L105
+$L61:
+ldloc 6
+ldind.u4
+conv.u4
+ldsflda valuetype 'syywork{i1i1}[]' 'yycrank'
+conv.u4
+bne.un $L64
+br $L105
+$L64:
+$L59:
+ldloc 3
+stloc 11
+ldloc 11
+ldc.i4 1
+add
+stloc 3
+ldsfld void* 'yysptr'
+conv.u4
+ldsflda valuetype 'int8[]' 'yysbuf'
+conv.u4
+ble.un $L73
+ldsflda void* 'yysptr'
+stloc 12
+ldloc 12
+ldind.u4
+ldc.i4 -1
+add
+stloc 13
+ldloc 12
+ldloc 13
+stind.i4
+ldloc 13
+ldind.i1
+conv.i4
+stloc 10
+br $L74
+$L73:
+ldsfld void* 'yyin'
+call int32 'fgetc'(void*)
+stloc 14
+ldloc 14
+stloc 10
+$L74:
+ldloc 10
+stsfld int32 'yytchar'
+ldloc 10
+ldc.i4 10
+bne.un $L71
+ldsflda int32 'yylineno'
+stloc 16
+ldloc 16
+ldloc 16
+ldind.i4
+ldc.i4 1
+add
+stind.i4
+ldsfld int32 'yytchar'
+stloc 9
+br $L72
+$L71:
+ldsfld int32 'yytchar'
+stloc 9
+$L72:
+ldloc 9
+ldc.i4 -1
+bne.un $L69
+ldc.i4 0
+stloc 8
+br $L70
+$L69:
+ldsfld int32 'yytchar'
+stloc 8
+$L70:
+ldloc 8
+stloc 4
+ldloc 11
+ldloc 8
+conv.i1
+stind.i1
+$L75:
+ldloc 2
+stloc 5
+ldloc 2
+conv.u4
+ldsflda valuetype 'syywork{i1i1}[]' 'yycrank'
+conv.u4
+ble.un $L76
+ldloc 4
+ldc.i4 1
+shl
+ldloc 5
+add
+stloc 2
+ldloc 2
+conv.u4
+ldsfld void* 'yytop'
+conv.u4
+bgt.un $L77
+ldc.i4 12
+ldloc 2
+ldind.i1
+conv.i4
+mul
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+add
+conv.u4
+ldloc 0
+conv.u4
+bne.un $L77
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+stloc 20
+ldc.i4 12
+ldloc 2
+ldc.i4 1
+add
+ldind.i1
+conv.i4
+mul
+ldloc 20
+add
+conv.u4
+ldloc 20
+conv.u4
+bne.un $L80
+ldloc 3
+ldc.i4 -1
+add
+stloc 21
+ldloc 21
+stloc 3
+ldsflda int32 'yytchar'
+stloc 22
+ldloc 22
+ldloc 21
+ldind.i1
+conv.i4
+stind.i4
+ldloc 22
+ldind.i4
+ldc.i4 10
+bne.un $L82
+ldsflda int32 'yylineno'
+stloc 23
+ldloc 23
+ldloc 23
+ldind.i4
+ldc.i4 1
+sub
+stind.i4
+$L82:
+ldsflda void* 'yysptr'
+stloc 25
+ldloc 25
+ldind.u4
+stloc 24
+ldloc 25
+ldloc 24
+ldc.i4 1
+add
+stind.i4
+ldloc 24
+ldsfld int32 'yytchar'
+conv.i1
+stind.i1
+br $L105
+$L80:
+ldloc 1
+stloc 26
+ldloc 26
+ldc.i4 4
+add
+stloc 1
+ldc.i4 12
+ldloc 2
+ldc.i4 1
+add
+ldind.i1
+conv.i4
+mul
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+add
+stloc 27
+ldloc 27
+stloc 0
+ldloc 26
+ldloc 27
+stind.i4
+br $L55
+$L76:
+ldloc 2
+conv.u4
+ldsflda valuetype 'syywork{i1i1}[]' 'yycrank'
+conv.u4
+bge.un $L85
+ldsflda valuetype 'syywork{i1i1}[]' 'yycrank'
+stloc 28
+ldc.i4 1
+stloc 29
+ldloc 28
+conv.u4
+ldloc 2
+conv.u4
+sub
+conv.i4
+ldc.i4 2
+div
+ldloc 29
+shl
+ldloc 28
+add
+stloc 30
+ldloc 30
+stloc 5
+ldloc 30
+stloc 2
+ldloc 4
+ldloc 29
+shl
+ldloc 2
+add
+stloc 2
+ldloc 2
+conv.u4
+ldsfld void* 'yytop'
+conv.u4
+bgt.un $L88
+ldc.i4 12
+ldloc 2
+ldind.i1
+conv.i4
+mul
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+add
+conv.u4
+ldloc 0
+conv.u4
+bne.un $L88
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+stloc 32
+ldc.i4 12
+ldloc 2
+ldc.i4 1
+add
+ldind.i1
+conv.i4
+mul
+ldloc 32
+add
+conv.u4
+ldloc 32
+conv.u4
+bne.un $L90
+ldloc 3
+ldc.i4 -1
+add
+stloc 33
+ldloc 33
+stloc 3
+ldsflda int32 'yytchar'
+stloc 34
+ldloc 34
+ldloc 33
+ldind.i1
+conv.i4
+stind.i4
+ldloc 34
+ldind.i4
+ldc.i4 10
+bne.un $L92
+ldsflda int32 'yylineno'
+stloc 35
+ldloc 35
+ldloc 35
+ldind.i4
+ldc.i4 1
+sub
+stind.i4
+$L92:
+ldsflda void* 'yysptr'
+stloc 37
+ldloc 37
+ldind.u4
+stloc 36
+ldloc 37
+ldloc 36
+ldc.i4 1
+add
+stind.i4
+ldloc 36
+ldsfld int32 'yytchar'
+conv.i1
+stind.i1
+br $L105
+$L90:
+ldloc 1
+stloc 38
+ldloc 38
+ldc.i4 4
+add
+stloc 1
+ldc.i4 12
+ldloc 2
+ldc.i4 1
+add
+ldind.i1
+conv.i4
+mul
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+add
+stloc 39
+ldloc 39
+stloc 0
+ldloc 38
+ldloc 39
+stind.i4
+br $L55
+$L88:
+ldloc 4
+ldsflda valuetype 'int8[]' 'yymatch'
+add
+ldind.i1
+conv.i4
+ldc.i4 1
+shl
+ldloc 5
+add
+stloc 2
+ldloc 2
+conv.u4
+ldsfld void* 'yytop'
+conv.u4
+bgt.un $L94
+ldc.i4 12
+ldloc 2
+ldind.i1
+conv.i4
+mul
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+add
+conv.u4
+ldloc 0
+conv.u4
+bne.un $L94
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+stloc 41
+ldc.i4 12
+ldloc 2
+ldc.i4 1
+add
+ldind.i1
+conv.i4
+mul
+ldloc 41
+add
+conv.u4
+ldloc 41
+conv.u4
+bne.un $L96
+ldloc 3
+ldc.i4 -1
+add
+stloc 42
+ldloc 42
+stloc 3
+ldsflda int32 'yytchar'
+stloc 43
+ldloc 43
+ldloc 42
+ldind.i1
+conv.i4
+stind.i4
+ldloc 43
+ldind.i4
+ldc.i4 10
+bne.un $L98
+ldsflda int32 'yylineno'
+stloc 44
+ldloc 44
+ldloc 44
+ldind.i4
+ldc.i4 1
+sub
+stind.i4
+$L98:
+ldsflda void* 'yysptr'
+stloc 46
+ldloc 46
+ldind.u4
+stloc 45
+ldloc 46
+ldloc 45
+ldc.i4 1
+add
+stind.i4
+ldloc 45
+ldsfld int32 'yytchar'
+conv.i1
+stind.i1
+br $L105
+$L96:
+ldloc 1
+stloc 47
+ldloc 47
+ldc.i4 4
+add
+stloc 1
+ldc.i4 12
+ldloc 2
+ldc.i4 1
+add
+ldind.i1
+conv.i4
+mul
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+add
+stloc 48
+ldloc 48
+stloc 0
+ldloc 47
+ldloc 48
+stind.i4
+br $L55
+$L94:
+$L85:
+$L77:
+ldloc 0
+ldc.i4 4
+add
+ldind.u4
+stloc 49
+ldloc 49
+stloc 0
+ldloc 49
+conv.u4
+ldc.i4 0
+beq $L100
+ldloc 0
+ldind.u4
+stloc 50
+ldloc 50
+stloc 2
+ldloc 50
+conv.u4
+ldsflda valuetype 'syywork{i1i1}[]' 'yycrank'
+conv.u4
+beq $L100
+br $L75
+$L100:
+ldloc 3
+ldc.i4 -1
+add
+stloc 51
+ldloc 51
+stloc 3
+ldsflda int32 'yytchar'
+stloc 52
+ldloc 52
+ldloc 51
+ldind.i1
+conv.i4
+stind.i4
+ldloc 52
+ldind.i4
+ldc.i4 10
+bne.un $L102
+ldsflda int32 'yylineno'
+stloc 53
+ldloc 53
+ldloc 53
+ldind.i4
+ldc.i4 1
+sub
+stind.i4
+$L102:
+ldsflda void* 'yysptr'
+stloc 55
+ldloc 55
+ldind.u4
+stloc 54
+ldloc 55
+ldloc 54
+ldc.i4 1
+add
+stind.i4
+ldloc 54
+ldsfld int32 'yytchar'
+conv.i1
+stind.i1
+br $L105
+$L104:
+ldloc 3
+stloc 56
+ldloc 56
+ldc.i4 -1
+add
+stloc 3
+ldloc 56
+ldc.i4 0
+stind.i1
+ldloc 1
+ldind.u4
+stloc 57
+ldc.i4 0
+stloc 58
+ldloc 57
+conv.u4
+ldloc 58
+beq $L108
+ldsflda void* 'yyfnd'
+stloc 59
+ldloc 57
+ldc.i4 8
+add
+ldind.u4
+stloc 60
+ldloc 59
+ldloc 60
+stind.i4
+ldloc 60
+conv.u4
+ldloc 58
+beq $L108
+ldloc 59
+ldind.u4
+ldind.i4
+ldc.i4 0
+ble $L108
+ldloc 1
+stsfld void* 'yyolsp'
+ldsfld void* 'yyfnd'
+ldind.i4
+ldsflda valuetype 'int8[]' 'yyextra'
+add
+ldind.i1
+conv.i4
+ldc.i4 0
+beq $L111
+br $L114
+$L113:
+ldloc 1
+ldc.i4 -4
+add
+stloc 1
+ldloc 3
+stloc 61
+ldloc 61
+ldc.i4 -1
+add
+stloc 3
+ldsflda int32 'yytchar'
+stloc 62
+ldloc 62
+ldloc 61
+ldind.i1
+conv.i4
+stind.i4
+ldloc 62
+ldind.i4
+ldc.i4 10
+bne.un $L117
+ldsflda int32 'yylineno'
+stloc 63
+ldloc 63
+ldloc 63
+ldind.i4
+ldc.i4 1
+sub
+stind.i4
+$L117:
+ldsflda void* 'yysptr'
+stloc 65
+ldloc 65
+ldind.u4
+stloc 64
+ldloc 65
+ldloc 64
+ldc.i4 1
+add
+stind.i4
+ldloc 64
+ldsfld int32 'yytchar'
+conv.i1
+stind.i1
+$L114:
+ldloc 1
+ldind.u4
+ldc.i4 8
+add
+ldind.u4
+ldsfld void* 'yyfnd'
+ldind.i4
+neg
+call int32 'yyback'(void*,int32)
+stloc 66
+ldloc 66
+ldc.i4 1
+beq $L119
+ldloc 1
+conv.u4
+ldsflda valuetype 'void*[]' 'yylstate'
+conv.u4
+bgt.un $L113
+$L119:
+$L111:
+ldloc 3
+ldind.i1
+conv.i4
+stsfld int32 'yyprevious'
+ldloc 1
+stsfld void* 'yylsp'
+ldsflda int32 'yyleng'
+stloc 68
+ldsflda valuetype 'int8[]' 'yytext'
+stloc 69
+ldloc 68
+ldloc 3
+conv.u4
+ldloc 69
+conv.u4
+sub
+conv.i4
+ldc.i4 1
+add
+stind.i4
+ldloc 68
+ldind.i4
+ldloc 69
+add
+ldc.i4 0
+stind.i1
+ldsflda void* 'yyfnd'
+stloc 71
+ldloc 71
+ldind.u4
+stloc 70
+ldloc 71
+ldloc 70
+ldc.i4 4
+add
+stind.i4
+ldloc 70
+ldind.i4
+br $L44
+$L108:
+ldsflda int32 'yytchar'
+stloc 72
+ldloc 72
+ldloc 3
+ldind.i1
+conv.i4
+stind.i4
+ldloc 72
+ldind.i4
+ldc.i4 10
+bne.un $L121
+ldsflda int32 'yylineno'
+stloc 73
+ldloc 73
+ldloc 73
+ldind.i4
+ldc.i4 1
+sub
+stind.i4
+$L121:
+ldsflda void* 'yysptr'
+stloc 75
+ldloc 75
+ldind.u4
+stloc 74
+ldloc 75
+ldloc 74
+ldc.i4 1
+add
+stind.i4
+ldloc 74
+ldsfld int32 'yytchar'
+conv.i1
+stind.i1
+$L105:
+ldloc 1
+stloc 76
+ldloc 76
+ldc.i4 -4
+add
+stloc 1
+ldloc 76
+conv.u4
+ldsflda valuetype 'void*[]' 'yylstate'
+conv.u4
+bgt.un $L104
+ldsflda valuetype 'int8[]' 'yytext'
+ldind.i1
+conv.i4
+ldc.i4 0
+bne.un $L123
+ldsflda valuetype 'int8[]' 'yysbuf'
+stsfld void* 'yysptr'
+ldc.i4 0
+br $L44
+$L123:
+ldsfld void* 'yysptr'
+conv.u4
+ldsflda valuetype 'int8[]' 'yysbuf'
+conv.u4
+ble.un $L132
+ldsflda void* 'yysptr'
+stloc 80
+ldloc 80
+ldind.u4
+ldc.i4 -1
+add
+stloc 81
+ldloc 80
+ldloc 81
+stind.i4
+ldloc 81
+ldind.i1
+conv.i4
+stloc 79
+br $L133
+$L132:
+ldsfld void* 'yyin'
+call int32 'fgetc'(void*)
+stloc 82
+ldloc 82
+stloc 79
+$L133:
+ldloc 79
+stsfld int32 'yytchar'
+ldloc 79
+ldc.i4 10
+bne.un $L130
+ldsflda int32 'yylineno'
+stloc 84
+ldloc 84
+ldloc 84
+ldind.i4
+ldc.i4 1
+add
+stind.i4
+ldsfld int32 'yytchar'
+stloc 78
+br $L131
+$L130:
+ldsfld int32 'yytchar'
+stloc 78
+$L131:
+ldloc 78
+ldc.i4 -1
+bne.un $L128
+ldc.i4 0
+stloc 77
+br $L129
+$L128:
+ldsfld int32 'yytchar'
+stloc 77
+$L129:
+ldloc 77
+conv.i1
+stloc 85
+ldsflda valuetype 'int8[]' 'yytext'
+ldloc 85
+stind.i1
+ldloc 85
+conv.i4
+stsfld int32 'yyprevious'
+ldsfld int32 'yyprevious'
+ldc.i4 0
+ble $L134
+ldsfld int32 'yyprevious'
+ldsfld void* 'yyout'
+call int32 'fputc'(int32,void*)
+pop
+$L134:
+ldsflda valuetype 'int8[]' 'yytext'
+stloc 3
+br $L47
+$L44:
+ret
+}
+.method public hidebysig static int32 'yyback'(void*,int32) cil managed {
+.locals ([0] void* '1')
+.maxstack 2
+ldarg 0
+conv.u4
+ldc.i4 0
+bne.un $L140
+ldc.i4 0
+br $L136
+$L139:
+ldarg 0
+stloc 0
+ldloc 0
+ldc.i4 4
+add
+starg 0
+ldloc 0
+ldind.i4
+ldarg 1
+bne.un $L142
+ldc.i4 1
+br $L136
+$L142:
+$L140:
+ldarg 0
+ldind.i4
+ldc.i4 0
+bne.un $L139
+ldc.i4 0
+$L136:
+ret
+}
+.method public hidebysig static int32 'yyinput'() cil managed {
+.locals ([0] int32 '147')
+.locals ([1] int32 '146')
+.locals ([2] int32 '145')
+.locals ([3] void* '1')
+.locals ([4] void* '2')
+.locals ([5] int32 '3')
+.locals ([6] int32 '4')
+.locals ([7] void* '5')
+.maxstack 3
+ldsfld void* 'yysptr'
+conv.u4
+ldsflda valuetype 'int8[]' 'yysbuf'
+conv.u4
+ble.un $L152
+ldsflda void* 'yysptr'
+stloc 3
+ldloc 3
+ldind.u4
+ldc.i4 -1
+add
+stloc 4
+ldloc 3
+ldloc 4
+stind.i4
+ldloc 4
+ldind.i1
+conv.i4
+stloc 2
+br $L153
+$L152:
+ldsfld void* 'yyin'
+call int32 'fgetc'(void*)
+stloc 5
+ldloc 5
+stloc 2
+$L153:
+ldloc 2
+stsfld int32 'yytchar'
+ldloc 2
+ldc.i4 10
+bne.un $L150
+ldsflda int32 'yylineno'
+stloc 7
+ldloc 7
+ldloc 7
+ldind.i4
+ldc.i4 1
+add
+stind.i4
+ldsfld int32 'yytchar'
+stloc 1
+br $L151
+$L150:
+ldsfld int32 'yytchar'
+stloc 1
+$L151:
+ldloc 1
+ldc.i4 -1
+bne.un $L148
+ldc.i4 0
+stloc 0
+br $L149
+$L148:
+ldsfld int32 'yytchar'
+stloc 0
+$L149:
+ldloc 0
+$L144:
+ret
+}
+.method public hidebysig static int32 'yyoutput'(int32) cil managed {
+.maxstack 3
+ldarg 0
+ldsfld void* 'yyout'
+call int32 'fputc'(int32,void*)
+pop
+ldc.i4 0
+$L154:
+ret
+}
+.method public hidebysig static int32 'yyunput'(int32) cil managed {
+.locals ([0] void* '1')
+.locals ([1] void* '2')
+.locals ([2] void* '4')
+.locals ([3] void* '3')
+.maxstack 3
+ldsflda int32 'yytchar'
+stloc 0
+ldloc 0
+ldarg 0
+stind.i4
+ldloc 0
+ldind.i4
+ldc.i4 10
+bne.un $L156
+ldsflda int32 'yylineno'
+stloc 1
+ldloc 1
+ldloc 1
+ldind.i4
+ldc.i4 1
+sub
+stind.i4
+$L156:
+ldsflda void* 'yysptr'
+stloc 3
+ldloc 3
+ldind.u4
+stloc 2
+ldloc 3
+ldloc 2
+ldc.i4 1
+add
+stind.i4
+ldloc 2
+ldsfld int32 'yytchar'
+conv.i1
+stind.i1
+ldc.i4 0
+$L155:
+ret
+}
+.method public hidebysig static int32 'main'() cil managed {
+.locals ([0] void* '1')
+.locals ([1] void* '2')
+.maxstack 1
+call void* '__getstdin'()
+stloc 0
+ldloc 0
+stsfld void* 'yyin'
+call void* '__getstdout'()
+stloc 1
+ldloc 1
+stsfld void* 'yyout'
+call int32 'yyparse'()
+pop
+ldc.i4 0
+$L158:
+ret
+}
+.method public hidebysig static int32 'yyerror'(void*) cil managed {
+.maxstack 3
+ldsflda valuetype 'int8[]' $_160
+ldarg 0
+call vararg int32 'printf'(void*,...,void*)
+pop
+ldc.i4 0
+$L159:
+ret
+}
+.class private value explicit ansi sealed 'int16[]' { .pack 1 .size 0 }
+.field public static valuetype 'int16[]' 'yyexca' at $yyexca
+.data $yyexca = {
+int16 (-1),
+int16 (1),
+int16 (0),
+int16 (-1),
+int16 (-2),
+int16 (0)
+}
+.field public static valuetype 'int16[]' 'yyact' at $yyact
+.data $yyact = {
+int16 (12),
+int16 (2),
+int16 (9),
+int16 (8),
+int16 (17),
+int16 (11),
+int16 (25),
+int16 (17),
+int16 (15),
+int16 (18),
+int16 (16),
+int16 (10),
+int16 (18),
+int16 (17),
+int16 (15),
+int16 (7),
+int16 (16),
+int16 (13),
+int16 (18),
+int16 (5),
+int16 (3),
+int16 (1),
+int16 (0),
+int16 (19),
+int16 (20),
+int16 (0),
+int16 (0),
+int16 (21),
+int16 (22),
+int16 (23),
+int16 (24),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (6),
+int16 (14),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (4),
+int16 (6)
+}
+.field public static valuetype 'int16[]' 'yypact' at $yypact
+.data $yypact = {
+int16 (-1000),
+int16 (-9),
+int16 (-1000),
+int16 (5),
+int16 (-7),
+int16 (-59),
+int16 (-1000),
+int16 (-1000),
+int16 (-1000),
+int16 (-40),
+int16 (-29),
+int16 (-40),
+int16 (-40),
+int16 (-1000),
+int16 (-1000),
+int16 (-40),
+int16 (-40),
+int16 (-40),
+int16 (-40),
+int16 (-38),
+int16 (-35),
+int16 (-38),
+int16 (-38),
+int16 (-1000),
+int16 (-1000),
+int16 (-1000)
+}
+.field public static valuetype 'int16[]' 'yypgo' at $yypgo
+.data $yypgo = {
+int16 (0),
+int16 (21),
+int16 (20),
+int16 (17),
+int16 (11)
+}
+.field public static valuetype 'int16[]' 'yyr1' at $yyr1
+.data $yyr1 = {
+int16 (0),
+int16 (1),
+int16 (1),
+int16 (1),
+int16 (1),
+int16 (2),
+int16 (4),
+int16 (4),
+int16 (4),
+int16 (4),
+int16 (4),
+int16 (4),
+int16 (4),
+int16 (4),
+int16 (3)
+}
+.field public static valuetype 'int16[]' 'yyr2' at $yyr2
+.data $yyr2 = {
+int16 (0),
+int16 (0),
+int16 (2),
+int16 (3),
+int16 (3),
+int16 (3),
+int16 (3),
+int16 (3),
+int16 (3),
+int16 (3),
+int16 (2),
+int16 (3),
+int16 (1),
+int16 (1),
+int16 (1)
+}
+.field public static valuetype 'int16[]' 'yychk' at $yychk
+.data $yychk = {
+int16 (-1000),
+int16 (-1),
+int16 (10),
+int16 (-2),
+int16 (256),
+int16 (-3),
+int16 (257),
+int16 (10),
+int16 (10),
+int16 (61),
+int16 (-4),
+int16 (45),
+int16 (40),
+int16 (-3),
+int16 (258),
+int16 (43),
+int16 (45),
+int16 (42),
+int16 (47),
+int16 (-4),
+int16 (-4),
+int16 (-4),
+int16 (-4),
+int16 (-4),
+int16 (-4),
+int16 (41)
+}
+.field public static valuetype 'int16[]' 'yydef' at $yydef
+.data $yydef = {
+int16 (1),
+int16 (-2),
+int16 (2),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (14),
+int16 (3),
+int16 (4),
+int16 (0),
+int16 (5),
+int16 (0),
+int16 (0),
+int16 (12),
+int16 (13),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (0),
+int16 (10),
+int16 (0),
+int16 (6),
+int16 (7),
+int16 (8),
+int16 (9),
+int16 (11)
+}
+.field public static int32 'yychar' at $yychar
+.data $yychar = {
+int32 (-1)
+}
+.field public static int32 'yynerrs' at $yynerrs
+.data $yynerrs = {
+int32 (0)
+}
+.field public static int16 'yyerrflag' at $yyerrflag
+.data $yyerrflag = {
+int16 (0)
+}
+.class private value explicit ansi sealed 'int16[150]' { .pack 1 .size 300 }
+.method public hidebysig static int32 'yyparse'() cil managed {
+.locals ([0] void* 'yypvt')
+.locals ([1] int16 'yystate')
+.locals ([2] void* 'yyps')
+.locals ([3] int16 'yyn')
+.locals ([4] void* 'yypv')
+.locals ([5] void* 'yyxi')
+.locals ([6] int16 'yyj')
+.locals ([7] valuetype 'int16[150]' 'yys')
+.locals ([8] int16 'yym')
+.locals ([9] int16 '1')
+.locals ([10] void* '2')
+.locals ([11] int32 '3')
+.locals ([12] int16 '4')
+.locals ([13] int32 '5')
+.locals ([14] int16 '6')
+.locals ([15] void* '7')
+.locals ([16] int16 '8')
+.locals ([17] int32 '9')
+.locals ([18] void* '10')
+.locals ([19] void* '11')
+.locals ([20] int16 '12')
+.locals ([21] int32 '207')
+.locals ([22] int32 '17')
+.locals ([23] int32 '18')
+.locals ([24] int32 '19')
+.locals ([25] int32 '20')
+.locals ([26] void* '13')
+.locals ([27] int32 '14')
+.locals ([28] int32 '15')
+.locals ([29] void* '16')
+.locals ([30] int16 '21')
+.locals ([31] int32 '22')
+.locals ([32] int32 '23')
+.locals ([33] void* '24')
+.locals ([34] void* '25')
+.locals ([35] int32 '26')
+.locals ([36] int32 '27')
+.locals ([37] int16 '28')
+.locals ([38] int32 '29')
+.locals ([39] int32 '231')
+.locals ([40] int32 '30')
+.locals ([41] int32 '31')
+.locals ([42] int32 '32')
+.locals ([43] int32 '33')
+.locals ([44] int32 '34')
+.locals ([45] int32 '35')
+.locals ([46] int32 '36')
+.locals ([47] int32 '37')
+.locals ([48] int32 '38')
+.locals ([49] int32 '39')
+.locals ([50] int32 '40')
+.locals ([51] int32 '41')
+.maxstack 3
+ldc.i4 0
+stloc 9
+ldloc 9
+stloc 1
+ldc.i4 -1
+stsfld int32 'yychar'
+ldc.i4 0
+stsfld int32 'yynerrs'
+ldloc 9
+stsfld int16 'yyerrflag'
+ldloca 7
+ldc.i4 -2
+add
+stloc 2
+ldsflda valuetype 'int32[]' 'yyv'
+ldc.i4 -4
+add
+stloc 4
+$L164:
+ldloc 2
+ldc.i4 2
+add
+stloc 10
+ldloc 10
+stloc 2
+ldloc 10
+conv.u4
+ldloca 7
+ldc.i4 298
+add
+conv.u4
+ble.un $L165
+ldsflda valuetype 'int8[]' $_168
+call int32 'yyerror'(void*)
+pop
+ldc.i4 1
+br $L161
+$L165:
+ldloc 2
+ldloc 1
+stind.i2
+ldloc 4
+ldc.i4 4
+add
+stloc 4
+ldloc 4
+ldsfld int32 'yyval'
+stind.i4
+$L169:
+ldloc 1
+conv.i4
+ldc.i4 1
+shl
+ldsflda valuetype 'int16[]' 'yypact'
+add
+ldind.i2
+stloc 3
+ldloc 3
+conv.i4
+ldc.i4 -1000
+bgt $L170
+br $L173
+$L170:
+ldsfld int32 'yychar'
+ldc.i4 0
+bge $L174
+call int32 'yylex'()
+stloc 11
+ldloc 11
+stsfld int32 'yychar'
+ldloc 11
+ldc.i4 0
+bge $L176
+ldc.i4 0
+stsfld int32 'yychar'
+$L176:
+$L174:
+ldloc 3
+conv.i4
+ldsfld int32 'yychar'
+add
+conv.i2
+stloc 12
+ldloc 12
+stloc 3
+ldloc 12
+conv.i4
+ldc.i4 0
+blt $L180
+ldloc 3
+conv.i4
+ldc.i4 249
+blt $L178
+$L180:
+br $L173
+$L178:
+ldc.i4 1
+stloc 13
+ldloc 3
+conv.i4
+ldloc 13
+shl
+ldsflda valuetype 'int16[]' 'yyact'
+add
+ldind.i2
+stloc 14
+ldloc 14
+stloc 3
+ldloc 14
+conv.i4
+ldloc 13
+shl
+ldsflda valuetype 'int16[]' 'yychk'
+add
+ldind.i2
+conv.i4
+ldsfld int32 'yychar'
+bne.un $L182
+ldc.i4 -1
+stsfld int32 'yychar'
+ldsfld int32 'yylval'
+stsfld int32 'yyval'
+ldloc 3
+stloc 1
+ldsfld int16 'yyerrflag'
+conv.i4
+ldc.i4 0
+ble $L164
+ldsflda int16 'yyerrflag'
+stloc 15
+ldloc 15
+ldloc 15
+ldind.i2
+conv.i4
+ldc.i4 1
+sub
+conv.i2
+stind.i2
+br $L164
+$L182:
+$L173:
+ldloc 1
+conv.i4
+ldc.i4 1
+shl
+ldsflda valuetype 'int16[]' 'yydef'
+add
+ldind.i2
+stloc 16
+ldloc 16
+stloc 3
+ldloc 16
+conv.i4
+ldc.i4 -2
+bne.un $L186
+ldsfld int32 'yychar'
+ldc.i4 0
+bge $L188
+call int32 'yylex'()
+stloc 17
+ldloc 17
+stsfld int32 'yychar'
+ldloc 17
+ldc.i4 0
+bge $L190
+ldc.i4 0
+stsfld int32 'yychar'
+$L190:
+$L188:
+ldsflda valuetype 'int16[]' 'yyexca'
+stloc 5
+br $L195
+$L192:
+$L193:
+ldloc 5
+ldc.i4 4
+add
+stloc 5
+$L195:
+ldloc 5
+ldind.i2
+conv.i4
+ldc.i4 -1
+bne.un $L192
+ldloc 5
+ldc.i4 2
+add
+ldind.i2
+conv.i4
+ldloc 1
+conv.i4
+bne.un $L192
+br $L197
+$L196:
+ldloc 5
+ldind.i2
+conv.i4
+ldsfld int32 'yychar'
+bne.un $L199
+br $L198
+$L199:
+$L197:
+ldloc 5
+ldc.i4 4
+add
+stloc 19
+ldloc 19
+stloc 5
+ldloc 19
+ldind.i2
+conv.i4
+ldc.i4 0
+bge $L196
+$L198:
+ldloc 5
+ldc.i4 2
+add
+ldind.i2
+stloc 20
+ldloc 20
+stloc 3
+ldloc 20
+conv.i4
+ldc.i4 0
+bge $L201
+ldc.i4 0
+br $L161
+$L201:
+$L186:
+ldloc 3
+conv.i4
+ldc.i4 0
+bne.un $L203
+ldsfld int16 'yyerrflag'
+conv.i4
+stloc 21
+ldc.i4 1
+stloc 23
+ldloc 21
+ldloc 23
+beq $L211
+ldloc 21
+ldloc 23
+bgt $L224
+$L223:
+ldloc 21
+ldc.i4 0
+beq $L208
+br $L205
+$L224:
+ldc.i4 2
+stloc 25
+ldloc 21
+ldloc 25
+beq $L211
+ldloc 21
+ldloc 25
+blt $L205
+$L225:
+ldloc 21
+ldc.i4 3
+beq $L220
+br $L205
+$L208:
+ldsflda valuetype 'int8[]' $_209
+call int32 'yyerror'(void*)
+pop
+$L210:
+ldsflda int32 'yynerrs'
+stloc 26
+ldloc 26
+ldloc 26
+ldind.i4
+ldc.i4 1
+add
+stind.i4
+$L211:
+ldc.i4 3
+stsfld int16 'yyerrflag'
+br $L214
+$L213:
+ldloc 2
+ldind.i2
+conv.i4
+ldc.i4 1
+shl
+ldsflda valuetype 'int16[]' 'yypact'
+add
+ldind.i2
+conv.i4
+ldc.i4 256
+add
+conv.i2
+stloc 3
+ldloc 3
+conv.i4
+stloc 27
+ldloc 27
+ldc.i4 0
+blt $L217
+ldloc 27
+ldc.i4 249
+bge $L217
+ldc.i4 1
+stloc 28
+ldloc 27
+ldloc 28
+shl
+ldsflda valuetype 'int16[]' 'yyact'
+add
+ldind.i2
+conv.i4
+ldloc 28
+shl
+ldsflda valuetype 'int16[]' 'yychk'
+add
+ldind.i2
+conv.i4
+ldc.i4 256
+bne.un $L217
+ldloc 3
+conv.i4
+ldc.i4 1
+shl
+ldsflda valuetype 'int16[]' 'yyact'
+add
+ldind.i2
+stloc 1
+br $L164
+$L217:
+ldloc 2
+ldind.i2
+conv.i4
+ldc.i4 1
+shl
+ldsflda valuetype 'int16[]' 'yypact'
+add
+ldind.i2
+stloc 3
+ldloc 2
+ldc.i4 -2
+add
+stloc 2
+ldloc 4
+ldc.i4 -4
+add
+stloc 4
+$L214:
+ldloc 2
+conv.u4
+ldloca 7
+conv.u4
+bge.un $L213
+$L219:
+ldc.i4 1
+br $L161
+$L220:
+ldsfld int32 'yychar'
+ldc.i4 0
+bne.un $L221
+br $L219
+$L221:
+ldc.i4 -1
+stsfld int32 'yychar'
+br $L169
+$L205:
+$L203:
+ldc.i4 1
+stloc 31
+ldloc 3
+conv.i4
+ldloc 31
+shl
+stloc 32
+ldloc 32
+ldsflda valuetype 'int16[]' 'yyr2'
+add
+stloc 33
+ldloc 2
+ldloc 33
+ldind.i2
+conv.i4
+ldloc 31
+shl
+sub
+stloc 2
+ldloc 4
+stloc 0
+ldloc 4
+ldloc 33
+ldind.i2
+conv.i4
+ldc.i4 2
+shl
+sub
+stloc 4
+ldloc 4
+ldc.i4 4
+add
+ldind.i4
+stsfld int32 'yyval'
+ldloc 3
+stloc 8
+ldloc 32
+ldsflda valuetype 'int16[]' 'yyr1'
+add
+ldind.i2
+stloc 3
+ldloc 3
+conv.i4
+ldloc 31
+shl
+ldsflda valuetype 'int16[]' 'yypgo'
+add
+ldind.i2
+conv.i4
+ldloc 2
+ldind.i2
+conv.i4
+add
+ldloc 31
+add
+conv.i2
+stloc 6
+ldloc 6
+conv.i4
+stloc 35
+ldloc 35
+ldc.i4 249
+bge $L228
+ldc.i4 1
+stloc 36
+ldloc 35
+ldloc 36
+shl
+ldsflda valuetype 'int16[]' 'yyact'
+add
+ldind.i2
+stloc 37
+ldloc 37
+stloc 1
+ldloc 37
+conv.i4
+ldloc 36
+shl
+ldsflda valuetype 'int16[]' 'yychk'
+add
+ldind.i2
+conv.i4
+ldloc 3
+conv.i4
+neg
+beq $L226
+$L228:
+ldc.i4 1
+stloc 38
+ldloc 3
+conv.i4
+ldloc 38
+shl
+ldsflda valuetype 'int16[]' 'yypgo'
+add
+ldind.i2
+conv.i4
+ldloc 38
+shl
+ldsflda valuetype 'int16[]' 'yyact'
+add
+ldind.i2
+stloc 1
+$L226:
+ldloc 8
+conv.i4
+stloc 39
+ldc.i4 8
+stloc 41
+ldloc 39
+ldloc 41
+beq $L239
+ldloc 39
+ldloc 41
+bgt $L251
+$L250:
+ldc.i4 5
+stloc 43
+ldloc 39
+ldloc 43
+beq $L233
+ldloc 39
+ldloc 43
+bgt $L253
+$L252:
+ldloc 39
+ldc.i4 4
+beq $L232
+br $L164
+$L253:
+ldc.i4 6
+stloc 45
+ldloc 39
+ldloc 45
+beq $L235
+ldloc 39
+ldloc 45
+blt $L164
+$L255:
+ldloc 39
+ldc.i4 7
+beq $L237
+br $L164
+$L251:
+ldc.i4 12
+stloc 47
+ldloc 39
+ldloc 47
+beq $L245
+ldloc 39
+ldloc 47
+bgt $L259
+$L258:
+ldc.i4 9
+stloc 49
+ldloc 39
+ldloc 49
+beq $L241
+ldloc 39
+ldloc 49
+blt $L164
+$L260:
+ldloc 39
+ldc.i4 10
+beq $L243
+br $L164
+$L259:
+ldc.i4 13
+stloc 51
+ldloc 39
+ldloc 51
+beq $L247
+ldloc 39
+ldloc 51
+blt $L164
+$L262:
+ldloc 39
+ldc.i4 14
+beq $L249
+br $L164
+$L232:
+ldc.i4 0
+stsfld int16 'yyerrflag'
+br $L164
+$L233:
+ldsflda valuetype 'int8[]' $_234
+call vararg int32 'printf'(void*)
+pop
+br $L164
+$L235:
+ldsflda valuetype 'int8[]' $_236
+call vararg int32 'printf'(void*)
+pop
+br $L164
+$L237:
+ldsflda valuetype 'int8[]' $_238
+call vararg int32 'printf'(void*)
+pop
+br $L164
+$L239:
+ldsflda valuetype 'int8[]' $_240
+call vararg int32 'printf'(void*)
+pop
+br $L164
+$L241:
+ldsflda valuetype 'int8[]' $_242
+call vararg int32 'printf'(void*)
+pop
+br $L164
+$L243:
+ldsflda valuetype 'int8[]' $_244
+call vararg int32 'printf'(void*)
+pop
+br $L164
+$L245:
+ldsflda valuetype 'int8[]' $_246
+call vararg int32 'printf'(void*)
+pop
+br $L164
+$L247:
+ldsflda valuetype 'int8[]' $_248
+ldsflda valuetype 'int8[]' 'yytext'
+call vararg int32 'printf'(void*,...,void*)
+pop
+br $L164
+$L249:
+ldsflda valuetype 'int8[]' $_160
+ldsflda valuetype 'int8[]' 'yytext'
+call vararg int32 'printf'(void*,...,void*)
+pop
+br $L164
+$L161:
+ret
+}
+.method public hidebysig static int32 'yywrap'() cil managed {
+.maxstack 1
+ldc.i4 1
+$L265:
+ret
+}
+.field public static valuetype 'int32[]' 'yyv' at $yyv
+.data $yyv = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static void* 'yyfnd' at $yyfnd
+.data $yyfnd = {
+int32 (0)
+}
+.field public static void* 'yyolsp' at $yyolsp
+.data $yyolsp = {
+int32 (0)
+}
+.field public static void* 'yylsp' at $yylsp
+.data $yylsp = {
+int32 (0)
+}
+.field public static valuetype 'void*[]' 'yylstate' at $yylstate
+.data $yylstate = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static void* 'yyestate' at $yyestate
+.data $yyestate = {
+int32 (0)
+}
+.field public static int32 'yytchar' at $yytchar
+.data $yytchar = {
+int32 (0)
+}
+.field public static valuetype 'int8[]' 'yysbuf' at $yysbuf
+.data $yysbuf = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static int32 'yymorfg' at $yymorfg
+.data $yymorfg = {
+int32 (0)
+}
+.field public static valuetype 'int8[]' 'yytext' at $yytext
+.data $yytext = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static int32 'yyleng' at $yyleng
+.data $yyleng = {
+int32 (0)
+}
+.field public static int32 'yyval' at $yyval
+.data $yyval = {
+int32 (0)
+}
+.field public static int32 'yylval' at $yylval
+.data $yylval = {
+int32 (0)
+}
+.field public static valuetype 'int8[]' $_248 at $266
+.data $266 = {
+bytearray ( 70 75 73 68 20 25 73 a 0 )
+}
+.field public static valuetype 'int8[]' $_246 at $267
+.data $267 = {
+bytearray ( 6c 6f 61 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_244 at $268
+.data $268 = {
+bytearray ( 6e 65 67 61 74 65 a 0 )
+}
+.field public static valuetype 'int8[]' $_242 at $269
+.data $269 = {
+bytearray ( 64 69 76 69 64 65 a 0 )
+}
+.field public static valuetype 'int8[]' $_240 at $270
+.data $270 = {
+bytearray ( 6d 75 6c 74 69 70 6c 79 a 0 )
+}
+.field public static valuetype 'int8[]' $_238 at $271
+.data $271 = {
+bytearray ( 6e 65 67 61 74 65 a 61 64 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_236 at $272
+.data $272 = {
+bytearray ( 61 64 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_234 at $273
+.data $273 = {
+bytearray ( 73 74 6f 72 65 a 0 )
+}
+.field public static valuetype 'int8[]' $_209 at $274
+.data $274 = {
+bytearray ( 73 79 6e 74 61 78 20 65 72 72 6f 72 0 )
+}
+.field public static valuetype 'int8[]' $_168 at $275
+.data $275 = {
+bytearray ( 79 61 63 63 20 73 74 61 63 6b 20 6f 76 65 72 66 6c 6f 77 0 )
+}
+.field public static valuetype 'int8[]' $_160 at $276
+.data $276 = {
+bytearray ( 25 73 a 0 )
+}
+.field public static valuetype 'int8[]' $_21 at $277
+.data $277 = {
+bytearray ( 62 61 64 20 73 77 69 74 63 68 20 79 79 6c 6f 6f 6b 20 25 64 0 )
+}
+.method public hidebysig static void $$_init() cil managed {
+.maxstack 3
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 12
+add
+ldsflda valuetype 'syywork{i1i1}[]' 'yycrank'
+ldc.i4 -2
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 28
+add
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 12
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 44
+add
+ldsflda valuetype 'int32[]' 'yyvstop'
+ldc.i4 4
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 56
+add
+ldsflda valuetype 'int32[]' 'yyvstop'
+ldc.i4 12
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 60
+add
+ldsflda valuetype 'syywork{i1i1}[]' 'yycrank'
+ldc.i4 4
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 68
+add
+ldsflda valuetype 'int32[]' 'yyvstop'
+ldc.i4 24
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 72
+add
+ldsflda valuetype 'syywork{i1i1}[]' 'yycrank'
+ldc.i4 38
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 80
+add
+ldsflda valuetype 'int32[]' 'yyvstop'
+ldc.i4 36
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 88
+add
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 60
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 92
+add
+ldsflda valuetype 'int32[]' 'yyvstop'
+ldc.i4 48
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 100
+add
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 72
+add
+stind.i4
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 104
+add
+ldsflda valuetype 'int32[]' 'yyvstop'
+ldc.i4 56
+add
+stind.i4
+ldsflda void* 'yytop'
+ldc.i4 0
+add
+ldsflda valuetype 'syywork{i1i1}[]' 'yycrank'
+ldc.i4 282
+add
+stind.i4
+ldsflda void* 'yybgin'
+ldc.i4 0
+add
+ldsflda valuetype 'syysvf{ppp}[]' 'yysvec'
+ldc.i4 12
+add
+stind.i4
+ret
+}
+//$$INIT call void $$_init()

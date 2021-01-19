@@ -1,0 +1,223 @@
+// file=tst/incr.c uname=
+.method public hidebysig static int32 'main'() cil managed {
+.maxstack 1
+ldc.i4 0
+$L1:
+ret
+}
+.method public hidebysig static int32 'memchar'() cil managed {
+.locals ([0] int8 'x')
+.locals ([1] void* 'p')
+.locals ([2] void* '1')
+.locals ([3] void* '4')
+.locals ([4] int32 '2')
+.locals ([5] void* '3')
+.locals ([6] int32 '5')
+.locals ([7] void* '6')
+.maxstack 2
+ldloc 1
+stloc 2
+ldc.i4 1
+stloc 4
+ldloc 2
+ldloc 4
+add
+stloc 1
+ldloc 2
+ldind.i1
+stloc 0
+ldloc 1
+ldloc 4
+add
+stloc 5
+ldloc 5
+stloc 1
+ldloc 5
+ldind.i1
+stloc 0
+ldloc 1
+stloc 3
+ldc.i4 -1
+stloc 6
+ldloc 3
+ldloc 6
+add
+stloc 1
+ldloc 3
+ldind.i1
+stloc 0
+ldloc 1
+ldloc 6
+add
+stloc 7
+ldloc 7
+stloc 1
+ldloc 7
+ldind.i1
+stloc 0
+ldc.i4 0
+$L3:
+ret
+}
+.method public hidebysig static int32 'memint'() cil managed {
+.locals ([0] int32 'x')
+.locals ([1] void* 'p')
+.locals ([2] void* '1')
+.locals ([3] void* '4')
+.locals ([4] int32 '2')
+.locals ([5] void* '3')
+.locals ([6] int32 '5')
+.locals ([7] void* '6')
+.maxstack 2
+ldloc 1
+stloc 2
+ldc.i4 4
+stloc 4
+ldloc 2
+ldloc 4
+add
+stloc 1
+ldloc 2
+ldind.i4
+stloc 0
+ldloc 1
+ldloc 4
+add
+stloc 5
+ldloc 5
+stloc 1
+ldloc 5
+ldind.i4
+stloc 0
+ldloc 1
+stloc 3
+ldc.i4 -4
+stloc 6
+ldloc 3
+ldloc 6
+add
+stloc 1
+ldloc 3
+ldind.i4
+stloc 0
+ldloc 1
+ldloc 6
+add
+stloc 7
+ldloc 7
+stloc 1
+ldloc 7
+ldind.i4
+stloc 0
+ldc.i4 0
+$L7:
+ret
+}
+.method public hidebysig static int32 'regchar'() cil managed {
+.locals ([0] int8 'x')
+.locals ([1] void* 'p')
+.locals ([2] void* '1')
+.locals ([3] void* '4')
+.locals ([4] int32 '2')
+.locals ([5] void* '3')
+.locals ([6] int32 '5')
+.locals ([7] void* '6')
+.maxstack 2
+ldloc 1
+stloc 2
+ldc.i4 1
+stloc 4
+ldloc 2
+ldloc 4
+add
+stloc 1
+ldloc 2
+ldind.i1
+stloc 0
+ldloc 1
+ldloc 4
+add
+stloc 5
+ldloc 5
+stloc 1
+ldloc 5
+ldind.i1
+stloc 0
+ldloc 1
+stloc 3
+ldc.i4 -1
+stloc 6
+ldloc 3
+ldloc 6
+add
+stloc 1
+ldloc 3
+ldind.i1
+stloc 0
+ldloc 1
+ldloc 6
+add
+stloc 7
+ldloc 7
+stloc 1
+ldloc 7
+ldind.i1
+stloc 0
+ldc.i4 0
+$L9:
+ret
+}
+.method public hidebysig static int32 'regint'() cil managed {
+.locals ([0] int32 'x')
+.locals ([1] void* 'p')
+.locals ([2] void* '1')
+.locals ([3] void* '4')
+.locals ([4] int32 '2')
+.locals ([5] void* '3')
+.locals ([6] int32 '5')
+.locals ([7] void* '6')
+.maxstack 2
+ldloc 1
+stloc 2
+ldc.i4 4
+stloc 4
+ldloc 2
+ldloc 4
+add
+stloc 1
+ldloc 2
+ldind.i4
+stloc 0
+ldloc 1
+ldloc 4
+add
+stloc 5
+ldloc 5
+stloc 1
+ldloc 5
+ldind.i4
+stloc 0
+ldloc 1
+stloc 3
+ldc.i4 -4
+stloc 6
+ldloc 3
+ldloc 6
+add
+stloc 1
+ldloc 3
+ldind.i4
+stloc 0
+ldloc 1
+ldloc 6
+add
+stloc 7
+ldloc 7
+stloc 1
+ldloc 7
+ldind.i4
+stloc 0
+ldc.i4 0
+$L10:
+ret
+}

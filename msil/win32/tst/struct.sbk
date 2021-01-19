@@ -1,0 +1,485 @@
+// file=tst/struct.c uname=
+.method public hidebysig static void 'addpoint'(void*,void*,void*) cil managed {
+.locals ([0] void* '1')
+.locals ([1] int32 '2')
+.locals ([2] void* '3')
+.maxstack 4
+ldarg 1
+stloc 0
+ldloc 0
+ldloc 0
+ldind.i4
+ldarg 2
+ldind.i4
+add
+stind.i4
+ldc.i4 4
+stloc 1
+ldarg 1
+ldloc 1
+add
+stloc 2
+ldloc 2
+ldloc 2
+ldind.i4
+ldarg 2
+ldloc 1
+add
+ldind.i4
+add
+stind.i4
+ldarg 0
+ldarg 1
+ldc.i4 8
+cpblk
+$L1:
+ret
+}
+.class private value explicit ansi sealed 'spoint{i4i4}' { .pack 1 .size 8 }
+.class private value explicit ansi sealed 'srect{spoint{i4i4}spoint{i4i4}}' { .pack 1 .size 16 }
+.method public hidebysig static void 'canonrect'(void*,void*) cil managed {
+.locals ([0] valuetype 'srect{spoint{i4i4}spoint{i4i4}}' 'temp')
+.locals ([1] int32 '7')
+.locals ([2] int32 '10')
+.locals ([3] void* '1')
+.locals ([4] void* '2')
+.locals ([5] int32 '3')
+.locals ([6] int32 '14')
+.locals ([7] void* '4')
+.locals ([8] int32 '5')
+.locals ([9] int32 '17')
+.locals ([10] void* '6')
+.locals ([11] int32 '7')
+.maxstack 3
+ldarg 1
+stloc 3
+ldloc 3
+ldind.i4
+ldloc 3
+ldc.i4 8
+add
+ldind.i4
+bge $L8
+ldarg 1
+ldind.i4
+stloc 1
+br $L9
+$L8:
+ldarg 1
+ldc.i4 8
+add
+ldind.i4
+stloc 1
+$L9:
+ldloca 0
+ldloc 1
+stind.i4
+ldarg 1
+stloc 4
+ldc.i4 4
+stloc 5
+ldloc 4
+ldloc 5
+add
+ldind.i4
+ldloc 4
+ldc.i4 12
+add
+ldind.i4
+bge $L11
+ldarg 1
+ldc.i4 4
+add
+ldind.i4
+stloc 2
+br $L12
+$L11:
+ldarg 1
+ldc.i4 12
+add
+ldind.i4
+stloc 2
+$L12:
+ldloca 0
+ldloc 5
+add
+ldloc 2
+stind.i4
+ldarg 1
+stloc 7
+ldc.i4 8
+stloc 8
+ldloc 7
+ldind.i4
+ldloc 7
+ldloc 8
+add
+ldind.i4
+ble $L15
+ldarg 1
+ldind.i4
+stloc 6
+br $L16
+$L15:
+ldarg 1
+ldc.i4 8
+add
+ldind.i4
+stloc 6
+$L16:
+ldloca 0
+ldloc 8
+add
+ldloc 6
+stind.i4
+ldarg 1
+stloc 10
+ldc.i4 12
+stloc 11
+ldloc 10
+ldc.i4 4
+add
+ldind.i4
+ldloc 10
+ldloc 11
+add
+ldind.i4
+ble $L18
+ldarg 1
+ldc.i4 4
+add
+ldind.i4
+stloc 9
+br $L19
+$L18:
+ldarg 1
+ldc.i4 12
+add
+ldind.i4
+stloc 9
+$L19:
+ldloca 0
+ldloc 11
+add
+ldloc 9
+stind.i4
+ldarg 0
+ldloca 0
+ldc.i4 16
+cpblk
+$L5:
+ret
+}
+.method public hidebysig static void 'makepoint'(void*,int32,int32) cil managed {
+.locals ([0] valuetype 'spoint{i4i4}' 'p')
+.maxstack 3
+ldloca 0
+ldarg 1
+stind.i4
+ldloca 0
+ldc.i4 4
+add
+ldarg 2
+stind.i4
+ldarg 0
+ldloca 0
+ldc.i4 8
+cpblk
+$L21:
+ret
+}
+.method public hidebysig static void 'makerect'(void*,void*,void*) cil managed {
+.locals ([0] valuetype 'srect{spoint{i4i4}spoint{i4i4}}' 'r')
+.locals ([1] valuetype 'srect{spoint{i4i4}spoint{i4i4}}' '2')
+.maxstack 4
+ldloca 0
+ldarg 1
+ldc.i4 8
+cpblk
+ldloca 0
+ldc.i4 8
+add
+ldarg 2
+ldc.i4 8
+cpblk
+ldarg 0
+ldloca 1
+ldloca 0
+ldc.i4 16
+cpblk
+ldloca 1
+call void 'canonrect'(void*,void*)
+$L23:
+ret
+}
+.method public hidebysig static int32 'ptinrect'(void*,void*) cil managed {
+.locals ([0] int32 '26')
+.locals ([1] void* '1')
+.locals ([2] int32 '2')
+.locals ([3] void* '3')
+.locals ([4] int32 '4')
+.locals ([5] int32 '5')
+.maxstack 3
+ldarg 0
+stloc 1
+ldloc 1
+ldind.i4
+stloc 2
+ldarg 1
+stloc 3
+ldloc 2
+ldloc 3
+ldind.i4
+blt $L27
+ldloc 2
+ldloc 3
+ldc.i4 8
+add
+ldind.i4
+bge $L27
+ldc.i4 4
+stloc 4
+ldloc 1
+ldloc 4
+add
+ldind.i4
+stloc 5
+ldloc 5
+ldloc 3
+ldloc 4
+add
+ldind.i4
+blt $L27
+ldloc 5
+ldloc 3
+ldc.i4 12
+add
+ldind.i4
+bge $L27
+ldc.i4 1
+stloc 0
+br $L28
+$L27:
+ldc.i4 0
+stloc 0
+$L28:
+ldloc 0
+$L25:
+ret
+}
+.class private value explicit ansi sealed 'sodd{i1[]}' { .pack 1 .size 3 }
+.field public static valuetype 'sodd{i1[]}' 'y' at $y
+.data $y = {
+bytearray ( 61 62 0 )
+}
+.class private value explicit ansi sealed 'int8[]' { .pack 1 .size 4 }
+.method public hidebysig static int32 'odd'(void*) cil managed {
+.locals ([0] valuetype 'sodd{i1[]}' 'x')
+.maxstack 3
+ldloca 0
+ldarg 0
+ldc.i4 3
+cpblk
+ldsflda valuetype 'int8[]' $_33
+ldloca 0
+call int32 'printf'(void*,void*)
+pop
+ldc.i4 0
+$L31:
+ret
+}
+.field public static valuetype 'spoint{i4i4}' $_35 at $36
+.data $36 = {
+int32 (0),
+int32 (0)
+}
+.field public static valuetype 'spoint{i4i4}' $_37 at $38
+.data $38 = {
+int32 (320),
+int32 (320)
+}
+.class private value explicit ansi sealed 'spoint{i4i4}[]' { .pack 1 .size 0 }
+.field public static valuetype 'spoint{i4i4}[]' $_39 at $40
+.data $40 = {
+int32 (-1),
+int32 (-1),
+int32 (1),
+int32 (1),
+int32 (20),
+int32 (300),
+int32 (500),
+int32 (400)
+}
+.class private value explicit ansi sealed 'spoint{i4i4}[4]' { .pack 1 .size 32 }
+.method public hidebysig static int32 'main'() cil managed {
+.locals ([0] int32 'i')
+.locals ([1] valuetype 'spoint{i4i4}[4]' 'pts')
+.locals ([2] valuetype 'srect{spoint{i4i4}spoint{i4i4}}' 'screen')
+.locals ([3] valuetype 'spoint{i4i4}' 'x')
+.locals ([4] valuetype 'spoint{i4i4}' 'origin')
+.locals ([5] valuetype 'spoint{i4i4}' 'maxpt')
+.locals ([6] valuetype 'spoint{i4i4}' '4')
+.locals ([7] valuetype 'spoint{i4i4}' '2')
+.locals ([8] valuetype 'spoint{i4i4}' '3')
+.locals ([9] valuetype 'spoint{i4i4}' '7')
+.locals ([10] valuetype 'spoint{i4i4}' '5')
+.locals ([11] valuetype 'spoint{i4i4}' '6')
+.locals ([12] int32 '8')
+.locals ([13] int32 '9')
+.locals ([14] void* '11')
+.locals ([15] valuetype 'spoint{i4i4}' '12')
+.locals ([16] valuetype 'srect{spoint{i4i4}spoint{i4i4}}' '13')
+.locals ([17] int32 '14')
+.locals ([18] valuetype 'sodd{i1[]}' '15')
+.maxstack 6
+ldloca 4
+ldsflda valuetype 'spoint{i4i4}' $_35
+ldc.i4 8
+cpblk
+ldloca 5
+ldsflda valuetype 'spoint{i4i4}' $_37
+ldc.i4 8
+cpblk
+ldloca 1
+ldsflda valuetype 'spoint{i4i4}[]' $_39
+ldc.i4 32
+cpblk
+ldloca 6
+ldc.i4 -10
+stloc 12
+ldloc 12
+ldloc 12
+call void 'makepoint'(void*,int32,int32)
+ldloca 7
+ldloca 8
+ldloca 5
+ldc.i4 8
+cpblk
+ldloca 8
+ldloca 6
+call void 'addpoint'(void*,void*,void*)
+ldloca 9
+ldc.i4 10
+stloc 13
+ldloc 13
+ldloc 13
+call void 'makepoint'(void*,int32,int32)
+ldloca 10
+ldloca 11
+ldloca 4
+ldc.i4 8
+cpblk
+ldloca 11
+ldloca 9
+call void 'addpoint'(void*,void*,void*)
+ldloca 2
+ldloca 7
+ldloca 10
+call void 'makerect'(void*,void*,void*)
+ldc.i4 0
+stloc 0
+br $L47
+$L44:
+ldloca 3
+ldloc 0
+ldc.i4 3
+shl
+ldloca 1
+add
+stloc 14
+ldloc 14
+ldind.i4
+ldloc 14
+ldc.i4 4
+add
+ldind.i4
+call void 'makepoint'(void*,int32,int32)
+ldsflda valuetype 'int8[]' $_48
+ldloc 0
+ldc.i4 3
+shl
+ldloca 1
+add
+ldind.i4
+ldloca 3
+ldc.i4 4
+add
+ldind.i4
+call int32 'printf'(void*,int32,int32)
+pop
+ldloca 15
+ldloca 3
+ldc.i4 8
+cpblk
+ldloca 15
+ldloca 16
+ldloca 2
+ldc.i4 16
+cpblk
+ldloca 16
+call int32 'ptinrect'(void*,void*)
+stloc 17
+ldloc 17
+ldc.i4 0
+bne.un $L49
+ldsflda valuetype 'int8[]' $_51
+call int32 'printf'(void*)
+pop
+$L49:
+ldsflda valuetype 'int8[]' $_52
+ldloca 2
+ldind.i4
+ldloca 2
+ldc.i4 4
+add
+ldind.i4
+ldloca 2
+ldc.i4 8
+add
+ldind.i4
+ldloca 2
+ldc.i4 12
+add
+ldind.i4
+call int32 'printf'(void*,int32,int32,int32,int32)
+pop
+$L45:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+$L47:
+ldloc 0
+conv.u4
+ldc.i4 4
+blt.un $L44
+ldloca 18
+ldsflda valuetype 'sodd{i1[]}' 'y'
+ldc.i4 3
+cpblk
+ldloca 18
+call int32 'odd'(void*)
+pop
+ldc.i4 0
+call int32 'exit'(int32)
+pop
+ldc.i4 0
+$L34:
+ret
+}
+.field public static valuetype 'int8[]' $_52 at $54
+.data $54 = {
+bytearray ( 77 69 74 68 69 6e 20 5b 25 64 2c 25 64 3b 20 25 64 2c 25 64 5d a 0 )
+}
+.field public static valuetype 'int8[]' $_51 at $55
+.data $55 = {
+bytearray ( 6e 6f 74 20 0 )
+}
+.field public static valuetype 'int8[]' $_48 at $56
+.data $56 = {
+bytearray ( 28 25 64 2c 25 64 29 20 69 73 20 0 )
+}
+.field public static valuetype 'int8[]' $_33 at $57
+.data $57 = {
+bytearray ( 25 73 a 0 )
+}

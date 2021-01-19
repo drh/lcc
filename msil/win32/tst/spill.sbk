@@ -1,0 +1,352 @@
+// file=tst/spill.c uname=
+.method public hidebysig static int32 'main'() cil managed {
+.maxstack 1
+ldc.i4 0
+$L1:
+ret
+}
+.method public hidebysig static int32 'f'(int32) cil managed {
+.locals ([0] int32 '1')
+.locals ([1] int32 '2')
+.maxstack 2
+call int32 'f'()
+stloc 0
+call int32 'f'()
+stloc 1
+ldloc 0
+ldloc 1
+add
+starg 0
+ldc.i4 0
+$L3:
+ret
+}
+.method public hidebysig static int32 'f2'(int32) cil managed {
+.locals ([0] int32 '6')
+.locals ([1] int32 '1')
+.locals ([2] int32 '2')
+.maxstack 2
+call int32 'f'()
+stloc 1
+ldarg 0
+ldc.i4 0
+beq $L7
+call int32 'f'()
+stloc 2
+ldloc 2
+stloc 0
+br $L8
+$L7:
+ldc.i4 1
+stloc 0
+$L8:
+ldloc 1
+ldloc 0
+add
+starg 0
+ldc.i4 0
+$L5:
+ret
+}
+.method public hidebysig static int32 'f3'(int32,void*) cil managed {
+.locals ([0] int32 'r1')
+.locals ([1] int32 'r2')
+.locals ([2] int32 'r3')
+.locals ([3] int32 'r4')
+.locals ([4] int32 'r5')
+.locals ([5] int32 'r6')
+.locals ([6] int32 'r7')
+.locals ([7] int32 'r8')
+.locals ([8] int32 'r9')
+.locals ([9] int32 'r10')
+.locals ([10] int32 '11')
+.locals ([11] void* '1')
+.locals ([12] int32 '2')
+.maxstack 2
+ldc.i4 0
+stloc 0
+ldc.i4 0
+stloc 1
+ldc.i4 0
+stloc 2
+ldc.i4 0
+stloc 3
+ldc.i4 0
+stloc 4
+ldc.i4 0
+stloc 5
+ldc.i4 0
+stloc 6
+ldc.i4 0
+stloc 7
+ldc.i4 0
+stloc 8
+ldc.i4 0
+stloc 9
+ldarg 1
+stloc 11
+ldloc 11
+ldc.i4 4
+add
+starg 1
+ldarg 0
+ldc.i4 0
+beq $L12
+call int32 'f'()
+stloc 12
+ldloc 12
+stloc 10
+br $L13
+$L12:
+ldc.i4 0
+stloc 10
+$L13:
+ldloc 11
+ldloc 10
+stind.i4
+ldc.i4 0
+$L10:
+ret
+}
+.class private value explicit ansi sealed 'float64[]' { .pack 1 .size 80 }
+.method public hidebysig static int32 'f4'() cil managed {
+.locals ([0] int32 'r6')
+.locals ([1] int32 'r7')
+.locals ([2] int32 'r8')
+.locals ([3] int32 'r9')
+.locals ([4] int32 'r10')
+.locals ([5] int32 'r11')
+.locals ([6] int32 '15')
+.locals ([7] int32 '1')
+.locals ([8] int32 '2')
+.locals ([9] float64 '3')
+.locals ([10] float64 '4')
+.locals ([11] float64 '5')
+.maxstack 4
+ldc.i4 0
+stloc 0
+ldc.i4 0
+stloc 1
+ldc.i4 0
+stloc 2
+ldc.i4 0
+stloc 3
+ldc.i4 0
+stloc 4
+ldc.i4 0
+stloc 5
+ldsfld int32 'i'
+stloc 7
+ldloc 7
+ldc.i4 3
+shl
+stloc 8
+ldloc 8
+ldsflda valuetype 'float64[]' 'a'
+add
+ldind.r8
+stloc 9
+ldloc 8
+ldsflda valuetype 'float64[]' 'b'
+add
+ldind.r8
+stloc 10
+ldc.r8 0.0
+stloc 11
+ldloc 9
+ldloc 10
+add
+ldloc 11
+beq $L16
+ldloc 7
+ldc.i4 0
+beq $L16
+ldloc 9
+ldloc 10
+sub
+ldloc 11
+beq $L16
+ldc.i4 1
+stloc 6
+br $L17
+$L16:
+ldc.i4 0
+stloc 6
+$L17:
+ldloc 6
+stsfld int32 'i'
+ldc.i4 0
+$L14:
+ret
+}
+.method public hidebysig static int32 'f5'() cil managed {
+.locals ([0] void* '1')
+.locals ([1] int32 '2')
+.locals ([2] int32 '3')
+.locals ([3] int32 '4')
+.locals ([4] void* '5')
+.locals ([5] void* '6')
+.locals ([6] int32 '7')
+.locals ([7] void* '8')
+.locals ([8] int32 '9')
+.locals ([9] void* '10')
+.locals ([10] void* '11')
+.locals ([11] void* '12')
+.maxstack 7
+ldsflda float64 'x'
+stloc 0
+ldsfld int32 'k'
+stloc 1
+ldsfld int32 'm'
+stloc 2
+ldc.i4 3
+stloc 3
+ldsfld void* 'A'
+stloc 4
+ldloc 1
+ldloc 2
+mul
+ldloc 3
+shl
+ldloc 4
+add
+stloc 5
+ldsfld int32 'j'
+stloc 6
+ldloc 6
+ldloc 2
+mul
+ldloc 3
+shl
+ldloc 4
+add
+stloc 7
+ldsfld int32 'n'
+stloc 8
+ldsfld void* 'B'
+stloc 9
+ldloc 1
+ldloc 8
+mul
+ldloc 3
+shl
+ldloc 9
+add
+stloc 10
+ldloc 6
+ldloc 8
+mul
+ldloc 3
+shl
+ldloc 9
+add
+stloc 11
+ldloc 0
+ldloc 5
+ldind.r8
+ldloc 7
+ldind.r8
+mul
+ldloc 10
+ldind.r8
+ldloc 11
+ldind.r8
+mul
+add
+stind.r8
+ldloc 0
+ldloc 5
+ldind.r8
+ldloc 11
+ldind.r8
+mul
+ldloc 10
+ldind.r8
+ldloc 7
+ldind.r8
+mul
+sub
+stind.r8
+ldc.i4 0
+$L21:
+ret
+}
+.field public static float64 'x' at $x
+.data $x = {
+int32 (0),
+int32 (0)
+}
+.field public static void* 'B' at $B
+.data $B = {
+int32 (0)
+}
+.field public static void* 'A' at $A
+.data $A = {
+int32 (0)
+}
+.field public static int32 'n' at $n
+.data $n = {
+int32 (0)
+}
+.field public static int32 'm' at $m
+.data $m = {
+int32 (0)
+}
+.field public static int32 'k' at $k
+.data $k = {
+int32 (0)
+}
+.field public static int32 'j' at $j
+.data $j = {
+int32 (0)
+}
+.field public static int32 'i' at $i
+.data $i = {
+int32 (0)
+}
+.field public static valuetype 'float64[]' 'b' at $b
+.data $b = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static valuetype 'float64[]' 'a' at $a
+.data $a = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}

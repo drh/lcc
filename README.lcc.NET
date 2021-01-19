@@ -1,0 +1,9 @@
+This hierarchy augments an lcc version 4.2 distribution with a MSIL
+back end, which makes it possible to ANSI/ISO C program under .NET.
+
+For installation details, see doc/lcc.NET.htm.
+
+David Hanson / drh@microsoft.com
+$Revision: 2.6 $ $Date: 2001/05/01 22:01:31 $
+
+Copyright 2002, Microsoft Corporation. All Rights Reserved. 
