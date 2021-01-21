@@ -30,6 +30,7 @@ struct	kwtab {
 	"undef",	KUNDEF,		ISKW,
 	"line",		KLINE,		ISKW,
 	"error",	KERROR,		ISKW,
+	"warning",	KWARNING,	ISKW,		// extension to ANSI
 	"pragma",	KPRAGMA,	ISKW,
 	"eval",		KEVAL,		ISKW,
 	"defined",	KDEFINED,	ISDEFINED+ISUNCHANGE,
