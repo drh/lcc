@@ -157,9 +157,11 @@ static Tree unary(void) {
 						  	p->u.sym->addressed = 1;
  break;
 	case '+':    t = gettok(); p = unary(); p = pointer(p);
-						  if (isarith(p->type))
-						  	p = cast(p, promote(p->type));
-						  else
+						  if (isarith(p->type)) {
+							p = cast(p, promote(p->type));
+							if (generic(p->op) == INDIR)
+								p = tree(RIGHT, p->type, NULL, p);
+						  } else
 						  	typeerror(ADD, p, NULL);  break;
 	case '-':    t = gettok(); p = unary(); p = pointer(p);
 						  if (isarith(p->type)) {
