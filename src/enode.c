@@ -347,7 +347,7 @@ Tree condtree(Tree e, Tree l, Tree r) {
 	if (isarith(xty) && isarith(yty))
 		ty = binary(xty, yty);
 	else if (eqtype(xty, yty, 1))
-		ty = unqual(xty);
+		ty = compose(xty, yty);
 	else if (isptr(xty)   && isnullptr(r))
 		ty = xty;
 	else if (isnullptr(l) && isptr(yty))
@@ -355,9 +355,9 @@ Tree condtree(Tree e, Tree l, Tree r) {
 	else if (isptr(xty) && !isfunc(xty->type) && isvoidptr(yty)
 	||       isptr(yty) && !isfunc(yty->type) && isvoidptr(xty))
 		ty = voidptype;
-	else if ((isptr(xty) && isptr(yty)
-		 && eqtype(unqual(xty->type), unqual(yty->type), 1)))
-		ty = xty;
+	else if (isptr(xty) && isptr(yty)
+		 && eqtype(unqual(xty->type), unqual(yty->type), 1))
+		ty = ptr(compose(unqual(xty->type), unqual(yty->type)));
 	else {
 		typeerror(COND, l, r);
 		return consttree(0, inttype);
