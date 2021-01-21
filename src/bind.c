@@ -19,9 +19,9 @@ yy
 
 Binding bindings[] = {
 #undef xx
-#define xx(a,b) #a, &b,
+#define xx(a,b) { #a, &b },
 yy
-	NULL, NULL
+	{ NULL, NULL },
 };
 #undef yy
 #undef xx

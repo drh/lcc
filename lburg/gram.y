@@ -1,9 +1,9 @@
 %{
 #include <stdio.h>
 #include "lburg.h"
-static char rcsid[] = "$Id$";
 /*lint -e616 -e527 -e652 -esym(552,yynerrs) -esym(563,yynewstate,yyerrlab) */
 static int yylineno = 0;
+int yylex();
 %}
 %union {
 	int n;
