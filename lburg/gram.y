@@ -117,7 +117,7 @@ int yylex(void) {
 		bp += strspn(bp, " \t\f");
 		p = strchr(bp, '\n');
 		if (p == NULL)
-			p = strchr(bp, '\n');
+			p = strchr(bp, '\0');
 		while (p > bp && isspace(p[-1]))
 			p--;
 		yylval.string = alloc(p - bp + 1);
