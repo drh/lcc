@@ -92,6 +92,11 @@ static int get(void) {
 				return EOF;
 			yylineno++;
 		}
+		while (buf[0] == '#') {
+			if (fgets(buf, sizeof buf, infp) == NULL)
+				return EOF;
+			yylineno++;
+		}
 	}
 	return *bp++;
 }
