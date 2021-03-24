@@ -60,7 +60,7 @@ typedef struct {
 	unsigned mayrecalc:1;
 	void *state;
 	short inst;
-	Node kids[3];
+	Node kids[16];
 	Node prev, next;
 	Node prevuse;
 	short argno;

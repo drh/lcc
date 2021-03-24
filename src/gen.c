@@ -230,9 +230,11 @@ int mayrecalc(Node p) {
 		return 0;
 }
 static Node *prune(Node p, Node pp[]) {
+	int i;
 	if (p == NULL)
 		return pp;
-	p->x.kids[0] = p->x.kids[1] = p->x.kids[2] = NULL;
+	for(i = 0; i < NELEMS(p->x.kids); i++)
+		p->x.kids[i] = NULL;
 	if (p->x.inst == 0)
 		return prune(p->kids[1], prune(p->kids[0], pp));
 	else if (p->syms[RX] && p->syms[RX]->temporary
