@@ -72,9 +72,11 @@
 #include "lburg.h"
 static char rcsid[] = "$Id$";
 /*lint -e616 -e527 -e652 -esym(552,yynerrs) -esym(563,yynewstate,yyerrlab) */
-static int yylineno = 0;
+int yylineno = 0;
+int linesum = 1;
+extern int yylex(void);
 
-#line 78 "y.tab.c"
+#line 80 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -141,13 +143,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 8 "lburg/gram.y"
+#line 10 "lburg/gram.y"
 
 	int n;
 	char *string;
 	Tree tree;
 
-#line 151 "y.tab.c"
+#line 153 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -523,9 +525,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    22,    22,    23,    26,    27,    30,    31,    35,    36,
-      39,    40,    43,    44,    45,    46,    49,    52,    53,    54,
-      57
+       0,    24,    24,    25,    28,    29,    32,    33,    37,    38,
+      41,    42,    45,    46,    47,    48,    51,    54,    55,    56,
+      59
 };
 #endif
 
@@ -1331,83 +1333,71 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2:
-#line 22 "lburg/gram.y"
-                                        { yylineno = 0; }
-#line 1338 "y.tab.c"
-    break;
-
-  case 3:
-#line 23 "lburg/gram.y"
-                                        { yylineno = 0; }
-#line 1344 "y.tab.c"
-    break;
-
   case 7:
-#line 31 "lburg/gram.y"
+#line 33 "lburg/gram.y"
                                         {
 		if (nonterm((yyvsp[-1].string))->number != 1)
 			yyerror("redeclaration of the start symbol\n");
 		}
-#line 1353 "y.tab.c"
+#line 1343 "y.tab.c"
     break;
 
   case 9:
-#line 36 "lburg/gram.y"
+#line 38 "lburg/gram.y"
                                         { yyerrok; }
-#line 1359 "y.tab.c"
+#line 1349 "y.tab.c"
     break;
 
   case 11:
-#line 40 "lburg/gram.y"
+#line 42 "lburg/gram.y"
                                         { term((yyvsp[-2].string), (yyvsp[0].n)); }
-#line 1365 "y.tab.c"
+#line 1355 "y.tab.c"
     break;
 
   case 13:
-#line 44 "lburg/gram.y"
+#line 46 "lburg/gram.y"
                                                         { rule((yyvsp[-5].string), (yyvsp[-3].tree), (yyvsp[-2].string), (yyvsp[-1].string)); }
-#line 1371 "y.tab.c"
+#line 1361 "y.tab.c"
     break;
 
   case 15:
-#line 46 "lburg/gram.y"
+#line 48 "lburg/gram.y"
                                         { yyerrok; }
-#line 1377 "y.tab.c"
+#line 1367 "y.tab.c"
     break;
 
   case 16:
-#line 49 "lburg/gram.y"
+#line 51 "lburg/gram.y"
                                         { nonterm((yyval.string) = (yyvsp[0].string)); }
-#line 1383 "y.tab.c"
+#line 1373 "y.tab.c"
     break;
 
   case 17:
-#line 52 "lburg/gram.y"
+#line 54 "lburg/gram.y"
                                         { (yyval.tree) = tree((yyvsp[0].string),  0,  0); }
-#line 1389 "y.tab.c"
+#line 1379 "y.tab.c"
     break;
 
   case 18:
-#line 53 "lburg/gram.y"
+#line 55 "lburg/gram.y"
                                         { (yyval.tree) = tree((yyvsp[-3].string), (yyvsp[-1].tree),  0); }
-#line 1395 "y.tab.c"
+#line 1385 "y.tab.c"
     break;
 
   case 19:
-#line 54 "lburg/gram.y"
+#line 56 "lburg/gram.y"
                                         { (yyval.tree) = tree((yyvsp[-5].string), (yyvsp[-3].tree), (yyvsp[-1].tree)); }
-#line 1401 "y.tab.c"
+#line 1391 "y.tab.c"
     break;
 
   case 20:
-#line 57 "lburg/gram.y"
+#line 59 "lburg/gram.y"
                                         { if (*(yyvsp[0].string) == 0) (yyval.string) = "0"; }
-#line 1407 "y.tab.c"
+#line 1397 "y.tab.c"
     break;
 
 
-#line 1411 "y.tab.c"
+#line 1401 "y.tab.c"
 
       default: break;
     }
@@ -1639,7 +1629,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 59 "lburg/gram.y"
+#line 61 "lburg/gram.y"
 
 #include <assert.h>
 #include <stdarg.h>
@@ -1650,6 +1640,8 @@ yyreturn:
 int errcnt = 0;
 FILE *infp = NULL;
 FILE *outfp = NULL;
+const char *infname = 0;
+const char *outfname = 0;
 static char buf[BUFSIZ], *bp = buf;
 static int ppercent = 0;
 static int code = 0;
@@ -1661,7 +1653,15 @@ static int get(void) {
 		if (fgets(buf, sizeof buf, infp) == NULL)
 			return EOF;
 		yylineno++;
+		while (buf[0] == '#') {
+			if (fgets(buf, sizeof buf, infp) == NULL)
+				return EOF;
+			yylineno++;
+		}
 		while (buf[0] == '%' && buf[1] == '{' && buf[2] == '\n') {
+			linesum -= yylineno;
+			if (infname)
+				fprintf(outfp, "#line %d \"%s\"\n", yylineno+1, infname);
 			for (;;) {
 				if (fgets(buf, sizeof buf, infp) == NULL) {
 					yywarn("unterminated %{...%}\n");
@@ -1675,6 +1675,9 @@ static int get(void) {
 			if (fgets(buf, sizeof buf, infp) == NULL)
 				return EOF;
 			yylineno++;
+			linesum += yylineno;
+			if (outfname)
+				fprintf(outfp, "#line %d \"%s\"\n", linesum, outfname);
 		}
 		while (buf[0] == '#') {
 			if (fgets(buf, sizeof buf, infp) == NULL)

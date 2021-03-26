@@ -53,14 +53,18 @@ int main(int argc, char *argv[]) {
 				argv[0]);
 			exit(1);
 		} else if (infp == NULL) {
-			if (strcmp(argv[i], "-") == 0)
+			infname = argv[i];
+			if (strcmp(argv[i], "-") == 0) {
+				infname = 0;
 				infp = stdin;
-			else if ((infp = fopen(argv[i], "r")) == NULL) {
+			} else if ((infp = fopen(argv[i], "r")) == NULL) {
 				yyerror("%s: can't read `%s'\n", argv[0], argv[i]);
 				exit(1);
 			}
 		} else if (outfp == NULL) {
+			outfname = argv[i];
 			if (strcmp(argv[i], "-") == 0)
+				outfname = 0;
 				outfp = stdout;
 			if ((outfp = fopen(argv[i], "w")) == NULL) {
 				yyerror("%s: can't write `%s'\n", argv[0], argv[i]);
@@ -90,6 +94,8 @@ int main(int argc, char *argv[]) {
 	if (start)
 		emitlabel(terms, start, ntnumber);
 	emitkids(rules, nrules);
+	if (infname)
+		fprintf(outfp,"#line %d \"%s\"\n", yylineno+1, infname);
 	if (!feof(infp))
 		while ((c = getc(infp)) != EOF)
 			putc(c, outfp);
@@ -672,3 +678,8 @@ static void emittest(Tree t, char *v, char *suffix) {
 			emittest(t->right, stringf("RIGHT_CHILD(%s)", v), suffix);
 	}
 }
+
+/* Local Variables: */
+/* c-basic-offset: 8 */
+/* indent-tabs-mode: t */
+/* End: */

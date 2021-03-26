@@ -3,7 +3,9 @@
 #include "lburg.h"
 static char rcsid[] = "$Id$";
 /*lint -e616 -e527 -e652 -esym(552,yynerrs) -esym(563,yynewstate,yyerrlab) */
-static int yylineno = 0;
+int yylineno = 0;
+int linesum = 1;
+extern int yylex(void);
 %}
 %union {
 	int n;
@@ -19,8 +21,8 @@ static int yylineno = 0;
 %type	<string>	nonterm cost
 %type   <tree>          tree
 %%
-spec	: decls PPERCENT rules		{ yylineno = 0; }
-	| decls				{ yylineno = 0; }
+spec	: decls PPERCENT rules
+	| decls
 	;
 
 decls	: /* lambda */
@@ -66,6 +68,8 @@ cost	: CODE				{ if (*$1 == 0) $$ = "0"; }
 int errcnt = 0;
 FILE *infp = NULL;
 FILE *outfp = NULL;
+const char *infname = 0;
+const char *outfname = 0;
 static char buf[BUFSIZ], *bp = buf;
 static int ppercent = 0;
 static int code = 0;
@@ -77,7 +81,15 @@ static int get(void) {
 		if (fgets(buf, sizeof buf, infp) == NULL)
 			return EOF;
 		yylineno++;
+		while (buf[0] == '#') {
+			if (fgets(buf, sizeof buf, infp) == NULL)
+				return EOF;
+			yylineno++;
+		}
 		while (buf[0] == '%' && buf[1] == '{' && buf[2] == '\n') {
+			linesum -= yylineno;
+			if (infname)
+				fprintf(outfp, "#line %d \"%s\"\n", yylineno+1, infname);
 			for (;;) {
 				if (fgets(buf, sizeof buf, infp) == NULL) {
 					yywarn("unterminated %{...%}\n");
@@ -91,6 +103,9 @@ static int get(void) {
 			if (fgets(buf, sizeof buf, infp) == NULL)
 				return EOF;
 			yylineno++;
+			linesum += yylineno;
+			if (outfname)
+				fprintf(outfp, "#line %d \"%s\"\n", linesum, outfname);
 		}
 		while (buf[0] == '#') {
 			if (fgets(buf, sizeof buf, infp) == NULL)
