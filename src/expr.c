@@ -363,7 +363,9 @@ static Tree primary(void) {
 					p->type = func(inttype, NULL, 1);
 					p->sclass = EXTERN;
 					if (Aflag >= 1)
-						warning("missing prototype\n");
+						warning("missing prototype for `%s'\n", q->name);
+					else
+						warning("implicit declaration of `%s'\n", q->name);
 					if (q && !eqtype(q->type, p->type, 1))
 						warning("implicit declaration of `%s' does not match previous declaration at %w\n", q->name, &q->src);
 

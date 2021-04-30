@@ -270,11 +270,6 @@ static void dumptree(Node p) {
 	if (p->op == VREG+P && p->syms[0]) {
 		fprint(stderr, "VREGP(%s)", p->syms[0]->name);
 		return;
-	} else if (generic(p->op) == LOAD) {
-		fprint(stderr, "LOAD(");
-		dumptree(p->kids[0]);
-		fprint(stderr, ")");
-		return;
 	}
 	fprint(stderr, "%s(", opname(p->op));
 	switch (generic(p->op)) {
@@ -288,7 +283,7 @@ static void dumptree(Node p) {
 			dumptree(p->kids[0]);
 		break;
 	case CVF: case CVI: case CVP: case CVU: case JUMP: 
-	case ARG: case BCOM: case NEG: case INDIR:
+	case ARG: case BCOM: case NEG: case INDIR: case LOAD:
 		dumptree(p->kids[0]);
 		break;
 	case CALL:
