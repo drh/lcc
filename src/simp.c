@@ -20,7 +20,7 @@ static char rcsid[] = "$Id$";
 		if (!explicitCast\
 		&&  ((SRC) < DST->u.sym->u.limits.min.VAR || (SRC) > DST->u.sym->u.limits.max.VAR))\
 			warning("overflow in converting constant expression from `%t' to `%t'\n", l->type, DST);\
-		if (needconst\
+		if (explicitCast || needconst\
 		|| !((SRC) < DST->u.sym->u.limits.min.VAR || (SRC) > DST->u.sym->u.limits.max.VAR))\
 			return cnsttree(ty, (EXPR)); } while(0)
 #define identity(X,Y,TYPE,VAR,VAL) \
