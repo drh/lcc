@@ -46,6 +46,8 @@ int argoffset;
 
 int maxargoffset;
 
+int spilling;
+
 int dalign, salign;
 int bflag = 0;  /* omit */
 int dflag = 0;
@@ -497,6 +499,7 @@ Node gen(Node forest) {
 	struct node sentinel;
 	Node dummy, p;
 
+	spilling = 0;
 	head = forest;
 	for (p = forest; p; p = p->link) {
 		assert(p->count == 0);
@@ -732,6 +735,7 @@ static void spillr(Symbol r, Node here) {
 		p = p->x.prevuse;
 	assert(p->x.registered && !readsreg(p));
 	tmp = newtemp(AUTO, optype(p->op), opsize(p->op));
+	spilling = 1;
 	genspill(r, p, tmp);
 	for (p = here->x.next; p; p = p->x.next)
 		for (i = 0; i < NELEMS(p->x.kids) && p->x.kids[i]; i++) {
@@ -739,6 +743,7 @@ static void spillr(Symbol r, Node here) {
 			if (k->x.registered && k->syms[RX] == r)
 				genreload(p, tmp, i);
 		}
+	spilling = 0;
 	putreg(r);
 }
 static void genspill(Symbol r, Node last, Symbol tmp) {
