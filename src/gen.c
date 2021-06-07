@@ -640,8 +640,13 @@ static void ralloc(Node p) {
 		if (r->sclass != REGISTER && r->x.lastuse == kid)
 			putreg(r);
 	}
+	if (!p->x.registered && (IR->x.preralloc)
+	    && NeedsReg[opindex(p->op)]
+	    && (*IR->x.rmap)(opkind(p->op)) ) {
+		IR->x.preralloc(p);
+	}
 	if (!p->x.registered && NeedsReg[opindex(p->op)]
-	&& (*IR->x.rmap)(opkind(p->op))) {
+	    && (*IR->x.rmap)(opkind(p->op)) ) {
 		Symbol sym = p->syms[RX], set = sym;
 		assert(sym);
 		if (sym->temporary)

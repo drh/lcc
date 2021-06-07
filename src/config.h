@@ -21,6 +21,7 @@ typedef struct {
 	void (*doarg)(Node);
 	void (*target)(Node);
 	void (*clobber)(Node);
+	void (*preralloc)(Node);
 } Xinterface;
 extern int     askregvar(Symbol, Symbol);
 extern void    blkcopy(int, int, int, int, int, int[]);
