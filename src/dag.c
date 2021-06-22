@@ -558,7 +558,8 @@ static Node undag(Node forest) {
 			visit(p, 1);
 			if (p->syms[2]) {
 				assert(p->syms[2]->u.t.cse);
-				p->syms[2]->u.t.cse = NULL;
+				//p->syms[2]->u.t.cse = NULL;
+				p->syms[2]->u.t.replace = -1;
 				addlocal(p->syms[2]);
 			}
 		} else if (iscall(p->op) && p->count >= 1)
@@ -576,7 +577,7 @@ static Node replace(Node p) {
 	if (p && (  generic(p->op) == INDIR
 		 && generic(p->kids[0]->op) == ADDRL
 		 && p->kids[0]->syms[0]->temporary
-		 && p->kids[0]->syms[0]->u.t.replace)) {
+		 && p->kids[0]->syms[0]->u.t.replace > 0)) {
 		p = p->kids[0]->syms[0]->u.t.cse;
 		if (generic(p->op) == INDIR && isaddrop(p->kids[0]->op))
 			p = newnode(p->op, newnode(p->kids[0]->op, NULL, NULL,
@@ -615,9 +616,11 @@ static Node prune(Node forest) {
 			|| ((  generic(p->kids[1]->op) == INDIR
 			    && isaddrop(p->kids[1]->kids[0]->op)) && tmp->sclass == AUTO)
 			|| (generic(p->kids[1]->op) == ADDRG && tmp->sclass == AUTO)) {
-				tmp->u.t.replace = 1;
-				count++;
-				continue;	/* and omit the assignment */
+				if (tmp->u.t.replace >= 0) {
+					tmp->u.t.replace = 1;
+					count++;
+					continue;	/* and omit the assignment */
+				}
 			}
 		}
 		/* keep the assignment and other roots */
