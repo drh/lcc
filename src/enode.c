@@ -516,10 +516,11 @@ static Tree subtree(int op, Tree l, Tree r) {
 		n = unqual(ty->type)->size;
 		if (n == 0)
 			error("unknown size for type `%t'\n", ty->type);
-		l = simplify(SUB+U, unsignedptr,
-			cast(l, unsignedptr), cast(r, unsignedptr));
-		return simplify(DIV+I, longtype,
-			cast(l, longtype), cnsttree(longtype, n));
+		l = simplify(SUB+I, signedptr,
+			cast(l, signedptr), cast(r, signedptr));
+		if (n == 1)
+			return l;
+		return simplify(DIV+I, signedptr, l, cnsttree(signedptr, n));
 	} else
 		typeerror(op, l, r);
 	return simplify(op, ty, l, r);
