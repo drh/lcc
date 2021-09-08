@@ -32,7 +32,7 @@ static void     reduce(Node, int);
 static int      reprune(Node*, int, int, Node);
 static int      requate(Node);
 static Node     reuse(Node, int);
-static void     rewrite(Node);
+static void     rewrite(Node, int);
 static Symbol   spillee(Symbol, unsigned mask[], Node);
 static void     spillr(Symbol, Node);
 static int      uses(Node, Regnode);
@@ -191,6 +191,8 @@ static void reduce(Node p, int nt) {
 	rulenum = getrule(p, nt);
 	nts = IR->x._nts[rulenum];
 	(*IR->x._kids)(p, rulenum, kids);
+	if (! p->x.nt)
+		p->x.nt = nt;
 	for (i = 0; nts[i]; i++)
 		reduce(kids[i], nts[i]);
 	if (IR->x._isinstruction[rulenum]) {
@@ -481,14 +483,14 @@ void rtarget(Node p, int n, Symbol r) {
 	setreg(q, r);
 	debug(fprint(stderr, "(targeting %x->x.kids[%d]=%x to %s)\n", p, n, p->kids[n], r->x.name));
 }
-static void rewrite(Node p) {
+static void rewrite(Node p, int nt) {
 	assert(p->x.inst == 0);
 	prelabel(p);
 	debug(dumptree(p));
 	debug(fprint(stderr, "\n"));
 	(*IR->x._label)(p);
-	debug(dumpcover(p, 1, 0));
-	reduce(p, 1);
+	debug(dumpcover(p, nt, 0));
+	reduce(p, nt);
 }
 Node gen(Node forest) {
 	int i;
@@ -505,7 +507,7 @@ Node gen(Node forest) {
 			docall(p->kids[1]);
 		else if (generic(p->op) == ARG)
 			(*IR->x.doarg)(p);
-		rewrite(p);
+		rewrite(p, 1);
 		p->x.listed = 1;
 	}
 	for (p = forest; p; p = p->link)
@@ -614,9 +616,11 @@ static void linearize(Node p, Node next) {
 
 	for (i = 0; i < NELEMS(p->x.kids) && p->x.kids[i]; i++)
 		linearize(p->x.kids[i], next);
-	relink(next->x.prev, p);
-	relink(p, next);
-	debug(fprint(stderr, "(listing %x)\n", p));
+	if (p->x.inst) {
+		relink(next->x.prev, p);
+		relink(p, next);
+		debug(fprint(stderr, "(listing %x)\n", p));
+	}
 }
 static void ralloc(Node p) {
 	int i;
@@ -756,7 +760,7 @@ static void genspill(Symbol r, Node last, Symbol tmp) {
 	p = newnode(ADDRL+P + sizeop(IR->ptrmetric.size), NULL, NULL, tmp);
 	p = newnode(ASGN + ty, p, q, NULL);
 	p->x.spills = 1;
-	rewrite(p);
+	rewrite(p, 1);
 	prune(p, &q);
 	q = last->x.next;
 	linearize(p, q);
@@ -768,20 +772,21 @@ static void genspill(Symbol r, Node last, Symbol tmp) {
 
 static void genreload(Node p, Symbol tmp, int i) {
 	Node q;
-	int ty;
+	int ty, ntk;
 
 	debug(fprint(stderr, "(replacing %x with a reload from %s)\n", p->x.kids[i], tmp->x.name));
 	debug(fprint(stderr, "(genreload: "));
 	debug(dumptree(p->x.kids[i]));
 	debug(fprint(stderr, ")\n"));
 	ty = opkind(p->x.kids[i]->op);
+	ntk = p->x.kids[i]->x.nt;
 	q = newnode(ADDRL+P + sizeop(IR->ptrmetric.size), NULL, NULL, tmp);
 	p->x.kids[i] = newnode(INDIR + ty, q, NULL, NULL);
-	rewrite(p->x.kids[i]);
+	rewrite(p->x.kids[i], ntk);
 	prune(p->x.kids[i], &q);
 	reprune(&p->kids[1], reprune(&p->kids[0], 0, i, p), i, p);
-	prune(p, &q);
 	linearize(p->x.kids[i], p);
+	prune(p, &q);
 }
 static int reprune(Node *pp, int k, int n, Node p) {
 	struct node x, *q = *pp;
