@@ -492,23 +492,38 @@ int hascall(Tree p) {
 	return hascall(p->kids[0]) || hascall(p->kids[1]);
 }
 Type binary(Type xty, Type yty) {
-#define xx(t) if (xty == t || yty == t) return t
+	/* Implementing rules from
+	   https://en.cppreference.com/w/c/language/conversion
+	   using sizes instead of rank (imperfect but better than before). */
+#define xy(t,r) if (xty == t || yty == t) return r
+#define xx(t) xy(t,t)
 	xx(longdouble);
 	xx(doubletype);
 	xx(floattype);
-	xx(unsignedlonglong);
-	xx(longlong);
-	xx(unsignedlong);
-	if (xty == longtype     && yty == unsignedtype
-	||  xty == unsignedtype && yty == longtype)
-		if (longtype->size > unsignedtype->size)
-			return longtype;
-		else
-			return unsignedlong;
-	xx(longtype);
-	xx(unsignedtype);
-	return inttype;
+	xty = promote(xty);
+	yty = promote(yty);
+	if (xty == yty)
+		return xty;
+	if (xty->size > yty->size)
+		return xty;
+	if (yty->size > xty->size)
+		return yty;
+	if (xty->op == yty->op) {
+		xx(unsignedlonglong);
+		xx(longlong);
+		xx(unsignedlong);
+		xx(longtype);
+		xx(unsignedtype);
+		return inttype;
+	} else {
+		xy(unsignedlonglong, unsignedlonglong);
+		xy(longlong, unsignedlonglong);
+		xy(unsignedlong, unsignedlong);
+		xy(longtype, unsignedlong);
+		return unsignedtype;
+	}
 #undef xx
+#undef xy
 }
 Tree pointer(Tree p) {
 	if (isarray(p->type))
