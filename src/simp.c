@@ -20,7 +20,7 @@ static char rcsid[] = "$Id$";
 		if (!explicitCast\
 		&&  ((SRC) < DST->u.sym->u.limits.min.VAR || (SRC) > DST->u.sym->u.limits.max.VAR))\
 			warning("overflow in converting constant expression from `%t' to `%t'\n", l->type, DST);\
-		if (needconst\
+		if (explicitCast || needconst\
 		|| !((SRC) < DST->u.sym->u.limits.min.VAR || (SRC) > DST->u.sym->u.limits.max.VAR))\
 			return cnsttree(ty, (EXPR)); } while(0)
 #define identity(X,Y,TYPE,VAR,VAL) \
@@ -254,6 +254,7 @@ Tree simplify(int op, Type ty, Tree l, Tree r) {
 			xcvtcnst(U,l->u.v.u,ty,d,(long double)l->u.v.u);
 			break;
 		case CVF+I:
+		case CVF+U:
 			xcvtcnst(F,l->u.v.d,ty,i,(long)l->u.v.d);
 			break;
 		case CVF+F: {

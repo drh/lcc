@@ -17,13 +17,16 @@ typedef struct {
 	char *_isinstruction;
 	char **_ntname;
 	void (*emit2)(Node);
+	void (*emitfmt)(const char*, Node, Node*, short*);
 	void (*doarg)(Node);
 	void (*target)(Node);
 	void (*clobber)(Node);
+	void (*preralloc)(Node);
 } Xinterface;
 extern int     askregvar(Symbol, Symbol);
 extern void    blkcopy(int, int, int, int, int, int[]);
 extern unsigned emitasm(Node, int);
+extern void    emitfmt(const char*, Node, Node*, short*);
 extern int     getregnum(Node);
 extern int     mayrecalc(Node);
 extern int     mkactual(int, int);
@@ -58,7 +61,8 @@ typedef struct {
 	unsigned mayrecalc:1;
 	void *state;
 	short inst;
-	Node kids[3];
+	short nt;
+	Node kids[16];
 	Node prev, next;
 	Node prevuse;
 	short argno;

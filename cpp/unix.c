@@ -19,10 +19,12 @@ setup(int argc, char **argv)
 	FILE *fd;
 	char *fp, *dp;
 	Tokenrow tr;
+	char *preincl = 0;
+	FILE *prefd = 0;
 	extern void setup_kwtab(void);
 
 	setup_kwtab();
-	while ((c = getopt(argc, argv, "MNOVv+I:D:U:F:lg")) != -1)
+	while ((c = getopt(argc, argv, "MNOVv+I:D:U:F:lgi:")) != -1)
 		switch (c) {
 		case 'N':
 			for (i=0; i<NINCLUDE; i++)
@@ -60,6 +62,13 @@ setup(int argc, char **argv)
 		case '+':
 			Cplusplus++;
 			break;
+		case 'i':
+			if (preincl)
+				error(FATAL, "Too many -i options");
+			preincl = optarg;
+			if ((prefd = fopen(preincl, "r")) == NULL)
+				error(FATAL, "Cannot open -i file %s", preincl);
+			break;
 		default:
 			break;
 		}
@@ -86,6 +95,11 @@ setup(int argc, char **argv)
 	includelist[NINCLUDE-1].always = 0;
 	includelist[NINCLUDE-1].file = dp;
 	setsource(fp, fd, NULL);
+	if (preincl && prefd) {
+		incdepth += 1;
+		genline();  /* first file must be fp */
+		setsource(preincl, prefd, NULL);
+	}
 }
 
 

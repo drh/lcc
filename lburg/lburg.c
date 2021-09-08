@@ -53,14 +53,18 @@ int main(int argc, char *argv[]) {
 				argv[0]);
 			exit(1);
 		} else if (infp == NULL) {
-			if (strcmp(argv[i], "-") == 0)
+			infname = argv[i];
+			if (strcmp(argv[i], "-") == 0) {
+				infname = 0;
 				infp = stdin;
-			else if ((infp = fopen(argv[i], "r")) == NULL) {
+			} else if ((infp = fopen(argv[i], "r")) == NULL) {
 				yyerror("%s: can't read `%s'\n", argv[0], argv[i]);
 				exit(1);
 			}
 		} else if (outfp == NULL) {
+			outfname = argv[i];
 			if (strcmp(argv[i], "-") == 0)
+				outfname = 0;
 				outfp = stdout;
 			if ((outfp = fopen(argv[i], "w")) == NULL) {
 				yyerror("%s: can't write `%s'\n", argv[0], argv[i]);
@@ -90,6 +94,8 @@ int main(int argc, char *argv[]) {
 	if (start)
 		emitlabel(terms, start, ntnumber);
 	emitkids(rules, nrules);
+	if (infname)
+		fprintf(outfp,"#line %d \"%s\"\n", yylineno+1, infname);
 	if (!feof(infp))
 		while ((c = getc(infp)) != EOF)
 			putc(c, outfp);
@@ -576,12 +582,16 @@ static void emitrecalc(char *pre, Term root, Term kid) {
 		Nonterm p;
 		print("%sif (mayrecalc(a)) {\n", pre);
 		print("%s%1struct %Pstate *q = a->syms[RX]->u.t.cse->x.state;\n", pre);
+#ifndef ORIGINAL_LBURG_RECALC
+		print("%s%1*p = *q;\n", pre);
+#else
 		for (p = nts; p; p = p->link) {
 			print("%s%1if (q->cost[%P%S_NT] == 0) {\n", pre, p);
 			print("%s%2p->cost[%P%S_NT] = 0;\n", pre, p);
 			print("%s%2p->rule.%P%S = q->rule.%P%S;\n", pre, p, p);
 			print("%s%1}\n", pre);
 		}
+#endif
 		print("%s}\n", pre);
 	}
 }
@@ -672,3 +682,4 @@ static void emittest(Tree t, char *v, char *suffix) {
 			emittest(t->right, stringf("RIGHT_CHILD(%s)", v), suffix);
 	}
 }
+

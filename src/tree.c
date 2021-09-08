@@ -145,7 +145,7 @@ char *opname(int op) {
 	"CVU",
 	"NEG",
 	"CALL",
-	"*LOAD*",
+	"LOAD",
 	"RET",
 	"ADDRG",
 	"ADDRF",

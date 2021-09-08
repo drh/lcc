@@ -362,17 +362,17 @@ Type promote(Type ty) {
 	case ENUM:
 		return inttype;
 	case INT:
-		if (ty->size < inttype->size)
+		if (ty->size <= inttype->size)
 			return inttype;
 		break;
 	case UNSIGNED:
 		if (ty->size < inttype->size)
 			return inttype;
-		if (ty->size < unsignedtype->size)
+		if (ty->size <= unsignedtype->size)
 			return unsignedtype;
 		break;
 	case FLOAT:
-		if (ty->size < doubletype->size)
+		if (ty->size <= doubletype->size)
 			return doubletype;
 	}
 	return ty;

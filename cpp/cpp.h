@@ -156,3 +156,6 @@ extern	int Cplusplus;
 extern	Nlist *kwdefined;
 extern	Includelist includelist[NINCLUDE];
 extern	char wd[];
+
+#define memmove mymemmove
+extern void *memmove(void *dp, const void *sp, size_t n);
