@@ -679,7 +679,3 @@ static void emittest(Tree t, char *v, char *suffix) {
 	}
 }
 
-/* Local Variables: */
-/* c-basic-offset: 8 */
-/* indent-tabs-mode: t */
-/* End: */

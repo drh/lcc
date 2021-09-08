@@ -569,7 +569,7 @@ Tree cast(Tree p, Type type) {
 					p = simplify(CVI, dst, p, NULL);
 					break;
 				case UNSIGNED:
-					if (isfloat(dst)) {
+					if (isfloat(dst) && !IR->wants_cvfu_cvuf) {
 						Type ssrc = signedint(src);
 						Tree two = cnsttree(longdouble, (long double)2.0);
 						p = (*optree['+'])(ADD,
@@ -585,7 +585,7 @@ Tree cast(Tree p, Type type) {
 						p = simplify(CVU, dst, p, NULL);
 					break;
 				case FLOAT:
-					if (isunsigned(dst)) {
+					if (isunsigned(dst) && !IR->wants_cvfu_cvuf) {
 						Type sdst = signedint(dst);
 						Tree c = cast(cnsttree(longdouble, (long double)sdst->u.sym->u.limits.max.i + 1), src);
 						p = condtree(
