@@ -17,6 +17,7 @@ typedef struct {
 	char *_isinstruction;
 	char **_ntname;
 	void (*emit2)(Node);
+	void (*emitfmt)(const char*, Node, Node*, short*);
 	void (*doarg)(Node);
 	void (*target)(Node);
 	void (*clobber)(Node);
@@ -24,6 +25,7 @@ typedef struct {
 extern int     askregvar(Symbol, Symbol);
 extern void    blkcopy(int, int, int, int, int, int[]);
 extern unsigned emitasm(Node, int);
+extern void    emitfmt(const char*, Node, Node*, short*);
 extern int     getregnum(Node);
 extern int     mayrecalc(Node);
 extern int     mkactual(int, int);

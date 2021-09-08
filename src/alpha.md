@@ -1179,6 +1179,7 @@ Interface alphaIR = {
                 _isinstruction,
                 _ntname,
                 emit2,
+                emitfmt,
                 doarg,
                 target,
                 clobber,

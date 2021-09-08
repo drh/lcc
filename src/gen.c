@@ -328,7 +328,27 @@ static void dumprule(int rulenum) {
 	if (!IR->x._isinstruction[rulenum])
 		fprint(stderr, "\n");
 }
-unsigned emitasm(Node p, int nt) {
+
+void emitfmt(const char *fmt, Node p, Node *kids, short *nts)
+{
+	/* Enhancements of emitasm with respect to the original
+	   version: emitasm() now retrieves the template and calls the
+	   IR function emitfmt() which parses the template and prints
+	   the output. This is the default version. */
+	for (; *fmt; fmt++)
+		if (*fmt != '%')
+			(void)putchar(*fmt);
+		else if (*++fmt == 'F')                                   /* %F */
+			print("%d", framesize);
+		else if (*fmt >= 'a' && *fmt < 'a' + NELEMS(p->syms))     /* %a..%c */
+			fputs(p->syms[*fmt - 'a']->x.name, stdout);
+		else if (*fmt >= '0' && *fmt <= '9')                      /* %0..%9 */
+			emitasm(kids[*fmt - '0'], nts[*fmt - '0']);
+		else
+			(void)putchar(*fmt);
+}
+unsigned emitasm(Node p, int nt)
+{
 	int rulenum;
 	short *nts;
 	char *fmt;
@@ -351,17 +371,8 @@ unsigned emitasm(Node p, int nt) {
 				while (*fmt++ != '\n')
 					;
 		}
-		for ((*IR->x._kids)(p, rulenum, kids); *fmt; fmt++)
-			if (*fmt != '%')
-				(void)putchar(*fmt);
-			else if (*++fmt == 'F')
-				print("%d", framesize);
-			else if (*fmt >= '0' && *fmt <= '9')
-				emitasm(kids[*fmt - '0'], nts[*fmt - '0']);
-			else if (*fmt >= 'a' && *fmt < 'a' + NELEMS(p->syms))
-				fputs(p->syms[*fmt - 'a']->x.name, stdout);
-			else
-				(void)putchar(*fmt);
+		(*IR->x._kids)(p, rulenum, kids);
+		(*IR->x.emitfmt)(fmt, p, kids, nts);
 	}
 	return 0;
 }
