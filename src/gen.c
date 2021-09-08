@@ -24,7 +24,7 @@ static Symbol   getreg(Symbol, unsigned*, Node);
 static int      getrule(Node, int);
 static void     linearize(Node, Node);
 static int      moveself(Node);
-static void     prelabel(Node);
+static void     prelabel(Node, Node*);
 static Node*    prune(Node, Node*);
 static void     putreg(Symbol);
 static void     ralloc(Node);
@@ -434,11 +434,11 @@ static int requate(Node q) {
 		}
 	return 1;
 }
-static void prelabel(Node p) {
+static void prelabel(Node p, Node* pp) {
 	if (p == NULL)
 		return;
-	prelabel(p->kids[0]);
-	prelabel(p->kids[1]);
+	prelabel(p->kids[0], &(p->kids[0]));
+	prelabel(p->kids[1], &(p->kids[1]));
 	if (NeedsReg[opindex(p->op)])
 		setreg(p, (*IR->x.rmap)(opkind(p->op)));
 	switch (generic(p->op)) {
@@ -455,9 +455,14 @@ static void prelabel(Node p) {
 			rtarget(p, 1, p->kids[0]->syms[0]);
 		break;
 	case CVI: case CVU: case CVP:
-		if (optype(p->op) != F
-		&&  opsize(p->op) <= p->syms[0]->u.c.v.i)
-			p->op = LOAD + opkind(p->op);
+		if (optype(p->op) != F) {
+			int ts = opsize(p->op);
+			int fs = p->syms[0]->u.c.v.i;
+			if (pp && ts == fs)
+				*pp = p->kids[0];
+			else if (ts <= fs)
+				p->op = LOAD + opkind(p->op);
+		}
 		break;
 	}
 	(IR->x.target)(p);
@@ -485,7 +490,7 @@ void rtarget(Node p, int n, Symbol r) {
 }
 static void rewrite(Node p, int nt) {
 	assert(p->x.inst == 0);
-	prelabel(p);
+	prelabel(p, 0);
 	debug(dumptree(p));
 	debug(fprint(stderr, "\n"));
 	(*IR->x._label)(p);
