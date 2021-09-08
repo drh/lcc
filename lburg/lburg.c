@@ -582,12 +582,16 @@ static void emitrecalc(char *pre, Term root, Term kid) {
 		Nonterm p;
 		print("%sif (mayrecalc(a)) {\n", pre);
 		print("%s%1struct %Pstate *q = a->syms[RX]->u.t.cse->x.state;\n", pre);
+#ifndef ORIGINAL_LBURG_RECALC
+		print("%s%1*p = *q;\n", pre);
+#else
 		for (p = nts; p; p = p->link) {
 			print("%s%1if (q->cost[%P%S_NT] == 0) {\n", pre, p);
 			print("%s%2p->cost[%P%S_NT] = 0;\n", pre, p);
 			print("%s%2p->rule.%P%S = q->rule.%P%S;\n", pre, p, p);
 			print("%s%1}\n", pre);
 		}
+#endif
 		print("%s}\n", pre);
 	}
 }

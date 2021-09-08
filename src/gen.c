@@ -212,7 +212,7 @@ static Node reuse(Node p, int nt) {
 
 	if (generic(p->op) == INDIR && p->kids[0]->op == VREG+P
 	&& r->u.t.cse && p->x.mayrecalc
-	&& ((struct _state*)r->u.t.cse->x.state)->cost[nt] == 0)
+	&& ((struct _state*)r->u.t.cse->x.state)->cost[nt] <= ((struct _state*)p->x.state)->cost[nt] )
 		return r->u.t.cse;
 	else
 		return p;
