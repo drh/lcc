@@ -1,19 +1,15 @@
 body {
-        font-family: sans-serif,"Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, "sans-serif";
-        font-size: initial;
-        font-weight: normal;
-        background-color: #FFFFE8; /* #e0e6f1; */
-	margin-top: 6px; font-size: medium }
+    font-family: sans-serif,"Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, "sans-serif";
+    font-size: initial; font-weight: normal;
+    background-color: #FFFFE8; /* #e0e6f1; */
+	margin-top: 6px; font-size: medium;
+}
 h4 { margin-bottom: 0px }
 h2 { margin: 0px }
 h3 { margin-bottom: 0ex }
 h5 { margin: 1px 0px 0px 0px; color: #5e6a72; }
-.top-menu {
-	font-size: smaller;
-        font-weight: normal;
-	padding: 0px 0px 0px 0px;
-}
+.top-menu { font-size: smaller; font-weight: normal; }
 p { margin: 1.5ex 0px 1.5ex 0px; }
 a:link, a:visited { color: #0066CC; }
 p.first, .first { margin-top: 0px }
-hr {align: left; margin-right: 75%; color: black; }
+hr {text-align: left; margin-right: 75%; color: black; }
