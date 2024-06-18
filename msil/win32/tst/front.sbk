@@ -1,0 +1,208 @@
+// file=tst/front.c uname=
+.method public hidebysig static int32 'main'() cil managed {
+.maxstack 1
+ldc.i4 0
+call int32 'exit'(int32)
+pop
+ldc.i4 0
+$L1:
+ret
+}
+.method public hidebysig static int32 'nested'(int32,int32) cil managed {
+.locals ([0] int32 '1')
+.locals ([1] int32 '2')
+.maxstack 2
+ldarg 0
+ldc.i4 4
+bge $L8
+ldarg 1
+ldc.i4 114
+beq $L16
+$L8:
+ldarg 0
+ldc.i4 1
+bne.un $L11
+ldarg 1
+stloc 0
+ldloc 0
+ldc.i4 104
+beq $L16
+ldloc 0
+ldc.i4 105
+beq $L16
+$L11:
+ldarg 0
+ldc.i4 2
+bne.un $L5
+ldarg 1
+stloc 1
+ldloc 1
+ldc.i4 111
+beq $L16
+ldloc 1
+ldc.i4 121
+bne.un $L5
+$L16:
+ldarg 1
+starg 0
+$L5:
+ldc.i4 0
+$L4:
+ret
+}
+.method public hidebysig static void 's'(void*) cil managed {
+.maxstack 0
+$L19:
+ret
+}
+.class private value explicit ansi sealed 'sD{i4i4}' { .pack 1 .size 8 }
+.field public static valuetype 'sD{i4i4}' 'Dy' at $Dy
+.data $Dy = {
+int32 (0),
+int32 (0)
+}
+.field public static valuetype 'sD{i4i4}' 'Dz' at $Dz
+.data $Dz = {
+int32 (1),
+int32 (0)
+}
+.method public hidebysig static int32 'Dfunc'() cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'f'() cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'f1'() cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'f2'(void*,void*) cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'g'(void*) cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'h'(void*) cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'h1'(int32,int32) cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'h2'() cil managed {
+.maxstack 0
+ret
+}
+.field public static int32 $29_yy at $30
+.data $30 = {
+int32 (1)
+}
+.method public hidebysig static int32 'set1'() cil managed {
+.maxstack 0
+ret
+}
+.field public static int32 $33_yy at $34
+.data $34 = {
+int32 (2)
+}
+.method public hidebysig static int32 'set2'() cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static void $36_goo() cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'sss'() cil managed {
+.maxstack 0
+ret
+}
+.field public static float32 $40_xr at $41
+.data $41 = {
+int32 (0)
+}
+.method public hidebysig static int32 'rrr'(void*) cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'setstatic'() cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'gx1'(float64) cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'ff1'(float64,void*) cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'gg1'(int32) cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'hh1'(int32) cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'cmp'(void*,void*) cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'sort'() cil managed {
+.maxstack 0
+ret
+}
+.method public hidebysig static int32 'onearg'() cil managed {
+.maxstack 0
+ret
+}
+.field public static int32 'ss4' at $ss4
+.data $ss4 = {
+int32 (0)
+}
+.field public static int32 'ss2' at $58
+.data $58 = {
+int32 (0)
+}
+.field public static int32 'ss5' at $59
+.data $59 = {
+int32 (0)
+}
+.field public static int32 'ss3' at $ss3
+.data $ss3 = {
+int32 (0)
+}
+.field public static int32 $42_ss1 at $60
+.data $60 = {
+int32 (0)
+}
+.field public static int32 'yy' at $61
+.data $61 = {
+int32 (0)
+}
+.field public static int32 'z' at $z
+.data $z = {
+int32 (0)
+}
+.field public static void* 'y' at $y
+.data $y = {
+int32 (0)
+}
+.field public static void* 'x' at $x
+.data $x = {
+int32 (0)
+}
+.field public static int32 'b' at $b
+.data $b = {
+int32 (0)
+}
+.field public static int32 'a' at $a
+.data $a = {
+int32 (0)
+}

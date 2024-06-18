@@ -1,0 +1,311 @@
+// file=tst/8q.c uname=
+.class private value explicit ansi sealed 'int32[]' { .pack 1 .size 60 }
+.method public hidebysig static int32 'main'() cil managed {
+.locals ([0] int32 'i')
+.locals ([1] int32 '1')
+.locals ([2] int32 '2')
+.maxstack 2
+ldc.i4 0
+stloc 0
+$L2:
+ldloc 0
+ldc.i4 2
+shl
+stloc 1
+ldc.i4 1
+stloc 2
+ldloc 1
+ldsflda valuetype 'int32[]' 'down'
+add
+ldloc 2
+stind.i4
+ldloc 1
+ldsflda valuetype 'int32[]' 'up'
+add
+ldloc 2
+stind.i4
+$L3:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+ldloc 0
+ldc.i4 15
+blt $L2
+ldc.i4 0
+stloc 0
+$L11:
+ldloc 0
+ldc.i4 2
+shl
+ldsflda valuetype 'int32[]' 'rows'
+add
+ldc.i4 1
+stind.i4
+$L12:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+ldloc 0
+ldc.i4 8
+blt $L11
+ldc.i4 0
+call int32 'queens'(int32)
+pop
+ldc.i4 0
+$L1:
+ret
+}
+.method public hidebysig static int32 'queens'(int32) cil managed {
+.locals ([0] int32 'r')
+.locals ([1] int32 '1')
+.locals ([2] int32 '2')
+.locals ([3] int32 '3')
+.locals ([4] int32 '4')
+.locals ([5] int32 '5')
+.locals ([6] int32 '6')
+.locals ([7] int32 '7')
+.locals ([8] int32 '8')
+.locals ([9] int32 '9')
+.locals ([10] int32 '10')
+.locals ([11] int32 '11')
+.locals ([12] int32 '12')
+.maxstack 3
+ldc.i4 0
+stloc 0
+$L17:
+ldc.i4 2
+stloc 2
+ldc.i4 0
+stloc 3
+ldloc 0
+ldloc 2
+shl
+ldsflda valuetype 'int32[]' 'rows'
+add
+ldind.i4
+ldloc 3
+beq $L21
+ldarg 0
+stloc 4
+ldloc 0
+ldloc 4
+sub
+ldloc 2
+shl
+ldsflda valuetype 'int32[]' 'up'
+ldc.i4 28
+add
+add
+ldind.i4
+ldloc 3
+beq $L21
+ldloc 0
+ldloc 4
+add
+ldloc 2
+shl
+ldsflda valuetype 'int32[]' 'down'
+add
+ldind.i4
+ldloc 3
+beq $L21
+ldarg 0
+stloc 6
+ldc.i4 2
+stloc 7
+ldc.i4 0
+stloc 8
+ldloc 0
+ldloc 6
+add
+ldloc 7
+shl
+ldsflda valuetype 'int32[]' 'down'
+add
+ldloc 8
+stind.i4
+ldloc 0
+ldloc 6
+sub
+ldloc 7
+shl
+ldsflda valuetype 'int32[]' 'up'
+ldc.i4 28
+add
+add
+ldloc 8
+stind.i4
+ldloc 0
+ldloc 7
+shl
+ldsflda valuetype 'int32[]' 'rows'
+add
+ldloc 8
+stind.i4
+ldarg 0
+ldc.i4 2
+shl
+ldsflda valuetype 'int32[]' 'x'
+add
+ldloc 0
+stind.i4
+ldarg 0
+ldc.i4 7
+bne.un $L24
+call int32 'print'()
+pop
+br $L25
+$L24:
+ldarg 0
+ldc.i4 1
+add
+call int32 'queens'(int32)
+pop
+$L25:
+ldarg 0
+stloc 10
+ldc.i4 2
+stloc 11
+ldc.i4 1
+stloc 12
+ldloc 0
+ldloc 10
+add
+ldloc 11
+shl
+ldsflda valuetype 'int32[]' 'down'
+add
+ldloc 12
+stind.i4
+ldloc 0
+ldloc 10
+sub
+ldloc 11
+shl
+ldsflda valuetype 'int32[]' 'up'
+ldc.i4 28
+add
+add
+ldloc 12
+stind.i4
+ldloc 0
+ldloc 11
+shl
+ldsflda valuetype 'int32[]' 'rows'
+add
+ldloc 12
+stind.i4
+$L21:
+$L18:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+ldloc 0
+ldc.i4 8
+blt $L17
+ldc.i4 0
+$L16:
+ret
+}
+.class private value explicit ansi sealed 'int8[]' { .pack 1 .size 4 }
+.method public hidebysig static int32 'print'() cil managed {
+.locals ([0] int32 'k')
+.maxstack 3
+ldc.i4 0
+stloc 0
+$L28:
+ldsflda valuetype 'int8[]' $_32
+ldloc 0
+ldc.i4 2
+shl
+ldsflda valuetype 'int32[]' 'x'
+add
+ldind.i4
+ldc.i4 49
+add
+call int32 'printf'(void*,int32)
+pop
+$L29:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+ldloc 0
+ldc.i4 8
+blt $L28
+ldsflda valuetype 'int8[]' $_34
+call int32 'printf'(void*)
+pop
+ldc.i4 0
+$L27:
+ret
+}
+.field public static valuetype 'int32[]' 'x' at $x
+.data $x = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static valuetype 'int32[]' 'rows' at $rows
+.data $rows = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static valuetype 'int32[]' 'down' at $down
+.data $down = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static valuetype 'int32[]' 'up' at $up
+.data $up = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static valuetype 'int8[]' $_34 at $35
+.data $35 = {
+bytearray ( a 0 )
+}
+.field public static valuetype 'int8[]' $_32 at $36
+.data $36 = {
+bytearray ( 25 63 20 0 )
+}
