@@ -71,7 +71,7 @@ char *tempdir = TEMPDIR;	/* directory for temporary files */
 static char *progname;
 static List lccinputs;		/* list of input directories */
 
-main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	int i, j, nf;
 	
 	progname = argv[0];
