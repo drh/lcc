@@ -9,6 +9,7 @@ union align {
 	char *p;
 	double d;
 	int (*f)(void);
+	long double ld;
 };
 union header {
 	struct block b;

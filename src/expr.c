@@ -363,7 +363,9 @@ static Tree primary(void) {
 					p->type = func(inttype, NULL, 1);
 					p->sclass = EXTERN;
 					if (Aflag >= 1)
-						warning("missing prototype\n");
+						warning("missing prototype for `%s'\n", q->name);
+					else
+						warning("implicit declaration of `%s'\n", q->name);
 					if (q && !eqtype(q->type, p->type, 1))
 						warning("implicit declaration of `%s' does not match previous declaration at %w\n", q->name, &q->src);
 
@@ -492,23 +494,38 @@ int hascall(Tree p) {
 	return hascall(p->kids[0]) || hascall(p->kids[1]);
 }
 Type binary(Type xty, Type yty) {
-#define xx(t) if (xty == t || yty == t) return t
+	/* Implementing rules from
+	   https://en.cppreference.com/w/c/language/conversion
+	   using sizes instead of rank (imperfect but better than before). */
+#define xy(t,r) if (xty == t || yty == t) return r
+#define xx(t) xy(t,t)
 	xx(longdouble);
 	xx(doubletype);
 	xx(floattype);
-	xx(unsignedlonglong);
-	xx(longlong);
-	xx(unsignedlong);
-	if (xty == longtype     && yty == unsignedtype
-	||  xty == unsignedtype && yty == longtype)
-		if (longtype->size > unsignedtype->size)
-			return longtype;
-		else
-			return unsignedlong;
-	xx(longtype);
-	xx(unsignedtype);
-	return inttype;
+	xty = promote(xty);
+	yty = promote(yty);
+	if (xty == yty)
+		return xty;
+	if (xty->size > yty->size)
+		return xty;
+	if (yty->size > xty->size)
+		return yty;
+	if (xty->op == yty->op) {
+		xx(unsignedlonglong);
+		xx(longlong);
+		xx(unsignedlong);
+		xx(longtype);
+		xx(unsignedtype);
+		return inttype;
+	} else {
+		xy(unsignedlonglong, unsignedlonglong);
+		xy(longlong, unsignedlonglong);
+		xy(unsignedlong, unsignedlong);
+		xy(longtype, unsignedlong);
+		return unsignedtype;
+	}
 #undef xx
+#undef xy
 }
 Tree pointer(Tree p) {
 	if (isarray(p->type))
@@ -569,7 +586,7 @@ Tree cast(Tree p, Type type) {
 					p = simplify(CVI, dst, p, NULL);
 					break;
 				case UNSIGNED:
-					if (isfloat(dst)) {
+					if (isfloat(dst) && !IR->wants_cvfu_cvuf) {
 						Type ssrc = signedint(src);
 						Tree two = cnsttree(longdouble, (long double)2.0);
 						p = (*optree['+'])(ADD,
@@ -585,7 +602,7 @@ Tree cast(Tree p, Type type) {
 						p = simplify(CVU, dst, p, NULL);
 					break;
 				case FLOAT:
-					if (isunsigned(dst)) {
+					if (isunsigned(dst) && !IR->wants_cvfu_cvuf) {
 						Type sdst = signedint(dst);
 						Tree c = cast(cnsttree(longdouble, (long double)sdst->u.sym->u.limits.max.i + 1), src);
 						p = condtree(

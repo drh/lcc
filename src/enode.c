@@ -379,8 +379,12 @@ Tree condtree(Tree e, Tree l, Tree r) {
 	case CNST+F: return cast(e->u.v.d != 0.0 ? l : r, ty);
 	}
 	if (ty != voidtype && ty->size > 0) {
-		t1 = genident(REGISTER, unqual(ty), level);
-	/*	t1 = temporary(REGISTER, unqual(ty)); */
+		if (r && r->op == COND && r->u.sym)
+			t1 = r->u.sym;
+		else if (l && l->op == COND && l->u.sym)
+			t1 = l->u.sym;
+		else
+			t1 = genident(REGISTER, unqual(ty), level);
 		l = asgn(t1, l);
 		r = asgn(t1, r);
 	} else
@@ -512,10 +516,11 @@ static Tree subtree(int op, Tree l, Tree r) {
 		n = unqual(ty->type)->size;
 		if (n == 0)
 			error("unknown size for type `%t'\n", ty->type);
-		l = simplify(SUB+U, unsignedptr,
-			cast(l, unsignedptr), cast(r, unsignedptr));
-		return simplify(DIV+I, longtype,
-			cast(l, longtype), cnsttree(longtype, n));
+		l = simplify(SUB+I, signedptr,
+			cast(l, signedptr), cast(r, signedptr));
+		if (n == 1)
+			return l;
+		return simplify(DIV+I, signedptr, l, cnsttree(signedptr, n));
 	} else
 		typeerror(op, l, r);
 	return simplify(op, ty, l, r);

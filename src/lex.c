@@ -188,7 +188,27 @@ int gettok(void) {
 			  	cp = rcp;
 			  	continue;
 			  }
-			  return '/';
+			  if (*rcp == '/') {
+			  	/* c++ style comments */
+			  	rcp++;
+			  	for(;;) {
+			  		if (map[*rcp] & NEWLINE) {
+			  			/* new line -or- end of buffer. */
+			  			if (rcp < limit) break;
+			  			cp = rcp + 1;
+			  			nextline();
+			  			rcp = cp;
+			  			if (rcp == limit) break;
+			  		}
+			  		else {
+			  			rcp++;
+			  		}
+			  	}
+			  	if (rcp < limit) rcp++;
+			  	cp = rcp;
+			  	continue;
+                          }  
+			return '/';
 		case '<':
 			if (*rcp == '=') return cp++, LEQ;
 			if (*rcp == '<') return cp++, LSHIFT;
