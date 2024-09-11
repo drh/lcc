@@ -1,10 +1,15 @@
 # $Id$
+ARCH=$(shell getconf LONG_BIT)
 A=.a
 O=.o
 E=
 CC=cc
-CFLAGS=-g
-LDFLAGS=-g
+CFLAGS_32=
+CFLAGS_64=-m32 -DUSRLIBDIR='"/usr/lib32/"'
+CFLAGS=-g $(CFLAGS_$(ARCH))
+LDFLAGS_32=
+LDFLAGS_64=-m32
+LDFLAGS=-g $(LDFLAGS_$(ARCH))
 LD=$(CC)
 AR=ar ruv
 RANLIB=ranlib
