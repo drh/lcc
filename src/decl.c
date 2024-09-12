@@ -1102,7 +1102,7 @@ Type enumdcl(void) {
 		while (t == ID) {
 			char *id = token;
 			Coordinate s;
-			if (tsym && tsym->scope == level)
+			if (tsym && (tsym->scope == level || tsym->scope == PARAM && level == PARAM+1))
 				error("redeclaration of `%s' previously declared at %w\n",
 					token, &tsym->src);
 			s = src;
