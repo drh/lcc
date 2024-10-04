@@ -445,6 +445,7 @@ extern Tree cnsttree(Type, ...);
 extern Tree consttree(int, Type);
 extern Tree eqtree(int, Tree, Tree);
 extern int iscallb(Tree);
+extern int isnullptr(Tree);
 extern Tree shtree(int, Tree, Tree);
 extern void typeerror(int, Tree, Tree);
 
