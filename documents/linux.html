@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!-- saved from url=(0036)https://cwf.github.io/pro/linux.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<link title="David R. Hanson" href="https://drh.github.io/" rev="made">
+		<link href="./linux_files/style.css" rel="stylesheet" type="text/css" media="all">
+		<title>Compile C Faster on Linux</title>
+	</head>
+
+	<body data-new-gr-c-s-check-loaded="14.1199.0" data-gr-ext-installed="">
+		<h1>Compile C Faster on Linux</h1>
+		<h2>Christopher W. Fraser (Microsoft Research)<br>
+			David R. Hanson (Princeton University)</h2>
+		<p>(Reprinted with permission of <cite>Linux Journal</cite>. See the 5/96 issue.)</p>
+		<p><tt>lcc</tt> is a small, fast C compiler now available on Linux. A perfectly good C compiler, <tt>gcc</tt>, comes with Linux. Why would anyone bother installing a second one? Because the two compilers make different tradeoffs, so they suit different stages of the development cycle. <tt>gcc</tt> has many targets and users, and it includes an ambitious optimizer. <tt>lcc</tt> is 75% smaller (more when counting source code), compiles more quickly, and helps prevent some porting bugs.</p>
+		<p>For those who've always wanted to customize or extend their compiler, our recent book<i>, A Retargetable C Compiler: Design and Implementation</i>, tours <tt>lcc</tt>'s source code in detail and thus offers especially thorough documentation. Pointers to <tt>lcc</tt>'s source code, executables, book, and authors appear at the end of this article.</p>
+		<h3>Speed Tradeoffs</h3>
+		<p><tt>lcc</tt> is fast. <tt>gcc</tt> implements a more ambitious global code optimizer, so it emits better code, particularly with full optimization options, but global optimization takes time and space. <tt>lcc</tt> implements a few low-cost, high-yield optimizations that collaborate to yield respectable code in a hurry.</p>
+		<p>For example, <tt>lcc</tt> compiles itself in 36 seconds on a 90 megahertz Pentium running Linux. <tt>gcc</tt> takes 68 seconds to compile the same program with the default compiler options and 130 seconds with the highest level of optimization. Code quality varied less. <tt>gcc</tt>'s default code for this input took 36 seconds to reprocess this input, just like <tt>lcc</tt>'s code. <tt>gcc</tt>'s best code for this input (that is, with optimization level 3) runs in 30 seconds, or about 20% faster. This is only a single data point, and both compilers evolve constantly, so your mileage may vary. Naturally, one can save time throughout by using <tt>lcc</tt> during development and optimizing with <tt>gcc</tt> for the final binary.</p>
+		<h3>Porting Code</h3>
+		<p>Indeed, compiling code with two different compilers helps expose portability bugs. If a program is useful and if the source code is available, sooner or later someone will try to port it to another machine, or compile it with another compiler, or both. With a new machine or compiler, glitches are not uncommon. Which of the following solutions will net you less unwanted email? For you to find and erase these blots while the code is fresh in your mind? Or for the porter to get diagnostics much later and about foreign source code?</p>
+		<p><tt>lcc</tt> follows the ANSI standard faithfully and implements no extensions, including <tt>gcc</tt>'s extensions. Indeed, an option directs <tt>lcc</tt> to warn about a variety of C constructs that are valid but give undefined results and thus can behave differently on another machine or with a different compiler. Some programmers use <tt>lcc</tt> mainly for its strict-ANSI option, which helps them keep their code portable.</p>
+		<p>Like <tt>gcc</tt>, <tt>lcc</tt> can be configured as a cross-compiler that runs on one machine and compiles code for another. Cross-compilers can simplify life for programmers with multiple target platforms. <tt>lcc</tt> takes this notion a step farther than most cross-compilers: we can and typically do link code generators for several machines into each executable.</p>
+		<p>For example, we maintain code generators for the MIPS, SPARC, and X86 architectures. That is, we both work on and emit code for multiple platforms, so it's handy to be able to emit code for all targets from any machine. We usually fold all three code generators into all of our executables. A run-time option tells <tt>lcc</tt> which target is needed at present. If you don't maintain code for multiple targets, you're free to use an executable that includes just one code generator, which saves roughly 50KB for each code generator omitted.</p>
+		<h3>A Compact Compiler</h3>
+		<p><tt>lcc</tt> is small. <tt>lcc</tt>'s Linux executable with one code generator is 232 KB, and its text segment is 192 KB. Both figures for the corresponding phase of <tt>gcc</tt> (namely, <tt>cc1</tt>) exceed a megabyte. <tt>lcc</tt>'s compactness contributes to its speed, especially on modest systems, and a compact program benefits those who wish to modify the compiler. Most developers will use pre-built executables for <tt>lcc</tt> and never examine or even recompile the source code, but the Linux community particularly prizes the availability of source code, partly because it allows users to customize their programs or adapt them for other purposes. Compact programs are generally easier to adapt than bigger codes.</p>
+		<p><tt>lcc</tt> is 12,000 lines of C source code if one counts just one code generator, for the Linux PC. <tt>gcc</tt>'s root directory - without the target-specific specification files - holds 240,000 lines; surely some of this material is not part of the compiler proper, but the separation is not immediately apparent those who haven't browsed <tt>gcc</tt>'s source recently. The machine-specific module is the part most often changed, because new target machines come along more often than, say, new source languages. For the Linux PC, this part of <tt>lcc</tt> is 1200 lines, and half of that repeats boilerplate declarations or supports the debugger, so the actual code generator is under 600 lines. The target-specific modules for <tt>gcc</tt> average about 3000 lines. These comparisons are among the best illustrations of the fact that the two compilers represent different trade-offs and that neither beats the other at everything: <tt>gcc</tt> can emit better code and offers many options, which requires more source code, where <tt>lcc</tt> is easier to comprehend but is otherwise less ambitious.</p>
+		<p><tt>gcc</tt> and <tt>lcc</tt> use retargetable code generators driven in part by formal specifications of the target machine, just as a parser can be driven by a formal grammar of the input language. <tt>gcc</tt>'s code generator is based in part on techniques that one of us (Fraser) originated in the late 1970's. <tt>lcc</tt> uses a different technique that is somewhat less flexible but simpler.</p>
+		<p>A compact source code helps people adapt <tt>lcc</tt>. An early adaptation by one of us (Hanson) injected profiling code that counts executions for a profiler that now comes with <tt>lcc</tt>. For example, the lines</p>
+		<pre>for (&lt;1965&gt;r = 0; &lt;15720&gt;r &lt; 8; &lt;15720&gt;r++)
+   if (&lt;15720&gt;rows[r] &amp;&amp; &lt;5508&gt;up[r-c+7] &amp;&amp; &lt;3420&gt;down[r+c]) { ...
+</pre>
+		<p>annotate two lines from the <tt>lcc</tt> test suite's implementation of a program that finds all ways to place eight queens on a chessboard such that none of them attacks any other. The numbers in angle brackets report how many times the following code executed, which can differ within one line. This profiler would have been a big project without <tt>lcc</tt>, but it was modest one with <tt>lcc</tt>. Other adaptations of <tt>lcc</tt> include interpreters (<a href="http://www.cit.gu.edu.au/%7esosic/papers/sigplan92.ps.Z">http://www.cit.gu.edu.au/~sosic/papers/sigplan92.ps.Z</a>), code generators for multiple targets (<a href="ftp://ftp.cs.princeton.edu/pub/packages/lcc/contrib">ftp://ftp.cs.princeton.edu/pub/lcc/contrib/</a>), a C++ compiler, programmable debuggers that can debug across a network (<a href="http://www.eecs.harvard.edu/%7enr/ldb/">http://www.eecs.harvard.edu/~nr/ldb/</a>), and a retargetable optimizing linker. A group at Stanford University has adapted <tt>lcc</tt> for use with a global optimizer (<a href="http://suif.stanford.edu/suif/suif.html">http://suif.stanford.edu/suif/suif.html</a>). At least some of these efforts chose <tt>lcc</tt> over <tt>gcc</tt> because <tt>lcc</tt>'s compactness made it seem easier to comprehend and change. Many of these projects were begun before the <tt>lcc</tt> book was done, so common sense predicts even more adaptations now that extensive documentation is available.</p>
+		<h3>Literate Programming</h3>
+		<p>Most developers will use pre-built executables for <tt>lcc</tt> and never study the source code. The Linux community, however, expects source, and <tt>lcc</tt> exceeds this expectation with an annotated version of most of its code, in the form of a book. <tt>lcc</tt>'s annotations, like its small size, are designed to help developers modify <tt>lcc</tt> when they want to.</p>
+		<p><tt>lcc</tt> is written as what Knuth has termed a "literate program," which interleaves the source code with prose explanations. Two programs process this input. One extracts conventional C source code, which can be compiled with any C compiler. The other program uses the prose too and emits the typescript for the <tt>lcc</tt> book. We generate the book and the compiler from a single source because it's too easy for multiple sources to get out of sync with one another.</p>
+		<p>A brief fragment of the chapter on the X86 code generator demonstrates literate programming:</p>
+		<hr>
+		<p>Static locals get a generated name to avoid other static locals of the same name:</p>
+		<pre>&lt;X86 defsymbol&gt;=
+if (p-&gt;scope &gt;= LOCAL &amp;&amp; p-&gt;sclass == STATIC)
+   p-&gt;x.name = stringf("L%d", genlabel(1));
+</pre>
+		<p>Generated symbols already have a unique numeric name. Defsymbol simply prefixes a letter to make a valid assembler identifier:</p>
+		<pre>&lt;X86 defsymbol&gt;+=
+else if (p-&gt;generated)
+   p-&gt;x.name = stringf("L%s",p-&gt;name);
+</pre>
+		<hr>
+		<p>Each of the two displays above consists of a "fragment label" in angle brackets and a "fragment" that's just plain code. The fragment label names a piece of the C program that's being described, here the version of the routine <code>defsymbol</code> for the X86. The "+=" in the second fragment says that the second fragment is appended to the first.</p>
+		<p>This example is necessarily tiny, but it shows how literate programming allows one to build up a complex program a bit at a time, explaining it on the way. The <tt>lcc</tt> distribution includes conventional C code that can be modified as usual, but when some explanation would help, one can easily get it from the annotated code in the book.</p>
+		<p>Not shown in this sample are page numbers in each fragment that point to adjoining fragments, and miniature indices in the page margin that point to the page that defines each identifier that's being used. Many readers have identified the mini-indices as especially helpful.</p>
+		<h3>Availability</h3>
+		<p><tt>lcc</tt>'s C source code and Linux executables are available for anonymous ftp at URL <a href="ftp://ftp.cs.princeton.edu/pub/packages/lcc">ftp://ftp.cs.princeton.edu/pub/lcc/</a>. It's about a megabyte, so it can be downloaded using even, say, a 14.4kb modem in about 10 minutes. The package includes Dennis Ritchie's preprocessor for ANSI C, but <tt>lcc</tt> is also used with <tt>gcc</tt>'s preprocessor. Like <tt>gcc</tt>, <tt>lcc</tt> emits assembler code for the standard Linux assembler, debugger, and C library, so the package need not include any of these items. A sub-directory collects code generators and other companion software contributed by others. The package describes mailing lists for communicating with others working on and with <tt>lcc</tt>.</p>
+		<p>Our book about <tt>lcc</tt>, <i>A Retargetable C Compiler: Design and Implementation</i>, (ISBN 0-8053-1670-1) is available from Addison Wesley at 800-447-2226 and from other sources listed on <tt>lcc</tt>'s home page (<a href="http://www.cs.princeton.edu/software/lcc/">http://www.cs.princeton.edu/software/lcc/</a>).</p>
+		<p><tt>lcc</tt> is free for non-commercial use. The <tt>lcc</tt> book amounts to a single-user license for <tt>lcc</tt>, so some have arranged commercial use by simply including a copy of the book with their product (and charging for it); the publisher offers substantial discounts. Other arrangements are possible.</p>
+		<h3>Authors</h3>
+		<p>Chris Fraser has been writing compilers since 1974. He earned a Ph.D. in computer science at Yale in 1977 and did computing research at Bell Laboratories in Murray Hill, New Jersey. He is now with Microsoft Research. <a href="https://cwf.github.io/">Web</a>.</p>
+		<p>Dave Hanson was Professor of Computer Science at Princeton University. His research interests include programming language design and implementation, software engineering, and programming environments. He is now with Microsoft Research. <a href="https://drh.github.io/">Web</a>.</p>
+	
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
