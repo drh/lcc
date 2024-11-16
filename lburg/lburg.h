@@ -59,8 +59,10 @@ extern Rule rule(char *id, Tree pattern, char *template, char *code);
 void yyerror(char *fmt, ...);
 int yyparse(void);
 void yywarn(char *fmt, ...);
+extern int yylineno;
 extern int errcnt;
 extern FILE *infp;
 extern FILE *outfp;
-
+extern const char *infname;
+extern const char *outfname;
 #endif

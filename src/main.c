@@ -100,6 +100,8 @@ int main(int argc, char *argv[]) {
 	finalize();
 	(*IR->progend)();
 	deallocate(PERM);
+	if (errcnt > 0)
+		error("%d error(s)\n", errcnt);
 	return errcnt > 0;
 }
 /* main_init - process program arguments */
