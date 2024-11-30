@@ -320,7 +320,7 @@ Tree asgntree(int op, Tree l, Tree r) {
 		long n = 8*l->u.field->type->size - fieldsize(l->u.field);
 		if (n > 0 && isunsigned(l->u.field->type))
 			r = bittree(BAND, r,
-				cnsttree(r->type, (unsigned long)fieldmask(l->u.field)));
+				cnsttree(unsignedtype, (unsigned long)fieldmask(l->u.field)));
 		else if (n > 0) {
 			if (r->op == CNST+I) {
 				n = r->u.v.i;
