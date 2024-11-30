@@ -12,7 +12,9 @@ dodefine(Tokenrow *trp)
 	Token *tp;
 	Nlist *np;
 	Tokenrow *def, *args;
+	int dots;
 
+	dots = 0;
 	tp = trp->tp+1;
 	if (tp>=trp->lp || tp->type!=NAME) {
 		error(ERROR, "#defined token is not a name");
@@ -36,7 +38,9 @@ dodefine(Tokenrow *trp)
 			int err = 0;
 			for (;;) {
 				Token *atp;
-				if (tp->type!=NAME) {
+				if (tp->type == ELLIPS)
+					dots++;
+				else if (tp->type!=NAME) {
 					err++;
 					break;
 				}
@@ -51,6 +55,8 @@ dodefine(Tokenrow *trp)
 				tp += 1;
 				if (tp->type==RP)
 					break;
+				if (dots)
+					error(ERROR, "arguments after '...' in macro");
 				if (tp->type!=COMMA) {
 					err++;
 					break;
@@ -83,6 +89,8 @@ dodefine(Tokenrow *trp)
 	np->ap = args;
 	np->vp = def;
 	np->flag |= ISDEFINED;
+	if(dots)
+		np->flag |= ISVARMAC;
 }
 
 /*
@@ -130,7 +138,7 @@ syntax:
  * Flag is NULL if more input can be gathered.
  */
 void
-expandrow(Tokenrow *trp, char *flag)
+expandrow(Tokenrow *trp, char *flag, int inmacro)
 {
 	Token *tp;
 	Nlist *np;
@@ -162,7 +170,7 @@ expandrow(Tokenrow *trp, char *flag)
 		if (np->flag&ISMAC)
 			builtin(trp, np->val);
 		else {
-			expand(trp, np);
+			expand(trp, np, inmacro);
 		}
 		tp = trp->tp;
 	}
@@ -176,7 +184,7 @@ expandrow(Tokenrow *trp, char *flag)
  * (ordinarily the beginning of the expansion)
  */
 void
-expand(Tokenrow *trp, Nlist *np)
+expand(Tokenrow *trp, Nlist *np, int inmacro)
 {
 	Tokenrow ntr;
 	int ntokc, narg, i;
@@ -188,8 +196,9 @@ expand(Tokenrow *trp, Nlist *np)
 	if (np->ap==NULL)			/* parameterless */
 		ntokc = 1;
 	else {
-		ntokc = gatherargs(trp, atr, &narg);
+		ntokc = gatherargs(trp, atr, (np->flag&ISVARMAC) ? rowlen(np->ap) : 0, &narg);
 		if (narg<0) {			/* not actually a call (no '(') */
+/* error(WARNING, "%d %r\n", narg, trp); */
 			/* gatherargs has already pushed trp->tr to the next token */
 			return;
 		}
@@ -205,7 +214,8 @@ expand(Tokenrow *trp, Nlist *np)
 			dofree(atr[i]);
 		}
 	}
-	doconcat(&ntr);				/* execute ## operators */
+	if(!inmacro)
+		doconcat(&ntr);				/* execute ## operators */
 	hs = newhideset(trp->tp->hideset, np);
 	for (tp=ntr.bp; tp<ntr.lp; tp++) {	/* distribute hidesets */
 		if (tp->type==NAME) {
@@ -228,7 +238,7 @@ expand(Tokenrow *trp, Nlist *np)
  * trp->tp is not changed relative to the tokenrow.
  */
 int
-gatherargs(Tokenrow *trp, Tokenrow **atr, int *narg)
+gatherargs(Tokenrow *trp, Tokenrow **atr, int dots, int *narg)
 {
 	int parens = 1;
 	int ntok = 0;
@@ -245,8 +255,10 @@ gatherargs(Tokenrow *trp, Tokenrow **atr, int *narg)
 		if (trp->tp >= trp->lp) {
 			gettokens(trp, 0);
 			if ((trp->lp-1)->type==END) {
+/* error(WARNING, "reach END\n"); */
 				trp->lp -= 1;
-				trp->tp -= ntok;
+				if (*narg>=0)
+					trp->tp -= ntok;
 				return ntok;
 			}
 		}
@@ -301,7 +313,9 @@ gatherargs(Tokenrow *trp, Tokenrow **atr, int *narg)
 			parens--;
 		if (lp->type==DSHARP)
 			lp->type = DSHARP1;	/* ## not special in arg */
-		if (lp->type==COMMA && parens==0 || parens<0 && (lp-1)->type!=LP) {
+		if ((lp->type==COMMA && parens==0) || (parens<0 && (lp-1)->type!=LP)) {
+			if (lp->type == COMMA && dots && *narg == dots-1)
+				continue;
 			if (*narg>=NARG-1)
 				error(FATAL, "Sorry, too many macro arguments");
 			ttr.bp = ttr.tp = bp;
@@ -339,12 +353,14 @@ substargs(Nlist *np, Tokenrow *rtr, Tokenrow **atr)
 		}
 		if (rtr->tp->type==NAME
 		 && (argno = lookuparg(np, rtr->tp)) >= 0) {
+			if (rtr->tp < rtr->bp)
+				error(ERROR, "access out of bounds");
 			if ((rtr->tp+1)<rtr->lp && (rtr->tp+1)->type==DSHARP /* don't look beyond end */
 			 || rtr->tp!=rtr->bp && (rtr->tp-1)->type==DSHARP) /* don't look before beginning */
 				insertrow(rtr, 1, atr[argno]);
 			else {
 				copytokenrow(&tatr, atr[argno]);
-				expandrow(&tatr, "<macro>");
+				expandrow(&tatr, "<macro>", Inmacro);
 				insertrow(rtr, 1, &tatr);
 				dofree(tatr.bp);
 			}
@@ -407,6 +423,8 @@ lookuparg(Nlist *mac, Token *tp)
 
 	if (tp->type!=NAME || mac->ap==NULL)
 		return -1;
+	if((mac->flag & ISVARMAC) && strcmp((char*)tp->t, "__VA_ARGS__") == 0)
+		return rowlen(mac->ap) - 1;
 	for (ap=mac->ap->bp; ap<mac->ap->lp; ap++) {
 		if (ap->len==tp->len && strncmp((char*)ap->t,(char*)tp->t,ap->len)==0)
 			return ap - mac->ap->bp;
@@ -435,7 +453,7 @@ stringify(Tokenrow *vp)
 			error(ERROR, "Stringified macro arg is too long");
 			break;
 		}
-		if (tp->wslen && (tp->flag&XPWS)==0)
+		if (tp->wslen /* && (tp->flag&XPWS)==0 */)
 			*sp++ = ' ';
 		for (i=0, cp=tp->t; i<tp->len; i++) {	
 			if (instring && (*cp=='"' || *cp=='\\'))

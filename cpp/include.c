@@ -20,7 +20,7 @@ doinclude(Tokenrow *trp)
 		goto syntax;
 	if (trp->tp->type!=STRING && trp->tp->type!=LT) {
 		len = trp->tp - trp->bp;
-		expandrow(trp, "<include>");
+		expandrow(trp, "<include>", Notinmacro);
 		trp->tp = trp->bp+len;
 	}
 	if (trp->tp->type==STRING) {

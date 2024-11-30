@@ -117,7 +117,7 @@ eval(Tokenrow *trp, int kw)
 	}
 	ntok = trp->tp - trp->bp;
 	kwdefined->val = KDEFINED;	/* activate special meaning of defined */
-	expandrow(trp, "<if>");
+	expandrow(trp, "<if>", Notinmacro);
 	kwdefined->val = NAME;
 	vp = vals;
 	op = ops;
@@ -159,7 +159,7 @@ eval(Tokenrow *trp, int kw)
 				if (tp->type==MINUS)
 					*op++ = UMINUS;
 				if (tp->type==STAR || tp->type==AND) {
-					error(ERROR, "Illegal operator * or & in #if/#elsif");
+					error(ERROR, "Illegal operator * or & in #if/#elif");
 					return 0;
 				}
 				continue;
@@ -197,7 +197,7 @@ eval(Tokenrow *trp, int kw)
 			continue;
 
 		default:
-			error(ERROR,"Bad operator (%t) in #if/#elsif", tp);
+			error(ERROR,"Bad operator (%t) in #if/#elif", tp);
 			return 0;
 		}
 	}
@@ -206,14 +206,14 @@ eval(Tokenrow *trp, int kw)
 	if (evalop(priority[END])!=0)
 		return 0;
 	if (op!=&ops[1] || vp!=&vals[1]) {
-		error(ERROR, "Botch in #if/#elsif");
+		error(ERROR, "Botch in #if/#elif");
 		return 0;
 	}
 	if (vals[0].type==UND)
 		error(ERROR, "Undefined expression value");
 	return vals[0].val;
 syntax:
-	error(ERROR, "Syntax error in #if/#elsif");
+	error(ERROR, "Syntax error in #if/#elif");
 	return 0;
 }
 
@@ -395,7 +395,7 @@ tokval(Token *tp)
 {
 	struct value v;
 	Nlist *np;
-	int i, base, c;
+	int i, base, c, longcc;
 	unsigned long n;
 	uchar *p;
 
@@ -441,10 +441,10 @@ tokval(Token *tp)
 			if (*p=='u' || *p=='U')
 				v.type = UNS;
 			else if (*p=='l' || *p=='L')
-				;
+				{}
 			else {
 				error(ERROR,
-				  "Bad number %t in #if/#elsif", tp);
+				  "Bad number %t in #if/#elif", tp);
 				break;
 			}
 		}
@@ -455,9 +455,10 @@ tokval(Token *tp)
 	case CCON:
 		n = 0;
 		p = tp->t;
+		longcc = 0;
 		if (*p=='L') {
 			p += 1;
-			error(WARNING, "Wide char constant value undefined");
+			longcc = 1;
 		}
 		p += 1;
 		if (*p=='\\') {
@@ -484,7 +485,7 @@ tokval(Token *tp)
 				}
 			} else {
 				static char cvcon[]
-				  = "b\bf\fn\nr\rt\tv\v''\"\"??\\\\";
+				  = "a\ab\bf\fn\nr\rt\tv\v''\"\"??\\\\";
 				for (i=0; i<sizeof(cvcon); i+=2) {
 					if (*p == cvcon[i]) {
 						n = cvcon[i+1];
@@ -502,13 +503,13 @@ tokval(Token *tp)
 			n = *p++;
 		if (*p!='\'')
 			error(WARNING, "Multibyte character constant undefined");
-		else if (n>127)
+		else if (n>127 && longcc==0)
 			error(WARNING, "Character constant taken as not signed");
 		v.val = n;
 		break;
 
 	case STRING:
-		error(ERROR, "String in #if/#elsif");
+		error(ERROR, "String in #if/#elif");
 		break;
 	}
 	return v;
