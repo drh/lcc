@@ -1,0 +1,1038 @@
+// file=tst/switch.c uname=
+.class private value explicit ansi sealed 'int8[]' { .pack 1 .size 8 }
+.method public hidebysig static int32 'main'() cil managed {
+.locals ([0] void* 's')
+.locals ([1] int32 'i')
+.locals ([2] int32 '1')
+.maxstack 3
+ldsflda valuetype 'int8[]' $_6
+stloc 0
+br $L5
+$L2:
+ldloc 0
+ldind.i1
+conv.i4
+call int32 'backslash'(int32)
+stloc 2
+ldsflda valuetype 'int8[]' $_8
+ldloc 0
+ldind.i1
+conv.i4
+ldloc 2
+call int32 'printf'(void*,int32,int32)
+pop
+$L3:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+$L5:
+ldloc 0
+ldind.i1
+conv.i4
+ldc.i4 0
+bne.un $L2
+call int32 'f'()
+pop
+call int32 'g'()
+pop
+call int32 'h'()
+pop
+ldc.i4 16777216
+stloc 1
+br $L14
+$L11:
+ldloc 1
+call int32 'big'(int32)
+pop
+$L12:
+ldloc 1
+ldc.i4 16777216
+add
+stloc 1
+$L14:
+ldloc 1
+ldc.i4 117440512
+and
+ldc.i4 0
+bne.un $L11
+call int32 'limit'()
+pop
+ldc.i4 0
+$L1:
+ret
+}
+.method public hidebysig static int32 'backslash'(int32) cil managed {
+.locals ([0] int32 '1')
+.locals ([1] int32 '2')
+.locals ([2] int32 '3')
+.locals ([3] int32 '4')
+.locals ([4] int32 '5')
+.locals ([5] int32 '6')
+.maxstack 2
+ldarg 0
+stloc 0
+ldc.i4 110
+stloc 1
+ldloc 0
+ldloc 1
+beq $L24
+ldloc 0
+ldloc 1
+bgt $L33
+$L32:
+ldarg 0
+stloc 2
+ldc.i4 98
+stloc 3
+ldloc 2
+ldloc 3
+beq $L20
+ldloc 2
+ldloc 3
+blt $L18
+$L35:
+ldarg 0
+ldc.i4 102
+beq $L22
+br $L18
+$L33:
+ldarg 0
+stloc 4
+ldc.i4 116
+stloc 5
+ldloc 4
+ldloc 5
+beq $L28
+ldloc 4
+ldloc 5
+bgt $L39
+$L38:
+ldarg 0
+ldc.i4 114
+beq $L26
+br $L18
+$L39:
+ldarg 0
+ldc.i4 118
+beq $L30
+br $L18
+$L20:
+ldc.i4 8
+br $L17
+$L22:
+ldc.i4 12
+br $L17
+$L24:
+ldc.i4 10
+br $L17
+$L26:
+ldc.i4 13
+br $L17
+$L28:
+ldc.i4 9
+br $L17
+$L30:
+ldc.i4 11
+br $L17
+$L18:
+ldarg 0
+$L17:
+ret
+}
+.method public hidebysig static int32 'f'() cil managed {
+.locals ([0] int32 'i')
+.locals ([1] int32 'x')
+.locals ([2] int32 'y')
+.locals ([3] int32 '1')
+.locals ([4] int32 '2')
+.locals ([5] int32 '3')
+.locals ([6] int32 '4')
+.locals ([7] int32 '5')
+.locals ([8] int32 '6')
+.locals ([9] int32 '7')
+.locals ([10] int32 '8')
+.locals ([11] int32 '9')
+.locals ([12] int32 '10')
+.locals ([13] int32 '11')
+.locals ([14] int32 '12')
+.maxstack 2
+ldc.i4 0
+stloc 1
+ldsflda valuetype 'int8[]' $_44
+call int32 'printf'(void*)
+pop
+ldc.i4 0
+stloc 0
+$L45:
+ldloc 0
+stloc 2
+ldc.i4 9
+stloc 4
+ldloc 0
+ldloc 4
+beq $L55
+ldloc 0
+ldloc 4
+bgt $L62
+$L61:
+ldc.i4 2
+stloc 6
+ldloc 0
+ldloc 6
+beq $L52
+ldloc 0
+ldloc 6
+bgt $L64
+$L63:
+ldloc 0
+ldc.i4 1
+beq $L51
+br $L49
+$L64:
+ldc.i4 7
+stloc 8
+ldloc 0
+ldloc 8
+beq $L53
+ldloc 0
+ldloc 8
+blt $L49
+$L66:
+ldloc 0
+ldc.i4 8
+beq $L54
+br $L49
+$L62:
+ldc.i4 18
+stloc 10
+ldloc 0
+ldloc 10
+beq $L58
+ldloc 0
+ldloc 10
+bgt $L69
+$L68:
+ldc.i4 16
+stloc 12
+ldloc 0
+ldloc 12
+beq $L56
+ldloc 0
+ldloc 12
+blt $L49
+$L71:
+ldloc 0
+ldc.i4 17
+beq $L57
+br $L49
+$L69:
+ldc.i4 19
+stloc 14
+ldloc 0
+ldloc 14
+beq $L59
+ldloc 0
+ldloc 14
+blt $L49
+$L74:
+ldloc 0
+ldc.i4 20
+beq $L60
+br $L49
+$L51:
+ldloc 0
+stloc 1
+br $L50
+$L52:
+ldloc 0
+stloc 1
+br $L50
+$L53:
+ldloc 0
+stloc 1
+br $L50
+$L54:
+ldloc 0
+stloc 1
+br $L50
+$L55:
+ldloc 0
+stloc 1
+br $L50
+$L56:
+ldloc 0
+stloc 1
+br $L50
+$L57:
+ldloc 0
+stloc 1
+br $L50
+$L58:
+ldloc 0
+stloc 1
+br $L50
+$L59:
+ldloc 0
+stloc 1
+br $L50
+$L60:
+ldloc 0
+stloc 1
+$L49:
+$L50:
+ldsflda valuetype 'int8[]' $_77
+ldloc 1
+call int32 'printf'(void*,int32)
+pop
+$L46:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+ldloc 0
+ldc.i4 20
+ble $L45
+ldc.i4 0
+$L43:
+ret
+}
+.method public hidebysig static int32 'g'() cil managed {
+.locals ([0] int32 'i')
+.locals ([1] int32 '1')
+.locals ([2] int32 '2')
+.locals ([3] int32 '3')
+.locals ([4] int32 '4')
+.locals ([5] int32 '5')
+.locals ([6] int32 '6')
+.locals ([7] int32 '7')
+.locals ([8] int32 '8')
+.locals ([9] int32 '9')
+.locals ([10] int32 '10')
+.locals ([11] int32 '11')
+.locals ([12] int32 '12')
+.locals ([13] int32 '13')
+.locals ([14] int32 '14')
+.locals ([15] int32 '15')
+.locals ([16] int32 '16')
+.maxstack 2
+ldsflda valuetype 'int8[]' $_79
+call int32 'printf'(void*)
+pop
+ldc.i4 1
+stloc 0
+$L80:
+ldc.i4 8
+stloc 2
+ldloc 0
+ldloc 2
+beq $L90
+ldloc 0
+ldloc 2
+bgt $L98
+$L97:
+ldc.i4 4
+stloc 4
+ldloc 0
+ldloc 4
+beq $L88
+ldloc 0
+ldloc 4
+bgt $L100
+$L99:
+ldc.i4 2
+stloc 6
+ldloc 0
+ldloc 6
+beq $L86
+ldloc 0
+ldloc 6
+bgt $L102
+$L101:
+ldloc 0
+ldc.i4 1
+beq $L86
+br $L84
+$L102:
+ldloc 0
+ldc.i4 3
+beq $L88
+br $L84
+$L100:
+ldc.i4 6
+stloc 8
+ldloc 0
+ldloc 8
+beq $L90
+ldloc 0
+ldloc 8
+bgt $L105
+$L104:
+ldloc 0
+ldc.i4 5
+beq $L88
+br $L84
+$L105:
+ldloc 0
+ldc.i4 7
+beq $L90
+br $L84
+$L98:
+ldc.i4 1004
+stloc 10
+ldloc 0
+ldloc 10
+beq $L93
+ldloc 0
+ldloc 10
+bgt $L109
+$L108:
+ldc.i4 1002
+stloc 12
+ldloc 0
+ldloc 12
+beq $L93
+ldloc 0
+ldloc 12
+bgt $L112
+$L111:
+ldloc 0
+ldc.i4 1001
+beq $L93
+br $L84
+$L112:
+ldloc 0
+ldc.i4 1003
+beq $L93
+br $L84
+$L109:
+ldc.i4 3002
+stloc 14
+ldloc 0
+ldloc 14
+beq $L95
+ldloc 0
+ldloc 14
+bgt $L117
+$L116:
+ldloc 0
+ldc.i4 3001
+beq $L95
+br $L84
+$L117:
+ldc.i4 3003
+stloc 16
+ldloc 0
+ldloc 16
+beq $L95
+ldloc 0
+ldloc 16
+blt $L84
+$L120:
+ldloc 0
+ldc.i4 3004
+beq $L95
+br $L84
+$L86:
+ldsflda valuetype 'int8[]' $_87
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L85
+$L88:
+ldsflda valuetype 'int8[]' $_89
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L85
+$L90:
+ldsflda valuetype 'int8[]' $_91
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+$L84:
+ldsflda valuetype 'int8[]' $_92
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L85
+$L93:
+ldsflda valuetype 'int8[]' $_94
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L85
+$L95:
+ldsflda valuetype 'int8[]' $_96
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+$L85:
+$L81:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+ldloc 0
+ldc.i4 10
+ble $L80
+ldc.i4 0
+$L78:
+ret
+}
+.method public hidebysig static int32 'h'() cil managed {
+.locals ([0] int32 'i')
+.locals ([1] int32 'n')
+.locals ([2] int32 '1')
+.locals ([3] int32 '2')
+.locals ([4] int32 '3')
+.locals ([5] int32 '4')
+.locals ([6] int32 '5')
+.locals ([7] int32 '6')
+.locals ([8] int32 '7')
+.locals ([9] int32 '8')
+.locals ([10] int32 '9')
+.locals ([11] int32 '10')
+.locals ([12] int32 '11')
+.locals ([13] int32 '12')
+.locals ([14] int32 '13')
+.locals ([15] int32 '14')
+.maxstack 2
+ldc.i4 0
+stloc 1
+ldsflda valuetype 'int8[]' $_124
+call int32 'printf'(void*)
+pop
+ldc.i4 1
+stloc 0
+$L125:
+ldc.i4 264
+stloc 3
+ldloc 0
+ldloc 3
+beq $L137
+ldloc 0
+ldloc 3
+bgt $L145
+$L144:
+ldc.i4 120
+stloc 5
+ldloc 0
+ldloc 5
+beq $L135
+ldloc 0
+ldloc 5
+bgt $L148
+$L147:
+ldc.i4 8
+stloc 7
+ldloc 0
+ldloc 7
+beq $L134
+ldloc 0
+ldloc 7
+blt $L129
+$L150:
+ldloc 0
+ldc.i4 16
+beq $L133
+br $L129
+$L148:
+ldc.i4 128
+stloc 9
+ldloc 0
+ldloc 9
+beq $L131
+ldloc 0
+ldloc 9
+blt $L129
+$L151:
+ldloc 0
+ldc.i4 248
+beq $L138
+br $L129
+$L145:
+ldc.i4 288
+stloc 11
+ldloc 0
+ldloc 11
+beq $L142
+ldloc 0
+ldloc 11
+bgt $L155
+$L154:
+ldc.i4 272
+stloc 13
+ldloc 0
+ldloc 13
+beq $L139
+ldloc 0
+ldloc 13
+blt $L129
+$L157:
+ldloc 0
+ldc.i4 280
+beq $L136
+br $L129
+$L155:
+ldc.i4 304
+stloc 15
+ldloc 0
+ldloc 15
+beq $L140
+ldloc 0
+ldloc 15
+bgt $L161
+$L160:
+ldloc 0
+ldc.i4 296
+beq $L141
+br $L129
+$L161:
+ldloc 0
+ldc.i4 312
+beq $L143
+br $L129
+$L129:
+ldloc 1
+ldc.i4 1
+add
+stloc 1
+br $L126
+$L131:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L133:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L134:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L135:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L136:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L137:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L138:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L139:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L140:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L141:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L142:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L130
+$L143:
+ldsflda valuetype 'int8[]' $_132
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+$L130:
+$L126:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+ldloc 0
+ldc.i4 500
+ble $L125
+ldsflda valuetype 'int8[]' $_166
+ldloc 1
+call int32 'printf'(void*,int32)
+pop
+ldc.i4 0
+$L123:
+ret
+}
+.method public hidebysig static int32 'big'(int32) cil managed {
+.locals ([0] int32 '170')
+.locals ([1] int32 '1')
+.locals ([2] int32 '2')
+.locals ([3] int32 '3')
+.locals ([4] int32 '4')
+.locals ([5] int32 '5')
+.locals ([6] int32 '6')
+.maxstack 2
+ldarg 0
+ldc.i4 100663296
+and
+stloc 0
+ldloc 0
+conv.i4
+stloc 1
+ldc.i4 0
+stloc 2
+ldloc 1
+ldloc 2
+beq $L172
+ldloc 1
+ldloc 2
+bgt $L178
+$L177:
+ldloc 0
+conv.i4
+stloc 3
+ldc.i4 -2
+stloc 4
+ldloc 3
+ldloc 4
+beq $L172
+ldloc 3
+ldloc 4
+blt $L168
+$L179:
+ldloc 0
+conv.i4
+ldc.i4 -1
+beq $L172
+br $L168
+$L178:
+ldloc 0
+conv.i4
+stloc 5
+ldc.i4 33554432
+stloc 6
+ldloc 5
+ldloc 6
+beq $L174
+ldloc 5
+ldloc 6
+blt $L168
+$L182:
+ldloc 0
+conv.i4
+ldc.i4 67108864
+beq $L175
+br $L168
+$L172:
+ldsflda valuetype 'int8[]' $_173
+ldarg 0
+call int32 'printf'(void*,int32)
+pop
+br $L169
+$L174:
+ldsflda valuetype 'int8[]' $_173
+ldarg 0
+call int32 'printf'(void*,int32)
+pop
+br $L169
+$L175:
+ldsflda valuetype 'int8[]' $_173
+ldarg 0
+call int32 'printf'(void*,int32)
+pop
+br $L169
+$L168:
+ldsflda valuetype 'int8[]' $_176
+ldarg 0
+call int32 'printf'(void*,int32)
+pop
+$L169:
+ldc.i4 0
+$L167:
+ret
+}
+.method public hidebysig static int32 'limit'() cil managed {
+.locals ([0] int32 'i')
+.locals ([1] int32 '1')
+.locals ([2] int32 '2')
+.locals ([3] int32 '3')
+.locals ([4] int32 '4')
+.locals ([5] int32 '5')
+.locals ([6] int32 '6')
+.locals ([7] int32 '7')
+.locals ([8] int32 '8')
+.locals ([9] int32 '9')
+.locals ([10] int32 '10')
+.locals ([11] int32 '11')
+.locals ([12] int32 '12')
+.maxstack 2
+ldc.i4 -2147483648
+stloc 0
+$L186:
+ldc.i4 -2147483646
+stloc 2
+ldloc 0
+ldloc 2
+beq $L197
+ldloc 0
+ldloc 2
+bgt $L205
+$L204:
+ldc.i4 -2147483648
+stloc 4
+ldloc 0
+ldloc 4
+beq $L193
+ldloc 0
+ldloc 4
+blt $L191
+$L207:
+ldloc 0
+ldc.i4 -2147483647
+beq $L195
+br $L191
+$L205:
+ldc.i4 -2147483645
+stloc 6
+ldloc 0
+ldloc 6
+beq $L199
+ldloc 0
+ldloc 6
+blt $L191
+$L209:
+ldloc 0
+ldc.i4 -2147483644
+beq $L201
+br $L191
+$L193:
+ldsflda valuetype 'int8[]' $_194
+call int32 'printf'(void*)
+pop
+br $L192
+$L195:
+ldsflda valuetype 'int8[]' $_196
+call int32 'printf'(void*)
+pop
+br $L192
+$L197:
+ldsflda valuetype 'int8[]' $_198
+call int32 'printf'(void*)
+pop
+br $L192
+$L199:
+ldsflda valuetype 'int8[]' $_200
+call int32 'printf'(void*)
+pop
+br $L192
+$L201:
+ldsflda valuetype 'int8[]' $_202
+call int32 'printf'(void*)
+pop
+br $L192
+$L191:
+ldsflda valuetype 'int8[]' $_203
+call int32 'printf'(void*)
+pop
+$L192:
+$L187:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+ldloc 0
+ldc.i4 -2147483643
+ble $L186
+ldc.i4 2147483647
+stloc 0
+$L213:
+ldc.i4 2147483645
+stloc 8
+ldloc 0
+ldloc 8
+beq $L222
+ldloc 0
+ldloc 8
+bgt $L226
+$L225:
+ldc.i4 2147483643
+stloc 10
+ldloc 0
+ldloc 10
+beq $L224
+ldloc 0
+ldloc 10
+blt $L218
+$L228:
+ldloc 0
+ldc.i4 2147483644
+beq $L223
+br $L218
+$L226:
+ldc.i4 2147483646
+stloc 12
+ldloc 0
+ldloc 12
+beq $L221
+ldloc 0
+ldloc 12
+blt $L218
+$L231:
+ldloc 0
+ldc.i4 2147483647
+beq $L220
+br $L218
+$L220:
+ldsflda valuetype 'int8[]' $_194
+call int32 'printf'(void*)
+pop
+br $L219
+$L221:
+ldsflda valuetype 'int8[]' $_196
+call int32 'printf'(void*)
+pop
+br $L219
+$L222:
+ldsflda valuetype 'int8[]' $_198
+call int32 'printf'(void*)
+pop
+br $L219
+$L223:
+ldsflda valuetype 'int8[]' $_200
+call int32 'printf'(void*)
+pop
+br $L219
+$L224:
+ldsflda valuetype 'int8[]' $_202
+call int32 'printf'(void*)
+pop
+br $L219
+$L218:
+ldsflda valuetype 'int8[]' $_203
+call int32 'printf'(void*)
+pop
+$L219:
+$L214:
+ldloc 0
+ldc.i4 1
+sub
+stloc 0
+ldloc 0
+ldc.i4 2147483642
+bge $L213
+ldc.i4 0
+$L185:
+ret
+}
+.field public static valuetype 'int8[]' $_203 at $234
+.data $234 = {
+bytearray ( 35 a 0 )
+}
+.field public static valuetype 'int8[]' $_202 at $235
+.data $235 = {
+bytearray ( 34 a 0 )
+}
+.field public static valuetype 'int8[]' $_200 at $236
+.data $236 = {
+bytearray ( 33 a 0 )
+}
+.field public static valuetype 'int8[]' $_198 at $237
+.data $237 = {
+bytearray ( 32 a 0 )
+}
+.field public static valuetype 'int8[]' $_196 at $238
+.data $238 = {
+bytearray ( 31 a 0 )
+}
+.field public static valuetype 'int8[]' $_194 at $239
+.data $239 = {
+bytearray ( 30 a 0 )
+}
+.field public static valuetype 'int8[]' $_176 at $240
+.data $240 = {
+bytearray ( 78 20 3d 20 30 78 25 78 20 28 64 65 66 61 75 6c 74 29 a 0 )
+}
+.field public static valuetype 'int8[]' $_173 at $241
+.data $241 = {
+bytearray ( 78 20 3d 20 30 78 25 78 a 0 )
+}
+.field public static valuetype 'int8[]' $_166 at $242
+.data $242 = {
+bytearray ( 25 64 20 64 65 66 61 75 6c 74 73 a 0 )
+}
+.field public static valuetype 'int8[]' $_132 at $243
+.data $243 = {
+bytearray ( 69 20 3d 20 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_124 at $244
+.data $244 = {
+bytearray ( 68 3a a 0 )
+}
+.field public static valuetype 'int8[]' $_96 at $245
+.data $245 = {
+bytearray ( 36 20 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_94 at $246
+.data $246 = {
+bytearray ( 35 20 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_92 at $247
+.data $247 = {
+bytearray ( 64 20 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_91 at $248
+.data $248 = {
+bytearray ( 33 20 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_89 at $249
+.data $249 = {
+bytearray ( 32 20 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_87 at $250
+.data $250 = {
+bytearray ( 31 20 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_79 at $251
+.data $251 = {
+bytearray ( 67 3a a 0 )
+}
+.field public static valuetype 'int8[]' $_77 at $252
+.data $252 = {
+bytearray ( 78 20 3d 20 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_44 at $253
+.data $253 = {
+bytearray ( 66 3a a 0 )
+}
+.field public static valuetype 'int8[]' $_8 at $254
+.data $254 = {
+bytearray ( 25 63 20 3d 20 30 78 25 78 a 0 )
+}
+.field public static valuetype 'int8[]' $_6 at $255
+.data $255 = {
+bytearray ( 62 66 6e 72 74 76 78 0 )
+}

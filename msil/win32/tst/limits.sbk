@@ -1,0 +1,176 @@
+// file=tst/limits.c uname=
+.class private value explicit ansi sealed 'int8[]' { .pack 1 .size 20 }
+.method public hidebysig static int32 'main'() cil managed {
+.locals ([0] int32 '1')
+.locals ([1] int32 '2')
+.locals ([2] int32 '3')
+.locals ([3] int32 '4')
+.locals ([4] int32 '5')
+.locals ([5] int32 '6')
+.locals ([6] int32 '7')
+.locals ([7] int32 '8')
+.locals ([8] int32 '9')
+.locals ([9] int32 '10')
+.locals ([10] int32 '11')
+.locals ([11] int32 '12')
+.locals ([12] int32 '13')
+.locals ([13] int32 '14')
+.maxstack 3
+ldsflda valuetype 'int8[]' $_2
+ldc.i4 255
+stloc 0
+ldloc 0
+ldloc 0
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_5
+ldc.i4 65535
+stloc 1
+ldloc 1
+ldloc 1
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_7
+ldc.i4 4294967295
+stloc 2
+ldloc 2
+ldloc 2
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_9
+ldc.i4 4294967295
+stloc 3
+ldloc 3
+ldloc 3
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_11
+ldc.i4 127
+stloc 4
+ldloc 4
+ldloc 4
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_13
+ldc.i4 127
+stloc 5
+ldloc 5
+ldloc 5
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_14
+ldc.i4 32767
+stloc 6
+ldloc 6
+ldloc 6
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_16
+ldc.i4 2147483647
+stloc 7
+ldloc 7
+ldloc 7
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_18
+ldc.i4 2147483647
+stloc 8
+ldloc 8
+ldloc 8
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_20
+ldc.i4 -128
+stloc 9
+ldloc 9
+ldloc 9
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_22
+ldc.i4 -128
+stloc 10
+ldloc 10
+ldloc 10
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_23
+ldc.i4 -32768
+stloc 11
+ldloc 11
+ldloc 11
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_25
+ldc.i4 -2147483648
+stloc 12
+ldloc 12
+ldloc 12
+call int32 'printf'(void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_27
+ldc.i4 -2147483648
+stloc 13
+ldloc 13
+ldloc 13
+call int32 'printf'(void*,int32,int32)
+pop
+ldc.i4 0
+$L1:
+ret
+}
+.field public static valuetype 'int8[]' $_27 at $30
+.data $30 = {
+bytearray ( 4c 4f 4e 47 5f 4d 49 4e 3a 9 25 30 38 6c 78 3d 25 6c 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_25 at $31
+.data $31 = {
+bytearray ( 49 4e 54 5f 4d 49 4e 3a 9 25 30 38 78 3d 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_23 at $32
+.data $32 = {
+bytearray ( 53 48 52 54 5f 4d 49 4e 3a 9 25 30 38 78 3d 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_22 at $33
+.data $33 = {
+bytearray ( 53 43 48 41 52 5f 4d 49 4e 3a 9 25 30 38 78 3d 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_20 at $34
+.data $34 = {
+bytearray ( 43 48 41 52 5f 4d 49 4e 3a 9 25 30 38 78 3d 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_18 at $35
+.data $35 = {
+bytearray ( 4c 4f 4e 47 5f 4d 41 58 3a 9 25 30 38 6c 78 3d 25 6c 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_16 at $36
+.data $36 = {
+bytearray ( 49 4e 54 5f 4d 41 58 3a 9 25 30 38 78 3d 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_14 at $37
+.data $37 = {
+bytearray ( 53 48 52 54 5f 4d 41 58 3a 9 25 30 38 78 3d 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_13 at $38
+.data $38 = {
+bytearray ( 53 43 48 41 52 5f 4d 41 58 3a 9 25 30 38 78 3d 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_11 at $39
+.data $39 = {
+bytearray ( 43 48 41 52 5f 4d 41 58 3a 9 25 30 38 78 3d 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_9 at $40
+.data $40 = {
+bytearray ( 55 4c 4f 4e 47 5f 4d 41 58 3a 9 25 30 38 6c 78 3d 25 6c 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_7 at $41
+.data $41 = {
+bytearray ( 55 49 4e 54 5f 4d 41 58 3a 9 25 30 38 78 3d 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_5 at $42
+.data $42 = {
+bytearray ( 55 53 48 52 54 5f 4d 41 58 3a 9 25 30 38 78 3d 25 64 a 0 )
+}
+.field public static valuetype 'int8[]' $_2 at $43
+.data $43 = {
+bytearray ( 55 43 48 41 52 5f 4d 41 58 3a 9 25 30 38 78 3d 25 64 a 0 )
+}

@@ -1,0 +1,333 @@
+// file=tst/init.c uname=
+.class private value explicit ansi sealed 's1{i4[]i1[]}' { .pack 1 .size 20 }
+.class private value explicit ansi sealed 's1{i4[]i1[]}[]' { .pack 1 .size 0 }
+.field public static valuetype 's1{i4[]i1[]}[]' 'words' at $words
+.data $words = {
+int32 (1),
+int32 (2),
+int32 (3),
+bytearray ( 69 66 0 ),
+int16 (0),
+int8 (0),
+int16 (0),
+int32 (4),
+int32 (5),
+int32 (0),
+bytearray ( 66 6f 72 ),
+int16 (0),
+int8 (0),
+int16 (0),
+int32 (6),
+int32 (7),
+int32 (8),
+bytearray ( 65 6c 73 65 0 ),
+int8 (0),
+int16 (0),
+int32 (9),
+int32 (10),
+int32 (11),
+bytearray ( 77 68 69 6c ),
+bytearray ( 65 ),
+int8 (0),
+int16 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static void* 'wordlist' at $wordlist
+.data $wordlist = {
+&($words)
+}
+.class private value explicit ansi sealed 'int32[]' { .pack 1 .size 20 }
+.class private value explicit ansi sealed 'int32[][]' { .pack 1 .size 0 }
+.field public static valuetype 'int32[][]' 'x' at $x
+.data $x = {
+int32 (1),
+int32 (2),
+int32 (3),
+int32 (4),
+int32 (0),
+int32 (5),
+int32 (6),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (7),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.class private value explicit ansi sealed 'void*[]' { .pack 1 .size 0 }
+.field public static valuetype 'void*[]' 'y' at $y
+.data $y = {
+&($x),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.class private value explicit ansi sealed 'int8[]' { .pack 1 .size 4 }
+.method public hidebysig static int32 'main'() cil managed {
+.locals ([0] int32 'j')
+.locals ([1] int32 'i')
+.locals ([2] int32 '1')
+.locals ([3] int32 '2')
+.maxstack 4
+ldc.i4 0
+stloc 1
+br $L8
+$L5:
+ldc.i4 0
+stloc 0
+br $L14
+$L11:
+ldsflda valuetype 'int8[]' $_15
+ldc.i4 2
+stloc 2
+ldloc 0
+ldloc 2
+shl
+ldloc 1
+ldloc 2
+shl
+ldsflda valuetype 'void*[]' 'y'
+add
+ldind.u4
+add
+ldind.i4
+call int32 'printf'(void*,int32)
+pop
+$L12:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+$L14:
+ldc.i4 2
+stloc 3
+ldloc 0
+ldloc 3
+shl
+ldloc 1
+ldloc 3
+shl
+ldsflda valuetype 'void*[]' 'y'
+add
+ldind.u4
+add
+ldind.i4
+ldc.i4 0
+bne.un $L11
+ldsflda valuetype 'int8[]' $_18
+call int32 'printf'(void*)
+pop
+$L6:
+ldloc 1
+ldc.i4 1
+add
+stloc 1
+$L8:
+ldloc 1
+ldc.i4 2
+shl
+ldsflda valuetype 'void*[]' 'y'
+add
+ldind.u4
+conv.u4
+ldc.i4 0
+bne.un $L5
+call int32 'f'()
+pop
+ldsfld void* 'wordlist'
+call int32 'g'(void*)
+pop
+ldc.i4 0
+$L4:
+ret
+}
+.field public static valuetype 'void*[]' $21_keywords at $22
+.data $22 = {
+&($24),
+&($26),
+&($28),
+&($30),
+int32 (0)
+}
+.method public hidebysig static int32 'f'() cil managed {
+.locals ([0] void* 'p')
+.maxstack 3
+ldsflda valuetype 'void*[]' $21_keywords
+stloc 0
+br $L34
+$L31:
+ldsflda valuetype 'int8[]' $_35
+ldloc 0
+ldind.u4
+call int32 'printf'(void*,void*)
+pop
+$L32:
+ldloc 0
+ldc.i4 4
+add
+stloc 0
+$L34:
+ldloc 0
+ldind.u4
+conv.u4
+ldc.i4 0
+bne.un $L31
+ldc.i4 0
+$L20:
+ret
+}
+.method public hidebysig static int32 'g'(void*) cil managed {
+.locals ([0] int32 'i')
+.maxstack 3
+br $L40
+$L37:
+ldc.i4 0
+stloc 0
+br $L44
+$L41:
+ldsflda valuetype 'int8[]' $_45
+ldloc 0
+ldc.i4 2
+shl
+ldarg 0
+add
+ldind.i4
+call int32 'printf'(void*,int32)
+pop
+$L42:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+$L44:
+ldloc 0
+conv.u4
+ldc.i4 3
+blt.un $L41
+ldsflda valuetype 'int8[]' $_35
+ldarg 0
+ldc.i4 12
+add
+call int32 'printf'(void*,void*)
+pop
+$L38:
+ldarg 0
+ldc.i4 20
+add
+starg 0
+$L40:
+ldarg 0
+ldind.i4
+ldc.i4 0
+bne.un $L37
+call int32 'h'()
+pop
+ldc.i4 0
+$L36:
+ret
+}
+.method public hidebysig static int32 'h'() cil managed {
+.locals ([0] int32 'i')
+.locals ([1] void* '1')
+.maxstack 6
+ldc.i4 0
+stloc 0
+br $L53
+$L50:
+ldsflda valuetype 'int8[]' $_54
+ldc.i4 20
+ldloc 0
+mul
+ldsflda valuetype 's1{i4[]i1[]}[]' 'words'
+add
+stloc 1
+ldloc 1
+ldind.i4
+ldloc 1
+ldc.i4 4
+add
+ldind.i4
+ldloc 1
+ldc.i4 8
+add
+ldind.i4
+ldloc 1
+ldc.i4 12
+add
+call int32 'printf'(void*,int32,int32,int32,void*)
+pop
+$L51:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+$L53:
+ldloc 0
+conv.u4
+ldc.i4 5
+blt.un $L50
+ldc.i4 0
+$L49:
+ret
+}
+.field public static valuetype 'int8[]' $_54 at $57
+.data $57 = {
+bytearray ( 25 64 20 25 64 20 25 64 20 25 73 a 0 )
+}
+.field public static valuetype 'int8[]' $_45 at $58
+.data $58 = {
+bytearray ( 25 64 20 0 )
+}
+.field public static valuetype 'int8[]' $_35 at $59
+.data $59 = {
+bytearray ( 25 73 a 0 )
+}
+.field public static valuetype 'int8[]' $_29 at $30
+.data $30 = {
+bytearray ( 77 68 69 6c 65 0 )
+}
+.field public static valuetype 'int8[]' $_27 at $28
+.data $28 = {
+bytearray ( 65 6c 73 65 0 )
+}
+.field public static valuetype 'int8[]' $_25 at $26
+.data $26 = {
+bytearray ( 66 6f 72 0 )
+}
+.field public static valuetype 'int8[]' $_23 at $24
+.data $24 = {
+bytearray ( 69 66 0 )
+}
+.field public static valuetype 'int8[]' $_18 at $60
+.data $60 = {
+bytearray ( a 0 )
+}
+.field public static valuetype 'int8[]' $_15 at $61
+.data $61 = {
+bytearray ( 20 25 64 0 )
+}
+.method public hidebysig static void $$_init() cil managed {
+.maxstack 3
+ldsflda valuetype 'void*[]' 'y'
+ldc.i4 4
+add
+ldsflda valuetype 'int32[][]' 'x'
+ldc.i4 20
+add
+stind.i4
+ldsflda valuetype 'void*[]' 'y'
+ldc.i4 8
+add
+ldsflda valuetype 'int32[][]' 'x'
+ldc.i4 40
+add
+stind.i4
+ret
+}
+//$$INIT call void $$_init()

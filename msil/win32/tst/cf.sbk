@@ -1,0 +1,292 @@
+// file=tst/cf.c uname=
+.class private value explicit ansi sealed 'float32[]' { .pack 1 .size 512 }
+.class private value explicit ansi sealed 'int8[]' { .pack 1 .size 11 }
+.method public hidebysig static int32 'main'(int32,void*) cil managed {
+.locals ([0] int32 'i')
+.locals ([1] int32 'nc')
+.locals ([2] int32 'c')
+.locals ([3] float32 'cutoff')
+.locals ([4] float32 '1')
+.locals ([5] int32 '2')
+.locals ([6] void* '3')
+.locals ([7] int32 '4')
+.locals ([8] float32 '5')
+.maxstack 4
+ldarg 0
+ldc.i4 1
+bgt $L2
+ldc.r4 0.0
+stloc 3
+br $L3
+$L2:
+ldarg 1
+ldc.i4 4
+add
+ldind.u4
+call float32 'atof'(void*)
+stloc 4
+ldloc 4
+ldc.r4 1.000000e+002
+div
+conv.r4
+stloc 3
+$L3:
+ldc.i4 0
+stloc 0
+$L8:
+ldloc 0
+stloc 5
+ldloc 5
+ldc.i4 1
+add
+stloc 0
+ldloc 5
+ldc.i4 2
+shl
+ldsflda valuetype 'float32[]' 'f'
+add
+ldc.r4 0.0
+stind.r4
+$L9:
+ldloc 0
+ldc.i4 127
+ble $L8
+ldc.i4 0
+stloc 1
+br $L16
+$L15:
+ldloc 2
+ldc.i4 2
+shl
+ldsflda valuetype 'float32[]' 'f'
+add
+stloc 6
+ldloc 6
+ldloc 6
+ldind.r4
+ldc.r4 1.000000e+000
+add
+stind.r4
+ldloc 1
+ldc.i4 1
+add
+stloc 1
+$L16:
+call int32 'getchar'()
+stloc 7
+ldloc 7
+stloc 2
+ldloc 7
+ldc.i4 -1
+bne.un $L15
+ldsflda valuetype 'int8[]' $_20
+call int32 'printf'(void*)
+pop
+ldc.i4 0
+stloc 0
+$L21:
+ldloc 0
+ldc.i4 2
+shl
+ldsflda valuetype 'float32[]' 'f'
+add
+ldind.r4
+stloc 8
+ldloc 8
+ldc.r4 0.0
+beq $L25
+ldloc 8
+ldloc 1
+conv.r4
+div
+ldloc 3
+blt $L25
+ldloc 0
+ldc.i4 32
+bgt $L27
+ldsflda valuetype 'int8[]' $_30
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+br $L28
+$L27:
+ldsflda valuetype 'int8[]' $_31
+ldloc 0
+call int32 'printf'(void*,int32)
+pop
+$L28:
+ldsflda valuetype 'int8[]' $_32
+ldc.r4 1.000000e+002
+ldloc 0
+ldc.i4 2
+shl
+ldsflda valuetype 'float32[]' 'f'
+add
+ldind.r4
+mul
+ldloc 1
+conv.r4
+div
+conv.r8
+call int32 'printf'(void*,float64)
+pop
+$L25:
+$L22:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+ldloc 0
+ldc.i4 127
+ble $L21
+ldc.i4 0
+$L1:
+ret
+}
+.field public static valuetype 'float32[]' 'f' at $f
+.data $f = {
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0),
+int32 (0)
+}
+.field public static valuetype 'int8[]' $_32 at $34
+.data $34 = {
+bytearray ( 9 25 2e 31 66 a 0 )
+}
+.field public static valuetype 'int8[]' $_31 at $35
+.data $35 = {
+bytearray ( 25 63 0 )
+}
+.field public static valuetype 'int8[]' $_30 at $36
+.data $36 = {
+bytearray ( 25 30 33 6f 0 )
+}
+.field public static valuetype 'int8[]' $_20 at $37
+.data $37 = {
+bytearray ( 63 68 61 72 9 66 72 65 71 a 0 )
+}

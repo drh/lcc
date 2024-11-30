@@ -1,0 +1,226 @@
+<html>
+
+<head>
+<title>lcc 4.2 w/MSIL</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+</head>
+
+<body>
+
+<h1>lcc.NET</h1>
+
+<p ALIGN="LEFT"><strong> <a HREF="http://www.research.microsoft.com/~drh/">David R. Hanson</a>, <a
+HREF="http://www.research.microsoft.com/">Microsoft Research</a></strong><br>
+August 2002</p>
+
+<h2>Contents</h2>
+
+<dir>
+  <li><a HREF="#intro">Introduction</a></li>
+  <li><a href="#installation">Installation</a></li>
+  <li>
+  <a href="http://www.cs.princeton.edu/software/lcc/pkg/doc/install.html#bugs">Reporting Bugs</a></li>
+  <li>
+  <a href="http://www.cs.princeton.edu/software/lcc/pkg/doc/install.html#mailinglist">Keeping in Touch</a></li>
+</dir>
+
+<h2><a NAME="intro">Introduction</a></h2>
+
+<p>This distribution includes the source files and installation instructions for 
+an lcc version 4.2  back end that emits MSIL. When lcc is built with this back 
+end, ANSI/ISO C programs 
+can be run under the .NET Framework (build 3705). Unloading this distribution on 
+top of an lcc 4.2 distribution adds the following files.</p>
+
+  <table BORDER="0" CELLPADDING="1" CELLSPACING="1" WIDTH="682">
+    <tr>
+      <td width="269"><code>makefile.NET</code></td>
+      <td width="35">&nbsp;</td>
+      <td width="368">makefile</td>
+    </tr>
+    <tr>
+      <td width="269"><code>doc\lcc.NET.htm</code></td>
+      <td width="35">&nbsp;</td>
+      <td width="368">This file</td>
+    </tr>
+    <tr>
+      <td width="269"><code>src\msil.c</code>, <code>src\bind2.c</code></td>
+      <td width="35"></td>
+      <td width="368">MSIL back end, back-end bindings</td>
+    </tr>
+    <tr>
+      <td width="269"><code>illink\*.cs</code></td>
+      <td width="35">&nbsp;</td>
+      <td width="368">MSIL linker, written in C#</td>
+    </tr>
+    <tr>
+      <td width="269"><code>etc\msil.c</code>, <code>etc\cp.c</code></td>
+      <td width="35"></td>
+      <td width="368">MSIL specific driver, accessories</td>
+    </tr>
+    <tr>
+      <td width="269"><code>include\msil\win32\*.h</code></td>
+      <td width="35">&nbsp;</td>
+      <td width="368">MSIL include files</td>
+    </tr>
+    <tr>
+      <td width="269"><code>lib\echo.c</code>, <code>lib\thunks.c</code></td>
+      <td width="35"></td>
+      <td width="368">Runtime library source code</td>
+    </tr>
+    <tr>
+      <td width="269"><code>x86\msil\tst\*bk</code></td>
+      <td width="35"></td>
+      <td width="368">MSIL test outputs</td>
+    </tr>
+  </table>
+
+<h2><a name="installation">Installation</a></h2>
+
+<p>Installing lcc.NET involves augmenting an existing lcc 4.2 distribution, 
+rebuilding the lcc components, and moving them to an appropriate directory. To 
+build and install lcc.NET, you need:<ul>
+  <li>The lcc 4.2 distribution, which can retrieved from
+  <a href="http://www.cs.princeton.edu/software/lcc">
+  http://www.cs.princeton.edu/software/lcc</a>;</li>
+  <li>Visual C/C++ version 6.0 or above;</li>
+  <li>The .NET Framework SDK (build 3705);</li>
+  <li>The MSIL assembler, <code>ilasm</code>, somewhere on your PATH.</li>
+  </ul>
+
+<p>Before starting, review the
+<a href="http://www.cs.princeton.edu/software/lcc/pkg/doc/install.html#win32">Installation on Windows</a> section of
+<a href="http://www.cs.princeton.edu/software/lcc/pkg/doc/install.html">Installing lcc</a> in the lcc 4.2 distribution. Building lcc.NET involves the following steps.
+Below, the build directory is referred to as <code>BUILDDIR</code>, and the distribution
+is in <code>\dist\lcc</code>.
+
+<ol>
+  <li>The build directory should already be created as a side-effect of 
+  installing lcc 4.2; record
+    the name of this directory in the <code>BUILDDIR</code> environment variable:<blockquote>
+      <pre>C:\dist\lcc&gt;set BUILDDIR=\progra~1\lcc\<i>version</i>\bin</pre>
+    </blockquote>
+    <p>The default build directory is <code>\Program Files\lcc\</code><i>version</i><code>\bin</code>, 
+    where <i>version</i> is the version number, e.g., 4.2, but the <code>nmake</code> commands require that you use the corresponding 8.3 file name, <code>progra~1</code>,
+    instead of <code>Program Files</code>.</p>
+  </li>
+  <li><code>etc\msil.c</code> is the MSIL-specific part of
+    the lcc driver. It assumes that environment variable <code>include</code> 
+  gives the locations of the VC header files and that the MSIL assembler (<code>ilasm.exe</code>)
+    is on the PATH. It also assumes that the macro <code>LCCDIR</code> gives the build
+    directory. If necessary, revise a copy of <code>etc\msil.c</code>
+    to reflect the conventions on your computer (see <em>
+  <a href="http://www.cs.princeton.edu/software/lcc/pkg/doc/install.html#driver">Building the Driver</a></em>),
+    then build the driver, specifying the default temporary directory, if necessary:<blockquote>
+      <pre>C:\dist\lcc&gt;nmake -f makefile.NET lcc
+...
+	cl -nologo -DWIN32 -Zi -MLd -Fd%BUILDDIR%\ -c -Fo%BUILDDIR%\lcc.obj etc/lcc.c
+lcc.c
+	cl -nologo -DWIN32 -Zi -MLd -Fd%BUILDDIR%\ -c -Fo%BUILDDIR%\host.obj etc/msil.c
+msil.c
+	cl -nologo -Zi -MLd -Fd%BUILDDIR%\ -Fe%BUILDDIR%\lcc.exe %BUILDDIR%\lcc.obj %BUILDDIR%\host.obj</pre>
+    </blockquote>
+    <p>Of course, your value for <code>BUILDDIR</code> will appear in place of <code>BUILDDIR</code> 
+    the output lines above. If you make a copy of <code>etc\msil.c</code>, specify the path of the copy as the
+    value of <code>HOSTFILE</code>. For example, if you copy <code>etc\msil.c</code> to <code>BUILDDIR</code>
+    and edit it, use the command</p>
+    <blockquote>
+      <pre>C:\dist\lcc&gt;nmake -f makefile.NET HOSTFILE=%BUILDDIR%\msil.c lcc</pre>
+    </blockquote>
+  </li>
+  <li>Rebuild the preprocessor, compiler proper, library, and other accessories (see <em>
+  <a href="http://www.cs.princeton.edu/software/lcc/pkg/doc/install.html#rcc">Building the Compiler</a></em>):<blockquote>
+      <pre>C:\dist\lcc&gt;nmake -f makefile.NET all</pre>
+    </blockquote>
+    <p>This command uses the VC command-line tools <code>cl</code> and <code>lib</code> to
+    build <code>bprint.exe</code>, <code>cp.exe</code>, <code>cpp.exe</code>, <code>lburg.exe</code>,
+    <code>illink.exe</code>, <code>liblcc.dll</code>,
+    <code>librcc.lib</code>, and <code>rcc.exe</code>, all in <code>BUILDDIR</code>. There may
+    be some warnings, but there should be no warnings.</p>
+  </li>
+  <li>Copy <code>%BUILDDIR%\liblcc.dll</code> to your Windows <code>system32</code> 
+  directory, e.g.:<blockquote>
+      <pre>C:\dist\lcc&gt;copy %BUILDDIR%\liblcc.dll %windir%\system32</pre>
+    </blockquote>
+    <p>You must also have <code>msvcrt.dll</code> in your Windows <code>system32</code> 
+    directory, which should already be there as a result of installing the .NET 
+    Framework SDK.</p>
+  </li>
+  <li>Run a simple test:<blockquote>
+      <pre>C:\dist\lcc&gt;set LCCDIR=%BUILDDIR%
+C:\dist\lcc&gt;<code>%BUILDDIR%\lcc -o 8q.exe tst\8q.c
+...<br>C:\dist\lcc&gt;8q
+ 1 5 8 6 3 7 2 4
+ 1 6 8 3 7 4 2 5
+ 1 7 4 6 8 2 5 3
+...<br> 8 2 5 3 1 7 4 6<br> 8 3 1 6 2 5 7 4
+ 8 4 1 3 6 2 7 5</code></pre>
+    </blockquote>
+    <p>There should be 92 lines of output.</p>
+  </li>
+  <li>Create a test directory and run the test suite:<blockquote>
+      <pre>C:\dist\lcc&gt;mkdir %BUILDDIR%\msil\win32\tst
+C:\dist\lcc&gt;nmake -f makefile.NET test</pre>
+    </blockquote>
+    <p>This command compiles each program in tst, compares the generated
+    assembly code and diagnostics with the expected assembly code and diagnostics, executes
+    the program, and compares the output with the expected output (using <code>fc</code>). For
+    example, when the nmake command compiles <code>
+    <a href="http://www.cs.princeton.edu/software/lcc/pkg/tst/8q.c">tst\8q.c</a></code>,
+    it leaves the generated assembly code and diagnostic output in <code>%BUILDDIR%\x86\msil\tst\8q.s</code>
+    and <code>%BUILDDIR%\x86\msil\tst\8q.2</code>, and it compares them with the expected
+    results in <code>x86\msil\tst\8q.sbk</code>. It builds the executable program in <code>%BUILDDIR%\x86\msil\tst\8q.exe</code>,
+    runs it, and redirects the output to <code>%BUILDDIR%\x86\msil\tst\8q.1</code>, which it
+    compares with <code>x86\msil\tst\8q.1bk</code>. The output from this step is voluminous,
+    but there should be no differences and no errors.</p>
+  </li>
+  <li>Install the driver, support programs, and include files: Copy <code>lcc.exe</code> to a directory on your PATH, 
+  and copy the support programs into <code>\Program Files\lcc.NET</code>, e.g.,<blockquote>
+      <pre>C:\dist\lcc&gt;copy %BUILDDIR%\lcc.exe \bin
+        1 file(s) copied.
+C:\dist\lcc&gt;mkdir &quot;\Program Files\lcc.NET&quot;
+C:\dist\lcc&gt;xcopy %BUILDDIR%\*.exe &quot;\Program Files\lcc.NET&quot;
+%BUILDDIR%\bprint.exe
+%BUILDDIR%\cp.exe
+%BUILDDIR%\cpp.exe
+%BUILDDIR%\illink.exe
+%BUILDDIR%\lburg.exe
+%BUILDDIR%\lcc.exe
+%BUILDDIR%\rcc.exe
+7 File(s) copied</pre>
+    </blockquote>
+      <p>If you want&nbsp; to install the support programs in a different location, 
+      you need to change the definition of <code>LCCDIR</code> in <code>etc\msil.c</code> 
+      and rebuild <code>lcc.exe</code>; note that you must use the 8.3 file name 
+      in <code>etc\msil.c</code>. Copy the MSIL-specific header files into <code>
+      %LCCDIR%\include</code>, 
+      e.g.,<blockquote><pre>C:\dist\lcc&gt;mkdir &quot;\Program Files\lcc.NET&quot;<br>C:\dist\lcc&gt;xcopy include\msil\win32\*.h&nbsp;&quot;\Program Files\lcc.NET\include&quot;<br>
+  include\msil\win32\assert.h<br>
+  ...<br>15 File(s) copied</pre></blockquote></li>
+  <li>Finally, clean up:<blockquote>
+      <pre>C:\dist\lcc&gt;nmake -f makefile.NET clean</pre>
+    </blockquote>
+  </li>
+</ol>
+
+<p>For details on running lcc, consult the lcc &quot;<a href="http://www.cs.princeton.edu/software/lcc/pkg/doc/lcc.pdf">man page</a>&quot;.</p>
+
+<p>lcc compiles only ANSI/ISO Standard C; it does not support any of the Microsoft C language
+extensions. For more information about lcc, see <a
+href="http://www.cs.princeton.edu/software/lcc/">http://www.cs.princeton.edu/software/lcc/</a>.</p>
+
+<hr>
+
+<address>
+  <a href="http://www.research.microsoft.com/~drh/">David R. Hanson</a> / <a
+  href="mailto:drh@microsoft.com">drh@microsoft.com</a><br>
+  <font size="2">$Revision: 7 $ $Date: 2002/10/01 13:10:12 $<br>
+  ©
+Microsoft Corporation. All Rights Reserved.</font></address>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</body>
+</html>

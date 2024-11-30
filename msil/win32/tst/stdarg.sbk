@@ -1,0 +1,339 @@
+// file=tst/stdarg.c uname=
+.class private value explicit ansi sealed 'snode{i4[]}' { .pack 1 .size 16 }
+.field public static valuetype 'snode{i4[]}' 'x' at $x
+.data $x = {
+int32 (1),
+int32 (2),
+int32 (3),
+int32 (4)
+}
+.class private value explicit ansi sealed 'int8[]' { .pack 1 .size 8 }
+.method public hidebysig static int32 'main'() cil managed {
+.locals ([0] valuetype 'snode{i4[]}' '1')
+.locals ([1] valuetype 'snode{i4[]}' '2')
+.locals ([2] valuetype 'snode{i4[]}' '3')
+.locals ([3] valuetype 'snode{i4[]}' '4')
+.locals ([4] valuetype 'snode{i4[]}' '5')
+.locals ([5] valuetype 'snode{i4[]}' '6')
+.locals ([6] void* '7')
+.maxstack 9
+ldsflda valuetype 'int8[]' $_2
+call vararg int32 'print'(void*)
+pop
+ldsflda valuetype 'int8[]' $_4
+ldsflda valuetype 'int8[]' $_5
+call vararg int32 'print'(void*,...,void*)
+pop
+ldsflda valuetype 'int8[]' $_6
+ldc.i4 3
+ldc.i4 10
+call vararg int32 'print'(void*,...,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_9
+ldsflda valuetype 'int8[]' $_10
+ldsflda valuetype 'int8[]' $_11
+ldc.i4 4
+ldc.i4 10
+call vararg int32 'print'(void*,...,void*,void*,int32,int32)
+pop
+ldsflda valuetype 'int8[]' $_12
+ldsflda valuetype 'int8[]' $_10
+ldsflda valuetype 'int8[]' $_11
+ldc.r8 5.000000e+000
+ldc.i4 10
+call vararg int32 'print'(void*,...,void*,void*,float64,int32)
+pop
+ldsflda valuetype 'int8[]' $_15
+ldsflda valuetype 'snode{i4[]}' 'x'
+stloc 6
+ldloca 0
+ldloc 6
+ldc.i4 16
+cpblk
+ldloca 0
+ldloca 1
+ldloc 6
+ldc.i4 16
+cpblk
+ldloca 1
+ldloca 2
+ldloc 6
+ldc.i4 16
+cpblk
+ldloca 2
+ldloca 3
+ldloc 6
+ldc.i4 16
+cpblk
+ldloca 3
+ldloca 4
+ldloc 6
+ldc.i4 16
+cpblk
+ldloca 4
+ldloca 5
+ldloc 6
+ldc.i4 16
+cpblk
+ldloca 5
+call vararg int32 'print'(void*,...,void*,void*,void*,void*,void*,void*)
+pop
+ldc.i4 0
+$L1:
+ret
+}
+.method public hidebysig static vararg int32 'print'(void*) cil managed {
+.locals ([0] valuetype [mscorlib]System.ArgIterator 'ap')
+.locals ([1] int32 '29')
+.locals ([2] void* '1')
+.locals ([3] int32 '8')
+.locals ([4] int32 '9')
+.locals ([5] int32 '10')
+.locals ([6] int32 '11')
+.locals ([7] int32 '12')
+.locals ([8] int32 '13')
+.locals ([9] valuetype 'snode{i4[]}' 'x')
+.locals ([10] void* '2')
+.locals ([11] void* '3')
+.locals ([12] void* '4')
+.locals ([13] void* '5')
+.locals ([14] void* '6')
+.locals ([15] void* '7')
+.maxstack 6
+ldloca 0
+arglist
+call instance void [mscorlib]System.ArgIterator::.ctor(valuetype [mscorlib]System.RuntimeArgumentHandle)
+br $L22
+$L19:
+ldarg 0
+ldind.i1
+conv.i4
+ldc.i4 37
+bne.un $L23
+ldarg 0
+ldc.i4 1
+add
+stloc 2
+ldloc 2
+starg 0
+ldloc 2
+ldind.i1
+conv.i4
+stloc 1
+ldc.i4 100
+stloc 4
+ldloc 1
+ldloc 4
+beq $L37
+ldloc 1
+ldloc 4
+bgt $L48
+$L47:
+ldc.i4 98
+stloc 6
+ldloc 1
+ldloc 6
+beq $L30
+ldloc 1
+ldloc 6
+blt $L27
+$L50:
+ldloc 1
+ldc.i4 99
+beq $L34
+br $L27
+$L48:
+ldc.i4 115
+stloc 8
+ldloc 1
+ldloc 8
+beq $L42
+ldloc 1
+ldloc 8
+bgt $L54
+$L53:
+ldloc 1
+ldc.i4 102
+beq $L45
+br $L27
+$L54:
+ldloc 1
+ldc.i4 119
+beq $L39
+br $L27
+$L30:
+ldloca 0
+call instance typedref [mscorlib]System.ArgIterator::GetNextArg()
+refanyval void*
+ldind.i4
+stloc 10
+ldloca 9
+ldloc 10
+ldc.i4 16
+cpblk
+ldsflda valuetype 'int8[]' $_32
+ldloca 9
+ldind.i4
+ldloca 9
+ldc.i4 4
+add
+ldind.i4
+ldloca 9
+ldc.i4 8
+add
+ldind.i4
+ldloca 9
+ldc.i4 12
+add
+ldind.i4
+call int32 'printf'(void*,int32,int32,int32,int32)
+pop
+br $L24
+$L34:
+ldloca 0
+call instance typedref [mscorlib]System.ArgIterator::GetNextArg()
+refanyval int32
+stloc 11
+ldsflda valuetype 'int8[]' $_35
+ldloc 11
+ldind.i1
+conv.i4
+call int32 'printf'(void*,int32)
+pop
+br $L24
+$L37:
+ldloca 0
+call instance typedref [mscorlib]System.ArgIterator::GetNextArg()
+refanyval int32
+stloc 12
+ldsflda valuetype 'int8[]' $_38
+ldloc 12
+ldind.i4
+call int32 'printf'(void*,int32)
+pop
+br $L24
+$L39:
+ldloca 0
+call instance typedref [mscorlib]System.ArgIterator::GetNextArg()
+refanyval int32
+stloc 13
+ldsflda valuetype 'int8[]' $_40
+ldloc 13
+ldind.i2
+conv.i4
+call int32 'printf'(void*,int32)
+pop
+br $L24
+$L42:
+ldloca 0
+call instance typedref [mscorlib]System.ArgIterator::GetNextArg()
+refanyval void*
+stloc 14
+ldsflda valuetype 'int8[]' $_43
+ldloc 14
+ldind.u4
+call int32 'printf'(void*,void*)
+pop
+br $L24
+$L45:
+ldloca 0
+call instance typedref [mscorlib]System.ArgIterator::GetNextArg()
+refanyval float64
+stloc 15
+ldsflda valuetype 'int8[]' $_46
+ldloc 15
+ldind.r8
+call int32 'printf'(void*,float64)
+pop
+br $L24
+$L27:
+ldsflda valuetype 'int8[]' $_35
+ldarg 0
+ldind.i1
+conv.i4
+call int32 'printf'(void*,int32)
+pop
+br $L24
+$L23:
+ldsflda valuetype 'int8[]' $_35
+ldarg 0
+ldind.i1
+conv.i4
+call int32 'printf'(void*,int32)
+pop
+$L24:
+$L20:
+ldarg 0
+ldc.i4 1
+add
+starg 0
+$L22:
+ldarg 0
+ldind.i1
+conv.i4
+ldc.i4 0
+bne.un $L19
+ldc.i4 0
+$L18:
+ret
+}
+.field public static valuetype 'int8[]' $_46 at $58
+.data $58 = {
+bytearray ( 25 66 0 )
+}
+.field public static valuetype 'int8[]' $_43 at $59
+.data $59 = {
+bytearray ( 25 73 0 )
+}
+.field public static valuetype 'int8[]' $_40 at $60
+.data $60 = {
+bytearray ( 25 78 0 )
+}
+.field public static valuetype 'int8[]' $_38 at $61
+.data $61 = {
+bytearray ( 25 64 0 )
+}
+.field public static valuetype 'int8[]' $_35 at $62
+.data $62 = {
+bytearray ( 25 63 0 )
+}
+.field public static valuetype 'int8[]' $_32 at $63
+.data $63 = {
+bytearray ( 7b 25 64 20 25 64 20 25 64 20 25 64 7d 0 )
+}
+.field public static valuetype 'int8[]' $_15 at $64
+.data $64 = {
+bytearray ( 25 62 20 25 62 20 25 62 20 25 62 20 25 62 20 25 62 a 0 )
+}
+.field public static valuetype 'int8[]' $_12 at $65
+.data $65 = {
+bytearray ( 25 73 25 73 20 25 66 25 63 0 )
+}
+.field public static valuetype 'int8[]' $_11 at $66
+.data $66 = {
+bytearray ( 73 74 0 )
+}
+.field public static valuetype 'int8[]' $_10 at $67
+.data $67 = {
+bytearray ( 74 65 0 )
+}
+.field public static valuetype 'int8[]' $_9 at $68
+.data $68 = {
+bytearray ( 25 73 25 73 20 25 77 25 63 0 )
+}
+.field public static valuetype 'int8[]' $_6 at $69
+.data $69 = {
+bytearray ( 74 65 73 74 20 25 64 25 63 0 )
+}
+.field public static valuetype 'int8[]' $_5 at $70
+.data $70 = {
+bytearray ( 32 0 )
+}
+.field public static valuetype 'int8[]' $_4 at $71
+.data $71 = {
+bytearray ( 74 65 73 74 20 25 73 a 0 )
+}
+.field public static valuetype 'int8[]' $_2 at $72
+.data $72 = {
+bytearray ( 74 65 73 74 20 31 a 0 )
+}

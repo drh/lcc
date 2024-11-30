@@ -1,0 +1,301 @@
+// file=tst/sort.c uname=
+.class private value explicit ansi sealed 'int32[]' { .pack 1 .size 0 }
+.field public static valuetype 'int32[]' 'in' at $in
+.data $in = {
+int32 (10),
+int32 (32),
+int32 (-1),
+int32 (567),
+int32 (3),
+int32 (18),
+int32 (1),
+int32 (-51),
+int32 (789),
+int32 (0)
+}
+.method public hidebysig static int32 'main'() cil managed {
+.locals ([0] int32 'i')
+.maxstack 2
+ldsflda valuetype 'int32[]' 'in'
+ldc.i4 10
+call int32 'sort'(void*,int32)
+pop
+ldc.i4 0
+stloc 0
+br $L7
+$L4:
+ldloc 0
+ldc.i4 2
+shl
+ldsflda valuetype 'int32[]' 'in'
+add
+ldind.i4
+call int32 'putd'(int32)
+pop
+ldc.i4 10
+call int32 'putchar'(int32)
+pop
+$L5:
+ldloc 0
+ldc.i4 1
+add
+stloc 0
+$L7:
+ldloc 0
+conv.u4
+ldc.i4 10
+blt.un $L4
+ldc.i4 0
+$L1:
+ret
+}
+.method public hidebysig static int32 'putd'(int32) cil managed {
+.maxstack 2
+ldarg 0
+ldc.i4 0
+bge $L13
+ldc.i4 45
+call int32 'putchar'(int32)
+pop
+ldarg 0
+neg
+starg 0
+$L13:
+ldarg 0
+ldc.i4 10
+div
+ldc.i4 0
+beq $L16
+ldarg 0
+ldc.i4 10
+div
+call int32 'putd'(int32)
+pop
+$L16:
+ldarg 0
+ldc.i4 10
+rem
+ldc.i4 48
+add
+call int32 'putchar'(int32)
+pop
+ldc.i4 0
+$L12:
+ret
+}
+.method public hidebysig static int32 'sort'(void*,int32) cil managed {
+.locals ([0] void* '1')
+.locals ([1] int32 '2')
+.maxstack 4
+ldarg 0
+stloc 0
+ldloc 0
+stsfld void* 'xx'
+ldloc 0
+ldc.i4 0
+ldarg 1
+ldc.i4 1
+sub
+stloc 1
+ldloc 1
+starg 1
+ldloc 1
+call int32 'quick'(void*,int32,int32)
+pop
+ldc.i4 0
+$L19:
+ret
+}
+.method public hidebysig static int32 'quick'(void*,int32,int32) cil managed {
+.locals ([0] int32 'k')
+.locals ([1] int32 '1')
+.maxstack 4
+ldarg 1
+ldarg 2
+blt $L21
+ldc.i4 0
+br $L20
+$L21:
+ldarg 0
+ldarg 1
+ldarg 2
+call int32 'partition'(void*,int32,int32)
+stloc 1
+ldloc 1
+stloc 0
+ldarg 0
+ldarg 1
+ldloc 0
+ldc.i4 1
+sub
+call int32 'quick'(void*,int32,int32)
+pop
+ldarg 0
+ldloc 0
+ldc.i4 1
+add
+ldarg 2
+call int32 'quick'(void*,int32,int32)
+pop
+ldc.i4 0
+$L20:
+ret
+}
+.method public hidebysig static int32 'partition'(void*,int32,int32) cil managed {
+.locals ([0] int32 'v')
+.locals ([1] int32 'k')
+.locals ([2] int32 '1')
+.locals ([3] void* '2')
+.locals ([4] int32 '3')
+.locals ([5] void* '4')
+.maxstack 3
+ldarg 2
+ldc.i4 1
+add
+starg 2
+ldarg 1
+stloc 1
+ldloc 1
+ldc.i4 2
+shl
+ldarg 0
+add
+ldind.i4
+stloc 0
+br $L25
+$L24:
+ldarg 1
+ldc.i4 1
+add
+starg 1
+br $L28
+$L27:
+ldarg 1
+ldc.i4 1
+add
+starg 1
+$L28:
+ldarg 1
+ldc.i4 2
+shl
+ldarg 0
+add
+ldind.i4
+ldloc 0
+blt $L27
+ldarg 2
+ldc.i4 1
+sub
+starg 2
+br $L31
+$L30:
+ldarg 2
+ldc.i4 1
+sub
+starg 2
+$L31:
+ldarg 2
+ldc.i4 2
+shl
+ldarg 0
+add
+ldind.i4
+ldloc 0
+bgt $L30
+ldarg 1
+ldarg 2
+bge $L33
+ldc.i4 2
+stloc 2
+ldarg 0
+stloc 3
+ldarg 1
+ldloc 2
+shl
+ldloc 3
+add
+ldarg 2
+ldloc 2
+shl
+ldloc 3
+add
+call int32 'exchange'(void*,void*)
+pop
+$L33:
+$L25:
+ldarg 1
+ldarg 2
+blt $L24
+ldc.i4 2
+stloc 4
+ldarg 0
+stloc 5
+ldloc 1
+ldloc 4
+shl
+ldloc 5
+add
+ldarg 2
+ldloc 4
+shl
+ldloc 5
+add
+call int32 'exchange'(void*,void*)
+pop
+ldarg 2
+$L23:
+ret
+}
+.class private value explicit ansi sealed 'int8[]' { .pack 1 .size 17 }
+.method public hidebysig static int32 'exchange'(void*,void*) cil managed {
+.locals ([0] int32 't')
+.locals ([1] int32 '1')
+.locals ([2] int32 '2')
+.locals ([3] void* '3')
+.maxstack 4
+ldsflda valuetype 'int8[]' $_36
+ldsfld void* 'xx'
+conv.u4
+stloc 1
+ldc.i4 4
+stloc 2
+ldarg 0
+conv.u4
+ldloc 1
+sub
+conv.i4
+ldloc 2
+div
+ldarg 1
+conv.u4
+ldloc 1
+sub
+conv.i4
+ldloc 2
+div
+call int32 'printf'(void*,int32,int32)
+pop
+ldarg 0
+stloc 3
+ldloc 3
+ldind.i4
+stloc 0
+ldloc 3
+ldarg 1
+ldind.i4
+stind.i4
+ldarg 1
+ldloc 0
+stind.i4
+ldc.i4 0
+$L35:
+ret
+}
+.field public static void* 'xx' at $xx
+.data $xx = {
+int32 (0)
+}
+.field public static valuetype 'int8[]' $_36 at $38
+.data $38 = {
+bytearray ( 65 78 63 68 61 6e 67 65 28 25 64 2c 25 64 29 a 0 )
+}
