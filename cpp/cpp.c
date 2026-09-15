@@ -104,8 +104,6 @@ control(Tokenrow *trp)
 		return;
 	}
 	if (skipping) {
-		if ((np->flag&ISKW)==0)
-			return;
 		switch (np->val) {
 		case KENDIF:
 			if (--ifdepth<skipping)

@@ -1,10 +1,8 @@
 #include "c.h"
-#include <float.h>
 
-static char rcsid[] = "$Id$";
-
-static Field isfield(const char *, Field);
-static Type type(int, Type, int, int, void *);
+static Field check ARGS((Type, Type, Field, int));
+static Field isfield ARGS((char *, Field));
+static Type type ARGS((int, Type, int, int, void *));
 
 static struct entry {
 	struct type type;
@@ -20,52 +18,17 @@ Type floattype;			/* float */
 Type inttype;			/* signed int */
 Type longdouble;		/* long double */
 Type longtype;			/* long */
-Type longlong;			/* long long */
 Type shorttype;			/* signed short int */
 Type signedchar;		/* signed char */
 Type unsignedchar;		/* unsigned char */
 Type unsignedlong;		/* unsigned long int */
-Type unsignedlonglong;		/* unsigned long long int */
 Type unsignedshort;		/* unsigned short int */
 Type unsignedtype;		/* unsigned int */
-Type funcptype;			/* void (*)() */
-Type charptype;			/* char* */
 Type voidptype;			/* void* */
 Type voidtype;			/* basic types: void */
-Type unsignedptr;		/* unsigned type to hold void* */
-Type signedptr;			/* signed type to hold void* */
-Type widechar;			/* unsigned type that represents wchar_t */
 
-static Type xxinit(int op, char *name, Metrics m) {
-	Symbol p = install(string(name), &types, GLOBAL, PERM);
-	Type ty = type(op, 0, m.size, m.align, p);
-
-	assert(ty->align == 0 || ty->size%ty->align == 0);
-	p->type = ty;
-	p->addressed = m.outofline;
-	switch (ty->op) {
-	case INT:
-		p->u.limits.max.i = ones(8*ty->size)>>1;
-		p->u.limits.min.i = -p->u.limits.max.i - 1;
-		break;
-	case UNSIGNED:
-		p->u.limits.max.u = ones(8*ty->size);
-		p->u.limits.min.u = 0;
-		break;
-	case FLOAT:
-		if (ty->size == sizeof (float))
-			p->u.limits.max.d =  FLT_MAX;
-		else if (ty->size == sizeof (double))
-			p->u.limits.max.d =  DBL_MAX;
-		else
-			p->u.limits.max.d = LDBL_MAX;
-		p->u.limits.min.d = -p->u.limits.max.d;
-		break;
-	default: assert(0);
-	}
-	return ty;
-}
-static Type type(int op, Type ty, int size, int align, void *sym) {
+static Type type(op, ty, size, align, sym)
+	int op, size, align; Type ty; void *sym; {
 	unsigned h = (op^((unsigned long)ty>>3))
 &(NELEMS(typetable)-1);
 	struct entry *tn;
@@ -86,50 +49,24 @@ static Type type(int op, Type ty, int size, int align, void *sym) {
 	typetable[h] = tn;
 	return &tn->type;
 }
-void type_init(int argc, char *argv[]) {
-	static int inited;
-	int i;
-
-	if (inited)
-		return;
-	inited = 1;
-	if (!IR)
-		return;
-	for (i = 1; i < argc; i++) {
-		int size, align, outofline;
-		if (strncmp(argv[i], "-unsigned_char=", 15) == 0)
-			IR->unsigned_char = argv[i][15] - '0';
-#define xx(name) \
-		else if (sscanf(argv[i], "-" #name "=%d,%d,%d", &size, &align, &outofline) == 3) { \
-			IR->name.size = size; IR->name.align = align; \
-			IR->name.outofline = outofline; }
-	xx(charmetric)
-	xx(shortmetric)
-	xx(intmetric)
-	xx(longmetric)
-	xx(longlongmetric)
-	xx(floatmetric)
-	xx(doublemetric)
-	xx(longdoublemetric)
-	xx(ptrmetric)
-	xx(structmetric)
-#undef xx
-	}
-#define xx(v,name,op,metrics) v=xxinit(op,name,IR->metrics)
-	xx(chartype,        "char",              IR->unsigned_char ? UNSIGNED : INT,charmetric);
-	xx(doubletype,      "double",            FLOAT,   doublemetric);
-	xx(floattype,       "float",             FLOAT,   floatmetric);
-	xx(inttype,         "int",               INT,     intmetric);
-	xx(longdouble,      "long double",       FLOAT,   longdoublemetric);
-	xx(longtype,        "long int",          INT,     longmetric);
-	xx(longlong,        "long long int",     INT,     longlongmetric);
-	xx(shorttype,       "short",             INT,     shortmetric);
-	xx(signedchar,      "signed char",       INT,     charmetric);
-	xx(unsignedchar,    "unsigned char",     UNSIGNED,charmetric);
-	xx(unsignedlong,    "unsigned long",     UNSIGNED,longmetric);
-	xx(unsignedshort,   "unsigned short",    UNSIGNED,shortmetric);
-	xx(unsignedtype,    "unsigned int",      UNSIGNED,intmetric);
-	xx(unsignedlonglong,"unsigned long long",UNSIGNED,longlongmetric);
+void typeInit() {
+#define xx(v,name,op,metrics) { \
+		Symbol p = install(string(name), &types, GLOBAL, PERM);\
+		v = type(op, 0, IR->metrics.size, IR->metrics.align, p);\
+		assert(v->align == 0 || v->size%v->align == 0); \
+		p->type = v; p->addressed = IR->metrics.outofline; }
+	xx(chartype,     "char",          CHAR,    charmetric);
+	xx(doubletype,   "double",        DOUBLE,  doublemetric);
+	xx(floattype,    "float",         FLOAT,   floatmetric);
+	xx(inttype,      "int",           INT,     intmetric);
+	xx(longdouble,   "long double",   DOUBLE,  doublemetric);
+	xx(longtype,     "long int",      INT,     intmetric);
+	xx(shorttype,    "short",         SHORT,   shortmetric);
+	xx(signedchar,   "signed char",   CHAR,    charmetric);
+	xx(unsignedchar, "unsigned char", CHAR,    charmetric);
+	xx(unsignedlong, "unsigned long", UNSIGNED,intmetric);
+	xx(unsignedshort,"unsigned short",SHORT,   shortmetric);
+	xx(unsignedtype, "unsigned int",  UNSIGNED,intmetric);
 #undef xx
 	{
 		Symbol p;
@@ -139,37 +76,12 @@ void type_init(int argc, char *argv[]) {
 	}
 	pointersym = install(string("T*"), &types, GLOBAL, PERM);
 	pointersym->addressed = IR->ptrmetric.outofline;
-	pointersym->u.limits.max.p = (void*)ones(8*IR->ptrmetric.size);
-	pointersym->u.limits.min.p = 0;
 	voidptype = ptr(voidtype);
-	funcptype = ptr(func(voidtype, NULL, 1));
-	charptype = ptr(chartype);
-#define xx(v,t) if (v==NULL && t->size==voidptype->size && t->align==voidptype->align) v=t
-	xx(unsignedptr,unsignedshort);
-	xx(unsignedptr,unsignedtype);
-	xx(unsignedptr,unsignedlong);
-	xx(unsignedptr,unsignedlonglong);
-	if (unsignedptr == NULL)
-		unsignedptr = type(UNSIGNED, NULL, voidptype->size, voidptype->align, voidptype->u.sym);
-	xx(signedptr,shorttype);
-	xx(signedptr,inttype);
-	xx(signedptr,longtype);
-	xx(signedptr,longlong);
-	if (signedptr == NULL)
-		signedptr = type(INT, NULL, voidptype->size, voidptype->align, voidptype->u.sym);
-#undef xx
-	widechar = unsignedshort;
-	for (i = 0; i < argc; i++) {
-#define xx(name,type) \
-		if (strcmp(argv[i], "-wchar_t=" #name) == 0) \
-			widechar = type;
-		xx(unsigned_char,unsignedchar)
-		xx(unsigned_int,unsignedtype)
-		xx(unsigned_short,unsignedshort)
-	}
-#undef xx
+	assert(voidptype->align > 0 && voidptype->size%voidptype->align == 0);
+	assert(unsignedtype->size >= voidptype->size);
+	assert(inttype->size >= voidptype->size);
 }
-void rmtypes(int lev) {
+void rmtypes(lev) int lev; {
 	if (maxlevel >= lev) {
 		int i;
 		maxlevel = 0;
@@ -189,24 +101,24 @@ void rmtypes(int lev) {
 		}
 	}
 }
-Type ptr(Type ty) {
+Type ptr(ty) Type ty; {
 	return type(POINTER, ty, IR->ptrmetric.size,
 		IR->ptrmetric.align, pointersym);
 }
-Type deref(Type ty) {
+Type deref(ty) Type ty; {
 	if (isptr(ty))
 		ty = ty->type;
 	else
 		error("type error: %s\n", "pointer expected");
 	return isenum(ty) ? unqual(ty)->type : ty;
 }
-Type array(Type ty, int n, int a) {
+Type array(ty, n, a) Type ty; int n, a; {
 	assert(ty);
 	if (isfunc(ty)) {
 		error("illegal type `array of %t'\n", ty);
 		return array(inttype, n, 0);
 	}
-	if (isarray(ty) && ty->size == 0)
+	if (level > GLOBAL && isarray(ty) && ty->size == 0)
 		error("missing array size\n");
 	if (ty->size == 0) {
 		if (unqual(ty) == voidtype)
@@ -222,13 +134,13 @@ Type array(Type ty, int n, int a) {
 	return type(ARRAY, ty, n*ty->size,
 		a ? a : ty->align, NULL);
 }
-Type atop(Type ty) {
+Type atop(ty) Type ty; {
 	if (isarray(ty))
 		return ptr(ty->type);
 	error("type error: %s\n", "array expected");
 	return ptr(ty);
 }
-Type qual(int op, Type ty) {
+Type qual(op, ty) int op; Type ty; {
 	if (isarray(ty))
 		ty = type(ARRAY, qual(op, ty->type), ty->size,
 			ty->align, NULL);
@@ -246,7 +158,7 @@ Type qual(int op, Type ty) {
 	}
 	return ty;
 }
-Type func(Type ty, Type *proto, int style) {
+Type func(ty, proto, style) Type ty, *proto; int style; {
 	if (ty && (isarray(ty) || isfunc(ty)))
 		error("illegal return type `%t'\n", ty);
 	ty = type(FUNCTION, ty, 0, 0, NULL);
@@ -254,13 +166,13 @@ Type func(Type ty, Type *proto, int style) {
 	ty->u.f.oldstyle = style;
 	return ty;
 }
-Type freturn(Type ty) {
+Type freturn(ty) Type ty; {
 	if (isfunc(ty))
 		return ty->type;
 	error("type error: %s\n", "function expected");
 	return inttype;
 }
-int variadic(Type ty) {
+int variadic(ty) Type ty; {
 	if (isfunc(ty) && ty->u.f.proto) {
 		int i;
 		for (i = 0; ty->u.f.proto[i]; i++)
@@ -269,7 +181,7 @@ int variadic(Type ty) {
 	}
 	return 0;
 }
-Type newstruct(int op, char *tag) {
+Type newstruct(op, tag) int op; char *tag; {
 	Symbol p;
 
 	assert(tag);
@@ -290,7 +202,7 @@ Type newstruct(int op, char *tag) {
 	p->src = src;
 	return p->type;
 }
-Field newfield(char *name, Type ty, Type fty) {
+Field newfield(name, ty, fty) char *name; Type ty, fty; {
 	Field p, *q = &ty->u.sym->u.s.flist;
 
 	if (name == NULL)
@@ -310,14 +222,14 @@ Field newfield(char *name, Type ty, Type fty) {
 	}								/* omit */
 	return p;
 }
-int eqtype(Type ty1, Type ty2, int ret) {
+int eqtype(ty1, ty2, ret) Type ty1, ty2; int ret; {
 	if (ty1 == ty2)
 		return 1;
 	if (ty1->op != ty2->op)
 		return 0;
 	switch (ty1->op) {
-	case ENUM: case UNION: case STRUCT:
-	case UNSIGNED: case INT: case FLOAT:
+	case CHAR: case SHORT: case UNSIGNED: case INT:
+	case ENUM: case UNION: case STRUCT:   case DOUBLE:
 		return 0;
 	case POINTER:  return eqtype(ty1->type, ty2->type, 1);
 	case VOLATILE: case CONST+VOLATILE:
@@ -346,7 +258,8 @@ int eqtype(Type ty1, Type ty2, int ret) {
 					p1 = p2;
 				for ( ; *p1; p1++) {
 					Type ty = unqual(*p1);
-					if (promote(ty) != (isenum(ty) ? ty->type : ty))
+					if (promote(ty) != (isenum(ty) ? ty->type : ty)
+					|| ty == floattype)
 						return 0;
 				}
 				return 1;
@@ -356,39 +269,15 @@ int eqtype(Type ty1, Type ty2, int ret) {
 	}
 	assert(0); return 0;
 }
-Type promote(Type ty) {
+Type promote(ty) Type ty; {
 	ty = unqual(ty);
-	switch (ty->op) {
-	case ENUM:
+	if (isunsigned(ty) || ty == longtype)
+		return ty;
+	else if (isint(ty) || isenum(ty))
 		return inttype;
-	case INT:
-		if (ty->size < inttype->size)
-			return inttype;
-		break;
-	case UNSIGNED:
-		if (ty->size < inttype->size)
-			return inttype;
-		if (ty->size < unsignedtype->size)
-			return unsignedtype;
-		break;
-	case FLOAT:
-		if (ty->size < doubletype->size)
-			return doubletype;
-	}
 	return ty;
 }
-Type signedint(Type ty) {
-	if (ty->op == INT)
-		return ty;
-	assert(ty->op == UNSIGNED);
-#define xx(t) if (ty->size == t->size) return t
-	xx(inttype);
-	xx(longtype);
-	xx(longlong);
-#undef xx
-	assert(0); return NULL;
-}
-Type compose(Type ty1, Type ty2) {
+Type compose(ty1, ty2) Type ty1, ty2; {
 	if (ty1 == ty2)
 		return ty1;
 	assert(ty1->op == ty2->op);
@@ -401,7 +290,7 @@ Type compose(Type ty1, Type ty2) {
 	case CONST: case VOLATILE:
 		return qual(ty1->op, compose(ty1->type, ty2->type));
 	case ARRAY:    { Type ty = compose(ty1->type, ty2->type);
-			 if (ty1->size && (ty1->type->size && ty2->size == 0 || ty1->size == ty2->size))
+			 if (ty1->size && ty1->type->size && ty2->size == 0)
 			 	return array(ty, ty1->size/ty1->type->size, ty1->align);
 			 if (ty2->size && ty2->type->size && ty1->size == 0)
 			 	return array(ty, ty2->size/ty2->type->size, ty2->align);
@@ -428,58 +317,31 @@ Type compose(Type ty1, Type ty2) {
 	}
 	assert(0); return NULL;
 }
-int ttob(Type ty) {
+int ttob(ty) Type ty; {
 	switch (ty->op) {
 	case CONST: case VOLATILE: case CONST+VOLATILE:
 		return ttob(ty->type);
-	case VOID: case INT: case UNSIGNED: case FLOAT:
-		return ty->op + sizeop(ty->size);
-	case POINTER:
-		return POINTER + sizeop(voidptype->size);
-	case FUNCTION:
-		return POINTER + sizeop(funcptype->size);
-	case ARRAY: case STRUCT: case UNION:
-		return STRUCT;
-	case ENUM:
-		return INT + sizeop(inttype->size);
+	case CHAR: case INT:   case SHORT: case UNSIGNED: 
+	case VOID: case FLOAT: case DOUBLE:  return ty->op;
+	case POINTER: case FUNCTION:         return POINTER;
+	case ARRAY: case STRUCT: case UNION: return STRUCT;
+	case ENUM:                           return INT;
 	}
 	assert(0); return INT;
 }
-Type btot(int op, int size) {
-#define xx(ty) if (size == (ty)->size) return ty;
+Type btot(op) int op; {
 	switch (optype(op)) {
-	case F:
-		xx(floattype);
-		xx(doubletype);
-		xx(longdouble);
-		assert(0); return 0;
-	case I:
-		if (chartype->op == INT)
-			xx(chartype);
-		xx(signedchar);
-		xx(shorttype);
-		xx(inttype);
-		xx(longtype);
-		xx(longlong);
-		assert(0); return 0;
-	case U:
-		if (chartype->op == UNSIGNED)
-			xx(chartype);
-		xx(unsignedchar);
-		xx(unsignedshort);
-		xx(unsignedtype);
-		xx(unsignedlong);
-		xx(unsignedlonglong);
-		assert(0); return 0;
-	case P:
-		xx(voidptype);
-		xx(funcptype);
-		assert(0); return 0;
+	case F: return floattype;
+	case D: return doubletype;
+	case C: return chartype;
+	case S: return shorttype;
+	case I: return inttype;
+	case U: return unsignedtype;
+	case P: return voidptype;
 	}
-#undef xx
 	assert(0); return 0;
 }
-int hasproto(Type ty) {
+int hasproto(ty) Type ty; {
 	if (ty == 0)
 		return 1;
 	switch (ty->op) {
@@ -489,46 +351,124 @@ int hasproto(Type ty) {
 	case FUNCTION:
 		return hasproto(ty->type) && ty->u.f.proto;
 	case STRUCT: case UNION:
-	case VOID:   case FLOAT: case ENUM:  case INT: case UNSIGNED:
+	case CHAR:   case SHORT: case INT:  case DOUBLE:
+	case VOID:   case FLOAT: case ENUM: case UNSIGNED:
 		return 1;
 	}
 	assert(0); return 0;
 }
+/* check - check ty for ambiguous inherited fields, return augmented field set */
+static Field check(ty, top, inherited, off)
+Type ty, top; Field inherited; int off; {
+	Field p;
+
+	for (p = ty->u.sym->u.s.flist; p; p = p->link)
+		if (p->name && isfield(p->name, inherited))
+			error("ambiguous field `%s' of `%t' from `%t'\n", p->name, top, ty);
+		else if (p->name && !isfield(p->name, top->u.sym->u.s.flist)) {
+			Field new;
+			NEW(new, FUNC);
+			*new = *p;
+			new->offset = off + p->offset;
+			new->link = inherited;
+			inherited = new;
+		}
+	for (p = ty->u.sym->u.s.flist; p; p = p->link)
+		if (p->name == 0)
+			inherited = check(p->type, top, inherited,
+				off + p->offset);
+	return inherited;
+}
+
+/* checkfields - check for ambiguous inherited fields in struct/union ty */
+void checkfields(ty) Type ty; {
+	Field p, inherited = 0;
+
+	for (p = ty->u.sym->u.s.flist; p; p = p->link)
+		if (p->name == 0)
+			inherited = check(p->type, ty, inherited, p->offset);
+}
+
+/* extends - if ty extends fty, return a pointer to field structure */
+Field extends(ty, fty) Type ty, fty; {
+	Field p, q;
+
+	for (p = unqual(ty)->u.sym->u.s.flist; p; p = p->link)
+		if (p->name == 0 && unqual(p->type) == unqual(fty))
+			return p;
+		else if (p->name == 0 && (q = extends(p->type, fty)) != NULL) {
+			static struct field f;
+			f = *q;
+			f.offset = p->offset + q->offset;
+			return &f;
+		}
+	return 0;
+}
+
 /* fieldlist - construct a flat list of fields in type ty */
-Field fieldlist(Type ty) {
-	return ty->u.sym->u.s.flist;
+Field fieldlist(ty) Type ty; {
+	Field p, q, t, inherited = 0, *r;
+
+	ty = unqual(ty);
+	for (p = ty->u.sym->u.s.flist; p; p = p->link)
+		if (p->name == 0)
+			inherited = check(p->type, ty, inherited, p->offset);
+	if (inherited == 0)
+		return ty->u.sym->u.s.flist;
+	for (q = 0, p = inherited; p; q = p, p = t) {
+		t = p->link;
+		p->link = q;
+	}
+	for (r = &inherited, p = ty->u.sym->u.s.flist; p && q; )
+		if (p->name == 0)
+			p = p->link;
+		else if (p->offset <= q->offset) {
+			NEW(*r, FUNC);
+			**r = *p;
+			r = &(*r)->link;
+			p = p->link;
+		} else {
+			*r = q;
+			r = &q->link;
+			q = q->link;
+		}
+	for ( ; p; p = p->link)
+		if (p->name) {
+			NEW(*r, FUNC);
+			**r = *p;
+			r = &(*r)->link;
+		}
+	*r = q;
+	return inherited;
 }
 
 /* fieldref - find field name of type ty, return entry */
-Field fieldref(const char *name, Type ty) {
-	Field p = isfield(name, unqual(ty)->u.sym->u.s.flist);
+Field fieldref(name, ty) char *name; Type ty; {
+	Field p;
 
-	if (p && xref) {
-		Symbol q;
-		assert(unqual(ty)->u.sym->u.s.ftab);
-		q = lookup(name, unqual(ty)->u.sym->u.s.ftab);
-		assert(q);
-		use(q, src);
+	if ((p = isfield(name, unqual(ty)->u.sym->u.s.flist)) != NULL) {
+		if (xref) {
+			Symbol q;
+			assert(unqual(ty)->u.sym->u.s.ftab);
+			q = lookup(name, unqual(ty)->u.sym->u.s.ftab);
+			assert(q);
+			use(q, src);
+		}
+		return p;
 	}
-	return p;
+	return 0;
 }
 
 /* ftype - return a function type for rty function (ty,...)' */
-Type ftype(Type rty, ...) {
-	va_list ap;
-	Type ty = NULL;
-	List list = NULL;
+Type ftype(rty, ty) Type rty, ty; {
+	List list = append(ty, NULL);
 
-	va_start(ap, rty);
-	ty = va_arg(ap, Type);
-	for ( ; ty != NULL; ty = va_arg(ap, Type))
-		list = append(ty, list);
-	va_end(ap);
+	list = append(voidtype, list);
 	return func(rty, ltov(&list, PERM), 0);
 }
 
 /* isfield - if name is a field in flist, return pointer to the field structure */
-static Field isfield(const char *name, Field flist) {
+static Field isfield(name, flist) char *name; Field flist; {
 	for ( ; flist; flist = flist->link)
 		if (flist->name == name)
 			break;
@@ -536,73 +476,77 @@ static Field isfield(const char *name, Field flist) {
 }
 
 /* outtype - output type ty */
-void outtype(Type ty, FILE *f) {
+void outtype(ty) Type ty; {
 	switch (ty->op) {
-	case CONST+VOLATILE: case CONST: case VOLATILE:
-		fprint(f, "%k %t", ty->op, ty->type);
+	case CONST+VOLATILE:
+		print("%k %k %t", CONST, VOLATILE, ty->type);
+		break;
+	case CONST: case VOLATILE:
+		print("%k %t", ty->op, ty->type);
 		break;
 	case STRUCT: case UNION: case ENUM:
 		assert(ty->u.sym);
 		if (ty->size == 0)
-			fprint(f, "incomplete ");
+			print("incomplete ");
 		assert(ty->u.sym->name);
 		if (*ty->u.sym->name >= '1' && *ty->u.sym->name <= '9') {
 			Symbol p = findtype(ty);
 			if (p == 0)
-				fprint(f, "%k defined at %w", ty->op, &ty->u.sym->src);
+				print("%k defined at %w", ty->op, &ty->u.sym->src);
 			else
-				fprint(f, p->name);
+				print(p->name);
 		} else {
-			fprint(f, "%k %s", ty->op, ty->u.sym->name);
+			print("%k %s", ty->op, ty->u.sym->name);
 			if (ty->size == 0)
-				fprint(f, " defined at %w", &ty->u.sym->src);
+				print(" defined at %w", &ty->u.sym->src);
 		}
 		break;
-	case VOID: case FLOAT: case INT: case UNSIGNED:
-		fprint(f, ty->u.sym->name);
+	case VOID: case FLOAT: case DOUBLE:
+	case CHAR: case SHORT: case INT: case UNSIGNED:
+		print(ty->u.sym->name);
 		break;
 	case POINTER:
-		fprint(f, "pointer to %t", ty->type);
+		print("pointer to %t", ty->type);
 		break;
 	case FUNCTION:
-		fprint(f, "%t function", ty->type);
+		print("%t function", ty->type);
 		if (ty->u.f.proto && ty->u.f.proto[0]) {
 			int i;
-			fprint(f, "(%t", ty->u.f.proto[0]);
+			print("(%t", ty->u.f.proto[0]);
 			for (i = 1; ty->u.f.proto[i]; i++)
 				if (ty->u.f.proto[i] == voidtype)
-					fprint(f, ",...");
+					print(",...");
 				else
-					fprint(f, ",%t", ty->u.f.proto[i]);
-			fprint(f, ")");
+					print(",%t", ty->u.f.proto[i]);
+			print(")");
 		} else if (ty->u.f.proto && ty->u.f.proto[0] == 0)
-			fprint(f, "(void)");
+			print("(void)");
 
 		break;
 	case ARRAY:
 		if (ty->size > 0 && ty->type && ty->type->size > 0) {
-			fprint(f, "array %d", ty->size/ty->type->size);
+			print("array %d", ty->size/ty->type->size);
 			while (ty->type && isarray(ty->type) && ty->type->type->size > 0) {
 				ty = ty->type;
-				fprint(f, ",%d", ty->size/ty->type->size);
+				print(",%d", ty->size/ty->type->size);
 			}
 		} else
-			fprint(f, "incomplete array");
+			print("incomplete array");
 		if (ty->type)
-			fprint(f, " of %t", ty->type);
+			print(" of %t", ty->type);
 		break;
 	default: assert(0);
 	}
 }
 
 /* printdecl - output a C declaration for symbol p of type ty */
-void printdecl(Symbol p, Type ty) {
+void printdecl(p, ty) Symbol p; Type ty; {
 	switch (p->sclass) {
 	case AUTO:
-		fprint(stderr, "%s;\n", typestring(ty, p->name));
+		fprint(2, "%s;\n", typestring(ty, p->name));
 		break;
 	case STATIC: case EXTERN:
-		fprint(stderr, "%k %s;\n", p->sclass, typestring(ty, p->name));
+		fprint(2, "%k %s;\n", p->sclass, typestring(ty, p->name));
 		break;
 	case TYPEDEF: case ENUM:
 		break;
@@ -611,7 +555,7 @@ void printdecl(Symbol p, Type ty) {
 }
 
 /* printproto - output a prototype declaration for function p */
-void printproto(Symbol p, Symbol callee[]) {
+void printproto(p, callee) Symbol p, callee[]; {
 	if (p->type->u.f.proto)
 		printdecl(p, p->type);
 	else {
@@ -626,80 +570,51 @@ void printproto(Symbol p, Symbol callee[]) {
 	}
 }
 
-/* prtype - print details of type ty on f with given indent */
-static void prtype(Type ty, FILE *f, int indent, unsigned mark) {
+/* printtype - print details of type ty on fd */
+void printtype(ty, fd) Type ty; int fd; {
 	switch (ty->op) {
+	case STRUCT: case UNION: {
+		Field p;
+		fprint(fd, "%k %s size=%d {\n", ty->op, ty->u.sym->name, ty->size);
+		for (p = ty->u.sym->u.s.flist; p; p = p->link) {
+			fprint(fd, "field %s: offset=%d", p->name, p->offset);
+			if (p->lsb)
+				fprint(fd, " bits=%d..%d",
+					fieldsize(p) + fieldright(p), fieldright(p));
+			fprint(fd, " type=%t", p->type);
+		}
+		fprint(fd, "}\n");
+		break;
+		}
+	case ENUM: {
+		int i;
+		Symbol p;
+		fprint(fd, "enum %s {", ty->u.sym->name);
+		for (i = 0; (p = ty->u.sym->u.idlist[i]) != NULL; i++) {
+			if (i > 0)
+				fprint(fd, ",");
+			fprint(fd, "%s=%d", p->name, p->u.value);
+		}
+		fprint(fd, "}\n");
+		break;
+		}
 	default:
-		fprint(f, "(%d %d %d [%p])", ty->op, ty->size, ty->align, ty->u.sym);
-		break;
-	case FLOAT: case INT: case UNSIGNED: case VOID:
-		fprint(f, "(%k %d %d [\"%s\"])", ty->op, ty->size, ty->align, ty->u.sym->name);
-		break;
-	case CONST+VOLATILE: case CONST: case VOLATILE: case POINTER: case ARRAY:
-		fprint(f, "(%k %d %d ", ty->op, ty->size, ty->align);
-		prtype(ty->type, f, indent+1, mark);
-		fprint(f, ")");
-		break;
-	case STRUCT: case UNION:
-		fprint(f, "(%k %d %d [\"%s\"]", ty->op, ty->size, ty->align, ty->u.sym->name);
-		if (ty->x.marked != mark) {
-			Field p;
-			ty->x.marked = mark;
-			for (p = ty->u.sym->u.s.flist; p; p = p->link) {
-				fprint(f, "\n%I", indent+1);
-				prtype(p->type, f, indent+1, mark);
-				fprint(f, " %s@%d", p->name, p->offset);
-				if (p->lsb)
-					fprint(f, ":%d..%d",
-						fieldsize(p) + fieldright(p), fieldright(p));
-			}
-			fprint(f, "\n%I", indent);
-		}
-		fprint(f, ")");
-		break;
-	case ENUM:
-		fprint(f, "(%k %d %d [\"%s\"]", ty->op, ty->size, ty->align, ty->u.sym->name);
-		if (ty->x.marked != mark) {
-			int i;
-			Symbol *p = ty->u.sym->u.idlist;
-			ty->x.marked = mark;
-			for (i = 0; p[i] != NULL; i++)
-				fprint(f, "%I%s=%d\n", indent+1, p[i]->name, p[i]->u.value);
-		}
-		fprint(f, ")");
-		break;
-	case FUNCTION:
-		fprint(f, "(%k %d %d ", ty->op, ty->size, ty->align);
-		prtype(ty->type, f, indent+1, mark);
-		if (ty->u.f.proto) {
-			int i;
-			fprint(f, "\n%I{", indent+1);
-			for (i = 0; ty->u.f.proto[i]; i++) {
-				if (i > 0)
-					fprint(f, "%I", indent+2);
-				prtype(ty->u.f.proto[i], f, indent+2, mark);
-				fprint(f, "\n");
-			}
-			fprint(f, "%I}", indent+1);
-		}
-		fprint(f, ")");
-		break;
+		fprint(fd, "%t\n", ty);
 	}
 }
 
-/* printtype - print details of type ty on fd */
-void printtype(Type ty, int fd) {
-	static unsigned mark;
-	prtype(ty, fd == 1 ? stdout : stderr, 0, ++mark);
-	fprint(fd == 1 ? stdout : stderr, "\n");
-}
-
 /* typestring - return ty as C declaration for str, which may be "" */
-char *typestring(Type ty, char *str) {
+char *typestring(ty, str) Type ty; char *str; {
 	for ( ; ty; ty = ty->type) {
 		Symbol p;
 		switch (ty->op) {
-		case CONST+VOLATILE: case CONST: case VOLATILE:
+		case CONST+VOLATILE:
+			if (isptr(ty->type))
+				str = stringf("%k %k %s", CONST, VOLATILE, str);
+			else
+				return stringf("%k %k %s", CONST, VOLATILE, typestring(ty->type, str));
+			break;
+		case CONST: case VOLATILE:
 			if (isptr(ty->type))
 				str = stringf("%k %s", ty->op, str);
 			else
@@ -715,10 +630,11 @@ char *typestring(Type ty, char *str) {
 				return stringf("%k %s %s", ty->op, ty->u.sym->name, str);
 			else
 				return stringf("%k %s", ty->op, ty->u.sym->name);
-		case VOID: case FLOAT: case INT: case UNSIGNED:
+		case VOID: case FLOAT: case DOUBLE:
+		case CHAR: case SHORT: case INT: case UNSIGNED:
 			return *str ? stringf("%s %s", ty->u.sym->name, str) : ty->u.sym->name;
 		case POINTER:
-			if (!ischar(ty->type) && (p = findtype(ty)) != NULL)
+			if (unqual(ty->type)->op != CHAR && (p = findtype(ty)) != NULL)
 				return *str ? stringf("%s %s", p->name, str) : p->name;
 			str = stringf(isarray(ty->type) || isfunc(ty->type) ? "(*%s)" : "*%s", str);
 			break;

@@ -18,31 +18,26 @@ extern struct _iobuf {
 #define FILENAME_MAX 256
 #define FOPEN_MAX 100
 
-#if !defined(_FPOS_T) && !defined(_FPOS_T_) && !defined(_FPOS_T_DEFINED)
+#if !defined(_FPOS_T) && !defined(_FPOS_T_)
 #define _FPOS_T
 #define _FPOS_T_
-#define _FPOS_T_DEFINED
 typedef long fpos_t;
 #endif
 
 #define L_tmpnam 25
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
+#define NULL 0
 #define SEEK_CUR 1
 #define SEEK_END 2
 #define SEEK_SET 0
 
-#if !defined(_SIZE_T) && !defined(_SIZE_T_) && !defined(_SIZE_T_DEFINED)
+#if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #define _SIZE_T
 #define _SIZE_T_
-#define _SIZE_T_DEFINED
 typedef unsigned long size_t;
 #endif
 
-#if !defined(_VA_LIST) && !defined(_VA_LIST_DEFINED)
+#if !defined(_VA_LIST)
 #define _VA_LIST
-#define _VA_LIST_DEFINED
 typedef char *__va_list;
 #endif
 
@@ -99,4 +94,10 @@ extern void perror(const char *);
 #define getc(p) (--(p)->_cnt < 0 ? _filbuf(p) : (int) *(p)->_ptr++)
 #define putc(x, p) (--(p)->_cnt < 0 ? _flsbuf((unsigned char) (x), p) : (int) (*(p)->_ptr++ = (unsigned char) (x)))
 extern int _filbuf(FILE *), _flsbuf(unsigned, FILE *);
+#define feof(p) ((p)->_flag&_IOEOF)
+#define ferror(p) ((p)->_flag&_IOERR)
+#define	clearerr(p) ((p)->_flag &= ~(_IOERR|_IOEOF))
+#define	getchar() getc(stdin)
+#define	putchar(x) putc((x),stdout)
+
 #endif /* __STDIO */

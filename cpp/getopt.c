@@ -1,18 +1,19 @@
 #include	<stdio.h>
-#include	<string.h>
 #define EPR                 fprintf(stderr,
 #define ERR(str, chr)       if(opterr){EPR "%s%c\n", str, chr);}
 int     opterr = 1;
 int     optind = 1;
 int	optopt;
 char    *optarg;
+char    *strchr();
 
 int
-getopt (int argc, char *const argv[], const char *opts)
+getopt (argc, argv, opts)
+char **argv, *opts;
 {
 	static int sp = 1;
-	int c;
-	char *cp;
+	register c;
+	register char *cp;
 
 	if (sp == 1)
 		if (optind >= argc ||

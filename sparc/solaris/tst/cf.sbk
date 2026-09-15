@@ -1,6 +1,7 @@
 .global main
 .section ".text"
 .align 4
+.proc 4
 main:
 save %sp,-96,%sp
 cmp %i0,1; bg .L2; nop
@@ -53,11 +54,12 @@ set f,%l7
 ld [%i2+%l7],%f31
 set .L4,%i2
 ld [%i2],%f30
-fcmps %f31,%f30; nop; fbe .L19; nop
-st %i4,[%sp+64]; ld [%sp+64],%f30; fitos %f30,%f30
+fcmpes %f31,%f30; nop; fbue .L19; nop
+st %i4,[%sp+64]; ld [%sp+64],%f28; fitod %f28,%f28
+fdtos %f28,%f30
 fdivs %f31,%f30,%f31
 ld [%fp+-4],%f30
-fcmps %f31,%f30; nop; fbul .L19; nop
+fcmpes %f31,%f30; nop; fbul .L19; nop
 cmp %i5,32; bg .L21; nop
 set .L23,%o0
 mov %i5,%o1
@@ -75,7 +77,8 @@ sll %i5,2,%i2
 set f,%l7
 ld [%i2+%l7],%f30
 fmuls %f31,%f30,%f31
-st %i4,[%sp+64]; ld [%sp+64],%f30; fitos %f30,%f30
+st %i4,[%sp+64]; ld [%sp+64],%f28; fitod %f28,%f28
+fdtos %f28,%f30
 fdivs %f31,%f30,%f31
 fstod %f31,%f30
 st %f30,[%sp+4*1+68]
@@ -90,12 +93,9 @@ cmp %i5,127; ble .L15; nop
 mov %g0,%i0
 .L1:
 ret; restore
-.type main,#function
-.size main,.-main
 .section ".bss"
 .global f
 .type f,#object
-.size f,512
 .common f,512,4
 .section ".rodata"
 .align 1

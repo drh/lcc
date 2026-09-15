@@ -1,0 +1,8 @@
+#ifndef __SETJMP
+#define __SETJMP
+
+typedef int jmp_buf[9];
+int setjmp(jmp_buf);
+void longjmp(jmp_buf, int);
+
+#endif /* __SETJMP */

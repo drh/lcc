@@ -1,0 +1,791 @@
+.set reorder
+.globl main
+.text
+.text
+.align 2
+.ent main
+main:
+.frame $sp,32,$31
+addu $sp,$sp,-32
+.mask 0xc0800000,-8
+sw $23,16($sp)
+sw $30,20($sp)
+sw $31,24($sp)
+la $30,L.6
+b L.5
+L.2:
+lb $4,($30)
+jal backslash
+move $24,$2
+la $4,L.7
+lb $5,($30)
+move $6,$24
+jal printf
+L.3:
+la $30,1($30)
+L.5:
+lb $24,($30)
+bne $24,$0,L.2
+jal f
+jal g
+jal h
+la $23,16777216
+b L.11
+L.8:
+move $4,$23
+jal big
+L.9:
+la $23,16777216($23)
+L.11:
+and $24,$23,0x7000000
+bne $24,$0,L.8
+jal limit
+move $2,$0
+L.1:
+lw $23,16($sp)
+lw $30,20($sp)
+lw $31,24($sp)
+addu $sp,$sp,32
+j $31
+.end main
+.globl backslash
+.text
+.align 2
+.ent backslash
+backslash:
+.frame $sp,0,$31
+la $24,102
+beq $4,$24,L.17
+bgt $4,$24,L.23
+L.22:
+la $24,98
+beq $4,$24,L.16
+b L.14
+L.23:
+la $24,110
+beq $4,$24,L.18
+blt $4,$24,L.14
+L.24:
+la $24,114
+beq $4,$24,L.19
+la $24,116
+beq $4,$24,L.20
+la $24,118
+beq $4,$24,L.21
+b L.14
+L.16:
+la $2,8
+b L.13
+L.17:
+la $2,12
+b L.13
+L.18:
+la $2,10
+b L.13
+L.19:
+la $2,13
+b L.13
+L.20:
+la $2,9
+b L.13
+L.21:
+la $2,11
+b L.13
+L.14:
+move $2,$4
+L.13:
+j $31
+.end backslash
+.globl f
+.text
+.align 2
+.ent f
+f:
+.frame $sp,32,$31
+addu $sp,$sp,-32
+.mask 0xc0c00000,-4
+sw $22,16($sp)
+sw $23,20($sp)
+sw $30,24($sp)
+sw $31,28($sp)
+move $23,$0
+la $4,L.28
+jal printf
+move $30,$0
+L.29:
+move $22,$30
+la $24,1
+blt $30,$24,L.33
+la $24,20
+bgt $30,$24,L.33
+sll $24,$30,2
+lw $24,L.45-4($24)
+j $24
+.rdata
+.align 2
+L.45:
+.word L.35
+.word L.36
+.word L.33
+.word L.33
+.word L.33
+.word L.33
+.word L.37
+.word L.38
+.word L.39
+.word L.33
+.word L.33
+.word L.33
+.word L.33
+.word L.33
+.word L.33
+.word L.40
+.word L.41
+.word L.42
+.word L.43
+.word L.44
+.text
+L.35:
+move $23,$30
+b L.34
+L.36:
+move $23,$30
+b L.34
+L.37:
+move $23,$30
+b L.34
+L.38:
+move $23,$30
+b L.34
+L.39:
+move $23,$30
+b L.34
+L.40:
+move $23,$30
+b L.34
+L.41:
+move $23,$30
+b L.34
+L.42:
+move $23,$30
+b L.34
+L.43:
+move $23,$30
+b L.34
+L.44:
+move $23,$30
+L.33:
+L.34:
+la $4,L.47
+move $5,$23
+jal printf
+L.30:
+la $30,1($30)
+la $24,20
+ble $30,$24,L.29
+L.27:
+lw $22,16($sp)
+lw $23,20($sp)
+lw $30,24($sp)
+lw $31,28($sp)
+addu $sp,$sp,32
+j $31
+.end f
+.globl g
+.text
+.align 2
+.ent g
+g:
+.frame $sp,24,$31
+addu $sp,$sp,-24
+.mask 0xc0000000,-4
+sw $30,16($sp)
+sw $31,20($sp)
+la $4,L.49
+jal printf
+la $30,1
+L.50:
+la $24,1001
+blt $30,$24,L.67
+la $24,1004
+bgt $30,$24,L.68
+sll $24,$30,2
+lw $24,L.69-4004($24)
+j $24
+.rdata
+.align 2
+L.69:
+.word L.63
+.word L.63
+.word L.63
+.word L.63
+.text
+L.67:
+la $24,1
+blt $30,$24,L.54
+la $24,8
+bgt $30,$24,L.54
+sll $24,$30,2
+lw $24,L.71-4($24)
+j $24
+.rdata
+.align 2
+L.71:
+.word L.56
+.word L.56
+.word L.58
+.word L.58
+.word L.58
+.word L.60
+.word L.60
+.word L.60
+.text
+L.68:
+la $24,3001
+blt $30,$24,L.54
+la $24,3004
+bgt $30,$24,L.54
+sll $24,$30,2
+lw $24,L.73-12004($24)
+j $24
+.rdata
+.align 2
+L.73:
+.word L.65
+.word L.65
+.word L.65
+.word L.65
+.text
+L.56:
+la $4,L.57
+move $5,$30
+jal printf
+b L.55
+L.58:
+la $4,L.59
+move $5,$30
+jal printf
+b L.55
+L.60:
+la $4,L.61
+move $5,$30
+jal printf
+L.54:
+la $4,L.62
+move $5,$30
+jal printf
+b L.55
+L.63:
+la $4,L.64
+move $5,$30
+jal printf
+b L.55
+L.65:
+la $4,L.66
+move $5,$30
+jal printf
+L.55:
+L.51:
+la $30,1($30)
+la $24,10
+ble $30,$24,L.50
+L.48:
+lw $30,16($sp)
+lw $31,20($sp)
+addu $sp,$sp,24
+j $31
+.end g
+.globl h
+.text
+.align 2
+.ent h
+h:
+.frame $sp,32,$31
+addu $sp,$sp,-32
+.mask 0xc0800000,-8
+sw $23,16($sp)
+sw $30,20($sp)
+sw $31,24($sp)
+move $23,$0
+la $4,L.76
+jal printf
+la $30,1
+L.77:
+la $24,264
+beq $30,$24,L.89
+bgt $30,$24,L.97
+L.96:
+la $24,120
+beq $30,$24,L.87
+bgt $30,$24,L.99
+L.98:
+la $24,8
+beq $30,$24,L.86
+blt $30,$24,L.81
+L.100:
+la $24,16
+beq $30,$24,L.85
+b L.81
+L.99:
+la $24,128
+beq $30,$24,L.83
+blt $30,$24,L.81
+L.101:
+la $24,248
+beq $30,$24,L.90
+b L.81
+L.97:
+la $24,288
+beq $30,$24,L.94
+bgt $30,$24,L.103
+L.102:
+la $24,272
+beq $30,$24,L.91
+blt $30,$24,L.81
+L.104:
+la $24,280
+beq $30,$24,L.88
+b L.81
+L.103:
+la $24,304
+beq $30,$24,L.92
+bgt $30,$24,L.106
+L.105:
+la $24,296
+beq $30,$24,L.93
+b L.81
+L.106:
+la $24,312
+beq $30,$24,L.95
+b L.81
+L.81:
+la $23,1($23)
+b L.78
+L.83:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.85:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.86:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.87:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.88:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.89:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.90:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.91:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.92:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.93:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.94:
+la $4,L.84
+move $5,$30
+jal printf
+b L.82
+L.95:
+la $4,L.84
+move $5,$30
+jal printf
+L.82:
+L.78:
+la $30,1($30)
+la $24,500
+ble $30,$24,L.77
+la $4,L.107
+move $5,$23
+jal printf
+L.75:
+lw $23,16($sp)
+lw $30,20($sp)
+lw $31,24($sp)
+addu $sp,$sp,32
+j $31
+.end h
+.globl big
+.text
+.align 2
+.ent big
+big:
+.frame $sp,24,$31
+addu $sp,$sp,-24
+.mask 0xc0000000,-4
+sw $30,16($sp)
+sw $31,20($sp)
+sw $4,24($sp)
+lw $24,0+24($sp)
+and $30,$24,0x6000000
+la $15,33554432
+beq $30,$15,L.121
+bgt $30,$15,L.125
+L.124:
+la $15,-2
+beq $30,$15,L.119
+la $15,-1
+beq $30,$15,L.119
+beq $30,$0,L.119
+b L.116
+L.125:
+la $24,67108864
+beq $30,$24,L.122
+b L.116
+L.119:
+la $4,L.120
+lw $5,0+24($sp)
+jal printf
+b L.117
+L.121:
+la $4,L.120
+lw $5,0+24($sp)
+jal printf
+b L.117
+L.122:
+la $4,L.120
+lw $5,0+24($sp)
+jal printf
+b L.117
+L.116:
+la $4,L.123
+lw $5,0+24($sp)
+jal printf
+L.117:
+L.115:
+lw $30,16($sp)
+lw $31,20($sp)
+addu $sp,$sp,24
+j $31
+.end big
+.globl limit
+.text
+.align 2
+.ent limit
+limit:
+.frame $sp,24,$31
+addu $sp,$sp,-24
+.mask 0xc0000000,-4
+sw $30,16($sp)
+sw $31,20($sp)
+la $30,-2147483648
+L.130:
+la $24,-2147483648
+blt $30,$24,L.134
+la $15,-2147483644
+bgt $30,$15,L.134
+sll $15,$30,2
+sll $24,$24,2
+subu $24,$15,$24
+lw $24,L.147($24)
+j $24
+.rdata
+.align 2
+L.147:
+.word L.136
+.word L.138
+.word L.140
+.word L.142
+.word L.144
+.text
+L.136:
+la $4,L.137
+jal printf
+b L.135
+L.138:
+la $4,L.139
+jal printf
+b L.135
+L.140:
+la $4,L.141
+jal printf
+b L.135
+L.142:
+la $4,L.143
+jal printf
+b L.135
+L.144:
+la $4,L.145
+jal printf
+b L.135
+L.134:
+la $4,L.146
+jal printf
+L.135:
+L.131:
+la $30,1($30)
+la $24,-2147483643
+ble $30,$24,L.130
+la $30,2147483647
+L.148:
+la $24,2147483643
+blt $30,$24,L.152
+la $15,2147483647
+bgt $30,$15,L.152
+sll $15,$30,2
+sll $24,$24,2
+subu $24,$15,$24
+lw $24,L.159($24)
+j $24
+.rdata
+.align 2
+L.159:
+.word L.158
+.word L.157
+.word L.156
+.word L.155
+.word L.154
+.text
+L.154:
+la $4,L.137
+jal printf
+b L.153
+L.155:
+la $4,L.139
+jal printf
+b L.153
+L.156:
+la $4,L.141
+jal printf
+b L.153
+L.157:
+la $4,L.143
+jal printf
+b L.153
+L.158:
+la $4,L.145
+jal printf
+b L.153
+L.152:
+la $4,L.146
+jal printf
+L.153:
+L.149:
+subu $30,$30,1
+la $24,2147483642
+bge $30,$24,L.148
+L.129:
+lw $30,16($sp)
+lw $31,20($sp)
+addu $sp,$sp,24
+j $31
+.end limit
+.rdata
+.align 0
+L.146:
+.byte 53
+.byte 10
+.byte 0
+.align 0
+L.145:
+.byte 52
+.byte 10
+.byte 0
+.align 0
+L.143:
+.byte 51
+.byte 10
+.byte 0
+.align 0
+L.141:
+.byte 50
+.byte 10
+.byte 0
+.align 0
+L.139:
+.byte 49
+.byte 10
+.byte 0
+.align 0
+L.137:
+.byte 48
+.byte 10
+.byte 0
+.align 0
+L.123:
+.byte 120
+.byte 32
+.byte 61
+.byte 32
+.byte 48
+.byte 120
+.byte 37
+.byte 120
+.byte 32
+.byte 40
+.byte 100
+.byte 101
+.byte 102
+.byte 97
+.byte 117
+.byte 108
+.byte 116
+.byte 41
+.byte 10
+.byte 0
+.align 0
+L.120:
+.byte 120
+.byte 32
+.byte 61
+.byte 32
+.byte 48
+.byte 120
+.byte 37
+.byte 120
+.byte 10
+.byte 0
+.align 0
+L.107:
+.byte 37
+.byte 100
+.byte 32
+.byte 100
+.byte 101
+.byte 102
+.byte 97
+.byte 117
+.byte 108
+.byte 116
+.byte 115
+.byte 10
+.byte 0
+.align 0
+L.84:
+.byte 105
+.byte 32
+.byte 61
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 0
+L.76:
+.byte 104
+.byte 58
+.byte 10
+.byte 0
+.align 0
+L.66:
+.byte 54
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 0
+L.64:
+.byte 53
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 0
+L.62:
+.byte 100
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 0
+L.61:
+.byte 51
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 0
+L.59:
+.byte 50
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 0
+L.57:
+.byte 49
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 0
+L.49:
+.byte 103
+.byte 58
+.byte 10
+.byte 0
+.align 0
+L.47:
+.byte 120
+.byte 32
+.byte 61
+.byte 32
+.byte 37
+.byte 100
+.byte 10
+.byte 0
+.align 0
+L.28:
+.byte 102
+.byte 58
+.byte 10
+.byte 0
+.align 0
+L.7:
+.byte 37
+.byte 99
+.byte 32
+.byte 61
+.byte 32
+.byte 48
+.byte 120
+.byte 37
+.byte 120
+.byte 10
+.byte 0
+.align 0
+L.6:
+.byte 98
+.byte 102
+.byte 110
+.byte 114
+.byte 116
+.byte 118
+.byte 120
+.byte 0

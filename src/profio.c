@@ -12,8 +12,12 @@ prof.out format:
     ... (#points-1 times)
 */
 #include "c.h"
-
-static char rcsid[] = "$Id$";
+#define FILE void
+#define EOF (-1)
+extern int fgetc ARGS((FILE *));
+extern FILE *fopen ARGS((const char *, const char *));
+extern int fclose ARGS((FILE *));
+extern void qsort ARGS((void *, size_t, size_t, int (*)(const void *, const void *)));
 
 struct count {			/* count data: */
 	int x, y;			/* source coordinate */
@@ -43,8 +47,18 @@ struct file {			/* per-file prof.out data: */
 } *filelist;
 FILE *fp;
 
+static void acaller ARGS((char *, char *, int, int, int, struct func *));
+static int compare ARGS((struct count *, struct count *));
+static struct func *afunction ARGS((char *, char *, int, int, int));
+static void apoint ARGS((int, char *, int, int, int));
+static struct file *findfile ARGS((char *));
+static int gather ARGS((void));
+static int getd ARGS((void));
+static char *getstr ARGS((void));
+
 /* acaller - add caller and site (file,x,y) to callee's callers list */
-static void acaller(char *caller, char *file, int x, int y, int count, struct func *callee) {
+static void acaller(caller, file, x, y, count, callee)
+char *caller, *file; int x, y, count; struct func *callee; {
 	struct caller *q;
 
 	assert(callee);
@@ -60,7 +74,7 @@ static void acaller(char *caller, char *file, int x, int y, int count, struct fu
 		q->y = y;
 		q->count = 0;
 		for (r = &callee->callers; *r && (strcmp(q->name, (*r)->name) > 0
-			|| strcmp(q->file, (*r)->file) > 0 || q->y > (*r)->y); r = &(*r)->link)
+			|| strcmp(q->file, (*r)->file) > 0 || q->y > (*r)->y || q->y > (*r)->y); r = &(*r)->link)
 			;
 		q->link = *r;
 		*r = q;
@@ -68,27 +82,9 @@ static void acaller(char *caller, char *file, int x, int y, int count, struct fu
 	q->count += count;
 }
 
-/* compare - return <0, 0, >0 if a<b, a==b, a>b, resp. */
-static int compare(const void *x, const void *y) {
-	struct count *a = (struct count *)x, *b = (struct count *)y;
-
-	if (a->y == b->y)
-		return a->x - b->x;
-	return a->y - b->y;
-}
-
-/* findfile - return file name's file list entry, or 0 */
-static struct file *findfile(char *name) {
-	struct file *p;
-
-	for (p = filelist; p; p = p->link)
-		if (p->name == name)
-			return p;
-	return 0;
-}
-
 /* afunction - add function name and its data to file's function list */
-static struct func *afunction(char *name, char *file, int x, int y, int count) {
+static struct func *afunction(name, file, x, y, count)
+char *name, *file; int x, y, count; {
 	struct file *p = findfile(file);
 	struct func *q;
 
@@ -113,7 +109,8 @@ static struct func *afunction(char *name, char *file, int x, int y, int count) {
 }
 
 /* apoint - append execution point i to file's data */ 
-static void apoint(int i, char *file, int x, int y, int count) {
+static void apoint(i, file, x, y, count)
+char *file; int i, x, y, count; {
 	struct file *p = findfile(file);
 
 	assert(p);
@@ -135,25 +132,22 @@ static void apoint(int i, char *file, int x, int y, int count) {
 			p->counts[j] = z;
 		}
 	}
-	if (p->counts[i].x != x || p->counts[i].y != y)
-		for (i = 0; i < p->count; i++)
-			if (p->counts[i].x == x && p->counts[i].y == y)
-				break;
+	p->counts[i].x = x;
+	p->counts[i].y = y;
+	p->counts[i].count += count;
 	if (i >= p->count)
-		if (i >= p->size)
-			apoint(i, file, x, y, count);
-		else {
-			p->count = i + 1;
-			p->counts[i].x = x;
-			p->counts[i].y = y;
-			p->counts[i].count = count;
-		}
-	else
-		p->counts[i].count += count;
+		p->count = i + 1;
+}
+
+/* compare - return <0, 0, >0 if a<b, a==b, a>b, resp. */
+static int compare(a, b) struct count *a, *b; {
+	if (a->y == b->y)
+		return a->x - b->x;
+	return a->y - b->y;
 }
 
 /* findcount - return count associated with (file,x,y) or -1 */
-int findcount(char *file, int x, int y) {
+int findcount(file, x, y) char *file; int x, y;{
 	static struct file *cursor;
 
 	if (cursor == 0 || cursor->name != file)
@@ -174,8 +168,18 @@ int findcount(char *file, int x, int y) {
 	return -1;
 }
 
+/* findfile - return file name's file list entry, or 0 */
+static struct file *findfile(name) char *name; {
+	struct file *p;
+
+	for (p = filelist; p; p = p->link)
+		if (p->name == name)
+			return p;
+	return 0;
+}
+
 /* findfunc - return count associated with function name in file or -1 */
-int findfunc(char *name, char *file) {
+int findfunc(name, file) char *name, *file; {
 	static struct file *cursor;
 
 	if (cursor == 0 || cursor->name != file)
@@ -189,35 +193,8 @@ int findfunc(char *name, char *file) {
 	return -1;
 }
 
-/* getd - read a nonnegative number */
-static int getd(void) {
-	int c, n = 0;
-
-	while ((c = getc(fp)) != EOF && (c == ' ' || c == '\n' || c == '\t'))
-		;
-	if (c >= '0' && c <= '9') {
-		do
-			n = 10*n + (c - '0');
-		while ((c = getc(fp)) >= '0' && c <= '9');
-		return n;
-	}
-	return -1;
-}
-
-/* getstr - read a string */
-static char *getstr(void) {
-	int c;
-	char buf[MAXTOKEN], *s = buf;
-
-	while ((c = getc(fp)) != EOF && c != ' ' && c != '\n' && c != '\t')
-		if (s - buf < (int)sizeof buf - 2)
-			*s++ = c;
-	*s = 0;
-	return s == buf ? (char *)0 : string(buf);
-}
-
 /* gather - read prof.out data from fd */
-static int gather(void) {
+static int gather() {
 	int i, nfiles, nfuncs, npoints;
 	char *files[64];
 
@@ -267,8 +244,35 @@ static int gather(void) {
 	return 1;
 }
 
+/* getd - read a nonnegative number */
+static int getd() {
+	int c, n = 0;
+
+	while ((c = fgetc(fp)) != EOF && (c == ' ' || c == '\n' || c == '\t'))
+		;
+	if (c >= '0' && c <= '9') {
+		do
+			n = 10*n + (c - '0');
+		while ((c = fgetc(fp)) >= '0' && c <= '9');
+		return n;
+	}
+	return -1;
+}
+
+/* getstr - read a string */
+static char *getstr() {
+	int c;
+	char buf[MAXTOKEN], *s = buf;
+
+	while ((c = fgetc(fp)) != EOF && c != ' ' && c != '\n' && c != '\t')
+		if (s - buf < (int)sizeof buf - 2)
+			*s++ = c;
+	*s = 0;
+	return s == buf ? (char *)0 : string(buf);
+}
+
 /* process - read prof.out data from file */
-int process(char *file) {
+int process(file) char *file; {
 	int more;
 
 	if ((fp = fopen(file, "r")) != NULL) {
@@ -279,7 +283,10 @@ int process(char *file) {
 		if (more < 0)
 			return more;
 		for (p = filelist; p; p = p->link)
-			qsort(p->counts, p->count, sizeof *p->counts, compare);
+			qsort(p->counts, p->count, sizeof *p->counts,
+				(int (*) ARGS((const void *, const void *)))
+				compare);
+		
 		return 1;
 	}
 	return 0;

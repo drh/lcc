@@ -148,7 +148,7 @@ struct	fsm {
 	COM1,	{ '*' },	COM2,
 	COM1,	{ '/' },	COM4,
 
-	/* saw / then *, start of comment */
+	/* saw "/*", start of comment */
 	COM2,	{ C_XX },	COM2,
 	COM2,	{ '\n' },	S_COMNL,
 	COM2,	{ '*' },	COM3,
@@ -407,7 +407,7 @@ gettokens(Tokenrow *trp, int reset)
 				tp->type = END;
 				tp->len = 0;
 				s->inp = ip;
-				if (tp!=trp->bp && (tp-1)->type!=NL && cursource->fd!=NULL)
+				if (tp!=trp->bp && (tp-1)->type!=NL && cursource->fd!=-1)
 					error(WARNING,"No newline at end of file");
 				trp->lp = tp+1;
 				return nmac;
@@ -433,11 +433,6 @@ gettokens(Tokenrow *trp, int reset)
 				state = COM2;
 				ip += runelen;
 				runelen = 1;
-				if (ip >= s->inb+(7*INS/8)) { /* very long comment */
-					memmove(tp->t, ip, 4+s->inl-ip);
-					s->inl -= ip-tp->t;
-					ip = tp->t+1;
-				}
 				continue;
 
 			case S_EOFCOM:
@@ -515,15 +510,10 @@ foldline(Source *s)
 int
 fillbuf(Source *s)
 {
-	int n, nr;
+	int n;
 
-	nr = INS/8;
-	if ((char *)s->inl+nr > (char *)s->inb+INS)
-		error(FATAL, "Input buffer overflow");
-	if (s->fd==NULL || (n=fread((char *)s->inl, 1, INS/8, s->fd)) <= 0)
+	if (s->fd<0 || (n=read(s->fd, (char *)s->inl, INS/8)) <= 0)
 		n = 0;
-	if ((*s->inp&0xff) == EOB) /* sentinel character appears in input */
-		*s->inp = EOFC;
 	s->inl += n;
 	s->inl[0] = s->inl[1]= s->inl[2]= s->inl[3] = EOB;
 	if (n==0) {
@@ -535,11 +525,11 @@ fillbuf(Source *s)
 
 /*
  * Push down to new source of characters.
- * If fd!=NULL and str==NULL, then from a file `name';
- * if fd==NULL and str, then from the string.
+ * If fd>0 and str==NULL, then from a file `name';
+ * if fd==-1 and str, then from the string.
  */
 Source *
-setsource(char *name, FILE *fd, char *str)
+setsource(char *name, int fd, char *str)
 {
 	Source *s = new(Source);
 	int len;
@@ -572,8 +562,8 @@ unsetsource(void)
 {
 	Source *s = cursource;
 
-	if (s->fd != NULL) {
-		fclose(s->fd);
+	if (s->fd>=0) {
+		close(s->fd);
 		dofree(s->inb);
 	}
 	cursource = s->next;

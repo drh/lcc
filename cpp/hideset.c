@@ -54,11 +54,9 @@ newhideset(int hs, Nlist *np)
 	if (nhidesets >= maxhidesets) {
 		maxhidesets = 3*maxhidesets/2+1;
 		hidesets = (Hideset *)realloc(hidesets, (sizeof (Hideset *))*maxhidesets);
-		if (hidesets == NULL)
-			error(FATAL, "Out of memory from realloc");
 	}
-	hs1 = (Hideset)domalloc(len*sizeof *hs1);
-	memmove(hs1, nhs, len*sizeof *hs1);
+	hs1 = (Hideset)domalloc(len*sizeof(Hideset));
+	memmove(hs1, nhs, len*sizeof(Hideset));
 	hidesets[nhidesets] = hs1;
 	return nhidesets++;
 }
@@ -95,7 +93,7 @@ void
 iniths(void)
 {
 	hidesets = (Hideset *)domalloc(maxhidesets*sizeof(Hideset *));
-	hidesets[0] = (Hideset)domalloc(sizeof *hidesets[0]);
+	hidesets[0] = (Hideset)domalloc(sizeof(Hideset));
 	*hidesets[0] = NULL;
 	nhidesets++;
 }

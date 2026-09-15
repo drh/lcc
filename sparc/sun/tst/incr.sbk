@@ -1,0 +1,95 @@
+.global _main
+.seg "text"
+.align 4
+.proc 4
+_main:
+L1:
+retl; nop
+.global _memchar
+.align 4
+.proc 4
+_memchar:
+save %sp,-104,%sp
+ld [%fp+-8],%i5
+add %i5,1,%i4
+st %i4,[%fp+-8]
+ldsb [%i5],%i5
+stb %i5,[%fp+-1]
+ld [%fp+-8],%i5
+add %i5,1,%i5
+st %i5,[%fp+-8]
+ldsb [%i5],%i5
+stb %i5,[%fp+-1]
+ld [%fp+-8],%i5
+add %i5,-1,%i4
+st %i4,[%fp+-8]
+ldsb [%i5],%i5
+stb %i5,[%fp+-1]
+ld [%fp+-8],%i5
+add %i5,-1,%i5
+st %i5,[%fp+-8]
+ldsb [%i5],%i5
+stb %i5,[%fp+-1]
+L2:
+ret; restore
+.global _memint
+.align 4
+.proc 4
+_memint:
+save %sp,-104,%sp
+ld [%fp+-8],%i5
+add %i5,4,%i4
+st %i4,[%fp+-8]
+ld [%i5],%i5
+st %i5,[%fp+-4]
+ld [%fp+-8],%i5
+add %i5,4,%i5
+st %i5,[%fp+-8]
+ld [%i5],%i5
+st %i5,[%fp+-4]
+ld [%fp+-8],%i5
+add %i5,-4,%i4
+st %i4,[%fp+-8]
+ld [%i5],%i5
+st %i5,[%fp+-4]
+ld [%fp+-8],%i5
+add %i5,-4,%i5
+st %i5,[%fp+-8]
+ld [%i5],%i5
+st %i5,[%fp+-4]
+L9:
+ret; restore
+.global _regchar
+.align 4
+.proc 4
+_regchar:
+mov %o4,%o3
+add %o3,1,%o4
+ldsb [%o3],%o5
+add %o4,1,%o3
+mov %o3,%o4
+ldsb [%o3],%o5
+mov %o4,%o3
+add %o3,-1,%o4
+ldsb [%o3],%o5
+add %o4,-1,%o4
+ldsb [%o4],%o5
+L16:
+retl; nop
+.global _regint
+.align 4
+.proc 4
+_regint:
+mov %o4,%o3
+add %o3,4,%o4
+ld [%o3],%o5
+add %o4,4,%o3
+mov %o3,%o4
+ld [%o3],%o5
+mov %o4,%o3
+add %o3,-4,%o4
+ld [%o3],%o5
+add %o4,-4,%o4
+ld [%o4],%o5
+L23:
+retl; nop

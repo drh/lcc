@@ -3,6 +3,8 @@ Decimal and octal/hex constants sometimes give
    different results when assigned to longs.
 Decimal and octal/hex constants sometimes give
    different results when assigned to longs.
+Decimal and octal/hex constants sometimes give
+   different results when assigned to longs.
 Section s241    returned 0.
 Section s243    returned 0.
 Section s244    returned 0.
