@@ -3,27 +3,24 @@
 
 #define CLOCKS_PER_SEC 1000000
 #ifndef NULL
-#define NULL ((void*)0)
+#define NULL 0
 #endif
 
-#if !defined(_CLOCK_T) && !defined(_CLOCK_T_) && !defined(_CLOCK_T_DEFINED)
+#if !defined(_CLOCK_T) && !defined(_CLOCK_T_)
 #define _CLOCK_T
 #define _CLOCK_T_
-#define _CLOCK_T_DEFINED
 typedef long clock_t;
 #endif
 
-#if !defined(_TIME_T) && !defined(_TIME_T_) && !defined(_TIME_T_DEFINED)
+#if !defined(_TIME_T) && !defined(_TIME_T_)
 #define _TIME_T
 #define _TIME_T_
-#define _TIME_T_DEFINED
 typedef long time_t;
 #endif
 
-#if !defined(_SIZE_T) && !defined(_SIZE_T_) && !defined(_SIZE_T_DEFINED)
+#if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #define _SIZE_T
 #define _SIZE_T_
-#define _SIZE_T_DEFINED
 typedef unsigned long size_t;
 #endif
 

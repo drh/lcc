@@ -129,11 +129,11 @@ j $31
 .end main
 .data
 .align 2
-L.16:
-.word L.17
-.word L.18
+L.18:
 .word L.19
 .word L.20
+.word L.21
+.word L.22
 .word 0x0
 .globl f
 .text
@@ -150,19 +150,18 @@ addu $sp,$sp,-32
 .cprestore 16
 sw $30,20($sp)
 sw $31,24($sp)
-la $30,L.16
-b L.24
-L.21:
-la $4,L.25
+la $30,L.18
+b L.26
+L.23:
+la $4,L.27
 lw $5,($30)
 jal printf
-L.22:
-la $30,4($30)
 L.24:
+la $30,4($30)
+L.26:
 lw $24,($30)
-bne $24,$0,L.21
-move $2,$0
-L.15:
+bne $24,$0,L.23
+L.17:
 lw $25,16($sp)
 lw $30,20($sp)
 lw $31,24($sp)
@@ -185,33 +184,31 @@ sw $23,16($sp)
 sw $30,24($sp)
 sw $31,28($sp)
 move $30,$4
-b L.30
-L.27:
+b L.32
+L.29:
 move $23,$0
-b L.34
-L.31:
-la $4,L.35
+b L.36
+L.33:
+la $4,L.37
 sll $24,$23,2
 addu $24,$24,$30
 lw $5,($24)
 jal printf
-L.32:
-la $23,1($23)
 L.34:
-move $24,$23
-la $15,3
-bltu $24,$15,L.31
-la $4,L.25
+la $23,1($23)
+L.36:
+la $24,3
+bltu $23,$24,L.33
+la $4,L.27
 la $5,12($30)
 jal printf
-L.28:
-la $30,20($30)
 L.30:
+la $30,20($30)
+L.32:
 lw $24,($30)
-bne $24,$0,L.27
+bne $24,$0,L.29
 jal h
-move $2,$0
-L.26:
+L.28:
 lw $23,16($sp)
 lw $25,20($sp)
 lw $30,24($sp)
@@ -234,9 +231,9 @@ addu $sp,$sp,-32
 sw $30,24($sp)
 sw $31,28($sp)
 move $30,$0
-b L.40
-L.37:
-la $4,L.41
+b L.42
+L.39:
+la $4,L.43
 la $24,20
 mul $24,$24,$30
 lw $5,words($24)
@@ -245,14 +242,12 @@ lw $7,words+8($24)
 la $24,words+12($24)
 sw $24,16($sp)
 jal printf
-L.38:
-la $30,1($30)
 L.40:
-move $24,$30
-la $15,5
-bltu $24,$15,L.37
-move $2,$0
-L.36:
+la $30,1($30)
+L.42:
+la $24,5
+bltu $30,$24,L.39
+L.38:
 lw $25,20($sp)
 lw $30,24($sp)
 lw $31,28($sp)
@@ -261,7 +256,7 @@ j $31
 .end h
 .rdata
 .align 0
-L.41:
+L.43:
 .byte 37
 .byte 100
 .byte 32
@@ -276,19 +271,19 @@ L.41:
 .byte 10
 .byte 0
 .align 0
-L.35:
+L.37:
 .byte 37
 .byte 100
 .byte 32
 .byte 0
 .align 0
-L.25:
+L.27:
 .byte 37
 .byte 115
 .byte 10
 .byte 0
 .align 0
-L.20:
+L.22:
 .byte 119
 .byte 104
 .byte 105
@@ -296,20 +291,20 @@ L.20:
 .byte 101
 .byte 0
 .align 0
-L.19:
+L.21:
 .byte 101
 .byte 108
 .byte 115
 .byte 101
 .byte 0
 .align 0
-L.18:
+L.20:
 .byte 102
 .byte 111
 .byte 114
 .byte 0
 .align 0
-L.17:
+L.19:
 .byte 105
 .byte 102
 .byte 0

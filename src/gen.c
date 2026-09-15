@@ -1,7 +1,5 @@
 #include "c.h"
 
-static char rcsid[] = "$Id$";
-
 #define readsreg(p) \
 	(generic((p)->op)==INDIR && (p)->kids[0]->op==VREG+P)
 #define setsrc(d) ((d) && (d)->x.regnode && \
@@ -10,32 +8,34 @@ static char rcsid[] = "$Id$";
 
 #define relink(a, b) ((b)->x.prev = (a), (a)->x.next = (b))
 
-static Symbol   askfixedreg(Symbol);
-static Symbol   askreg(Symbol, unsigned*);
-static void     blkunroll(int, int, int, int, int, int, int[]);
-static void     docall(Node);
-static void     dumpcover(Node, int, int);
-static void     dumpregs(char *, char *, char *);
-static void     dumprule(int);
-static void     dumptree(Node);
-static void     genreload(Node, Symbol, int);
-static void     genspill(Symbol, Node, Symbol);
-static Symbol   getreg(Symbol, unsigned*, Node);
-static int      getrule(Node, int);
-static void     linearize(Node, Node);
-static int      moveself(Node);
-static void     prelabel(Node);
-static Node*    prune(Node, Node*);
-static void     putreg(Symbol);
-static void     ralloc(Node);
-static void     reduce(Node, int);
-static int      reprune(Node*, int, int, Node);
-static int      requate(Node);
-static Node     reuse(Node, int);
-static void     rewrite(Node);
-static Symbol   spillee(Symbol, unsigned mask[], Node);
-static void     spillr(Symbol, Node);
-static int      uses(Node, Regnode);
+static Symbol   askfixedreg     ARGS((Symbol));
+static Symbol   askreg          ARGS((Symbol, unsigned*));
+static void     blkunroll       ARGS((int, int, int, int, int, int, int[]));
+static void     docall          ARGS((Node));
+static void     dumpcover       ARGS((Node, int, int));
+static void     dumpregs        ARGS((char *, char *, char *));
+static void     dumprule        ARGS((int));
+static void     dumptree        ARGS((Node));
+static unsigned	emitasm		ARGS((Node, int));
+static void     genreload       ARGS((Node, Symbol, int));
+static void     genspill        ARGS((Symbol, Node, Symbol));
+static Symbol   getreg          ARGS((Symbol, unsigned*, Node));
+static int      getrule         ARGS((Node, int));
+static void     linearize       ARGS((Node, Node));
+static int      moveself        ARGS((Node));
+static void     prelabel        ARGS((Node));
+static Node*    prune           ARGS((Node, Node*));
+static void     putreg          ARGS((Symbol));
+static void     ralloc          ARGS((Node));
+static void     reduce          ARGS((Node, int));
+static int      reprune         ARGS((Node*, int, int, Node));
+static int      requate         ARGS((Node));
+static Node     reuse           ARGS((Node, int));
+static void     rewrite         ARGS((Node));
+static Symbol   spillee         ARGS((Symbol, Node));
+static void     spillr          ARGS((Symbol, Node));
+static int      trashes         ARGS((Node, Node));
+static int      uses            ARGS((Node, unsigned));
 
 int offset;
 
@@ -52,14 +52,14 @@ int dflag = 0;
 
 int swap;
 
-unsigned (*emitter)(Node, int) = emitasm;
+unsigned (*emitter) ARGS((Node, int)) = emitasm;
 static char NeedsReg[] = {
 	0,                      /* unused */
 	1,                      /* CNST */
 	0, 0,                   /* ARG ASGN */
 	1,                      /* INDIR  */
-	0, 0, 1, 1,             /*  -  - CVF CVI */
-	1, 0, 1, 1,             /* CVP - CVU NEG */
+	1, 1, 1, 1,             /* CVC CVD CVF CVI */
+	1, 1, 1, 1,             /* CVP CVS CVU NEG */
 	1,                      /* CALL */
 	1,                      /* LOAD */
 	0,                      /* RET */
@@ -68,65 +68,68 @@ static char NeedsReg[] = {
 	1, 1, 1, 1,             /* BAND BCOM BOR BXOR */
 	1, 1,                   /* DIV MUL */
 	0, 0, 0, 0, 0, 0,       /* EQ GE GT LE LT NE */
-	0, 0                   /* JUMP LABEL   */
+	0, 0,                   /* JUMP LABEL   */
 };
+Symbol rmap[16];
 Node head;
 
 unsigned freemask[2];
 unsigned usedmask[2];
 unsigned tmask[2];
 unsigned vmask[2];
-Symbol mkreg(char *fmt, int n, int mask, int set) {
+Symbol mkreg(fmt, n, mask, set)
+char *fmt; int n, mask, set; {
 	Symbol p;
 
 	NEW0(p, PERM);
-	p->name = p->x.name = stringf(fmt, n);
+	p->x.name = stringf(fmt, n);
 	NEW0(p->x.regnode, PERM);
 	p->x.regnode->number = n;
 	p->x.regnode->mask = mask<<n;
 	p->x.regnode->set = set;
 	return p;
 }
-Symbol mkwildcard(Symbol *syms) {
+Symbol mkwildcard(syms) Symbol *syms; {
 	Symbol p;
 
 	NEW0(p, PERM);
-	p->name = p->x.name = "wildcard";
+	p->x.name = "wildcard";
 	p->x.wildcard = syms;
 	return p;
 }
-void mkauto(Symbol p) {
+void mkauto(p) Symbol p; {
 	assert(p->sclass == AUTO);
 	offset = roundup(offset + p->type->size, p->type->align);
 	p->x.offset = -offset;
 	p->x.name = stringd(-offset);
 }
-void blockbeg(Env *e) {
+void blockbeg(e) Env *e; {
 	e->offset = offset;
 	e->freemask[IREG] = freemask[IREG];
 	e->freemask[FREG] = freemask[FREG];
 }
-void blockend(Env *e) {
+void blockend(e) Env *e; {
 	if (offset > maxoffset)
 		maxoffset = offset;
 	offset = e->offset;
 	freemask[IREG] = e->freemask[IREG];
 	freemask[FREG] = e->freemask[FREG];
 }
-int mkactual(int align, int size) {
+int mkactual(align, size) int align, size; {
 	int n = roundup(argoffset, align);
 
 	argoffset = n + size;
 	return n;
 }
-static void docall(Node p) {
+static void docall(p) Node p; {
 	p->syms[1] = p->syms[0];
 	p->syms[0] = intconst(argoffset);
 	if (argoffset > maxargoffset)
 		maxargoffset = argoffset;
 	argoffset = 0;
 }
-void blkcopy(int dreg, int doff, int sreg, int soff, int size, int tmp[]) {
+void blkcopy(dreg, doff, sreg, soff, size, tmp)
+int dreg, doff, sreg, soff, size, tmp[]; {
 	assert(size >= 0);
 	if (size == 0)
 		return;
@@ -144,7 +147,8 @@ void blkcopy(int dreg, int doff, int sreg, int soff, int size, int tmp[]) {
 	else
 		(*IR->x.blkloop)(dreg, doff, sreg, soff, size, tmp);
 }
-static void blkunroll(int k, int dreg, int doff, int sreg, int soff, int size, int tmp[]) {
+static void blkunroll(k, dreg, doff, sreg, soff, size, tmp)
+int k, dreg, doff, sreg, soff, size, tmp[]; {
 	int i;
 
 	assert(IR->x.max_unaligned_load);
@@ -162,7 +166,7 @@ static void blkunroll(int k, int dreg, int doff, int sreg, int soff, int size, i
 		(*IR->x.blkstore)(k, i+doff, dreg, tmp[0]);
 	}
 }
-void parseflags(int argc, char *argv[]) {
+void parseflags(argc, argv) int argc; char *argv[]; {
 	int i;
 
 	for (i = 0; i < argc; i++)
@@ -171,18 +175,15 @@ void parseflags(int argc, char *argv[]) {
 		else if (strcmp(argv[i], "-b") == 0)	/* omit */
 			bflag = 1;			/* omit */
 }
-static int getrule(Node p, int nt) {
+static int getrule(p, nt) Node p; int nt; {
 	int rulenum;
 
 	assert(p);
 	rulenum = (*IR->x._rule)(p->x.state, nt);
-	if (!rulenum) {
-		fprint(stderr, "(%x->op=%s at %w is corrupt.)\n", p, opname(p->op), &src);
-		assert(0);
-	}
+	assert(rulenum);
 	return rulenum;
 }
-static void reduce(Node p, int nt) {
+static void reduce(p, nt) Node p; int nt; {
 	int rulenum, i;
 	short *nts;
 	Node kids[10];
@@ -197,12 +198,12 @@ static void reduce(Node p, int nt) {
 		assert(p->x.inst == 0 || p->x.inst == nt);
 		p->x.inst = nt;
 		if (p->syms[RX] && p->syms[RX]->temporary) {
-			debug(fprint(stderr, "(using %s)\n", p->syms[RX]->name));
+			debug(fprint(2, "(using %s)\n", p->syms[RX]->name));
 			p->syms[RX]->x.usecount++;
 		}
 	}
 }
-static Node reuse(Node p, int nt) {
+static Node reuse(p, nt) Node p; int nt; {
 	struct _state {
 		short cost[1];
 	};
@@ -216,20 +217,30 @@ static Node reuse(Node p, int nt) {
 		return p;
 }
 
-int mayrecalc(Node p) {
-	int op;
+int mayrecalc(p) Node p; {
+	Node q;
 
 	assert(p && p->syms[RX]);
-	if (p->syms[RX]->u.t.cse == NULL)
+	if (!p->syms[RX]->u.t.cse)
 		return 0;
-	op = generic(p->syms[RX]->u.t.cse->op);
-	if (op == CNST || op == ADDRF || op == ADDRG || op == ADDRL) {
-		p->x.mayrecalc = 1;
-		return 1;
-	} else
-		return 0;
+	for (q = head; q && q->x.listed; q = q->link)
+		if (generic(q->op) == ASGN
+		&& trashes(q->kids[0], p->syms[RX]->u.t.cse))
+			return 0;
+	p->x.mayrecalc = 1;
+	return 1;
 }
-static Node *prune(Node p, Node pp[]) {
+static int trashes(p, q) Node p, q; {
+	assert(p);
+	if (!q)
+		return 0;
+	else if (p->op == q->op && p->syms[0] == q->syms[0])
+		return 1;
+	else
+		return trashes(p, q->kids[0])
+		    || trashes(p, q->kids[1]);
+}
+static Node *prune(p, pp) Node p, pp[]; {
 	if (p == NULL)
 		return pp;
 	p->x.kids[0] = p->x.kids[1] = p->x.kids[2] = NULL;
@@ -238,7 +249,7 @@ static Node *prune(Node p, Node pp[]) {
 	else if (p->syms[RX] && p->syms[RX]->temporary
 	&& p->syms[RX]->x.usecount < 2) {
 		p->x.inst = 0;
-		debug(fprint(stderr, "(clobbering %s)\n", p->syms[RX]->name));
+		debug(fprint(2, "(clobbering %s)\n", p->syms[RX]->name));
 		return prune(p->kids[1], prune(p->kids[0], pp));
 	}
 	else {
@@ -250,61 +261,34 @@ static Node *prune(Node p, Node pp[]) {
 
 #define ck(i) return (i) ? 0 : LBURG_MAX
 
-int range(Node p, int lo, int hi) {
+int range(p, lo, hi) Node p; int lo, hi; {
 	Symbol s = p->syms[0];
 
-	switch (specific(p->op)) {
-	case ADDRF+P:
-	case ADDRL+P: ck(s->x.offset >= lo && s->x.offset <= hi);
-	case CNST+I:  ck(s->u.c.v.i  >= lo && s->u.c.v.i  <= hi);
-	case CNST+U:  ck(s->u.c.v.u  >= lo && s->u.c.v.u  <= hi);
-	case CNST+P:  ck(s->u.c.v.p  == 0  && lo <= 0 && hi >= 0);
+	switch (p->op) {
+	case ADDRFP: ck(s->x.offset >= lo && s->x.offset <= hi);
+	case ADDRLP: ck(s->x.offset >= lo && s->x.offset <= hi);
+	case CNSTC:  ck(s->u.c.v.sc >= lo && s->u.c.v.sc <= hi);
+	case CNSTI:  ck(s->u.c.v.i  >= lo && s->u.c.v.i  <= hi);
+	case CNSTS:  ck(s->u.c.v.ss >= lo && s->u.c.v.ss <= hi);
+	case CNSTU:  ck(s->u.c.v.u  >= lo && s->u.c.v.u  <= hi);
+	case CNSTP:  ck(s->u.c.v.p  == 0  && lo <= 0 && hi >= 0);
 	}
 	return LBURG_MAX;
 }
-static void dumptree(Node p) {
-	if (p->op == VREG+P && p->syms[0]) {
-		fprint(stderr, "VREGP(%s)", p->syms[0]->name);
-		return;
-	} else if (generic(p->op) == LOAD) {
-		fprint(stderr, "LOAD(");
+static void dumptree(p) Node p; {
+	fprint(2, "%s(", IR->x._opname[p->op]);
+	if (IR->x._arity[p->op] == 0 && p->syms[0])
+		fprint(2, "%s", p->syms[0]->name);
+	else if (IR->x._arity[p->op] == 1)
 		dumptree(p->kids[0]);
-		fprint(stderr, ")");
-		return;
-	}
-	fprint(stderr, "%s(", opname(p->op));
-	switch (generic(p->op)) {
-	case CNST: case LABEL:
-	case ADDRG: case ADDRF: case ADDRL:
-		if (p->syms[0])
-			fprint(stderr, "%s", p->syms[0]->name);
-		break;
-	case RET:
-		if (p->kids[0])
-			dumptree(p->kids[0]);
-		break;
-	case CVF: case CVI: case CVP: case CVU: case JUMP: 
-	case ARG: case BCOM: case NEG: case INDIR:
+	else if (IR->x._arity[p->op] == 2) {
 		dumptree(p->kids[0]);
-		break;
-	case CALL:
-		if (optype(p->op) != B) {
-			dumptree(p->kids[0]);
-			break;
-		}
-		/* else fall thru */
-	case EQ: case NE: case GT: case GE: case LE: case LT:
-	case ASGN: case BOR: case BAND: case BXOR: case RSH: case LSH:
-	case ADD: case SUB:  case DIV: case MUL: case MOD:
-		dumptree(p->kids[0]);
-		fprint(stderr, ", ");
+		fprint(2, ", ");
 		dumptree(p->kids[1]);
-		break;
-	default: assert(0);
 	}
-	fprint(stderr, ")");
+	fprint(2, ")");
 }
-static void dumpcover(Node p, int nt, int in) {
+static void dumpcover(p, nt, in) Node p; int nt, in; {
 	int rulenum, i;
 	short *nts;
 	Node kids[10];
@@ -312,23 +296,23 @@ static void dumpcover(Node p, int nt, int in) {
 	p = reuse(p, nt);
 	rulenum = getrule(p, nt);
 	nts = IR->x._nts[rulenum];
-	fprint(stderr, "dumpcover(%x) = ", p);
+	fprint(2, "dumpcover(%x) = ", p);
 	for (i = 0; i < in; i++)
-		fprint(stderr, " ");
+		fprint(2, " ");
 	dumprule(rulenum);
 	(*IR->x._kids)(p, rulenum, kids);
 	for (i = 0; nts[i]; i++)
 		dumpcover(kids[i], nts[i], in+1);
 }
 
-static void dumprule(int rulenum) {
+static void dumprule(rulenum) int rulenum; {
 	assert(rulenum);
-	fprint(stderr, "%s / %s", IR->x._string[rulenum],
+	fprint(2, "%s / %s", IR->x._string[rulenum],
 		IR->x._templates[rulenum]);
 	if (!IR->x._isinstruction[rulenum])
-		fprint(stderr, "\n");
+		fprint(2, "\n");
 }
-unsigned emitasm(Node p, int nt) {
+static unsigned emitasm(p, nt) Node p; int nt; {
 	int rulenum;
 	short *nts;
 	char *fmt;
@@ -340,32 +324,32 @@ unsigned emitasm(Node p, int nt) {
 	fmt = IR->x._templates[rulenum];
 	assert(fmt);
 	if (IR->x._isinstruction[rulenum] && p->x.emitted)
-		print("%s", p->syms[RX]->x.name);
+		outs(p->syms[RX]->x.name);
 	else if (*fmt == '#')
 		(*IR->x.emit2)(p);
 	else {
 		if (*fmt == '?') {
 			fmt++;
-			assert(p->kids[0]);
+			assert(p->x.kids[0]);
 			if (p->syms[RX] == p->x.kids[0]->syms[RX])
 				while (*fmt++ != '\n')
 					;
 		}
 		for ((*IR->x._kids)(p, rulenum, kids); *fmt; fmt++)
 			if (*fmt != '%')
-				(void)putchar(*fmt);
+				*bp++ = *fmt;
 			else if (*++fmt == 'F')
 				print("%d", framesize);
 			else if (*fmt >= '0' && *fmt <= '9')
 				emitasm(kids[*fmt - '0'], nts[*fmt - '0']);
 			else if (*fmt >= 'a' && *fmt < 'a' + NELEMS(p->syms))
-				fputs(p->syms[*fmt - 'a']->x.name, stdout);
+				outs(p->syms[*fmt - 'a']->x.name);
 			else
-				(void)putchar(*fmt);
+				*bp++ = *fmt;
 	}
 	return 0;
 }
-void emit(Node p) {
+void emit(p) Node p; {
 	for (; p; p = p->x.next) {
 		assert(p->x.registered);
 		if (p->x.equatable && requate(p) || moveself(p))
@@ -375,25 +359,25 @@ void emit(Node p) {
 		p->x.emitted = 1;
 	}
 }
-static int moveself(Node p) {
+static int moveself(p) Node p; {
 	return p->x.copy
 	&& p->syms[RX]->x.name == p->x.kids[0]->syms[RX]->x.name;
 }
-int move(Node p) {
+int move(p) Node p; {
 	p->x.copy = 1;
 	return 1;
 }
-static int requate(Node q) {
+static int requate(q) Node q; {
 	Symbol src = q->x.kids[0]->syms[RX];
 	Symbol tmp = q->syms[RX];
 	Node p;
 	int n = 0;
 
-	debug(fprint(stderr, "(requate(%x): tmp=%s src=%s)\n", q, tmp->x.name, src->x.name));
+	debug(fprint(2, "(requate(%x): tmp=%s src=%s)\n", q, tmp->x.name, src->x.name));
 	for (p = q->x.next; p; p = p->x.next)
 		if (p->x.copy && p->syms[RX] == src
 		&&  p->x.kids[0]->syms[RX] == tmp)
-			debug(fprint(stderr, "(requate arm 0 at %x)\n", p)),
+			debug(fprint(2, "(requate arm 0 at %x)\n", p)),
 			p->syms[RX] = tmp;
 		else if (setsrc(p->syms[RX]) && !moveself(p) && !readsreg(p))
 			return 0;
@@ -404,11 +388,11 @@ static int requate(Node q) {
 		else if (p->op == LABEL+V && p->x.next)
 			return 0;
 		else if (p->syms[RX] == tmp && readsreg(p))
-			debug(fprint(stderr, "(requate arm 5 at %x)\n", p)),
+			debug(fprint(2, "(requate arm 5 at %x)\n", p)),
 			n++;
 		else if (p->syms[RX] == tmp)
 			break;
-	debug(fprint(stderr, "(requate arm 7 at %x)\n", p));
+	debug(fprint(2, "(requate arm 7 at %x)\n", p));
 	assert(n > 0);
 	for (p = q->x.next; p; p = p->x.next)
 		if (p->syms[RX] == tmp && readsreg(p)) {
@@ -418,13 +402,13 @@ static int requate(Node q) {
 		}
 	return 1;
 }
-static void prelabel(Node p) {
+static void prelabel(p) Node p; {
 	if (p == NULL)
 		return;
 	prelabel(p->kids[0]);
 	prelabel(p->kids[1]);
 	if (NeedsReg[opindex(p->op)])
-		setreg(p, (*IR->x.rmap)(opkind(p->op)));
+		setreg(p, rmap[optype(p->op)]);
 	switch (generic(p->op)) {
 	case ADDRF: case ADDRL:
 		if (p->syms[0]->sclass == REGISTER)
@@ -435,29 +419,25 @@ static void prelabel(Node p) {
 			setreg(p, p->kids[0]->syms[0]);
 		break;
 	case ASGN:
-		if (p->kids[0]->op == VREG+P)
+		if (p->kids[0]->op == VREG+P) {
+			debug(fprint(2, "(cse=%x)\n", p->kids[0]->syms[0]->u.t.cse));
 			rtarget(p, 1, p->kids[0]->syms[0]);
-		break;
-	case CVI: case CVU: case CVP:
-		if (optype(p->op) != F
-		&&  opsize(p->op) <= p->syms[0]->u.c.v.i)
-			p->op = LOAD + opkind(p->op);
+		}
 		break;
 	}
 	(IR->x.target)(p);
 }
-void setreg(Node p, Symbol r) {
+void setreg(p, r) Node p; Symbol r; {
 	p->syms[RX] = r;
 }
-void rtarget(Node p, int n, Symbol r) {
+void rtarget(p, n, r) Node p; int n; Symbol r; {
 	Node q = p->kids[n];
 
 	assert(q);
-	assert(r);
 	assert(r->sclass == REGISTER || !r->x.wildcard);
 	assert(q->syms[RX]);
 	if (r != q->syms[RX] && !q->syms[RX]->x.wildcard) {
-		q = newnode(LOAD + opkind(q->op),
+		q = newnode(LOAD + optype(q->op),
 			q, NULL, q->syms[0]);
 		if (r->u.t.cse == p->kids[n])
 			r->u.t.cse = q;
@@ -465,18 +445,18 @@ void rtarget(Node p, int n, Symbol r) {
 		q->x.kids[0] = q->kids[0];
 	}
 	setreg(q, r);
-	debug(fprint(stderr, "(targeting %x->x.kids[%d]=%x to %s)\n", p, n, p->kids[n], r->x.name));
+	debug(fprint(2, "(targeting %x->x.kids[%d]=%x to %s)\n", p, n, p->kids[n], r->x.name));
 }
-static void rewrite(Node p) {
+static void rewrite(p) Node p; {
 	assert(p->x.inst == 0);
 	prelabel(p);
 	debug(dumptree(p));
-	debug(fprint(stderr, "\n"));
+	debug(fprint(2, "\n"));
 	(*IR->x._label)(p);
 	debug(dumpcover(p, 1, 0));
 	reduce(p, 1);
 }
-Node gen(Node forest) {
+Node gen(forest) Node forest; {
 	int i;
 	struct node sentinel;
 	Node dummy, p;
@@ -512,25 +492,44 @@ Node gen(Node forest) {
 				p->x.kids[i]->syms[RX]->x.lastuse = p->x.kids[i];
 			}
 		}
+	for (p = forest; p; p = p->x.next)
+		if (p->x.copy && p->x.kids[0]->syms[RX]->u.t.cse) {
+			Symbol dst = p->syms[RX];
+			Symbol temp = p->x.kids[0]->syms[RX];
+			Node q;
+
+			assert(temp->x.lastuse);
+			for (q = temp->u.t.cse; q; q = q->x.next)
+				if (p != q && dst == q->syms[RX]
+				|| (q->op == LABELV || q->op == JUMPV || generic(q->op)==RET ||
+				    generic(q->op)==EQ || generic(q->op)==NE ||
+				    generic(q->op)==LE || generic(q->op)==LT ||
+				    generic(q->op)==GE || generic(q->op)==GT ||
+				    (generic(q->op) == CALL && dst->sclass != REGISTER)))
+					break;
+			if (!q)
+				for (q = temp->x.lastuse; q; q = q->x.prevuse)
+					q->syms[RX] = dst;
+		}
 	for (p = forest; p; p = p->x.next) {
 		ralloc(p);
 		if (p->x.listed && NeedsReg[opindex(p->op)]
-		&& (*IR->x.rmap)(opkind(p->op))) {
+		&& rmap[optype(p->op)]) {
 			assert(generic(p->op) == CALL || generic(p->op) == LOAD);
 			putreg(p->syms[RX]);
 		}
 	}
 	return forest;
 }
-int notarget(Node p) {
+int notarget(p) Node p; {
 	return p->syms[RX]->x.wildcard ? 0 : LBURG_MAX;
 }
-static void putreg(Symbol r) {
+static void putreg(r) Symbol r; {
 	assert(r && r->x.regnode);
 	freemask[r->x.regnode->set] |= r->x.regnode->mask;
 	debug(dumpregs("(freeing %s)\n", r->x.name, NULL));
 }
-static Symbol askfixedreg(Symbol s) {
+static Symbol askfixedreg(s) Symbol s; {
 	Regnode r = s->x.regnode;
 	int n = r->set;
 
@@ -542,7 +541,8 @@ static Symbol askfixedreg(Symbol s) {
 		return s;
 	}
 }
-static Symbol askreg(Symbol rs, unsigned rmask[]) {
+static Symbol askreg(rs, rmask)
+Symbol rs; unsigned rmask[]; {
 	int i;
 
 	if (rs->x.wildcard == NULL)
@@ -557,19 +557,21 @@ static Symbol askreg(Symbol rs, unsigned rmask[]) {
 	return NULL;
 }
 
-static Symbol getreg(Symbol s, unsigned mask[], Node p) {
+static Symbol getreg(s, mask, p)
+Symbol s; unsigned mask[]; Node p; {
 	Symbol r = askreg(s, mask);
 	if (r == NULL) {
-		r = spillee(s, mask, p);
-		assert(r && r->x.regnode);
+		r = spillee(s, p);
+		assert(r);
 		spill(r->x.regnode->mask, r->x.regnode->set, p);
 		r = askreg(s, mask);
+		assert(r);
 	}
-	assert(r && r->x.regnode);
+	assert(r->x.regnode);
 	r->x.regnode->vbl = NULL;
 	return r;
 }
-int askregvar(Symbol p, Symbol regs) {
+int askregvar(p, regs) Symbol p, regs; {
 	Symbol r;
 
 	assert(p);
@@ -579,7 +581,7 @@ int askregvar(Symbol p, Symbol regs) {
 		p->sclass = AUTO;
 		return 0;
 	}
-	else if (p->temporary) {
+	else if (p->temporary && p->u.t.cse) {
 		p->x.name = "?";
 		return 1;
 	}
@@ -595,23 +597,23 @@ int askregvar(Symbol p, Symbol regs) {
 		return 0;
 	}
 }
-static void linearize(Node p, Node next) {
+static void linearize(p, next) Node next, p; {
 	int i;
 
 	for (i = 0; i < NELEMS(p->x.kids) && p->x.kids[i]; i++)
 		linearize(p->x.kids[i], next);
 	relink(next->x.prev, p);
 	relink(p, next);
-	debug(fprint(stderr, "(listing %x)\n", p));
+	debug(fprint(2, "(listing %x)\n", p));
 }
-static void ralloc(Node p) {
+static void ralloc(p) Node p; {
 	int i;
 	unsigned mask[2];
 
 	mask[0] = tmask[0];
 	mask[1] = tmask[1];
 	assert(p);
-	debug(fprint(stderr, "(rallocing %x)\n", p));
+	debug(fprint(2, "(rallocing %x)\n", p));
 	for (i = 0; i < NELEMS(p->x.kids) && p->x.kids[i]; i++) {
 		Node kid = p->x.kids[i];
 		Symbol r = kid->syms[RX];
@@ -620,11 +622,11 @@ static void ralloc(Node p) {
 			putreg(r);
 	}
 	if (!p->x.registered && NeedsReg[opindex(p->op)]
-	&& (*IR->x.rmap)(opkind(p->op))) {
+	&& rmap[optype(p->op)]) {
 		Symbol sym = p->syms[RX], set = sym;
 		assert(sym);
-		if (sym->temporary)
-			set = (*IR->x.rmap)(opkind(p->op));
+		if (sym->temporary && sym->u.t.cse)
+			set = rmap[optype(p->op)];
 		assert(set);
 		if (set->sclass != REGISTER) {
 			Symbol r;
@@ -637,13 +639,13 @@ static void ralloc(Node p) {
 					mask[r->x.regnode->set] &= ~r->x.regnode->mask;
 				}
 			r = getreg(set, mask, p);
-			if (sym->temporary) {
+			if (sym->temporary && sym->u.t.cse) {
 				Node q;
 				r->x.lastuse = sym->x.lastuse;
 				for (q = sym->x.lastuse; q; q = q->x.prevuse) {
 					q->syms[RX] = r;
 					q->x.registered = 1;
-					if (sym->u.t.cse && q->x.copy)
+					if (q->x.copy)
 						q->x.equatable = 1;
 				}
 			} else {
@@ -656,55 +658,42 @@ static void ralloc(Node p) {
 	p->x.registered = 1;
 	(*IR->x.clobber)(p);
 }
-static Symbol spillee(Symbol set, unsigned mask[], Node here) {
+static Symbol spillee(set, here) Node here; Symbol set; {
 	Symbol bestreg = NULL;
 	int bestdist = -1, i;
 
 	assert(set);
 	if (!set->x.wildcard)
-		bestreg = set;
-	else {
-		for (i = 31; i >= 0; i--) {
-			Symbol ri = set->x.wildcard[i];
-			if (
-				ri != NULL &&
-				ri->x.lastuse &&
-				(ri->x.regnode->mask&tmask[ri->x.regnode->set]&mask[ri->x.regnode->set])
-			) {
-				Regnode rn = ri->x.regnode;
-				Node q = here;
-				int dist = 0;
-				for (; q && !uses(q, rn); q = q->x.next)
-					dist++;
-				if (q && dist > bestdist) {
-					bestdist = dist;
-					bestreg = ri;
-				}
+		return set;
+	for (i = 31; i >= 0; i--) {
+		Symbol ri = set->x.wildcard[i];
+		if (ri != NULL && ri->x.lastuse
+		&& ri->x.regnode->mask&tmask[ri->x.regnode->set]) {
+			Regnode rn = ri->x.regnode;
+			Node q = here;
+			int dist = 0;
+			for (; q && !uses(q, rn->mask); q = q->x.next)
+				dist++;
+			if (q && dist > bestdist) {
+				bestdist = dist;
+				bestreg = ri;
 			}
 		}
 	}
-	assert(bestreg); /* Must be able to spill something. Reconfigure the register allocator
-		to ensure that we can allocate a register for all nodes without spilling
-		the node's necessary input regs. */	
-	assert(bestreg->x.regnode->vbl == NULL); /* Can't spill register variables because
-		the reload site might be in other blocks. Reconfigure the register allocator
-		to ensure that this register is never allocated to a variable. */
 	return bestreg;
 }
-static int uses(Node p, Regnode rn) {
+static int uses(p, mask) Node p; unsigned mask; {
 	int i;
+	Node q;
 
-	for (i = 0; i < NELEMS(p->x.kids); i++)
-		if (
-			p->x.kids[i] &&
-			p->x.kids[i]->x.registered &&
-			rn->set == p->x.kids[i]->syms[RX]->x.regnode->set &&
-			(rn->mask&p->x.kids[i]->syms[RX]->x.regnode->mask)
-		)
+	for (i = 0; i < NELEMS(p->x.kids)
+		&& (q = p->x.kids[i]) != NULL; i++)
+		if (q->x.registered
+		&& mask&q->syms[RX]->x.regnode->mask)
 			return 1;
 	return 0;
 }
-static void spillr(Symbol r, Node here) {
+static void spillr(r, here) Symbol r; Node here; {
 	int i;
 	Symbol tmp;
 	Node p = r->x.lastuse;
@@ -713,7 +702,7 @@ static void spillr(Symbol r, Node here) {
 		assert(r == p->syms[RX]),
 		p = p->x.prevuse;
 	assert(p->x.registered && !readsreg(p));
-	tmp = newtemp(AUTO, optype(p->op), opsize(p->op));
+	tmp = newtemp(AUTO, optype(p->op));
 	genspill(r, p, tmp);
 	for (p = here->x.next; p; p = p->x.next)
 		for (i = 0; i < NELEMS(p->x.kids) && p->x.kids[i]; i++) {
@@ -723,23 +712,27 @@ static void spillr(Symbol r, Node here) {
 		}
 	putreg(r);
 }
-static void genspill(Symbol r, Node last, Symbol tmp) {
+static void genspill(r, last, tmp)
+Symbol r, tmp; Node last; {
 	Node p, q;
 	Symbol s;
 	unsigned ty;
 
-	debug(fprint(stderr, "(spilling %s to local %s)\n", r->x.name, tmp->x.name));
-	debug(fprint(stderr, "(genspill: "));
+	debug(fprint(2, "(spilling %s to local %s)\n", r->x.name, tmp->x.name));
+	debug(fprint(2, "(genspill: "));
 	debug(dumptree(last));
-	debug(fprint(stderr, ")\n"));
-	ty = opkind(last->op);
+	debug(fprint(2, ")\n"));
+	ty = optype(last->op);
+	if (ty == U)
+		ty = I;
 	NEW0(s, FUNC);
 	s->sclass = REGISTER;
-	s->name = s->x.name = r->x.name;
+	s->x.name = r->x.name;
 	s->x.regnode = r->x.regnode;
-	q = newnode(ADDRL+P + sizeop(IR->ptrmetric.size), NULL, NULL, s);
+	s->x.regnode->vbl = s;
+	q = newnode(ADDRLP, NULL, NULL, s);
 	q = newnode(INDIR + ty, q, NULL, NULL);
-	p = newnode(ADDRL+P + sizeop(IR->ptrmetric.size), NULL, NULL, tmp);
+	p = newnode(ADDRLP, NULL, NULL, tmp);
 	p = newnode(ASGN + ty, p, q, NULL);
 	p->x.spills = 1;
 	rewrite(p);
@@ -748,20 +741,23 @@ static void genspill(Symbol r, Node last, Symbol tmp) {
 	linearize(p, q);
 	for (p = last->x.next; p != q; p = p->x.next) {
 		ralloc(p);
-		assert(!p->x.listed || !NeedsReg[opindex(p->op)] || !(*IR->x.rmap)(opkind(p->op)));
+		assert(!p->x.listed || !NeedsReg[opindex(p->op)] || !rmap[optype(p->op)]);
 	}
 }
 
-static void genreload(Node p, Symbol tmp, int i) {
+static void genreload(p, tmp, i)
+Node p; Symbol tmp; int i; {
 	Node q;
 	int ty;
 
-	debug(fprint(stderr, "(replacing %x with a reload from %s)\n", p->x.kids[i], tmp->x.name));
-	debug(fprint(stderr, "(genreload: "));
+	debug(fprint(2, "(replacing %x with a reload from %s)\n", p->x.kids[i], tmp->x.name));
+	debug(fprint(2, "(genreload: "));
 	debug(dumptree(p->x.kids[i]));
-	debug(fprint(stderr, ")\n"));
-	ty = opkind(p->x.kids[i]->op);
-	q = newnode(ADDRL+P + sizeop(IR->ptrmetric.size), NULL, NULL, tmp);
+	debug(fprint(2, ")\n"));
+	ty = optype(p->x.kids[i]->op);
+	if (ty == U)
+		ty = I;
+	q = newnode(ADDRLP, NULL, NULL, tmp);
 	p->x.kids[i] = newnode(INDIR + ty, q, NULL, NULL);
 	rewrite(p->x.kids[i]);
 	prune(p->x.kids[i], &q);
@@ -769,7 +765,7 @@ static void genreload(Node p, Symbol tmp, int i) {
 	prune(p, &q);
 	linearize(p->x.kids[i], p);
 }
-static int reprune(Node *pp, int k, int n, Node p) {
+static int reprune(pp, k, n, p) Node p, *pp; int k, n; {
 	struct node x, *q = *pp;
 
 	if (q == NULL || k > n)
@@ -778,29 +774,20 @@ static int reprune(Node *pp, int k, int n, Node p) {
 		return reprune(&q->kids[1],
 			reprune(&q->kids[0], k, n, p), n, p);
 	if (k == n) {
-		debug(fprint(stderr, "(reprune changes %x from %x to %x)\n", pp, *pp, p->x.kids[n]));
+		debug(fprint(2, "(reprune changes %x from %x to %x)\n", pp, *pp, p->x.kids[n]));
 		*pp = p->x.kids[n];
 		x = *p;
 		(IR->x.target)(&x);
 	}
 	return k + 1;
 }
-void spill(unsigned mask, int n, Node here) {
+void spill(mask, n, here) unsigned mask; int n; Node here; {
 	int i;
 	Node p;
 
 	here->x.spills = 1;
 	usedmask[n] |= mask;
-	if (mask&~freemask[n]) {
-
-		assert( /* It makes no sense for a node to clobber() its target. */
-			here->x.registered == 0 || /* call isn't coming through clobber() */
-			here->syms[RX] == NULL ||
-			here->syms[RX]->x.regnode == NULL ||
-			here->syms[RX]->x.regnode->set != n ||
-			(here->syms[RX]->x.regnode->mask&mask) == 0
-		);
-
+	if (mask&~freemask[n])
 		for (p = here; p; p = p->x.next)
 			for (i = 0; i < NELEMS(p->x.kids) && p->x.kids[i]; i++) {
 				Symbol r = p->x.kids[i]->syms[RX];
@@ -809,22 +796,21 @@ void spill(unsigned mask, int n, Node here) {
 				&& r->x.regnode->mask&mask)
 					spillr(r, here);
 			}
-	}
 }
-static void dumpregs(char *msg, char *a, char *b) {
-	fprint(stderr, msg, a, b);
-	fprint(stderr, "(free[0]=%x)\n", freemask[0]);
-	fprint(stderr, "(free[1]=%x)\n", freemask[1]);
+static void dumpregs(msg, a, b) char *a, *b, *msg; {
+	fprint(2, msg, a, b);
+	fprint(2, "(free[0]=%x)\n", freemask[0]);
+	fprint(2, "(free[1]=%x)\n", freemask[1]);
 }
 
-int getregnum(Node p) {
+int getregnum(p) Node p; {
 	assert(p && p->syms[RX] && p->syms[RX]->x.regnode);
 	return p->syms[RX]->x.regnode->number;
 }
 
 
-unsigned regloc(Symbol p) {
-	assert(p && p->sclass == REGISTER && p->x.regnode);
+unsigned regloc(p) Symbol p; {
+	assert(p && p->sclass == REGISTER && p->sclass == REGISTER && p->x.regnode);
 	return p->x.regnode->set<<8 | p->x.regnode->number;
 }
 

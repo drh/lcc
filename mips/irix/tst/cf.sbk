@@ -65,9 +65,10 @@ sll $24,$30,2
 l.s $f18,f($24)
 l.s $f16,L.4
 c.eq.s $f18,$f16; bc1t L.19
-mtc1 $23,$f16; cvt.s.w $f16,$f16
+mtc1 $23,$f16; cvt.d.w $f16,$f16
+cvt.s.d $f16,$f16
 div.s $f18,$f18,$f16
-c.ult.s $f18,$f30; bc1t L.19
+c.lt.s $f18,$f30; bc1t L.19
 la $24,32
 bgt $30,$24,L.21
 la $4,L.23
@@ -84,7 +85,8 @@ l.s $f18,L.5
 sll $24,$30,2
 l.s $f16,f($24)
 mul.s $f18,$f18,$f16
-mtc1 $23,$f16; cvt.s.w $f16,$f16
+mtc1 $23,$f16; cvt.d.w $f16,$f16
+cvt.s.d $f16,$f16
 div.s $f18,$f18,$f16
 cvt.d.s $f18,$f18
 mfc1.d $6,$f18

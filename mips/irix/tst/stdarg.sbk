@@ -117,173 +117,165 @@ j $31
 .align 2
 .ent print
 print:
-.frame $sp,64,$31
+.frame $sp,56,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-64
-.mask 0xc2800000,-32
+addu $sp,$sp,-56
+.mask 0xc2800000,-24
 sw $23,20($sp)
 .cprestore 24
 sw $30,28($sp)
 sw $31,32($sp)
-sw $4,64($sp)
-sw $5,68($sp)
-sw $6,72($sp)
-sw $7,76($sp)
-la $30,4+64($sp)
-b L.18
-L.15:
-lw $24,0+64($sp)
+sw $4,56($sp)
+sw $5,60($sp)
+sw $6,64($sp)
+sw $7,68($sp)
+la $30,4+56($sp)
+b L.19
+L.16:
+lw $24,0+56($sp)
 lb $24,($24)
 la $15,37
-bne $24,$15,L.19
-lw $24,0+64($sp)
+bne $24,$15,L.20
+lw $24,0+56($sp)
 la $24,1($24)
-sw $24,0+64($sp)
+sw $24,0+56($sp)
 lb $23,($24)
 la $24,115
-beq $23,$24,L.35
-bgt $23,$24,L.40
-L.39:
+beq $23,$24,L.36
+bgt $23,$24,L.41
+L.40:
 la $24,98
-blt $23,$24,L.21
+blt $23,$24,L.22
 la $24,102
-bgt $23,$24,L.21
+bgt $23,$24,L.22
 sll $24,$23,2
-lw $24,L.41-392($24)
+lw $24,L.42-392($24)
 .cpadd $24
 j $24
 .rdata
 .align 2
-L.41:
-.gpword L.24
-.gpword L.29
-.gpword L.31
-.gpword L.21
-.gpword L.37
+L.42:
+.gpword L.25
+.gpword L.30
+.gpword L.32
+.gpword L.22
+.gpword L.38
 .text
-L.40:
+L.41:
 la $24,119
-beq $23,$24,L.33
-b L.21
-L.24:
-la $24,16($30)
-move $30,$24
-la $15,-16+64($sp)
-la $8,-16($24)
+beq $23,$24,L.34
+b L.22
+L.25:
+la $30,16($30)
+la $24,-16+56($sp)
+la $8,-16($30)
 lw $3,0($8)
 lw $9,4($8)
-sw $3,0($15)
-sw $9,4($15)
+sw $3,0($24)
+sw $9,4($24)
 lw $3,8($8)
 lw $9,12($8)
-sw $3,8($15)
-sw $9,12($15)
-la $4,L.25
-lw $5,-16+64($sp)
-lw $6,-12+64($sp)
-lw $7,-8+64($sp)
-lw $24,-4+64($sp)
+sw $3,8($24)
+sw $9,12($24)
+la $4,L.26
+lw $5,-16+56($sp)
+lw $6,-12+56($sp)
+lw $7,-8+56($sp)
+lw $24,-4+56($sp)
 sw $24,16($sp)
 jal printf
-b L.20
-L.29:
-la $4,L.30
-la $24,4($30)
-move $30,$24
-lb $5,-1($24)
+b L.21
+L.30:
+la $4,L.31
+la $30,4($30)
+lb $5,-1($30)
 jal printf
-b L.20
-L.31:
-la $4,L.32
-la $24,4($30)
-move $30,$24
-lw $5,-4($24)
+b L.21
+L.32:
+la $4,L.33
+la $30,4($30)
+lw $5,-4($30)
 jal printf
-b L.20
-L.33:
-la $4,L.34
-la $24,4($30)
-move $30,$24
-lh $5,-2($24)
+b L.21
+L.34:
+la $4,L.35
+la $30,4($30)
+lh $5,-2($30)
 jal printf
-b L.20
-L.35:
-la $4,L.36
-la $24,4($30)
-move $30,$24
-lw $5,-4($24)
+b L.21
+L.36:
+la $4,L.37
+la $30,4($30)
+lw $5,-4($30)
 jal printf
-b L.20
-L.37:
-la $4,L.38
-move $24,$30
-la $24,15($24)
+b L.21
+L.38:
+la $4,L.39
+la $24,15($30)
 and $24,$24,0xfffffff8
 move $30,$24
-l.d $f18,-8($24)
+l.d $f18,-8($30)
 mfc1.d $6,$f18
 jal printf
-b L.20
-L.21:
-la $4,L.30
-lw $24,0+64($sp)
+b L.21
+L.22:
+la $4,L.31
+lw $24,0+56($sp)
 lb $5,($24)
 jal printf
-b L.20
-L.19:
-la $4,L.30
-lw $24,0+64($sp)
-lb $5,($24)
-jal printf
+b L.21
 L.20:
-L.16:
-lw $24,0+64($sp)
+la $4,L.31
+lw $24,0+56($sp)
+lb $5,($24)
+jal printf
+L.21:
+L.17:
+lw $24,0+56($sp)
 la $24,1($24)
-sw $24,0+64($sp)
-L.18:
-lw $24,0+64($sp)
+sw $24,0+56($sp)
+L.19:
+lw $24,0+56($sp)
 lb $24,($24)
-bne $24,$0,L.15
-move $2,$0
-L.12:
+bne $24,$0,L.16
+L.13:
 lw $23,20($sp)
 lw $25,24($sp)
 lw $30,28($sp)
 lw $31,32($sp)
-addu $sp,$sp,64
+addu $sp,$sp,56
 j $31
 .end print
-.lcomm __va_arg_tmp,4
 .rdata
 .align 0
-L.38:
+L.39:
 .byte 37
 .byte 102
 .byte 0
 .align 0
-L.36:
+L.37:
 .byte 37
 .byte 115
 .byte 0
 .align 0
-L.34:
+L.35:
 .byte 37
 .byte 120
 .byte 0
 .align 0
-L.32:
+L.33:
 .byte 37
 .byte 100
 .byte 0
 .align 0
-L.30:
+L.31:
 .byte 37
 .byte 99
 .byte 0
 .align 0
-L.25:
+L.26:
 .byte 123
 .byte 37
 .byte 100

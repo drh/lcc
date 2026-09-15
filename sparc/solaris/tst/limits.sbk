@@ -1,6 +1,7 @@
 .global main
 .section ".text"
 .align 4
+.proc 4
 main:
 save %sp,-96,%sp
 set .L2,%o0
@@ -76,8 +77,6 @@ call printf; nop
 mov %g0,%i0
 .L1:
 ret; restore
-.type main,#function
-.size main,.-main
 .section ".rodata"
 .align 1
 .L15:

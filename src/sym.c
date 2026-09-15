@@ -1,7 +1,4 @@
 #include "c.h"
-#include <stdio.h>
-
-static char rcsid[] = "$Id$";
 
 #define equalp(x) v.x == p->sym.u.c.v.x
 
@@ -27,25 +24,20 @@ Table globals     = &ids;
 Table types       = &tys;
 Table labels;
 int level = GLOBAL;
-static int tempid;
 List loci, symbols;
 
-Table newtable(int arena) {
+Table table(tp, level) Table tp; int level; {
 	Table new;
 
-	NEW0(new, arena);
-	return new;
-}
-
-Table table(Table tp, int level) {
-	Table new = newtable(FUNC);
+	NEW0(new, FUNC);
 	new->previous = tp;
 	new->level = level;
 	if (tp)
 		new->all = tp->all;
 	return new;
 }
-void foreach(Table tp, int lev, void (*apply)(Symbol, void *), void *cl) {
+void foreach(tp, lev, apply, cl) Table tp; int lev;
+void (*apply) ARGS((Symbol, void *)); void *cl; {
 	assert(tp);
 	while (tp && tp->level > lev)
 		tp = tp->previous;
@@ -60,11 +52,10 @@ void foreach(Table tp, int lev, void (*apply)(Symbol, void *), void *cl) {
 		src = sav;
 	}
 }
-void enterscope(void) {
-	if (++level == LOCAL)
-		tempid = 0;
+void enterscope() {
+	++level;
 }
-void exitscope(void) {
+void exitscope() {
 	rmtypes(level);
 	if (types->level == level)
 		types = types->previous;
@@ -83,7 +74,8 @@ void exitscope(void) {
 	assert(level >= GLOBAL);
 	--level;
 }
-Symbol install(const char *name, Table *tpp, int level, int arena) {
+Symbol install(name, tpp, level, arena)
+char *name; Table *tpp; int level, arena; {
 	Table tp = *tpp;
 	struct entry *p;
 	unsigned h = (unsigned long)name&(HASHSIZE-1);
@@ -92,7 +84,7 @@ Symbol install(const char *name, Table *tpp, int level, int arena) {
 	if (level > 0 && tp->level < level)
 		tp = *tpp = table(tp, level);
 	NEW0(p, arena);
-	p->sym.name = (char *)name;
+	p->sym.name = name;
 	p->sym.scope = level;
 	p->sym.up = tp->all;
 	tp->all = &p->sym;
@@ -100,37 +92,7 @@ Symbol install(const char *name, Table *tpp, int level, int arena) {
 	tp->buckets[h] = p;
 	return &p->sym;
 }
-Symbol relocate(const char *name, Table src, Table dst) {
-	struct entry *p, **q;
-	Symbol *r;
-	unsigned h = (unsigned long)name&(HASHSIZE-1);
-
-	for (q = &src->buckets[h]; *q; q = &(*q)->link)
-		if (name == (*q)->sym.name)
-			break;
-	assert(*q);
-	/*
-	 Remove the entry from src's hash chain
-	  and from its list of all symbols.
-	*/
-	p = *q;
-	*q = (*q)->link;
-	for (r = &src->all; *r && *r != &p->sym; r = &(*r)->up)
-		;
-	assert(*r == &p->sym);
-	*r = p->sym.up;
-	/*
-	 Insert the entry into dst's hash chain
-	  and into its list of all symbols.
-	  Return the symbol-table entry.
-	*/
-	p->link = dst->buckets[h];
-	dst->buckets[h] = p;
-	p->sym.up = dst->all;
-	dst->all = &p->sym;
-	return &p->sym;
-}
-Symbol lookup(const char *name, Table tp) {
+Symbol lookup(name, tp) char *name; Table tp; {
 	struct entry *p;
 	unsigned h = (unsigned long)name&(HASHSIZE-1);
 
@@ -142,13 +104,13 @@ Symbol lookup(const char *name, Table tp) {
 	while ((tp = tp->previous) != NULL);
 	return NULL;
 }
-int genlabel(int n) {
+int genlabel(n) int n; {
 	static int label = 1;
 
 	label += n;
 	return label - n;
 }
-Symbol findlabel(int lab) {
+Symbol findlabel(lab) int lab; {
 	struct entry *p;
 	unsigned h = lab&(HASHSIZE-1);
 
@@ -167,31 +129,22 @@ Symbol findlabel(int lab) {
 	(*IR->defsymbol)(&p->sym);
 	return &p->sym;
 }
-Symbol constant(Type ty, Value v) {
+Symbol constant(ty, v) Type ty; Value v; {
 	struct entry *p;
 	unsigned h = v.u&(HASHSIZE-1);
-	static union { int x; char endian; } little = { 1 };
 
 	ty = unqual(ty);
 	for (p = constants->buckets[h]; p; p = p->link)
 		if (eqtype(ty, p->sym.type, 1))
 			switch (ty->op) {
-			case INT:      if (equalp(i)) return &p->sym; break;
-			case UNSIGNED: if (equalp(u)) return &p->sym; break;
-			case FLOAT:
-				if (v.d == 0.0) {
-					float z1 = v.d, z2 = p->sym.u.c.v.d;
-					char *b1 = (char *)&z1, *b2 = (char *)&z2;
-					if (z1 == z2
-					&& (!little.endian && b1[0] == b2[0]
-					||   little.endian && b1[sizeof (z1)-1] == b2[sizeof (z2)-1]))
-						return &p->sym;
-				} else if (equalp(d))
-					return &p->sym;
-				break;
-			case FUNCTION: if (equalp(g)) return &p->sym; break;
-			case ARRAY:
-			case POINTER:  if (equalp(p)) return &p->sym; break;
+			case CHAR:     if (equalp(uc)) return &p->sym; break;
+			case SHORT:    if (equalp(ss)) return &p->sym; break;
+			case INT:      if (equalp(i))  return &p->sym; break;
+			case UNSIGNED: if (equalp(u))  return &p->sym; break;
+			case FLOAT:    if (equalp(f))  return &p->sym; break;
+			case DOUBLE:   if (equalp(d))  return &p->sym; break;
+			case ARRAY: case FUNCTION:
+			case POINTER:  if (equalp(p))  return &p->sym; break;
 			default: assert(0);
 			}
 	NEW0(p, PERM);
@@ -209,13 +162,13 @@ Symbol constant(Type ty, Value v) {
 	p->sym.defined = 1;
 	return &p->sym;
 }
-Symbol intconst(int n) {
+Symbol intconst(n) int n; {
 	Value v;
 
 	v.i = n;
 	return constant(inttype, v);
 }
-Symbol genident(int scls, Type ty, int lev) {
+Symbol genident(scls, ty, lev) int scls, lev; Type ty; {
 	Symbol p;
 
 	NEW0(p, lev >= LOCAL ? FUNC : PERM);
@@ -229,36 +182,26 @@ Symbol genident(int scls, Type ty, int lev) {
 	return p;
 }
 
-Symbol temporary(int scls, Type ty) {
-	Symbol p;
+Symbol temporary(scls, ty, lev) Type ty; int scls, lev; {
+	Symbol p = genident(scls, ty, lev);
 
-	NEW0(p, FUNC);
-	p->name = stringd(++tempid);
-	p->scope = level < LOCAL ? LOCAL : level;
-	p->sclass = scls;
-	p->type = ty;
 	p->temporary = 1;
-	p->generated = 1;
 	return p;
 }
-Symbol newtemp(int sclass, int tc, int size) {
-	Symbol p = temporary(sclass, btot(tc, size));
+Symbol newtemp(sclass, tc) int sclass, tc; {
+	Symbol p = temporary(sclass, btot(tc), LOCAL);
 
 	(*IR->local)(p);
 	p->defined = 1;
 	return p;
 }
 
-Symbol allsymbols(Table tp) {
-	return tp->all;
-}
-
-void locus(Table tp, Coordinate *cp) {
+void locus(tp, cp) Table tp; Coordinate *cp; {
 	loci    = append(cp, loci);
-	symbols = append(allsymbols(tp), symbols);
+	symbols = append(tp->all, symbols);
 }
 
-void use(Symbol p, Coordinate src) {
+void use(p, src) Symbol p; Coordinate src; {
 	Coordinate *cp;
 
 	NEW(cp, PERM);
@@ -266,7 +209,7 @@ void use(Symbol p, Coordinate src) {
 	p->uses = append(cp, p->uses);
 }
 /* findtype - find type ty in identifiers */
-Symbol findtype(Type ty) {
+Symbol findtype(ty) Type ty; {
 	Table tp = identifiers;
 	int i;
 	struct entry *p;
@@ -282,7 +225,7 @@ Symbol findtype(Type ty) {
 }
 
 /* mkstr - make a string constant */
-Symbol mkstr(char *str) {
+Symbol mkstr(str) char *str; {
 	Value v;
 	Symbol p;
 
@@ -294,7 +237,7 @@ Symbol mkstr(char *str) {
 }
 
 /* mksymbol - make a symbol for name, install in &globals if sclass==EXTERN */
-Symbol mksymbol(int sclass, const char *name, Type ty) {
+Symbol mksymbol(sclass, name, ty) int sclass; char *name; Type ty; {
 	Symbol p;
 
 	if (sclass == EXTERN)
@@ -312,19 +255,35 @@ Symbol mksymbol(int sclass, const char *name, Type ty) {
 }
 
 /* vtoa - return string for the constant v of type ty */
-char *vtoa(Type ty, Value v) {
+char *vtoa(ty, v) Type ty; Value v; {
+	char buf[50];
+
 	ty = unqual(ty);
 	switch (ty->op) {
-	case INT:      return stringd(v.i);
-	case UNSIGNED: return stringf((v.u&~0x7FFF) ? "0x%X" : "%U", v.u);
-	case FLOAT:    return stringf("%g", (double)v.d);
+	case CHAR:
+		return stringd(v.uc);
+	case SHORT:
+		return stringd(v.ss);
+	case INT:
+		return stringd(v.i);
+	case UNSIGNED:
+		if ((v.u&~0x7fff) == 0)
+			return stringd(v.u);
+		else
+			return stringf("0x%x", v.u);
+	case FLOAT:
+		sprintf(buf, "%.8g", v.f);
+		return string(buf);
+	case DOUBLE:
+		sprintf(buf, "%.18g", v.d);
+		return string(buf);
 	case ARRAY:
-		if (ty->type == chartype || ty->type == signedchar
-		||  ty->type == unsignedchar)
+		if (ty->type->op == CHAR)
 			return v.p;
-		return stringf("%p", v.p);
-	case POINTER:  return stringf("%p", v.p);
-	case FUNCTION: return stringf("%p", v.g);
+		/* else fall thru */
+	case POINTER: case FUNCTION:
+		return stringf("0x%x", v.p);
+	default:assert(0);
 	}
-	assert(0); return NULL;
+	return NULL;
 }

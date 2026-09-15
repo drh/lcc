@@ -4,34 +4,22 @@
 #define EXIT_FAILURE 1
 #define EXIT_SUCCESS 0
 #define MB_CUR_MAX 1
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
+#define NULL 0
 #define RAND_MAX 32767
 
 typedef struct { int quot, rem; } div_t;
 typedef struct { long quot, rem; } ldiv_t;
 
-#if !defined(_SIZE_T) && !defined(_SIZE_T_) && !defined(_SIZE_T_DEFINED)
+#if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #define _SIZE_T
 #define _SIZE_T_
-#define _SIZE_T_DEFINED
 typedef unsigned long size_t;
 #endif
 
-#if !defined(_WCHAR_T) && !defined(_WCHAR_T_) && !defined(_WCHAR_T_DEFINED)
+#if !defined(_WCHAR_T) && !defined(_WCHAR_T_)
 #define _WCHAR_T
 #define _WCHAR_T_
-#define _WCHAR_T_DEFINED
-#if   (_WCHAR_T_SIZE + 0) == 1
 typedef unsigned char wchar_t;
-#elif (_WCHAR_T_SIZE + 0) == 2
-typedef unsigned short wchar_t;
-#elif (_WCHAR_T_SIZE + 0) == 4
-typedef unsigned int wchar_t;
-#else
-typedef unsigned short wchar_t;
-#endif
 #endif
 
 extern double atof(const char *);

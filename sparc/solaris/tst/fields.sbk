@@ -1,38 +1,36 @@
 .section ".data"
 .global x
 .type x,#object
-.size x,16
 .align 4
 x:
-.word 0x1
-.byte 0x2
+.word 1
+.byte 2
 .skip 3
-.byte 0x0
-.byte 0x34
+.byte 0
+.byte 52
 .skip 2
-.byte 0xa
-.byte 0x6
+.byte 10
+.byte 6
 .skip 2
 .global i
 .type i,#object
-.size i,4
 .align 4
 i:
-.word 0x10
+.word 16
 .global y
 .type y,#object
-.size y,8
 .align 4
 y:
-.byte 0xe0
+.byte 224
 .skip 3
-.byte 0x0
-.byte 0x0
-.byte 0x0
-.byte 0x9
+.byte 0
+.byte 0
+.byte 0
+.byte 9
 .global main
 .section ".text"
 .align 4
+.proc 4
 main:
 save %sp,-96,%sp
 set .L4,%o0
@@ -58,12 +56,9 @@ call printf; nop
 set .L10,%o0
 set y,%i5
 ld [%i5],%i5
-srl %i5,30,%i4
-set 3,%i3
-and %i4,%i3,%o1
-srl %i5,26,%i5
-set 15,%i4
-and %i5,%i4,%o2
+srl %i5,30,%o1
+sll %i5,2,%i5
+srl %i5,28,%o2
 set y+4,%i5
 ld [%i5],%o3
 call printf; nop
@@ -119,12 +114,9 @@ st %i4,[%i5]
 set .L10,%o0
 set y,%i5
 ld [%i5],%i5
-srl %i5,30,%i4
-set 3,%i3
-and %i4,%i3,%o1
-srl %i5,26,%i5
-set 15,%i4
-and %i5,%i4,%o2
+srl %i5,30,%o1
+sll %i5,2,%i5
+srl %i5,28,%o2
 set y+4,%i5
 ld [%i5],%o3
 call printf; nop
@@ -133,10 +125,9 @@ call f2; nop
 mov %g0,%i0
 .L3:
 ret; restore
-.type main,#function
-.size main,.-main
 .global f1
 .align 4
+.proc 4
 f1:
 save %sp,-96,%sp
 ld [%i0],%i5
@@ -156,10 +147,10 @@ st %i5,[%i0]
 ld [%i0],%i5
 set 0x3c000000,%i4
 and %i5,%i4,%i5
-cmp %i5,%g0; be .L22; nop
-set .L24,%o0
+cmp %i5,%g0; be .L28; nop
+set .L30,%o0
 call printf; nop
-.L22:
+.L28:
 ld [%i0],%i5
 set 0xc0000000,%i4
 or %i5,%i4,%i5
@@ -168,38 +159,32 @@ ld [%i0],%i5
 set 0x3c000000,%i4
 or %i5,%i4,%i5
 st %i5,[%i0]
-set .L25,%o0
+set .L31,%o0
 ld [%i0],%i5
-srl %i5,30,%i4
-set 3,%i3
-and %i4,%i3,%o1
-srl %i5,26,%i5
-set 15,%i4
-and %i5,%i4,%o2
+srl %i5,30,%o1
+sll %i5,2,%i5
+srl %i5,28,%o2
 call printf; nop
-mov %g0,%i0
-.L21:
+.L27:
 ret; restore
-.type f1,#function
-.size f1,.-f1
 .global f2
 .align 4
+.proc 4
 f2:
 save %sp,-96,%sp
 set i,%i4
 ld [%i4],%i4
-cmp %i4,0; bne .L28; nop
+cmp %i4,0; bne .L35; nop
 set 1,%i5
-ba .L29; nop
-.L28:
+ba .L36; nop
+.L35:
 mov %g0,%i5
-.L29:
+.L36:
 ld [%i0],%i4
 set 0x3fffffff,%i3
 and %i4,%i3,%i4
-mov %i5,%i3
-set 3,%i2
-and %i3,%i2,%i3
+set 3,%i3
+and %i5,%i3,%i3
 sll %i3,30,%i3
 set 0xc0000000,%i2
 and %i3,%i2,%i3
@@ -210,22 +195,18 @@ call f1; nop
 ld [%i0],%i4
 set 0xc3ffffff,%i3
 and %i4,%i3,%i4
-mov %g0,%i3
-set 15,%i2
-and %i3,%i2,%i3
+set 15,%i3
+and %g0,%i3,%i3
 sll %i3,26,%i3
 set 0x3c000000,%i2
 and %i3,%i2,%i3
 or %i4,%i3,%i4
 st %i4,[%i0]
-mov %g0,%i0
-.L26:
+.L33:
 ret; restore
-.type f2,#function
-.size f2,.-f2
 .section ".rodata"
 .align 1
-.L25:
+.L31:
 .byte 112
 .byte 45
 .byte 62
@@ -253,7 +234,7 @@ ret; restore
 .byte 10
 .byte 0
 .align 1
-.L24:
+.L30:
 .byte 112
 .byte 45
 .byte 62
