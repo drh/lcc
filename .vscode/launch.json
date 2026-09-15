@@ -2,17 +2,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "LCC: Debug Driver (lcc)",
+      "name": "LCC: Debug CPP (Preprocessor)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build-ubuntu24/lcc-build/lcc",
+      "program": "${workspaceFolder}/build-ubuntu24/lcc-build/cpp",
       "args": [
-        "-v",
-        "${workspaceFolder}/hello.c"
+        "${workspaceFolder}/hello.c",
+        "${workspaceFolder}/hello.i"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "environment": [],
       "externalConsole": false,
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
@@ -21,26 +20,11 @@
           "description": "Enable pretty printing",
           "text": "-enable-pretty-printing",
           "ignoreFailures": true
-        },
-        {
-          "description": "Keep child processes visible",
-          "text": "set detach-on-fork off",
-          "ignoreFailures": true
-        },
-        {
-          "description": "Follow child process when forked",
-          "text": "set follow-fork-mode child",
-          "ignoreFailures": true
-        },
-        {
-          "description": "Follow exec in same inferior",
-          "text": "set follow-exec-mode same",
-          "ignoreFailures": true
         }
       ]
     },
     {
-      "name": "LCC: Debug RCC (preprocessed C -> assembly)",
+      "name": "LCC: Debug RCC (Compiler)",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build-ubuntu24/lcc-build/rcc",
@@ -49,28 +33,6 @@
         "-g",
         "${workspaceFolder}/hello.i",
         "${workspaceFolder}/hello.s"
-      ],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "externalConsole": false,
-      "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty printing",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ]
-    },
-    {
-      "name": "LCC: Debug CPP",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build-ubuntu24/lcc-build/cpp",
-      "args": [
-        "${workspaceFolder}/hello.c",
-        "${workspaceFolder}/hello.i"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
