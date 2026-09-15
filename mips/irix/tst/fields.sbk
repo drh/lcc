@@ -4,13 +4,13 @@
 .align 2
 x:
 .word 0x1
-.byte 0x2
+.byte 2
 .space 3
-.byte 0x0
-.byte 0x34
+.byte 0
+.byte 52
 .space 2
-.byte 0xa
-.byte 0x6
+.byte 10
+.byte 6
 .space 2
 .globl i
 .sdata
@@ -21,24 +21,24 @@ i:
 .sdata
 .align 2
 y:
-.byte 0xe0
+.byte 224
 .space 3
-.byte 0x0
-.byte 0x0
-.byte 0x0
-.byte 0x9
+.byte 0
+.byte 0
+.byte 0
+.byte 9
 .globl main
 .text
 .text
 .align 2
 .ent main
 main:
-.frame $sp,48,$31
+.frame $sp,40,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-48
-.mask 0x82000000,-16
+addu $sp,$sp,-40
+.mask 0x82000000,-8
 .cprestore 28
 sw $31,32($sp)
 la $4,L.4
@@ -59,10 +59,9 @@ sw $24,24($sp)
 jal printf
 la $4,L.10
 lw $24,y
-srl $15,$24,30
-and $5,$15,3
-srl $24,$24,26
-and $6,$24,15
+srl $5,$24,30
+sll $24,$24,2
+srl $6,$24,28
 lw $7,y+4
 jal printf
 lw $24,x+8
@@ -101,10 +100,9 @@ lw $24,i
 sw $24,y+4
 la $4,L.10
 lw $24,y
-srl $15,$24,30
-and $5,$15,3
-srl $24,$24,26
-and $6,$24,15
+srl $5,$24,30
+sll $24,$24,2
+srl $6,$24,28
 lw $7,y+4
 jal printf
 la $4,x
@@ -113,7 +111,7 @@ move $2,$0
 L.3:
 lw $25,28($sp)
 lw $31,32($sp)
-addu $sp,$sp,48
+addu $sp,$sp,40
 j $31
 .end main
 .globl f1
@@ -143,25 +141,23 @@ or $24,$24,$15
 sw $24,($30)
 lw $24,($30)
 and $24,$24,0x3c000000
-beq $24,$0,L.22
-la $4,L.24
+beq $24,$0,L.28
+la $4,L.30
 jal printf
-L.22:
+L.28:
 lw $24,($30)
 or $24,$24,0xc0000000
 sw $24,($30)
 lw $24,($30)
 or $24,$24,0x3c000000
 sw $24,($30)
-la $4,L.25
+la $4,L.31
 lw $24,($30)
-srl $15,$24,30
-and $5,$15,3
-srl $24,$24,26
-and $6,$24,15
+srl $5,$24,30
+sll $24,$24,2
+srl $6,$24,28
 jal printf
-move $2,$0
-L.21:
+L.27:
 lw $25,16($sp)
 lw $30,20($sp)
 lw $31,24($sp)
@@ -185,16 +181,15 @@ sw $30,24($sp)
 sw $31,28($sp)
 move $30,$4
 lw $24,i
-bne $24,$0,L.28
+bne $24,$0,L.35
 la $23,1
-b L.29
-L.28:
+b L.36
+L.35:
 move $23,$0
-L.29:
+L.36:
 lw $24,($30)
 and $24,$24,0x3fffffff
-move $15,$23
-and $15,$15,3
+and $15,$23,3
 sll $15,$15,30
 and $15,$15,0xc0000000
 or $24,$24,$15
@@ -203,14 +198,12 @@ move $4,$30
 jal f1
 lw $24,($30)
 and $24,$24,0xc3ffffff
-move $15,$0
-and $15,$15,15
+and $15,$0,15
 sll $15,$15,26
 and $15,$15,0x3c000000
 or $24,$24,$15
 sw $24,($30)
-move $2,$0
-L.26:
+L.33:
 lw $23,16($sp)
 lw $25,20($sp)
 lw $30,24($sp)
@@ -220,7 +213,7 @@ j $31
 .end f2
 .rdata
 .align 0
-L.25:
+L.31:
 .byte 112
 .byte 45
 .byte 62
@@ -248,7 +241,7 @@ L.25:
 .byte 10
 .byte 0
 .align 0
-L.24:
+L.30:
 .byte 112
 .byte 45
 .byte 62

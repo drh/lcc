@@ -1,5 +1,4 @@
-.\" $Id$
-.TH BPRINT 1 "local \- $Date$"
+.TH BPRINT 1 "local \- 9/24/91"
 .SH NAME
 bprint \- expression profiler
 .SH SYNOPSIS
@@ -46,6 +45,7 @@ A second
 .B \-f
 summarizes call sites instead of callers.
 .TP
+.SM
 .BI \-I \*Sdir
 specifies additional directories in which to seek
 files given in
@@ -59,10 +59,14 @@ If no options are given,
 is assumed.
 .SH FILES
 .PP
-.ta \w'$LCCDIR/liblcc.{a,lib}XX'u
-.nf
+.ta \w'/usr/lib/bbexit.oXX'u
 prof.out	profiling data
-$LCCDIR/liblcc.{a,lib}	\fIlcc\fP-specific library
+.br
+/usr/lib/bbexit.o	creates
+.B prof.out
+when
+.B a.out
+exits
 .SH "SEE ALSO"
 .IR lcc (1), 
 .IR prof (1)

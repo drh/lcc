@@ -1,12 +1,11 @@
 #include "c.h"
 
-static char rcsid[] = "$Id$";
-
-static void pragma(void);
-static void resynch(void);
+static void pragma ARGS((void));
+static void resynch ARGS((void));
 
 static int bsize;
 static unsigned char buffer[MAXLINE+1 + BUFSIZE+1];
+int infd;		/* input file descriptor */
 unsigned char *cp;	/* current input character */
 char *file;		/* current input file name */
 char *firstfile;	/* first input file */
@@ -14,7 +13,17 @@ unsigned char *limit;	/* points to last character + 1 */
 char *line;		/* current line */
 int lineno;		/* line number of current line */
 
-void nextline(void) {
+void inputInit() {
+	limit = cp = &buffer[MAXLINE+1];
+	bsize = -1;
+	lineno = 0;
+	file = NULL;
+	fillbuf();
+	if (cp >= limit)
+		cp = limit;
+	nextline();
+}
+void nextline() {
 	do {
 		if (cp >= limit) {
 			fillbuf();
@@ -22,18 +31,17 @@ void nextline(void) {
 				cp = limit;
 			if (cp == limit)
 				return;
-		} else {
+		} else
 			lineno++;
-			for (line = (char *)cp; *cp==' ' || *cp=='\t'; cp++)
-				;
-			if (*cp == '#') {
-				resynch();
-				nextline();
-			}
-		}
+		for (line = (char *)cp; *cp==' ' || *cp=='\t'; cp++)
+			;
 	} while (*cp == '\n' && cp == limit);
+	if (*cp == '#') {
+		resynch();
+		nextline();
+	}
 }
-void fillbuf(void) {
+void fillbuf() {
 	if (bsize == 0)
 		return;
 	if (cp >= limit)
@@ -48,42 +56,25 @@ void fillbuf(void) {
 				*s++ = *cp++;
 			cp = &buffer[MAXLINE+1] - n;
 		}
-	if (feof(stdin))
-		bsize = 0;
-	else
-		bsize = fread(&buffer[MAXLINE+1], 1, BUFSIZE, stdin);
+	bsize = read(infd, &buffer[MAXLINE+1], BUFSIZE);
 	if (bsize < 0) {
 		error("read error\n");
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 	limit = &buffer[MAXLINE+1+bsize];
 	*limit = '\n';
 }
-void input_init(int argc, char *argv[]) {
-	static int inited;
-
-	if (inited)
-		return;
-	inited = 1;
-	main_init(argc, argv);
+/* inputstring - arrange to read str as next input */
+void inputstring(str) char *str; {
 	limit = cp = &buffer[MAXLINE+1];
-	bsize = -1;
-	lineno = 0;
-	file = NULL;
-	fillbuf();
-	if (cp >= limit)
-		cp = limit;
-	nextline();
-}
-
-/* ident - handle #ident "string" */
-static void ident(void) {
-	while (*cp != '\n' && *cp != '\0')
-		cp++;
+	while ((*limit++ = *str++) != 0)
+		;
+	*--limit = '\n';
+	bsize = 0;
 }
 
 /* pragma - handle #pragma ref id... */
-static void pragma(void) {
+static void pragma() {
 	if ((t = gettok()) == ID && strcmp(token, "ref") == 0)
 		for (;;) {
 			while (*cp == ' ' || *cp == '\t')
@@ -97,8 +88,8 @@ static void pragma(void) {
 		}
 }
 
-/* resynch - set line number/file name in # n [ "file" ], #pragma, etc. */
-static void resynch(void) {
+/* resynch - set line number/file name in # n [ "file" ] and #pragma ... */
+static void resynch() {
 	for (cp++; *cp == ' ' || *cp == '\t'; )
 		cp++;
 	if (limit - cp < MAXLINE)
@@ -106,9 +97,6 @@ static void resynch(void) {
 	if (strncmp((char *)cp, "pragma", 6) == 0) {
 		cp += 6;
 		pragma();
-	} else if (strncmp((char *)cp, "ident", 5) == 0) {
-		cp += 5;
-		ident();
 	} else if (*cp >= '0' && *cp <= '9') {
 	line:	for (lineno = 0; *cp >= '0' && *cp <= '9'; )
 			lineno = 10*lineno + *cp++ - '0';
@@ -136,11 +124,9 @@ static void resynch(void) {
 		warning("unrecognized control line\n");
 	while (*cp)
 		if (*cp++ == '\n')
-			if (cp == limit + 1) {
+			if (cp == limit + 1)
 				nextline();
-				if (cp == limit)
-					break;
-			} else
+			else
 				break;
 }
 

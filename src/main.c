@@ -1,12 +1,15 @@
 #include "c.h"
 
-static char rcsid[] = "$Name$($Id$)";
+static char rcsid[] = "lcc $Name: v3_6 $($Id$)";
 
-static void typestab(Symbol, void *);
+static void compile ARGS((char *));
+static int doargs ARGS((int, char **));
+static void emitYYnull ARGS((void));
+static void typestab ARGS((Symbol, void *));
 
-static void stabline(Coordinate *);
-static void stabend(Coordinate *, Symbol, Coordinate **, Symbol *, Symbol *);
 Interface *IR = NULL;
+
+static char *infile, *outfile;
 
 int Aflag;		/* >= 0 if -A specified */
 int Pflag;		/* != 0 if -P specified */
@@ -15,73 +18,57 @@ int xref;		/* != 0 for cross-reference data */
 Symbol YYnull;		/* _YYnull  symbol if -n or -nvalidate specified */
 Symbol YYcheck;		/* _YYcheck symbol if -nvalidate,check specified */
 
-static char *comment;
-static Interface stabIR;
-static char *currentfile;       /* current file name */
-static int currentline;		/* current line number */
-static FILE *srcfp;		/* stream for current file, if non-NULL */
-static int srcpos;		/* position of srcfp, if srcfp is non-NULL */
-int main(int argc, char *argv[]) {
-	int i, j;
-	for (i = argc - 1; i > 0; i--)
-		if (strncmp(argv[i], "-target=", 8) == 0)
-			break;
-	if (i > 0) {
-		char *s = strchr(argv[i], '\\');
-		if (s != NULL)
-			*s = '/';
-		for (j = 0; bindings[j].name && bindings[j].ir; j++)
-			if (strcmp(&argv[i][8], bindings[j].name) == 0) {
-				IR = bindings[j].ir;
+int main(argc, argv) int argc; char *argv[]; {
+	{
+		int i, j;
+		for (i = argc - 1; i > 0; i--)
+			if (strncmp(argv[i], "-target=", 8) == 0)
 				break;
+		if (i > 0) {
+			for (j = 0; bindings[j].name; j++)
+				if (strcmp(&argv[i][8], bindings[j].name) == 0)
+					break;
+			if (bindings[j].ir)
+				IR = bindings[j].ir;
+			else {
+				fprint(2, "%s: unknown target `%s'\n", argv[0],
+					&argv[i][8]);
+				exit(1);
 			}
-		if (s != NULL)
-			*s = '\\';
+		}
 	}
 	if (!IR) {
-		fprint(stderr, "%s: unknown target", argv[0]);
-		if (i > 0)
-			fprint(stderr, " `%s'", &argv[i][8]);
-		fprint(stderr, "; must specify one of\n");
+		int i;
+		fprint(2, "%s: must specify one of\n", argv[0]);
 		for (i = 0; bindings[i].name; i++)
-			fprint(stderr, "\t-target=%s\n", bindings[i].name);
-		exit(EXIT_FAILURE);
+			fprint(2, "\t-target=%s\n", bindings[i].name);
+		exit(1);
 	}
-	init(argc, argv);
+	typeInit();
+	argc = doargs(argc, argv);
+	if (infile && strcmp(infile, "-") != 0)
+		if ((infd = open(infile, 0)) < 0) {
+			fprint(2, "%s: can't read `%s'\n",
+				argv[0], infile);
+			exit(1);
+		}
+	if (outfile && strcmp(outfile, "-") != 0)
+		if ((outfd = creat(outfile, 0666)) < 0) {
+			fprint(2, "%s: can't write `%s'\n",
+				argv[0], outfile);
+			exit(1);
+		}
+	inputInit();
+	outputInit();
 	t = gettok();
 	(*IR->progbeg)(argc, argv);
-	for (i = 1; i < argc; i++)
-		if (strcmp(argv[i], "-n") == 0) {
-			if (!YYnull) {
-				YYnull = install(string("_YYnull"), &globals, GLOBAL, PERM);
-				YYnull->type = func(voidptype, NULL, 1);
-				YYnull->sclass = EXTERN;
-				(*IR->defsymbol)(YYnull);
-			}
-		} else if (strncmp(argv[i], "-n", 2) == 0) {	/* -nvalid[,check] */
-			char *p = strchr(argv[i], ',');
-			if (p) {
-				YYcheck = install(string(p+1), &globals, GLOBAL, PERM);
-				YYcheck->type = func(voidptype, NULL, 1);
-				YYcheck->sclass = EXTERN;
-				(*IR->defsymbol)(YYcheck);
-				p = stringn(argv[i]+2, p - (argv[i]+2));
-			} else
-				p = string(argv[i]+2);
-			YYnull = install(p, &globals, GLOBAL, PERM);
-			YYnull->type = func(voidptype, NULL, 1);
-			YYnull->sclass = EXTERN;
-			(*IR->defsymbol)(YYnull);
-		} else {
-			profInit(argv[i]);
-			traceInit(argv[i]);
-		}
 	if (glevel && IR->stabinit)
 		(*IR->stabinit)(firstfile, argc, argv);
 	program();
 	if (events.end)
 		apply(events.end, NULL, NULL);
 	memset(&events, 0, sizeof events);
+	emitYYnull();
 	if (glevel || xref) {
 		Symbol symroot = NULL;
 		Coordinate src;
@@ -99,131 +86,122 @@ int main(int argc, char *argv[]) {
 	}
 	finalize();
 	(*IR->progend)();
+	outflush();
+	close(infd);
+	close(outfd);
+	close(errfd);
 	deallocate(PERM);
 	return errcnt > 0;
 }
-/* main_init - process program arguments */
-void main_init(int argc, char *argv[]) {
-	char *infile = NULL, *outfile = NULL;
-	int i;
-	static int inited;
+/* compile - compile str */
+static void compile(str) char *str; {
+	inputstring(str);
+	t = gettok();
+	program();
+}
 
-	if (inited)
-		return;
-	inited = 1;
-	for (i = 1; i < argc; i++)
-		if (strcmp(argv[i], "-g") == 0 || strcmp(argv[i], "-g2") == 0)
+/* doargs - process program arguments, removing top-half arguments from argv */
+static int doargs(argc, argv) int argc; char *argv[]; {
+	int i, j;
+
+	for (i = j = 1; i < argc; i++)
+		if (strcmp(argv[i], "-g") == 0)
 			glevel = 2;
-		else if (strncmp(argv[i], "-g", 2) == 0) {	/* -gn[,x] */
-			char *p = strchr(argv[i], ',');
-			glevel = atoi(argv[i]+2);
-			if (p) {
-				comment = p + 1;
-				if (glevel == 0)
-					glevel = 1;
-				if (stabIR.stabline == NULL) {
-					stabIR.stabline = IR->stabline;
-					stabIR.stabend = IR->stabend;
-					IR->stabline = stabline;
-					IR->stabend = stabend;
-				}
-			}	
+		else if (strncmp(argv[i], "-g", 2) == 0
+		&& argv[i][2] && argv[i][2] >= '0' && argv[i][2] <= '9') {
+			glevel = argv[i][2] - '0';
+#ifdef STABINIT
+			{
+				extern void STABINIT ARGS((char *, int, char *[]));
+				IR->stabinit = STABINIT;
+			}
+#endif
 		} else if (strcmp(argv[i], "-x") == 0)
 			xref++;
-		else if (strcmp(argv[i], "-A") == 0) {
+		else if (strcmp(argv[i], "-A") == 0)
 			++Aflag;
-		} else if (strcmp(argv[i], "-P") == 0)
+		else if (strcmp(argv[i], "-P") == 0)
 			Pflag++;
 		else if (strcmp(argv[i], "-w") == 0)
 			wflag++;
-		else if (strcmp(argv[i], "-v") == 0)
-			fprint(stderr, "%s %s\n", argv[0], rcsid);
-		else if (strncmp(argv[i], "-s", 2) == 0)
+		else if (strcmp (argv[i], "-b")    == 0
+		||       strcmp (argv[i], "-C")    == 0
+		||       strncmp(argv[i], "-a", 2) == 0)
+			profInit(argv[i]);
+		else if (strcmp(argv[i], "-n") == 0) {
+			if (!YYnull) {
+				YYnull = install(string("_YYnull"), &globals, GLOBAL, PERM);
+				YYnull->type = ftype(voidtype, inttype);
+				YYnull->sclass = STATIC;
+				(*IR->defsymbol)(YYnull);
+			}
+		} else if (strncmp(argv[i], "-target=", 8) == 0)
+			;
+		else if (strncmp(argv[i], "-t", 2) == 0)
+			traceInit(&argv[i][2]);
+		else if (strcmp(argv[i], "-v") == 0) {
+			int i;
+			fprint(2, "%s %s targets:\n", argv[0], rcsid);
+			for (i = 0; bindings[i].name; i++)
+				fprint(2, "\t%s%s\n", bindings[i].name,
+					IR == bindings[i].ir ? "*" : "");
+		} else if (strncmp(argv[i], "-s", 2) == 0)
 			density = strtod(&argv[i][2], NULL);
 		else if (strncmp(argv[i], "-errout=", 8) == 0) {
-			FILE *f = fopen(argv[i]+8, "w");
-			if (f == NULL) {
-				fprint(stderr, "%s: can't write errors to `%s'\n", argv[0], argv[i]+8);
-				exit(EXIT_FAILURE);
+			char *errfile = argv[i] + 8;
+			{
+				errfd = creat(errfile, 0666);
+				if (errfd < 0) {
+					errfd = 2;
+					fprint(2, "%s: can't write errors to `%s'\n", argv[0], errfile);
+					exit(1);
+				}
 			}
-			fclose(f);
-			f = freopen(argv[i]+8, "w", stderr);
-			assert(f);
+
 		} else if (strncmp(argv[i], "-e", 2) == 0) {
 			int x;
 			if ((x = strtol(&argv[i][2], NULL, 0)) > 0)
 				errlimit = x;
-		} else if (strncmp(argv[i], "-little_endian=", 15) == 0)
-			IR->little_endian = argv[i][15] - '0';
-		else if (strncmp(argv[i], "-mulops_calls=", 18) == 0)
-			IR->mulops_calls = argv[i][18] - '0';
-		else if (strncmp(argv[i], "-wants_callb=", 13) == 0)
-			IR->wants_callb = argv[i][13] - '0';
-		else if (strncmp(argv[i], "-wants_argb=", 12) == 0)
-			IR->wants_argb = argv[i][12] - '0';
-		else if (strncmp(argv[i], "-left_to_right=", 15) == 0)
-			IR->left_to_right = argv[i][15] - '0';
-		else if (strncmp(argv[i], "-wants_dag=", 11) == 0)
-			IR->wants_dag = argv[i][11] - '0';
-		else if (*argv[i] != '-' || strcmp(argv[i], "-") == 0) {
-			if (infile == NULL)
+		} else if (strcmp(argv[i], "-nodag") == 0)
+			IR->wants_dag = !IR->wants_dag;
+		else if (strcmp(argv[i], "-") == 0 || *argv[i] != '-') {
+			if (infile == 0)
 				infile = argv[i];
-			else if (outfile == NULL)
+			else if (outfile == 0)
 				outfile = argv[i];
+			else
+				argv[j++] = argv[i];
+		} else {
+			if (strcmp(argv[i], "-XP") == 0)
+				argv[i] = "-p";
+			else if (strncmp(argv[i], "-X", 2) == 0)
+				*++argv[i] = '-';
+			argv[j++] = argv[i];
 		}
+	argv[j] = 0;
+	return j;
+}
+/* emitYYnull - compile definition for _YYnull, if it's referenced and named "_YYnull" */
+static void emitYYnull() {
+	if (YYnull && YYnull->ref > 0.0
+	&& strcmp(YYnull->name, "_YYnull") == 0) {
+		Aflag = 0;
+		YYnull->defined = 0;
+		YYnull = NULL;
+		compile(stringf("static char *_YYfile = \"%s\";\n", file));
+		compile("static void _YYnull(int line,...) {\nchar buf[200];\nsprintf(buf, \"null pointer dereferenced @%s:%d\\n\", _YYfile, line);\nwrite(2, buf, strlen(buf));\nabort();\n}\n");
 
-	if (infile != NULL && strcmp(infile, "-") != 0
-	&& freopen(infile, "r", stdin) == NULL) {
-		fprint(stderr, "%s: can't read `%s'\n", argv[0], infile);
-		exit(EXIT_FAILURE);
-	}
-	if (outfile != NULL && strcmp(outfile, "-") != 0
-	&& freopen(outfile, "w", stdout) == NULL) {
-		fprint(stderr, "%s: can't write `%s'\n", argv[0], outfile);
-		exit(EXIT_FAILURE);
+
+
+
+
 	}
 }
+
 /* typestab - emit stab entries for p */
-static void typestab(Symbol p, void *cl) {
+static void typestab(p, cl) Symbol p; void *cl; {
 	if (*(Symbol *)cl == 0 && p->sclass && p->sclass != TYPEDEF)
 		*(Symbol *)cl = p;
 	if ((p->sclass == TYPEDEF || p->sclass == 0) && IR->stabtype)
 		(*IR->stabtype)(p);
-}
-
-/* stabline - emit source code for source coordinate *cp */
-static void stabline(Coordinate *cp) {
-	if (cp->file && cp->file != currentfile) {
-		if (srcfp)
-			fclose(srcfp);
-		currentfile = cp->file;
-		srcfp = fopen(currentfile, "r");
-		srcpos = 0;
-		currentline = 0;
-	}
-	if (currentline != cp->y && srcfp) {
-		char buf[512];
-		if (srcpos > cp->y) {
-			rewind(srcfp);
-			srcpos = 0;
-		}
-		for ( ; srcpos < cp->y; srcpos++)
-			if (fgets(buf, sizeof buf, srcfp) == NULL) {
-				fclose(srcfp);
-				srcfp = NULL;
-				break;
-			}
-		if (srcfp && srcpos == cp->y)
-			print("%s%s", comment, buf);
-	}
-	currentline = cp->y;
-	if (stabIR.stabline)
-		(*stabIR.stabline)(cp);
-}
-
-static void stabend(Coordinate *cp, Symbol p, Coordinate **cpp, Symbol *sp, Symbol *stab) {
-	if (stabIR.stabend)
-		(*stabIR.stabend)(cp, p, cpp, sp, stab);
-	if (srcfp)
-		fclose(srcfp);
 }

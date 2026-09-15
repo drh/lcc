@@ -1,7 +1,5 @@
 #include "c.h"
 
-static char rcsid[] = "$Id$";
-
 static char prec[] = {
 #define xx(a,b,c,d,e,f,g) c,
 #define yy(a,b,c,d,e,f,g) c,
@@ -13,30 +11,15 @@ static int oper[] = {
 #include "token.h"
 };
 float refinc = 1.0;
-static Tree expr2(void);
-static Tree expr3(int);
-static Tree nullcheck(Tree);
-static Tree postfix(Tree);
-static Tree unary(void);
-static Tree primary(void);
-static Type super(Type ty);
+static Tree expr2 ARGS((void));
+static Tree expr3 ARGS((int));
+static Tree nullcheck ARGS((Tree));
+static Tree postfix ARGS((Tree));
+static Tree unary ARGS((void));
+static Tree primary ARGS((void));
+static Type super ARGS((Type ty));
 
-static Type super(Type ty) {
-	switch (ty->op) {
-	case INT:
-		if (ty->size < inttype->size)
-			return inttype;
-		break;
-	case UNSIGNED:
-		if (ty->size < unsignedtype->size)
-			return unsignedtype;
-		break;
-	case POINTER:
-		return unsignedptr;
-	}
-	return ty;
-}
-Tree expr(int tok) {
+Tree expr(tok) int tok; {
 	static char stop[] = { IF, ID, '}', 0 };
 	Tree p = expr1(0);
 
@@ -50,10 +33,10 @@ Tree expr(int tok) {
 		test(tok, stop);
 	return p;
 }
-Tree expr0(int tok) {
+Tree expr0(tok) int tok; {
 	return root(expr(tok));
 }
-Tree expr1(int tok) {
+Tree expr1(tok) int tok; {
 	static char stop[] = { IF, ID, 0 };
 	Tree p = expr2();
 
@@ -74,10 +57,10 @@ Tree expr1(int tok) {
 		test(tok, stop);
 	return p;
 }
-Tree incr(int op, Tree v, Tree e) {
+Tree incr(op, v, e) int op; Tree v, e; {
 	return asgntree(ASGN, v, (*optree[op])(oper[op], v, e));
 }
-static Tree expr2(void) {
+static Tree expr2() {
 	Tree p = expr3(4);
 
 	if (t == '?') {
@@ -92,26 +75,33 @@ static Tree expr2(void) {
 		l = pointer(expr(':'));
 		pts[1] = src;
 		r = pointer(expr2());
-		if (generic(p->op) != CNST && events.points)
-			{
-				apply(events.points, &pts[0], &l);
-				apply(events.points, &pts[1], &r);
-			}
 		p = condtree(p, l, r);
+		if (events.points)
+			if (p->op == COND) {
+				Symbol t1 = p->u.sym;
+				assert(p->kids[1]);
+				assert(p->kids[1]->op == RIGHT);
+				apply(events.points, &pts[0], &p->kids[1]->kids[0]);
+				apply(events.points, &pts[1], &p->kids[1]->kids[1]);
+				p = tree(COND, p->type, p->kids[0],
+					tree(RIGHT, p->type,
+						p->kids[1]->kids[0],
+						p->kids[1]->kids[1]));
+				p->u.sym = t1;
+			}
 	}
 	return p;
 }
-Tree value(Tree p) {
+Tree value(p) Tree p; {
 	int op = generic(rightkid(p)->op);
 
-	if (p->type != voidtype
-	&& (op==AND || op==OR || op==NOT || op==EQ || op==NE
-	||  op== LE || op==LT || op== GE || op==GT))
+	if (op==AND || op==OR || op==NOT || op==EQ || op==NE
+	||  op== LE || op==LT || op== GE || op==GT)
 		p = condtree(p, consttree(1, inttype),
 			consttree(0, inttype));
 	return p;
 }
-static Tree expr3(int k) {
+static Tree expr3(k) int k; {
 	int k1;
 	Tree p = unary();
 
@@ -133,7 +123,7 @@ static Tree expr3(int k) {
 		}
 	return p;
 }
-static Tree unary(void) {
+static Tree unary() {
 	Tree p;
 
 	switch (t) {
@@ -163,13 +153,13 @@ static Tree unary(void) {
 						  	typeerror(ADD, p, NULL);  break;
 	case '-':    t = gettok(); p = unary(); p = pointer(p);
 						  if (isarith(p->type)) {
-						  	Type ty = promote(p->type);
-						  	p = cast(p, ty);
-						  	if (isunsigned(ty)) {
+						  	p = cast(p, promote(p->type));
+						  	if (isunsigned(p->type)) {
 						  		warning("unsigned operand of unary -\n");
-						  		p = simplify(ADD, ty, simplify(BCOM, ty, p, NULL), cnsttree(ty, 1UL));
+						  		p = simplify(NEG, inttype, cast(p, inttype), NULL);
+						  		p = cast(p, unsignedtype);
 						  	} else
-						  		p = simplify(NEG, ty, p, NULL);
+						  		p = simplify(NEG, p->type, p, NULL);
 						  } else
 						  	typeerror(SUB, p, NULL); break;
 	case '~':    t = gettok(); p = unary(); p = pointer(p);
@@ -185,33 +175,27 @@ static Tree unary(void) {
 						  	typeerror(NOT, p, NULL); break;
 	case INCR:   t = gettok(); p = unary(); p = incr(INCR, pointer(p), consttree(1, inttype)); break;
 	case DECR:   t = gettok(); p = unary(); p = incr(DECR, pointer(p), consttree(1, inttype)); break;
-	case TYPECODE: case SIZEOF: { int op = t;
-				      Type ty;
-				      p = NULL;
-				      t = gettok();
-				      if (t == '(') {
-				      	t = gettok();
-				      	if (istypename(t, tsym)) {
-				      		ty = typename();
-				      		expect(')');
-				      	} else {
-				      		p = postfix(expr(')'));
-				      		ty = p->type;
-				      	}
-				      } else {
-				      	p = unary();
-				      	ty = p->type;
-				      }
-				      assert(ty);
-				      if (op == TYPECODE)
-				      	p = cnsttree(inttype, (long)ty->op);
-				      else {
-				      	if (isfunc(ty) || ty->size == 0)
-				      		error("invalid type argument `%t' to `sizeof'\n", ty);
-				      	else if (p && rightkid(p)->op == FIELD)
-				      		error("`sizeof' applied to a bit field\n");
-				      	p = cnsttree(unsignedlong, (unsigned long)ty->size);
-				      } } break;
+	case SIZEOF: t = gettok(); { Type ty;
+				     p = NULL;
+				     if (t == '(') {
+				     	t = gettok();
+				     	if (istypename(t, tsym)) {
+				     		ty = typename();
+				     		expect(')');
+				     	} else {
+				     		p = postfix(expr(')'));
+				     		ty = p->type;
+				     	}
+				     } else {
+				     	p = unary();
+				     	ty = p->type;
+				     }
+				     assert(ty);
+				     if (isfunc(ty) || ty->size == 0)
+				     	error("invalid type argument `%t' to `sizeof'\n", ty);
+				     else if (p && rightkid(p)->op == FIELD)
+				     	error("`sizeof' applied to a bit field\n");
+				     p = consttree(ty->size, unsignedtype); } break;
 	case '(':
 		t = gettok();
 		if (istypename(t, tsym)) {
@@ -232,11 +216,9 @@ static Tree unary(void) {
 			if (isenum(pty))
 				pty = pty->type;
 			if (isarith(pty) && isarith(ty)
-			||  isptr(pty)   && isptr(ty)) {
-				explicitCast++;
+			||  isptr(pty)   && isptr(ty))
 				p = cast(p, ty);
-				explicitCast--;
-			} else if (isptr(pty) && isint(ty)
+			else if (isptr(pty) && isint(ty)
 			||       isint(pty) && isptr(ty)) {
 				if (Aflag >= 1 && ty->size < pty->size)
 					warning("conversion from `%t' to `%t' is compiler dependent\n", p->type, ty);
@@ -247,10 +229,9 @@ static Tree unary(void) {
 					p->type, ty1);
 				ty1 = inttype;
 			}
-			if (generic(p->op) == INDIR || ty->size == 0)
-				p = tree(RIGHT, ty1, NULL, p);
-			else
-				p = retype(p, ty1);
+			p = retype(p, ty1);
+			if (generic(p->op) == INDIR)
+				p = tree(RIGHT, ty, NULL, p);
 		} else
 			p = postfix(expr(')'));
 		break;
@@ -260,7 +241,7 @@ static Tree unary(void) {
 	return p;
 }
 
-static Tree postfix(Tree p) {
+static Tree postfix(p) Tree p; {
 	for (;;)
 		switch (t) {
 		case INCR:  p = tree(RIGHT, p->type,
@@ -311,8 +292,10 @@ static Tree postfix(Tree p) {
 			    		Tree q = addrof(p);
 			    		p = field(q, token);
 			    		q = rightkid(q);
-			    		if (isaddrop(q->op) && q->u.sym->temporary)
+			    		if (isaddrop(q->op) && q->u.sym->temporary) {
 			    			p = tree(RIGHT, p->type, p, NULL);
+			    			p->u.sym = q->u.sym;
+			    		}
 			    	} else
 			    		error("left operand of . has incompatible type `%t'\n",
 			    			p->type);
@@ -336,58 +319,56 @@ static Tree postfix(Tree p) {
 			return p;
 		}
 }
-static Tree primary(void) {
+static Tree primary() {
 	Tree p;
 
 	assert(t != '(');
 	switch (t) {
 	case ICON:
-	case FCON: p = tree(mkop(CNST,tsym->type), tsym->type, NULL, NULL);
+	case FCON: p = tree(CNST + ttob(tsym->type), tsym->type, NULL, NULL);
 		   p->u.v = tsym->u.c.v;
  break;
-	case SCON: if (ischar(tsym->type->type))
-		   	tsym->u.c.v.p = stringn(tsym->u.c.v.p, tsym->type->size);
-		   else
-		   	tsym->u.c.v.p = memcpy(allocate((tsym->type->size/widechar->size)*sizeof (int), PERM),
-		   		tsym->u.c.v.p, (tsym->type->size/widechar->size)*sizeof (int));
+	case SCON: tsym->u.c.v.p = stringn(tsym->u.c.v.p, tsym->type->size);
 		   tsym = constant(tsym->type, tsym->u.c.v); 
 		   if (tsym->u.c.loc == NULL)
 		   	tsym->u.c.loc = genident(STATIC, tsym->type, GLOBAL);
 		   p = idtree(tsym->u.c.loc); break;
 	case ID:   if (tsym == NULL)
 		   	{
-				Symbol p = install(token, &identifiers, level, PERM);
-				p->src = src;
-				if (getchr() == '(') {
-					Symbol q = lookup(token, externals);
-					p->type = func(inttype, NULL, 1);
-					p->sclass = EXTERN;
+				Symbol q = install(token, &identifiers, level, level < LOCAL ? PERM : FUNC);
+				q->src = src;
+				t = gettok();
+				if (t == '(') {
+					Symbol r;
+					q->sclass = EXTERN;
+					q->type = func(inttype, NULL, 1);
 					if (Aflag >= 1)
 						warning("missing prototype\n");
-					if (q && !eqtype(q->type, p->type, 1))
-						warning("implicit declaration of `%s' does not match previous declaration at %w\n", q->name, &q->src);
-
-					if (q == NULL) {
-						q = install(p->name, &externals, GLOBAL, PERM);
-						q->type = p->type;
-						q->sclass = EXTERN;
-						q->src = src;
-						(*IR->defsymbol)(q);
+					(*IR->defsymbol)(q);
+				 	if ((r = lookup(q->name, externals)) != NULL) {
+						q->defined = r->defined;
+						q->temporary = r->temporary;
+						q->generated = r->generated;
+						q->computed = r->computed;
+						q->addressed = r->addressed;
+					} else {
+						r = install(q->name, &externals, GLOBAL, PERM);
+						r->src = q->src;
+						r->type = q->type;
+						r->sclass = EXTERN;
 					}
-					p->u.alias = q;
 				} else {
-					error("undeclared identifier `%s'\n", p->name);
-					p->sclass = AUTO;
-					p->type = inttype;
-					if (p->scope == GLOBAL)
-						(*IR->defsymbol)(p);
+					error("undeclared identifier `%s'\n", q->name);
+					q->sclass = AUTO;
+					q->type = inttype;
+					if (q->scope == GLOBAL)
+						(*IR->defsymbol)(q);
 					else
-						addlocal(p);
+						addlocal(q);
 				}
-				t = gettok();
 				if (xref)
-					use(p, src);
-				return idtree(p);
+					use(q, src);
+				return idtree(q);
 			}
 		   if (xref)
 		   	use(tsym, src);
@@ -398,62 +379,53 @@ static Tree primary(void) {
 		   		error("illegal use of type name `%s'\n", tsym->name);
 		   	p = idtree(tsym);
 		   } break;
-	case FIRSTARG:
-		if (level > PARAM && cfunc && cfunc->u.f.callee[0])
-			p = idtree(cfunc->u.f.callee[0]);
-		else {
-			error("illegal use of `%k'\n", FIRSTARG);
-			p = cnsttree(inttype, 0L);
-		}
-		break;
 	default:
 		error("illegal expression\n");
-			p = cnsttree(inttype, 0L);
+		p = consttree(0, inttype);
 	}
 	t = gettok();
 	return p;
 }
-Tree idtree(Symbol p) {
+Tree idtree(p) Symbol p; {
 	int op;
 	Tree e;
-	Type ty = p->type ? unqual(p->type) : voidptype;
+	Type ty = p->type ? unqual(p->type) : voidtype;
 
-	if (p->scope == GLOBAL || p->sclass == STATIC)
-		op = ADDRG;
+	p->ref += refinc;
+	if (p->scope  == GLOBAL
+	||  p->sclass == STATIC || p->sclass == EXTERN)
+		op = ADDRG+P;
 	else if (p->scope == PARAM) {
-		op = ADDRF;
+		op = ADDRF+P;
 		if (isstruct(p->type) && !IR->wants_argb)
 			{
-				e = tree(mkop(op,voidptype), ptr(ptr(p->type)), NULL, NULL);
+				e = tree(op, ptr(ptr(p->type)), NULL, NULL);
 				e->u.sym = p;
 				return rvalue(rvalue(e));
 			}
-	} else if (p->sclass == EXTERN) {
-		assert(p->u.alias);
-		p = p->u.alias;
-		op = ADDRG;
 	} else
-		op = ADDRL;
-	p->ref += refinc;
-	if (isarray(ty))
-		e = tree(mkop(op,voidptype), p->type,      NULL, NULL);
-	else if (isfunc(ty))
-		e = tree(mkop(op,funcptype), p->type,      NULL, NULL);
-	else
-		e = tree(mkop(op,voidptype), ptr(p->type), NULL, NULL);
-	e->u.sym = p;
-	if (isptr(e->type))
+		op = ADDRL+P;
+	if (isarray(ty) || isfunc(ty)) {
+		e = tree(op, p->type, NULL, NULL);
+		e->u.sym = p;
+	} else {
+		e = tree(op, ptr(p->type), NULL, NULL);
+		e->u.sym = p;
 		e = rvalue(e);
+	}
 	return e;
 }
 
-Tree rvalue(Tree p) {
+Tree rvalue(p) Tree p; {
 	Type ty = deref(p->type);
 
 	ty = unqual(ty);
-	return tree(mkop(INDIR,ty), ty, p, NULL);
+	if (YYnull && !isaddrop(p->op))		/* omit */
+		p = nullcheck(p);		/* omit */
+	return tree(INDIR + (isunsigned(ty) ? I : ttob(ty)),
+		ty, p, NULL);
 }
-Tree lvalue(Tree p) {
+Tree lvalue(p) Tree p; {
 	if (generic(p->op) != INDIR) {
 		error("lvalue required\n");
 		return value(p);
@@ -461,17 +433,16 @@ Tree lvalue(Tree p) {
 		warning("`%t' used as an lvalue\n", p->type);
 	return p->kids[0];
 }
-Tree retype(Tree p, Type ty) {
+Tree retype(p, ty) Tree p; Type ty;{
 	Tree q;
 
 	if (p->type == ty)
 		return p;
 	q = tree(p->op, ty, p->kids[0], p->kids[1]);
-	q->node = p->node;
 	q->u = p->u;
 	return q;
 }
-Tree rightkid(Tree p) {
+Tree rightkid(p) Tree p; {
 	while (p && p->op == RIGHT)
 		if (p->kids[1])
 			p = p->kids[1];
@@ -482,7 +453,7 @@ Tree rightkid(Tree p) {
 	assert(p);
 	return p;
 }
-int hascall(Tree p) {
+int hascall(p) Tree p; {
 	if (p == 0)
 		return 0;
 	if (generic(p->op) == CALL || (IR->mulops_calls &&
@@ -491,26 +462,16 @@ int hascall(Tree p) {
 		return 1;
 	return hascall(p->kids[0]) || hascall(p->kids[1]);
 }
-Type binary(Type xty, Type yty) {
-#define xx(t) if (xty == t || yty == t) return t
-	xx(longdouble);
-	xx(doubletype);
-	xx(floattype);
-	xx(unsignedlonglong);
-	xx(longlong);
-	xx(unsignedlong);
-	if (xty == longtype     && yty == unsignedtype
-	||  xty == unsignedtype && yty == longtype)
-		if (longtype->size > unsignedtype->size)
-			return longtype;
-		else
-			return unsignedlong;
-	xx(longtype);
-	xx(unsignedtype);
+Type binary(xty, yty) Type xty, yty; {
+	if (isdouble(xty) || isdouble(yty))
+		return doubletype;
+	if (xty == floattype || yty == floattype)
+		return floattype;
+	if (isunsigned(xty) || isunsigned(yty))
+		return unsignedtype;
 	return inttype;
-#undef xx
 }
-Tree pointer(Tree p) {
+Tree pointer(p) Tree p; {
 	if (isarray(p->type))
 		/* assert(p->op != RIGHT || p->u.sym == NULL), */
 		p = retype(p, atop(p->type));
@@ -518,7 +479,7 @@ Tree pointer(Tree p) {
 		p = retype(p, ptr(p->type));
 	return p;
 }
-Tree cond(Tree p) {
+Tree cond(p) Tree p; {
 	int op = generic(rightkid(p)->op);
 
 	if (op == AND || op == OR || op == NOT
@@ -526,113 +487,98 @@ Tree cond(Tree p) {
 	||  op == LE  || op == LT || op == GE || op == GT)
 		return p;
 	p = pointer(p);
+	p = cast(p, promote(p->type));
 	return (*optree[NEQ])(NE, p, consttree(0, inttype));
 }
-Tree cast(Tree p, Type type) {
-	Type src, dst;
+Tree cast(p, type) Tree p; Type type; {
+	Type pty, ty = unqual(type);
 
 	p = value(p);
 	if (p->type == type)
 		return p;
-	dst = unqual(type);
-	src = unqual(p->type);
-	if (src->op != dst->op || src->size != dst->size) {
-		switch (src->op) {
-		case INT:
-			if (src->size < inttype->size)
-				p = simplify(CVI, inttype, p, NULL);
-			break;
-		case UNSIGNED:
-			if (src->size < inttype->size)
-				p = simplify(CVU, inttype, p, NULL);
-			else if (src->size < unsignedtype->size)
-				p = simplify(CVU, unsignedtype, p, NULL);
-			break;
-		case ENUM:
-			p = retype(p, inttype);
-			break;
-		case POINTER:
-			if (isint(dst) && src->size > dst->size)
-				warning("conversion from `%t' to `%t' is undefined\n", p->type, type);
-			p = simplify(CVP, super(src), p, NULL);
-			break;
-		case FLOAT:
-			break;
-		default: assert(0);
-		}
-		{
-			src = unqual(p->type);
-			dst = super(dst);
-			if (src->op != dst->op)
-				switch (src->op) {
-				case INT:
-					p = simplify(CVI, dst, p, NULL);
-					break;
-				case UNSIGNED:
-					if (isfloat(dst)) {
-						Type ssrc = signedint(src);
-						Tree two = cnsttree(longdouble, (long double)2.0);
-						p = (*optree['+'])(ADD,
-							(*optree['*'])(MUL,
-								two,
-								simplify(CVU, ssrc,
-									simplify(RSH, src,
-										p, consttree(1, inttype)), NULL)),
-							simplify(CVU, ssrc,
-								simplify(BAND, src,
-									p, consttree(1, unsignedtype)), NULL));
-					} else
-						p = simplify(CVU, dst, p, NULL);
-					break;
-				case FLOAT:
-					if (isunsigned(dst)) {
-						Type sdst = signedint(dst);
-						Tree c = cast(cnsttree(longdouble, (long double)sdst->u.sym->u.limits.max.i + 1), src);
-						p = condtree(
-							simplify(GE, src, p, c),
-							(*optree['+'])(ADD,
-								cast(cast(simplify(SUB, src, p, c), sdst), dst),
-								cast(cnsttree(unsignedlong, (unsigned long)sdst->u.sym->u.limits.max.i + 1), dst)),
-							simplify(CVF, sdst, p, NULL));
-					} else
-						p = simplify(CVF, dst, p, NULL);
-					break;
-				default: assert(0);
-				}
-			dst = unqual(type);
-		}
-	}
-	src = unqual(p->type);
-	switch (src->op) {
-	case INT:
-		if (src->op != dst->op || src->size != dst->size)
-			p = simplify(CVI, dst, p, NULL);
-		break;
-	case UNSIGNED:
-		if (src->op != dst->op || src->size != dst->size)
-			p = simplify(CVU, dst, p, NULL);
-		break;
-	case FLOAT:
-		if (src->op != dst->op || src->size != dst->size)
-			p = simplify(CVF, dst, p, NULL);
-		break;
+	pty = unqual(p->type);
+	if (pty == ty)
+		return retype(p, type);
+	switch (pty->op) {
+	case CHAR:    p = simplify(CVC, super(pty), p, NULL); break;
+	case SHORT:   p = simplify(CVS, super(pty), p, NULL); break;
+	case FLOAT:   p = simplify(CVF, doubletype, p, NULL); break;
+	case INT:     p = retype(p, inttype);                 break;
+	case DOUBLE:  p = retype(p, doubletype);              break;
+	case ENUM:    p = retype(p, inttype);                 break;
+	case UNSIGNED:p = retype(p, unsignedtype);            break;
 	case POINTER:
-		if (src->op != dst->op)
-			p = simplify(CVP, dst, p, NULL);
-		else {
-			if (isfunc(src->type) && !isfunc(dst->type)
-			|| !isfunc(src->type) &&  isfunc(dst->type))
-				warning("conversion from `%t' to `%t' is compiler dependent\n", p->type, type);
+		if (isptr(ty)) {
+			if (isfunc(pty->type) && !isfunc(ty->type)
+			|| !isfunc(pty->type) &&  isfunc(ty->type))
+				warning("conversion from `%t' to `%t' is compiler dependent\n", p->type, ty);
 
-			if (src->size != dst->size)
-				p = simplify(CVP, dst, p, NULL);
-		}
+			return retype(p, type);
+		} else
+			p = simplify(CVP, unsignedtype, p, NULL);
 		break;
 	default: assert(0);
 	}
-	return retype(p, type);
+	{
+		Type sty = super(ty);
+		pty = p->type;
+		if (pty != sty)
+			if (pty == inttype)
+				p = simplify(CVI, sty, p, NULL);
+			else if (pty == doubletype)
+				if (sty == unsignedtype) {
+					Tree c = tree(CNST+D, doubletype, NULL, NULL);
+					c->u.v.d = (double)INT_MAX + 1;
+					p = condtree(
+						simplify(GE, doubletype, p, c),
+						(*optree['+'])(ADD,
+							cast(cast(simplify(SUB, doubletype, p, c), inttype), unsignedtype),
+							consttree((unsigned)INT_MAX + 1, unsignedtype)),
+						simplify(CVD, inttype, p, NULL));
+				} else
+					p = simplify(CVD, sty, p, NULL);
+			else if (pty == unsignedtype)
+				if (sty == doubletype) {
+					Tree two = tree(CNST+D, doubletype, NULL, NULL);
+					two->u.v.d = 2.;
+					p = (*optree['+'])(ADD,
+						(*optree['*'])(MUL,
+							two,
+							simplify(CVU, inttype,
+								simplify(RSH, unsignedtype,
+									p, consttree(1, inttype)), NULL)),
+						simplify(CVU, inttype,
+							simplify(BAND, unsignedtype,
+								p, consttree(1, unsignedtype)), NULL));
+				} else
+					p = simplify(CVU, sty, p, NULL);
+			else assert(0);
+	}
+	if (ty == signedchar || ty == chartype || ty == shorttype)
+		p = simplify(CVI, type, p, NULL);
+	else if (isptr(ty)
+	|| ty == unsignedchar || ty == unsignedshort)
+		p = simplify(CVU, type, p, NULL);
+	else if (ty == floattype)
+		p = simplify(CVD, type, p, NULL);
+	else
+		p = retype(p, type);
+	return p;
 }
-Tree field(Tree p, const char *name) {
+static Type super(ty) Type ty; {
+	if (ty == signedchar || ty == chartype || isenum(ty)
+	||  ty == shorttype  || ty == inttype  || ty == longtype)
+		return inttype;
+	if (isptr(ty)
+	|| ty == unsignedtype  || ty == unsignedchar
+	|| ty == unsignedshort || ty == unsignedlong)
+		return unsignedtype;
+	if (ty == floattype || ty == doubletype || ty == longdouble)
+		return doubletype;
+	assert(0);
+	return NULL;
+}
+Tree field(p, name) Tree p; char *name; {
 	Field q;
 	Type ty1, ty = p->type;
 
@@ -659,7 +605,7 @@ Tree field(Tree p, const char *name) {
 		if (YYcheck && !isaddrop(p->op) && q->offset > 0)	/* omit */
 			p = nullcall(ty, YYcheck, p, consttree(q->offset, inttype));	/* omit */
 		else					/* omit */
-		p = simplify(ADD+P, ty, p, consttree(q->offset, signedptr));
+		p = simplify(ADD+P, ty, p, consttree(q->offset, inttype));
 
 		if (q->lsb) {
 			p = tree(FIELD, ty->type, rvalue(p), NULL);
@@ -674,38 +620,52 @@ Tree field(Tree p, const char *name) {
 	return p;
 }
 /* funcname - return name of function f or a function' */
-char *funcname(Tree f) {
+char *funcname(f) Tree f; {
 	if (isaddrop(f->op))
 		return stringf("`%s'", f->u.sym->name);
 	return "a function";
 }
-static Tree nullcheck(Tree p) {
+static Tree nullcheck(p) Tree p; {
 	if (!needconst && YYnull && isptr(p->type)) {
 		p = value(p);
 		if (strcmp(YYnull->name, "_YYnull") == 0) {
-			Symbol t1 = temporary(REGISTER, voidptype);
+			Symbol t1 = temporary(REGISTER, voidptype, level);
 			p = tree(RIGHT, p->type,
 				tree(OR, voidtype,
 					cond(asgn(t1, cast(p, voidptype))),
-					vcall(YYnull, voidtype,	(file && *file ? pointer(idtree(mkstr(file)->u.c.loc)) : cnsttree(voidptype, NULL)), cnsttree(inttype, (long)lineno)		, NULL)),
+					calltree(pointer(idtree(YYnull)), voidtype,
+						tree(ARG+I, inttype,
+							consttree(lineno, inttype), NULL), NULL)),
 				idtree(t1));
 		}
-
 		else
-			p = nullcall(p->type, YYnull, p, cnsttree(inttype, 0L));
+			p = nullcall(p->type, YYnull, p, consttree(0, inttype));
 
 	}
 	return p;
 }
-Tree nullcall(Type pty, Symbol f, Tree p, Tree e) {
+Tree nullcall(pty, f, p, e) Type pty; Symbol f; Tree p, e; {
+	Tree fp, r;
 	Type ty;
 
 	if (isarray(pty))
 		return retype(nullcall(atop(pty), f, p, e), pty);
 	ty = unqual(unqual(p->type)->type);
-	return vcall(f, pty,
-		p, e,
-		cnsttree(inttype, (long)ty->size),
-		cnsttree(inttype, (long)ty->align),
-		(file && *file ? pointer(idtree(mkstr(file)->u.c.loc)) : cnsttree(voidptype, NULL)), cnsttree(inttype, (long)lineno)		, NULL);
+	if (file && *file)
+		fp = idtree(mkstr(file)->u.c.loc);
+	else
+		fp = cast(consttree(0, inttype), voidptype);
+	r = calltree(pointer(idtree(f)), pty,
+		tree(	ARG+I, inttype, consttree(lineno, inttype), tree(
+			ARG+P, ptr(chartype), fp, tree(
+			ARG+I, unsignedtype, consttree(ty->align, unsignedtype), tree(
+			ARG+I, unsignedtype, consttree(ty->size, unsignedtype), tree(
+			ARG+I, inttype, e, tree(
+			ARG+P, p->type, p, NULL) ))))),
+		NULL);
+	if (hascall(e))
+		r = tree(RIGHT, r->type, e, r);
+	if (hascall(p))
+		r = tree(RIGHT, r->type, p, r);
+	return r;
 }

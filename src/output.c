@@ -1,104 +1,151 @@
 #include "c.h"
 
-static char rcsid[] = "$Id$";
+int outfd = 1;
+int errfd = 2;
+static char buf1[4*1024], buf2[512];	/* output buffers */
+static struct io {
+	int fd;				/* file descriptor */
+	char *bp;			/* buffer pointer */
+	char *buffer;			/* buffer proper */
+	char *limit;			/* high water limit */
+} iob[] = {
+	0, 0, 0, 0,
+	1, buf1, buf1, buf1 + sizeof buf1 - 80,
+	2, buf2, buf2, buf2 + sizeof buf2 - 80
+}, *io[] = {
+	&iob[0],			/* used by stringf */
+	&iob[1],			/* output */
+	&iob[2]				/* standard error & other files; used by fprint */
+};
+static int fd = 1;			/* current output file */
 
-static char *outs(const char *str, FILE *f, char *bp) {
-	if (f)
-		fputs(str, f);
-	else
-		while (*bp = *str++)
-			bp++;
-	return bp;
+char *bp = buf1;			/* current output buffer pointer */
+
+void outs(s) char *s; {
+	char *p;
+
+	for (p = bp; (*p = *s++) != 0; p++)
+		;
+	bp = p;
+	if (bp > io[fd]->limit)
+		outflush();
 }
-
-static char *outd(long n, FILE *f, char *bp) {
-	unsigned long m;
-	char buf[25], *s = buf + sizeof buf;
-
-	*--s = '\0';
-	if (n < 0)
-		m = -n;
-	else
-		m = n;
-	do
-		*--s = m%10 + '0';
-	while ((m /= 10) != 0);
-	if (n < 0)
-		*--s = '-';
-	return outs(s, f, bp);
-}
-
-static char *outu(unsigned long n, int base, FILE *f, char *bp) {
-	char buf[25], *s = buf + sizeof buf;
-
-	*--s = '\0';
-	do
-		*--s = "0123456789abcdef"[n%base];
-	while ((n /= base) != 0);
-	return outs(s, f, bp);
-}
-void print(const char *fmt, ...) {
+void print VARARGS((char *fmt, ...),
+(fmt, va_alist),char *fmt; va_dcl) {
 	va_list ap;
 
-	va_start(ap, fmt);
-	vfprint(stdout, NULL, fmt, ap);
+	va_init(ap, fmt);
+	vprint(fmt, ap);
 	va_end(ap);
 }
-/* fprint - formatted output to  f */
-void fprint(FILE *f, const char *fmt, ...) {
+/* outputInit - initialize output system */
+void outputInit() {
+	io[1]->fd = outfd;
+	io[2]->fd = errfd;
+}
+
+/* fprint - formatted output to file descriptor f */
+void fprint VARARGS((int f, char *fmt, ...),(f, fmt, va_alist),char *fmt; va_dcl) {
 	va_list ap;
 
-	va_start(ap, fmt);
-	vfprint(f, NULL, fmt, ap);
+	va_init(ap, fmt);
+	vfprint(f, fmt, ap);
 	va_end(ap);
+}
+
+/* outflush - flush output buffer */
+void outflush() {
+	struct io *iop = io[fd];
+
+	assert(fd);
+	if (bp > iop->buffer)
+		write(iop->fd, iop->buffer, bp - iop->buffer);
+	bp = iop->bp = iop->buffer;
 }
 
 /* stringf - formatted output to a saved string */
-char *stringf(const char *fmt, ...) {
+char *stringf VARARGS((char *fmt, ...),(fmt, va_alist),char *fmt; va_dcl) {
 	char buf[1024];
 	va_list ap;
 
-	va_start(ap, fmt);
-	vfprint(NULL, buf, fmt, ap);
+	va_init(ap, fmt);
+	fd = 0;
+	io[1]->bp = bp;
+	bp = io[0]->bp = io[0]->buffer = buf;
+	io[0]->limit = buf + sizeof buf;
+	vprint(fmt, ap);
+	*bp = 0;
+	bp = io[1]->bp;
+	fd = 1;
 	va_end(ap);
 	return string(buf);
 }
 
-/* vfprint - formatted output to f or string bp */
-void vfprint(FILE *f, char *bp, const char *fmt, va_list ap) {
+/* vfprint - formatted output to file descriptor f */
+void vfprint(f, fmt, ap) int f; char *fmt; va_list ap; {
+	if (f == 1)
+		vprint(fmt, ap);
+	else {
+		fd = 2;
+		io[1]->bp = bp;
+		io[2]->fd = f == 2 ? errfd : f;
+		bp = io[2]->bp;
+		vprint(fmt, ap);
+		outflush();
+		bp = io[1]->bp;
+		fd = 1;
+	}
+}
+
+/* vprint - formatted output to standard output */
+void vprint(fmt, ap) char *fmt; va_list ap; {
 	for (; *fmt; fmt++)
 		if (*fmt == '%')
 			switch (*++fmt) {
-			case 'd': bp = outd(va_arg(ap, int), f, bp); break;
-			case 'D': bp = outd(va_arg(ap, long), f, bp); break;
-			case 'U': bp = outu(va_arg(ap, unsigned long), 10, f, bp); break;
-			case 'u': bp = outu(va_arg(ap, unsigned), 10, f, bp); break;
-			case 'o': bp = outu(va_arg(ap, unsigned), 8, f, bp); break;
-			case 'X': bp = outu(va_arg(ap, unsigned long), 16, f, bp); break;
-			case 'x': bp = outu(va_arg(ap, unsigned), 16, f, bp); break;
-			case 'f': case 'e':
-			case 'g': {
-				  	static char format[] = "%f";
-				  	char buf[128];
-				  	format[1] = *fmt;
-				  	sprintf(buf, format, va_arg(ap, double));
-				  	bp = outs(buf, f, bp);
-				  }
-; break;
-			case 's': bp = outs(va_arg(ap, char *), f, bp); break;
-			case 'p': {
-				void *p = va_arg(ap, void *);
-				if (p)
-					bp = outs("0x", f, bp);
-				bp = outu((unsigned long)p, 16, f, bp);
-				break;
-				  }
-			case 'c': if (f) fputc(va_arg(ap, int), f); else *bp++ = va_arg(ap, int); break;
+			case 'c': { *bp++ = va_arg(ap, int);
+ } break;
+			case 'd': { int n = va_arg(ap, int);
+				    unsigned m;
+				    char buf[25], *s = buf + sizeof buf;
+				    *--s = 0;
+				    if (n == INT_MIN)
+				    	m = (unsigned)INT_MAX + 1;
+				    else if (n < 0)
+				    	m = -n;
+				    else
+				    	m = n;
+				    do
+				    	*--s = m%10 + '0';
+				    while ((m /= 10) != 0);
+				    if (n < 0)
+				    	*--s = '-';
+				    outs(s);
+ } break;
+			case 'o': { unsigned n = va_arg(ap, unsigned);
+				    char buf[25], *s = buf + sizeof buf;
+				    *--s = 0;
+				    do
+				    	*--s = (n&7) + '0';
+				    while ((n >>= 3) != 0);
+				    outs(s);
+ } break;
+			case 'x': { unsigned n = va_arg(ap, unsigned);
+				    char buf[25], *s = buf + sizeof buf;
+				    *--s = 0;
+				    do
+				    	*--s = "0123456789abcdef"[n&0xf];
+				    while ((n >>= 4) != 0);
+				    outs(s);
+ } break;
+			case 's': { char *s = va_arg(ap, char *);
+				    if (s)
+				    	outs(s);
+ } break;
 			case 'S': { char *s = va_arg(ap, char *);
 				    int n = va_arg(ap, int);
 				    if (s)
-				    	for ( ; n-- > 0; s++)
-				    		if (f) (void)putc(*s, f); else *bp++ = *s;
+				    	while (n-- > 0)
+				    		*bp++ = *s++;
  } break;
 			case 'k': { int t = va_arg(ap, int);
 				    static char *tokens[] = {
@@ -107,29 +154,18 @@ void vfprint(FILE *f, char *bp, const char *fmt, va_list ap) {
 #include "token.h"
 				    };
 				    assert(tokens[t&0177]);
-				    bp = outs(tokens[t&0177], f, bp);
+				    outs(tokens[t&0177]);
  } break;
 			case 't': { Type ty = va_arg(ap, Type);
-				    assert(f);
-				    outtype(ty ? ty : voidtype, f);
+				    outtype(ty ? ty : voidtype);
  } break;
 			case 'w': { Coordinate *p = va_arg(ap, Coordinate *);
-				    if (p->file && *p->file) {
-				    	bp = outs(p->file, f, bp);
-				    	bp = outs(":", f, bp);
-				    }
-				    bp = outd(p->y, f, bp);
- } break;
-			case 'I': { int n = va_arg(ap, int);
-				    while (--n >= 0)
-				    	if (f) (void)putc(' ', f); else *bp++ = ' ';
- } break;
-			default:  if (f) (void)putc(*fmt, f); else *bp++ = *fmt; break;
+				    if (p->file && *p->file)
+				    	print("%s:", p->file);
+				    print("%d", p->y); } break;
+			default:  *bp++ = *fmt; break;
 			}
-		else if (f)
-			(void)putc(*fmt, f);
-		else
-			*bp++ = *fmt;
-	if (!f)
-		*bp = '\0';
+		else if ((*bp++ = *fmt) == '\n' && bp > io[fd]->limit)
+			outflush();
 }
+

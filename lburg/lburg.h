@@ -5,12 +5,12 @@
 /* iburg.c: */
 extern void *alloc(int nbytes);
 
-typedef enum { TERM=1, NONTERM } Kind;
+typedef enum { BURG_TERM=1, BURG_NONTERM } Kind;
 typedef struct rule *Rule;
 typedef struct term *Term;
 struct term {		/* terminals: */
 	char *name;		/* terminal name */
-	Kind kind;		/* TERM */
+	Kind kind;		/* BURG_TERM */
 	int esn;		/* external symbol number */
 	int arity;		/* operator arity */
 	Term link;		/* next terminal in esn order */
@@ -20,7 +20,7 @@ struct term {		/* terminals: */
 typedef struct nonterm *Nonterm;
 struct nonterm {	/* nonterminals: */
 	char *name;		/* nonterminal name */
-	Kind kind;		/* NONTERM */
+	Kind kind;		/* BURG_NONTERM */
 	int number;		/* identifying number */
 	int lhscount;		/* # times nt appears in a rule lhs */
 	int reached;		/* 1 iff reached from start nonterminal */
