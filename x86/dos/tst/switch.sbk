@@ -1,0 +1,955 @@
+.486
+.model small
+extrn __turboFloat:near
+extrn __setargv:near
+public _main
+_TEXT segment
+_main:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+sub esp,8
+lea edi,L6
+mov dword ptr -4[ebp],edi
+jmp L5
+L2:
+mov edi,dword ptr -4[ebp]
+movsx edi,byte ptr [edi]
+push edi
+call _backslash
+add esp,4
+push eax
+mov edi,dword ptr -4[ebp]
+movsx edi,byte ptr [edi]
+push edi
+lea edi,L7
+push edi
+call _printf
+add esp,12
+L3:
+inc dword ptr -4[ebp]
+L5:
+mov edi,dword ptr -4[ebp]
+movsx edi,byte ptr [edi]
+cmp edi,0
+jne L2
+call _f
+add esp,0
+call _g
+add esp,0
+call _h
+add esp,0
+mov dword ptr -8[ebp],16777216
+jmp L11
+L8:
+mov edi,dword ptr -8[ebp]
+push edi
+call _big
+add esp,4
+L9:
+add dword ptr -8[ebp],16777216
+L11:
+mov edi,dword ptr -8[ebp]
+and edi,07000000H
+cmp edi,0
+jne L8
+call _limit
+add esp,0
+mov eax,0
+L1:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _backslash
+_backslash:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+mov edi,dword ptr 20[ebp]
+cmp edi,102
+je L17
+cmp edi,102
+jg L23
+L22:
+cmp dword ptr 20[ebp],98
+je L16
+jmp L14
+L23:
+mov edi,dword ptr 20[ebp]
+cmp edi,110
+je L18
+cmp edi,110
+jl L14
+L24:
+mov edi,dword ptr 20[ebp]
+cmp edi,114
+je L19
+cmp edi,116
+je L20
+cmp edi,118
+je L21
+jmp L14
+L16:
+mov eax,8
+jmp L13
+L17:
+mov eax,12
+jmp L13
+L18:
+mov eax,10
+jmp L13
+L19:
+mov eax,13
+jmp L13
+L20:
+mov eax,9
+jmp L13
+L21:
+mov eax,11
+jmp L13
+L14:
+mov eax,dword ptr 20[ebp]
+L13:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _f
+_f:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+sub esp,12
+mov dword ptr -8[ebp],0
+lea edi,L31
+push edi
+call _printf
+add esp,4
+mov dword ptr -4[ebp],0
+L32:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -12[ebp],edi
+mov edi,dword ptr -4[ebp]
+cmp edi,1
+jl L36
+cmp edi,20
+jg L36
+jmp dword ptr L48-4[edi*4]
+_TEXT ends
+_DATA segment
+align 4
+L48 label byte
+dd L38
+dd L39
+dd L36
+dd L36
+dd L36
+dd L36
+dd L40
+dd L41
+dd L42
+dd L36
+dd L36
+dd L36
+dd L36
+dd L36
+dd L36
+dd L43
+dd L44
+dd L45
+dd L46
+dd L47
+_DATA ends
+_TEXT segment
+L38:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -8[ebp],edi
+jmp L37
+L39:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -8[ebp],edi
+jmp L37
+L40:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -8[ebp],edi
+jmp L37
+L41:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -8[ebp],edi
+jmp L37
+L42:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -8[ebp],edi
+jmp L37
+L43:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -8[ebp],edi
+jmp L37
+L44:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -8[ebp],edi
+jmp L37
+L45:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -8[ebp],edi
+jmp L37
+L46:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -8[ebp],edi
+jmp L37
+L47:
+mov edi,dword ptr -4[ebp]
+mov dword ptr -8[ebp],edi
+L36:
+L37:
+mov edi,dword ptr -8[ebp]
+push edi
+lea edi,L50
+push edi
+call _printf
+add esp,8
+L33:
+inc dword ptr -4[ebp]
+cmp dword ptr -4[ebp],20
+jle L32
+L30:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _g
+_g:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+sub esp,4
+lea edi,L53
+push edi
+call _printf
+add esp,4
+mov dword ptr -4[ebp],1
+L54:
+mov edi,dword ptr -4[ebp]
+cmp edi,1001
+jl L71
+cmp edi,1004
+jg L72
+jmp dword ptr L73-4004[edi*4]
+_TEXT ends
+_DATA segment
+align 4
+L73 label byte
+dd L67
+dd L67
+dd L67
+dd L67
+_DATA ends
+_TEXT segment
+L71:
+mov edi,dword ptr -4[ebp]
+cmp edi,1
+jl L58
+cmp edi,8
+jg L58
+jmp dword ptr L75-4[edi*4]
+_TEXT ends
+_DATA segment
+align 4
+L75 label byte
+dd L60
+dd L60
+dd L62
+dd L62
+dd L62
+dd L64
+dd L64
+dd L64
+_DATA ends
+_TEXT segment
+L72:
+mov edi,dword ptr -4[ebp]
+cmp edi,3001
+jl L58
+cmp edi,3004
+jg L58
+jmp dword ptr L77-12004[edi*4]
+_TEXT ends
+_DATA segment
+align 4
+L77 label byte
+dd L69
+dd L69
+dd L69
+dd L69
+_DATA ends
+_TEXT segment
+L60:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L61
+push edi
+call _printf
+add esp,8
+jmp L59
+L62:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L63
+push edi
+call _printf
+add esp,8
+jmp L59
+L64:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L65
+push edi
+call _printf
+add esp,8
+L58:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L66
+push edi
+call _printf
+add esp,8
+jmp L59
+L67:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L68
+push edi
+call _printf
+add esp,8
+jmp L59
+L69:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L70
+push edi
+call _printf
+add esp,8
+L59:
+L55:
+inc dword ptr -4[ebp]
+cmp dword ptr -4[ebp],10
+jle L54
+L52:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _h
+_h:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+sub esp,8
+mov dword ptr -8[ebp],0
+lea edi,L83
+push edi
+call _printf
+add esp,4
+mov dword ptr -4[ebp],1
+L84:
+mov edi,dword ptr -4[ebp]
+cmp edi,264
+je L96
+cmp edi,264
+jg L104
+L103:
+mov edi,dword ptr -4[ebp]
+cmp edi,120
+je L94
+cmp edi,120
+jg L106
+L105:
+mov edi,dword ptr -4[ebp]
+cmp edi,8
+je L93
+cmp edi,8
+jl L88
+L107:
+cmp dword ptr -4[ebp],16
+je L92
+jmp L88
+L106:
+mov edi,dword ptr -4[ebp]
+cmp edi,128
+je L90
+cmp edi,128
+jl L88
+L108:
+cmp dword ptr -4[ebp],248
+je L97
+jmp L88
+L104:
+mov edi,dword ptr -4[ebp]
+cmp edi,288
+je L101
+cmp edi,288
+jg L110
+L109:
+mov edi,dword ptr -4[ebp]
+cmp edi,272
+je L98
+cmp edi,272
+jl L88
+L111:
+cmp dword ptr -4[ebp],280
+je L95
+jmp L88
+L110:
+mov edi,dword ptr -4[ebp]
+cmp edi,304
+je L99
+cmp edi,304
+jg L113
+L112:
+cmp dword ptr -4[ebp],296
+je L100
+jmp L88
+L113:
+cmp dword ptr -4[ebp],312
+je L102
+jmp L88
+L88:
+inc dword ptr -8[ebp]
+jmp L85
+L90:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L92:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L93:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L94:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L95:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L96:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L97:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L98:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L99:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L100:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L101:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+jmp L89
+L102:
+mov edi,dword ptr -4[ebp]
+push edi
+lea edi,L91
+push edi
+call _printf
+add esp,8
+L89:
+L85:
+inc dword ptr -4[ebp]
+cmp dword ptr -4[ebp],500
+jle L84
+mov edi,dword ptr -8[ebp]
+push edi
+lea edi,L114
+push edi
+call _printf
+add esp,8
+L82:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _big
+_big:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+sub esp,4
+mov edi,dword ptr 20[ebp]
+and edi,06000000H
+mov dword ptr -4[ebp],edi
+mov edi,dword ptr -4[ebp]
+cmp edi,33554432
+je L135
+cmp edi,33554432
+jg L139
+L138:
+mov edi,dword ptr -4[ebp]
+cmp edi,-2
+je L133
+cmp edi,-1
+je L133
+cmp edi,0
+je L133
+jmp L130
+L139:
+mov edi,dword ptr -4[ebp]
+cmp edi,67108864
+je L136
+jmp L130
+L133:
+mov edi,dword ptr 20[ebp]
+push edi
+lea edi,L134
+push edi
+call _printf
+add esp,8
+jmp L131
+L135:
+mov edi,dword ptr 20[ebp]
+push edi
+lea edi,L134
+push edi
+call _printf
+add esp,8
+jmp L131
+L136:
+mov edi,dword ptr 20[ebp]
+push edi
+lea edi,L134
+push edi
+call _printf
+add esp,8
+jmp L131
+L130:
+mov edi,dword ptr 20[ebp]
+push edi
+lea edi,L137
+push edi
+call _printf
+add esp,8
+L131:
+L129:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _limit
+_limit:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+sub esp,4
+mov dword ptr -4[ebp],-2147483648
+L144:
+mov edi,dword ptr -4[ebp]
+mov esi,-2147483648
+cmp edi,-2147483648
+jl L148
+cmp edi,-2147483644
+jg L148
+lea edi,[edi*4]
+lea esi,[esi*4]
+sub edi,esi
+jmp dword ptr L161[edi]
+_TEXT ends
+_DATA segment
+align 4
+L161 label byte
+dd L150
+dd L152
+dd L154
+dd L156
+dd L158
+_DATA ends
+_TEXT segment
+L150:
+lea edi,L151
+push edi
+call _printf
+add esp,4
+jmp L149
+L152:
+lea edi,L153
+push edi
+call _printf
+add esp,4
+jmp L149
+L154:
+lea edi,L155
+push edi
+call _printf
+add esp,4
+jmp L149
+L156:
+lea edi,L157
+push edi
+call _printf
+add esp,4
+jmp L149
+L158:
+lea edi,L159
+push edi
+call _printf
+add esp,4
+jmp L149
+L148:
+lea edi,L160
+push edi
+call _printf
+add esp,4
+L149:
+L145:
+inc dword ptr -4[ebp]
+cmp dword ptr -4[ebp],-2147483643
+jle L144
+mov dword ptr -4[ebp],2147483647
+L162:
+mov edi,dword ptr -4[ebp]
+mov esi,2147483643
+cmp edi,2147483643
+jl L166
+cmp edi,2147483647
+jg L166
+lea edi,[edi*4]
+lea esi,[esi*4]
+sub edi,esi
+jmp dword ptr L173[edi]
+_TEXT ends
+_DATA segment
+align 4
+L173 label byte
+dd L172
+dd L171
+dd L170
+dd L169
+dd L168
+_DATA ends
+_TEXT segment
+L168:
+lea edi,L151
+push edi
+call _printf
+add esp,4
+jmp L167
+L169:
+lea edi,L153
+push edi
+call _printf
+add esp,4
+jmp L167
+L170:
+lea edi,L155
+push edi
+call _printf
+add esp,4
+jmp L167
+L171:
+lea edi,L157
+push edi
+call _printf
+add esp,4
+jmp L167
+L172:
+lea edi,L159
+push edi
+call _printf
+add esp,4
+jmp L167
+L166:
+lea edi,L160
+push edi
+call _printf
+add esp,4
+L167:
+L163:
+dec dword ptr -4[ebp]
+cmp dword ptr -4[ebp],2147483642
+jge L162
+L143:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+_TEXT ends
+extrn _printf:near
+_TEXT segment
+_TEXT ends
+_DATA segment
+align 1
+L160 label byte
+db 53
+db 10
+db 0
+align 1
+L159 label byte
+db 52
+db 10
+db 0
+align 1
+L157 label byte
+db 51
+db 10
+db 0
+align 1
+L155 label byte
+db 50
+db 10
+db 0
+align 1
+L153 label byte
+db 49
+db 10
+db 0
+align 1
+L151 label byte
+db 48
+db 10
+db 0
+align 1
+L137 label byte
+db 120
+db 32
+db 61
+db 32
+db 48
+db 120
+db 37
+db 120
+db 32
+db 40
+db 100
+db 101
+db 102
+db 97
+db 117
+db 108
+db 116
+db 41
+db 10
+db 0
+align 1
+L134 label byte
+db 120
+db 32
+db 61
+db 32
+db 48
+db 120
+db 37
+db 120
+db 10
+db 0
+align 1
+L114 label byte
+db 37
+db 100
+db 32
+db 100
+db 101
+db 102
+db 97
+db 117
+db 108
+db 116
+db 115
+db 10
+db 0
+align 1
+L91 label byte
+db 105
+db 32
+db 61
+db 32
+db 37
+db 100
+db 10
+db 0
+align 1
+L83 label byte
+db 104
+db 58
+db 10
+db 0
+align 1
+L70 label byte
+db 54
+db 32
+db 37
+db 100
+db 10
+db 0
+align 1
+L68 label byte
+db 53
+db 32
+db 37
+db 100
+db 10
+db 0
+align 1
+L66 label byte
+db 100
+db 32
+db 37
+db 100
+db 10
+db 0
+align 1
+L65 label byte
+db 51
+db 32
+db 37
+db 100
+db 10
+db 0
+align 1
+L63 label byte
+db 50
+db 32
+db 37
+db 100
+db 10
+db 0
+align 1
+L61 label byte
+db 49
+db 32
+db 37
+db 100
+db 10
+db 0
+align 1
+L53 label byte
+db 103
+db 58
+db 10
+db 0
+align 1
+L50 label byte
+db 120
+db 32
+db 61
+db 32
+db 37
+db 100
+db 10
+db 0
+align 1
+L31 label byte
+db 102
+db 58
+db 10
+db 0
+align 1
+L7 label byte
+db 37
+db 99
+db 32
+db 61
+db 32
+db 48
+db 120
+db 37
+db 120
+db 10
+db 0
+align 1
+L6 label byte
+db 98
+db 102
+db 110
+db 114
+db 116
+db 118
+db 120
+db 0
+_DATA ends
+end

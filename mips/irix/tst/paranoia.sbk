@@ -94,15 +94,15 @@ NoTrials:
 .align 2
 .ent sigfpe
 sigfpe:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
-sw $4,32($sp)
+sw $4,24($sp)
 lw $24,fpecount
 la $24,1($24)
 sw $24,fpecount
@@ -124,16 +124,16 @@ jal abort
 L.1:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end sigfpe
 .data
 .align 2
-L.757:
-.word L.758
+L.758:
 .word L.759
 .word L.760
 .word L.761
+.word L.762
 .globl main
 .text
 .text
@@ -157,9 +157,9 @@ sw $23,60($sp)
 .cprestore 64
 sw $30,68($sp)
 sw $31,72($sp)
-l.d $f18,L.7
-s.d $f18,Zero
 l.d $f18,L.8
+s.d $f18,Zero
+l.d $f18,L.9
 s.d $f18,One
 l.d $f18,One
 add.d $f16,$f18,$f18
@@ -215,98 +215,98 @@ jal History
 jal Pause
 la $24,7
 sw $24,Milestone
-la $4,L.12
+la $4,L.13
 jal printf
 move $4,$0
 l.d $f18,Zero
 add.d $f16,$f18,$f18
-c.eq.d $f16,$f18; bc1f L.15
+c.eq.d $f16,$f18; bc1f L.16
 l.d $f16,One
 sub.d $f10,$f16,$f16
-c.eq.d $f10,$f18; bc1f L.15
-c.ule.d $f16,$f18; bc1t L.15
+c.eq.d $f10,$f18; bc1f L.16
+c.le.d $f16,$f18; bc1t L.16
 add.d $f18,$f16,$f16
 l.d $f16,Two
-c.eq.d $f18,$f16; bc1f L.15
+c.eq.d $f18,$f16; bc1f L.16
 la $30,1
-b L.16
-L.15:
-move $30,$0
+b L.17
 L.16:
+move $30,$0
+L.17:
 move $5,$30
-la $6,L.14
+la $6,L.15
 jal TstCond
 l.d $f18,Zero
 neg.d $f18,$f18
 s.d $f18,Z
 l.d $f18,Z
-l.d $f16,L.7
-c.eq.d $f18,$f16; bc1t L.17
+l.d $f16,L.8
+c.eq.d $f18,$f16; bc1t L.18
 lw $24,ErrCnt
 la $24,1($24)
 sw $24,ErrCnt
-la $4,L.19
+la $4,L.20
 jal printf
-l.d $f18,L.20
+l.d $f18,L.21
 s.d $f18,U1
-l.d $f18,L.8
+l.d $f18,L.9
 s.d $f18,Radix
 jal TstPtUf
-L.17:
+L.18:
 move $4,$0
 l.d $f18,Three
 l.d $f16,Two
 l.d $f10,One
 add.d $f8,$f16,$f10
-c.eq.d $f18,$f8; bc1f L.23
+c.eq.d $f18,$f8; bc1f L.24
 l.d $f8,Four
 add.d $f6,$f18,$f10
-c.eq.d $f8,$f6; bc1f L.23
+c.eq.d $f8,$f6; bc1f L.24
 l.d $f6,Zero
 neg.d $f4,$f16
 mul.d $f16,$f16,$f4
 add.d $f16,$f8,$f16
-c.eq.d $f16,$f6; bc1f L.23
+c.eq.d $f16,$f6; bc1f L.24
 sub.d $f18,$f8,$f18
 sub.d $f18,$f18,$f10
-c.eq.d $f18,$f6; bc1f L.23
+c.eq.d $f18,$f6; bc1f L.24
 la $23,1
-b L.24
-L.23:
-move $23,$0
+b L.25
 L.24:
+move $23,$0
+L.25:
 move $5,$23
-la $6,L.22
+la $6,L.23
 jal TstCond
 l.d $f18,MinusOne
 s.d $f18,-8+240($sp)
 l.d $f16,One
-l.d $f10,L.7
+l.d $f10,L.8
 sub.d $f10,$f10,$f16
-c.eq.d $f18,$f10; bc1f L.27
+c.eq.d $f18,$f10; bc1f L.28
 l.d $f10,Zero
 add.d $f8,$f18,$f16
-c.eq.d $f8,$f10; bc1f L.27
+c.eq.d $f8,$f10; bc1f L.28
 add.d $f8,$f16,$f18
-c.eq.d $f8,$f10; bc1f L.27
+c.eq.d $f8,$f10; bc1f L.28
 mov.d $f12,$f16
 jal fabs
 l.d $f16,Zero
 l.d $f10,-8+240($sp)
 add.d $f18,$f10,$f0
-c.eq.d $f18,$f16; bc1f L.27
+c.eq.d $f18,$f16; bc1f L.28
 l.d $f18,MinusOne
 mul.d $f10,$f18,$f18
 add.d $f18,$f18,$f10
-c.eq.d $f18,$f16; bc1f L.27
+c.eq.d $f18,$f16; bc1f L.28
 la $22,1
-b L.28
-L.27:
-move $22,$0
+b L.29
 L.28:
+move $22,$0
+L.29:
 move $4,$0
 move $5,$22
-la $6,L.26
+la $6,L.27
 jal TstCond
 move $4,$0
 l.d $f18,Half
@@ -314,14 +314,14 @@ l.d $f16,MinusOne
 add.d $f16,$f18,$f16
 add.d $f18,$f16,$f18
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.31
+c.eq.d $f18,$f16; bc1f L.32
 la $21,1
-b L.32
-L.31:
-move $21,$0
+b L.33
 L.32:
+move $21,$0
+L.33:
 move $5,$21
-la $6,L.30
+la $6,L.31
 jal TstCond
 la $24,10
 sw $24,Milestone
@@ -329,82 +329,82 @@ move $4,$0
 l.d $f18,Nine
 l.d $f16,Three
 mul.d $f10,$f16,$f16
-c.eq.d $f18,$f10; bc1f L.35
+c.eq.d $f18,$f10; bc1f L.36
 l.d $f10,TwentySeven
 mul.d $f18,$f18,$f16
-c.eq.d $f10,$f18; bc1f L.35
+c.eq.d $f10,$f18; bc1f L.36
 l.d $f18,Eight
 l.d $f16,Four
 add.d $f8,$f16,$f16
-c.eq.d $f18,$f8; bc1f L.35
+c.eq.d $f18,$f8; bc1f L.36
 l.d $f8,ThirtyTwo
 mul.d $f18,$f18,$f16
-c.eq.d $f8,$f18; bc1f L.35
+c.eq.d $f8,$f18; bc1f L.36
 sub.d $f18,$f8,$f10
 sub.d $f18,$f18,$f16
 l.d $f16,One
 sub.d $f18,$f18,$f16
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.35
+c.eq.d $f18,$f16; bc1f L.36
 la $20,1
-b L.36
-L.35:
-move $20,$0
+b L.37
 L.36:
+move $20,$0
+L.37:
 move $5,$20
-la $6,L.34
+la $6,L.35
 jal TstCond
 move $4,$0
 l.d $f18,Five
 l.d $f16,Four
 l.d $f10,One
 add.d $f10,$f16,$f10
-c.eq.d $f18,$f10; bc1f L.39
+c.eq.d $f18,$f10; bc1f L.40
 l.d $f10,TwoForty
 l.d $f8,Three
 s.d $f8,-16+240($sp)
 mul.d $f6,$f16,$f18
 mul.d $f6,$f6,$f8
 mul.d $f6,$f6,$f16
-c.eq.d $f10,$f6; bc1f L.39
+c.eq.d $f10,$f6; bc1f L.40
 l.d $f6,Zero
 div.d $f4,$f10,$f8
 mul.d $f8,$f16,$f16
 mul.d $f8,$f8,$f18
 sub.d $f8,$f4,$f8
-c.eq.d $f8,$f6; bc1f L.39
+c.eq.d $f8,$f6; bc1f L.40
 div.d $f8,$f10,$f16
 l.d $f4,-16+240($sp)
 mul.d $f4,$f18,$f4
 mul.d $f4,$f4,$f16
 sub.d $f8,$f8,$f4
-c.eq.d $f8,$f6; bc1f L.39
+c.eq.d $f8,$f6; bc1f L.40
 div.d $f18,$f10,$f18
 l.d $f10,-16+240($sp)
 mul.d $f10,$f16,$f10
 mul.d $f16,$f10,$f16
 sub.d $f18,$f18,$f16
-c.eq.d $f18,$f6; bc1f L.39
+c.eq.d $f18,$f6; bc1f L.40
 la $19,1
-b L.40
-L.39:
-move $19,$0
+b L.41
 L.40:
+move $19,$0
+L.41:
 move $5,$19
-la $6,L.38
+la $6,L.39
 jal TstCond
 lw $24,ErrCnt
-bne $24,$0,L.41
-la $4,L.43
-jal printf
+bne $24,$0,L.42
 la $4,L.44
 jal printf
-L.41:
 la $4,L.45
+jal printf
+L.42:
+la $4,L.46
 jal printf
 l.d $f18,One
 s.d $f18,W
-L.46:
+L.47:
 l.d $f18,W
 add.d $f18,$f18,$f18
 s.d $f18,W
@@ -418,18 +418,18 @@ s.d $f18,Z
 l.d $f18,Z
 sub.d $f18,$f18,$f16
 s.d $f18,Y
-L.47:
+L.48:
 l.d $f12,Y
 jal fabs
 l.d $f16,MinusOne
 add.d $f18,$f16,$f0
 l.d $f16,Zero
-c.ult.d $f18,$f16; bc1t L.46
+c.lt.d $f18,$f16; bc1t L.47
 l.d $f18,Zero
 s.d $f18,Precision
 l.d $f18,One
 s.d $f18,Y
-L.49:
+L.50:
 l.d $f18,W
 l.d $f16,Y
 add.d $f10,$f18,$f16
@@ -439,26 +439,26 @@ s.d $f16,Y
 l.d $f16,Radix
 sub.d $f18,$f16,$f18
 s.d $f18,Radix
-L.50:
+L.51:
 l.d $f18,Radix
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1t L.49
+c.eq.d $f18,$f16; bc1t L.50
 l.d $f18,Radix
 l.d $f16,Two
-c.lt.d $f18,$f16; bc1f L.52
+c.lt.d $f18,$f16; bc1f L.53
 l.d $f18,One
 s.d $f18,Radix
-L.52:
-la $4,L.54
+L.53:
+la $4,L.55
 l.d $f18,Radix
 mfc1.d $6,$f18
 jal printf
 l.d $f18,Radix
-l.d $f16,L.8
-c.eq.d $f18,$f16; bc1t L.55
+l.d $f16,L.9
+c.eq.d $f18,$f16; bc1t L.56
 l.d $f18,One
 s.d $f18,W
-L.57:
+L.58:
 l.d $f18,One
 l.d $f16,Precision
 add.d $f16,$f16,$f18
@@ -470,13 +470,13 @@ s.d $f16,W
 l.d $f16,W
 add.d $f18,$f16,$f18
 s.d $f18,Y
-L.58:
+L.59:
 l.d $f18,Y
 l.d $f16,W
 sub.d $f18,$f18,$f16
 l.d $f16,One
-c.eq.d $f18,$f16; bc1t L.57
-L.55:
+c.eq.d $f18,$f16; bc1t L.58
+L.56:
 l.d $f18,One
 l.d $f16,W
 div.d $f18,$f18,$f16
@@ -485,10 +485,10 @@ l.d $f18,U1
 l.d $f16,Radix
 mul.d $f16,$f16,$f18
 s.d $f16,U2
-la $4,L.60
+la $4,L.61
 mfc1.d $6,$f18
 jal printf
-la $4,L.61
+la $4,L.62
 jal printf
 l.d $f18,Radix
 s.d $f18,E0
@@ -519,11 +519,11 @@ jal fabs
 s.d $f0,X
 l.d $f18,X
 l.d $f16,U2
-c.lt.d $f18,$f16; bc1f L.62
+c.lt.d $f18,$f16; bc1f L.63
 l.d $f18,U2
 s.d $f18,X
-L.62:
-L.64:
+L.63:
+L.65:
 l.d $f18,X
 s.d $f18,U2
 l.d $f18,U2
@@ -541,13 +541,13 @@ s.d $f16,Y
 l.d $f16,Y
 sub.d $f18,$f16,$f18
 s.d $f18,X
-L.65:
+L.66:
 l.d $f18,X
 l.d $f16,U2
-c.ule.d $f16,$f18; bc1t L.67
+c.le.d $f16,$f18; bc1t L.68
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.64
-L.67:
+c.le.d $f18,$f16; bc1f L.65
+L.68:
 l.d $f18,Two
 l.d $f16,Three
 div.d $f18,$f18,$f16
@@ -568,11 +568,11 @@ jal fabs
 s.d $f0,X
 l.d $f18,X
 l.d $f16,U1
-c.lt.d $f18,$f16; bc1f L.68
+c.lt.d $f18,$f16; bc1f L.69
 l.d $f18,U1
 s.d $f18,X
-L.68:
-L.70:
+L.69:
+L.71:
 l.d $f18,X
 s.d $f18,U1
 l.d $f18,Half
@@ -595,25 +595,25 @@ s.d $f16,Y
 l.d $f16,Y
 add.d $f18,$f18,$f16
 s.d $f18,X
-L.71:
+L.72:
 l.d $f18,X
 l.d $f16,U1
-c.ule.d $f16,$f18; bc1t L.73
+c.le.d $f16,$f18; bc1t L.74
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.70
-L.73:
+c.le.d $f18,$f16; bc1f L.71
+L.74:
 l.d $f18,U1
 l.d $f16,E1
-c.eq.d $f18,$f16; bc1f L.74
-la $4,L.76
-jal printf
-b L.75
-L.74:
+c.eq.d $f18,$f16; bc1f L.75
 la $4,L.77
+jal printf
+b L.76
+L.75:
+la $4,L.78
 l.d $f18,U1
 mfc1.d $6,$f18
 jal printf
-L.75:
+L.76:
 l.d $f18,U1
 l.d $f16,One
 div.d $f16,$f16,$f18
@@ -624,51 +624,51 @@ add.d $f16,$f10,$f16
 s.d $f16,F9
 l.d $f16,U2
 div.d $f18,$f16,$f18
-l.d $f16,L.78
+l.d $f16,L.79
 add.d $f12,$f18,$f16
 jal floor
 s.d $f0,Radix
 l.d $f18,Radix
 l.d $f16,E0
-c.eq.d $f18,$f16; bc1f L.79
-la $4,L.81
-jal printf
-b L.80
-L.79:
+c.eq.d $f18,$f16; bc1f L.80
 la $4,L.82
+jal printf
+b L.81
+L.80:
+la $4,L.83
 l.d $f18,Radix
 mfc1.d $6,$f18
 jal printf
-L.80:
+L.81:
 la $4,2
 l.d $f18,Eight
 l.d $f16,Radix
 add.d $f18,$f18,$f18
-c.le.d $f16,$f18; bc1f L.85
+c.le.d $f16,$f18; bc1f L.86
 la $18,1
-b L.86
-L.85:
-move $18,$0
+b L.87
 L.86:
+move $18,$0
+L.87:
 move $5,$18
-la $6,L.84
+la $6,L.85
 jal TstCond
 la $4,3
 l.d $f18,Radix
 l.d $f16,Two
-c.eq.d $f18,$f16; bc1t L.92
-l.d $f16,L.93
-c.eq.d $f18,$f16; bc1t L.92
+c.eq.d $f18,$f16; bc1t L.93
+l.d $f16,L.94
+c.eq.d $f18,$f16; bc1t L.93
 l.d $f16,One
-c.eq.d $f18,$f16; bc1f L.89
-L.92:
+c.eq.d $f18,$f16; bc1f L.90
+L.93:
 la $17,1
-b L.90
-L.89:
-move $17,$0
+b L.91
 L.90:
+move $17,$0
+L.91:
 move $5,$17
-la $6,L.88
+la $6,L.89
 jal TstCond
 la $24,20
 sw $24,Milestone
@@ -676,14 +676,14 @@ move $4,$0
 l.d $f18,Half
 l.d $f16,F9
 sub.d $f16,$f16,$f18
-c.lt.d $f16,$f18; bc1f L.96
+c.lt.d $f16,$f18; bc1f L.97
 la $16,1
-b L.97
-L.96:
-move $16,$0
+b L.98
 L.97:
+move $16,$0
+L.98:
 move $5,$16
-la $6,L.95
+la $6,L.96
 jal TstCond
 l.d $f18,F9
 s.d $f18,X
@@ -699,19 +699,19 @@ s.d $f18,Z
 move $4,$0
 l.d $f18,X
 l.d $f16,One
-c.eq.d $f18,$f16; bc1f L.102
+c.eq.d $f18,$f16; bc1f L.103
 l.d $f18,Z
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.100
-L.102:
+c.eq.d $f18,$f16; bc1f L.101
+L.103:
 la $24,1
 sw $24,-20+240($sp)
-b L.101
-L.100:
-sw $0,-20+240($sp)
+b L.102
 L.101:
+sw $0,-20+240($sp)
+L.102:
 lw $5,-20+240($sp)
-la $6,L.99
+la $6,L.100
 jal TstCond
 l.d $f18,One
 l.d $f16,U2
@@ -727,7 +727,7 @@ l.d $f8,BMinusU2
 sub.d $f16,$f8,$f16
 add.d $f16,$f16,$f18
 s.d $f16,BMinusU2
-c.eq.d $f10,$f18; bc1t L.103
+c.eq.d $f10,$f18; bc1t L.104
 l.d $f12,U1
 jal log
 mov.d $f18,$f0
@@ -752,10 +752,10 @@ jal fabs
 l.d $f16,Four
 mul.d $f18,$f0,$f16
 l.d $f16,One
-c.lt.d $f18,$f16; bc1f L.105
+c.lt.d $f18,$f16; bc1f L.106
 l.d $f18,Y
 s.d $f18,X
-L.105:
+L.106:
 l.d $f18,X
 l.d $f16,TwoForty
 div.d $f18,$f18,$f16
@@ -772,38 +772,38 @@ jal fabs
 l.d $f16,TwoForty
 mul.d $f18,$f0,$f16
 l.d $f16,Half
-c.lt.d $f18,$f16; bc1f L.107
+c.lt.d $f18,$f16; bc1f L.108
 l.d $f18,Y
 s.d $f18,Precision
-L.107:
-L.103:
+L.108:
+L.104:
 l.d $f18,Precision
 s.d $f18,-32+240($sp)
 mov.d $f12,$f18
 jal floor
 l.d $f16,-32+240($sp)
-c.eq.d $f16,$f0; bc1f L.111
+c.eq.d $f16,$f0; bc1f L.112
 l.d $f18,Radix
 l.d $f16,One
-c.eq.d $f18,$f16; bc1f L.109
-L.111:
-la $4,L.112
-jal printf
+c.eq.d $f18,$f16; bc1f L.110
+L.112:
 la $4,L.113
 jal printf
-L.109:
+la $4,L.114
+jal printf
+L.110:
 l.d $f18,Radix
 l.d $f16,One
-c.eq.d $f18,$f16; bc1f L.114
-la $4,L.116
-jal printf
-b L.115
-L.114:
+c.eq.d $f18,$f16; bc1f L.115
 la $4,L.117
+jal printf
+b L.116
+L.115:
+la $4,L.118
 l.d $f18,Precision
 mfc1.d $6,$f18
 jal printf
-L.115:
+L.116:
 la $4,1
 l.d $f18,Nine
 l.d $f16,U2
@@ -812,15 +812,15 @@ mul.d $f18,$f16,$f18
 l.d $f16,TwoForty
 mul.d $f18,$f18,$f16
 l.d $f16,One
-c.lt.d $f18,$f16; bc1f L.120
+c.lt.d $f18,$f16; bc1f L.121
 la $24,1
 sw $24,-36+240($sp)
-b L.121
-L.120:
-sw $0,-36+240($sp)
+b L.122
 L.121:
+sw $0,-36+240($sp)
+L.122:
 lw $5,-36+240($sp)
-la $6,L.119
+la $6,L.120
 jal TstCond
 la $24,30
 sw $24,Milestone
@@ -835,7 +835,7 @@ mul.d $f18,$f18,$f16
 sub.d $f12,$f18,$f8
 jal fabs
 s.d $f0,X
-L.122:
+L.123:
 l.d $f18,X
 s.d $f18,Z2
 l.d $f18,One
@@ -849,13 +849,13 @@ add.d $f16,$f10,$f16
 add.d $f16,$f18,$f16
 sub.d $f18,$f16,$f18
 s.d $f18,X
-L.123:
+L.124:
 l.d $f18,X
 l.d $f16,Z2
-c.ule.d $f16,$f18; bc1t L.125
+c.le.d $f16,$f18; bc1t L.126
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.122
-L.125:
+c.le.d $f18,$f16; bc1f L.123
+L.126:
 l.d $f18,Three
 l.d $f16,Four
 div.d $f10,$f18,$f16
@@ -870,7 +870,7 @@ jal fabs
 s.d $f0,Z
 s.d $f0,Y
 s.d $f0,X
-L.126:
+L.127:
 l.d $f18,Z
 s.d $f18,Z1
 l.d $f18,One
@@ -888,15 +888,15 @@ add.d $f16,$f16,$f18
 sub.d $f16,$f18,$f16
 add.d $f18,$f16,$f18
 s.d $f18,Z
-L.127:
+L.128:
 l.d $f18,Z
 l.d $f16,Z1
-c.ule.d $f16,$f18; bc1t L.129
+c.le.d $f16,$f18; bc1t L.130
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.126
-L.129:
+c.le.d $f18,$f16; bc1f L.127
 L.130:
-L.133:
+L.131:
+L.134:
 l.d $f18,Y
 s.d $f18,Y1
 l.d $f18,Half
@@ -911,13 +911,13 @@ add.d $f16,$f16,$f18
 sub.d $f16,$f18,$f16
 add.d $f18,$f16,$f18
 s.d $f18,Y
-L.134:
+L.135:
 l.d $f18,Y
 l.d $f16,Y1
-c.ule.d $f16,$f18; bc1t L.136
+c.le.d $f16,$f18; bc1t L.137
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.133
-L.136:
+c.le.d $f18,$f16; bc1f L.134
+L.137:
 l.d $f18,X
 s.d $f18,X1
 l.d $f18,X1
@@ -931,23 +931,23 @@ add.d $f18,$f10,$f18
 sub.d $f18,$f18,$f16
 add.d $f18,$f18,$f16
 s.d $f18,X
-L.131:
+L.132:
 l.d $f18,X
 l.d $f16,X1
-c.ule.d $f16,$f18; bc1t L.137
+c.le.d $f16,$f18; bc1t L.138
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.130
-L.137:
+c.le.d $f18,$f16; bc1f L.131
+L.138:
 l.d $f18,X1
 l.d $f16,Y1
-c.eq.d $f18,$f16; bc1f L.140
+c.eq.d $f18,$f16; bc1f L.141
 l.d $f16,Z1
-c.eq.d $f18,$f16; bc1t L.138
-L.140:
+c.eq.d $f18,$f16; bc1t L.139
+L.141:
 la $4,1
-la $5,L.141
+la $5,L.142
 jal BadCond
-la $4,L.142
+la $4,L.143
 l.d $f18,X1
 mfc1.d $6,$f18
 l.d $f18,Y1
@@ -955,86 +955,86 @@ s.d $f18,16($sp)
 l.d $f18,Z1
 s.d $f18,24($sp)
 jal printf
-la $4,L.143
-jal printf
 la $4,L.144
 jal printf
 la $4,L.145
+jal printf
+la $4,L.146
 jal notify
 l.d $f18,U1
 l.d $f16,X1
-c.eq.d $f16,$f18; bc1t L.149
+c.eq.d $f16,$f18; bc1t L.150
 l.d $f16,Y1
-c.eq.d $f16,$f18; bc1t L.149
+c.eq.d $f16,$f18; bc1t L.150
 l.d $f16,Z1
-c.eq.d $f16,$f18; bc1f L.139
-L.149:
-la $4,L.150
+c.eq.d $f16,$f18; bc1f L.140
+L.150:
+la $4,L.151
 jal printf
-b L.139
-L.138:
+b L.140
+L.139:
 l.d $f18,Z1
 l.d $f16,U1
-c.eq.d $f18,$f16; bc1f L.153
+c.eq.d $f18,$f16; bc1f L.154
 l.d $f18,Z2
 l.d $f16,U2
-c.eq.d $f18,$f16; bc1t L.151
-L.153:
+c.eq.d $f18,$f16; bc1t L.152
+L.154:
 l.d $f18,Z1
 l.d $f16,U1
-c.lt.d $f18,$f16; bc1f L.156
+c.lt.d $f18,$f16; bc1f L.157
 l.d $f18,Z2
 l.d $f16,U2
-c.ult.d $f18,$f16; bc1t L.154
-L.156:
+c.lt.d $f18,$f16; bc1t L.155
+L.157:
 move $4,$0
-la $5,L.157
+la $5,L.158
 jal BadCond
-la $4,L.158
-jal notify
 la $4,L.159
+jal notify
+la $4,L.160
 l.d $f18,U1
 mfc1.d $6,$f18
 l.d $f16,Z1
 sub.d $f18,$f16,$f18
 s.d $f18,16($sp)
 jal printf
-la $4,L.160
+la $4,L.161
 l.d $f18,U2
 mfc1.d $6,$f18
 l.d $f16,Z2
 sub.d $f18,$f16,$f18
 s.d $f18,16($sp)
 jal printf
-b L.155
-L.154:
+b L.156
+L.155:
 l.d $f18,Zero
 l.d $f16,Z1
-c.ule.d $f16,$f18; bc1t L.163
+c.le.d $f16,$f18; bc1t L.164
 l.d $f16,Z2
-c.le.d $f16,$f18; bc1f L.161
-L.163:
-la $4,L.164
+c.le.d $f16,$f18; bc1f L.162
+L.164:
+la $4,L.165
 l.d $f18,Radix
 mfc1.d $6,$f18
 jal printf
-la $4,L.165
-jal printf
 la $4,L.166
+jal printf
+la $4,L.167
 l.d $f18,Z1
 mfc1.d $6,$f18
 l.d $f18,Z2
 s.d $f18,16($sp)
 jal printf
-la $4,L.167
+la $4,L.168
 jal notify
-L.161:
+L.162:
 l.d $f18,Z1
 l.d $f16,Z2
-c.eq.d $f18,$f16; bc1f L.170
+c.eq.d $f18,$f16; bc1f L.171
 l.d $f16,Zero
-c.ule.d $f18,$f16; bc1t L.168
-L.170:
+c.le.d $f18,$f16; bc1t L.169
+L.171:
 l.d $f18,Z1
 l.d $f16,U1
 div.d $f18,$f18,$f16
@@ -1045,42 +1045,42 @@ div.d $f18,$f18,$f16
 s.d $f18,Y
 l.d $f18,Y
 l.d $f16,X
-c.ule.d $f18,$f16; bc1t L.171
+c.le.d $f18,$f16; bc1t L.172
 l.d $f18,Y
 s.d $f18,X
-L.171:
+L.172:
 l.d $f12,X
 jal log
 neg.d $f18,$f0
 s.d $f18,Q
-la $4,L.173
+la $4,L.174
 jal printf
 l.d $f12,Radix
-jal log
-la $4,L.174
-l.d $f16,Q
-div.d $f18,$f16,$f0
-mfc1.d $6,$f18
-jal printf
-l.d $f12,L.93
 jal log
 la $4,L.175
 l.d $f16,Q
 div.d $f18,$f16,$f0
 mfc1.d $6,$f18
 jal printf
-L.168:
-la $4,L.150
+l.d $f12,L.94
+jal log
+la $4,L.176
+l.d $f16,Q
+div.d $f18,$f16,$f0
+mfc1.d $6,$f18
 jal printf
-L.155:
-L.151:
-L.139:
+L.169:
+la $4,L.151
+jal printf
+L.156:
+L.152:
+L.140:
 jal Pause
 la $24,35
 sw $24,Milestone
 l.d $f18,Radix
 l.d $f16,Two
-c.ult.d $f18,$f16; bc1t L.176
+c.lt.d $f18,$f16; bc1t L.177
 l.d $f18,Radix
 l.d $f16,W
 mul.d $f18,$f18,$f18
@@ -1102,24 +1102,24 @@ sub.d $f18,$f10,$f18
 s.d $f18,X
 move $4,$0
 l.d $f18,X
-c.eq.d $f18,$f16; bc1f L.180
+c.eq.d $f18,$f16; bc1f L.181
 la $24,1
 sw $24,-40+240($sp)
-b L.181
-L.180:
-sw $0,-40+240($sp)
+b L.182
 L.181:
+sw $0,-40+240($sp)
+L.182:
 lw $5,-40+240($sp)
-la $6,L.179
+la $6,L.180
 jal TstCond
 l.d $f18,X
 l.d $f16,U2
-c.eq.d $f18,$f16; bc1f L.182
-la $4,L.184
-jal printf
-L.182:
-L.176:
+c.eq.d $f18,$f16; bc1f L.183
 la $4,L.185
+jal printf
+L.183:
+L.177:
+la $4,L.186
 jal printf
 l.d $f18,F9
 l.d $f16,One
@@ -1170,24 +1170,24 @@ mul.d $f18,$f16,$f18
 s.d $f18,T
 l.d $f18,Zero
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.186
+c.eq.d $f16,$f18; bc1f L.187
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.186
+c.eq.d $f16,$f18; bc1f L.187
 l.d $f16,Z
-c.eq.d $f16,$f18; bc1f L.186
+c.eq.d $f16,$f18; bc1f L.187
 l.d $f16,T
-c.eq.d $f16,$f18; bc1f L.186
+c.eq.d $f16,$f18; bc1f L.187
 la $24,1
 sw $24,GMult
-b L.187
-L.186:
+b L.188
+L.187:
 move $24,$0
 sw $24,GMult
 la $4,1
 move $5,$24
-la $6,L.188
+la $6,L.189
 jal TstCond
-L.187:
+L.188:
 l.d $f18,Radix
 l.d $f16,U2
 mul.d $f18,$f18,$f16
@@ -1218,17 +1218,17 @@ s.d $f18,Z
 move $4,$0
 l.d $f18,Zero
 l.d $f16,Y
-c.le.d $f16,$f18; bc1f L.191
+c.le.d $f16,$f18; bc1f L.192
 l.d $f16,Z
-c.le.d $f16,$f18; bc1f L.191
+c.le.d $f16,$f18; bc1f L.192
 la $24,1
 sw $24,-40+240($sp)
-b L.192
-L.191:
-sw $0,-40+240($sp)
+b L.193
 L.192:
+sw $0,-40+240($sp)
+L.193:
 lw $5,-40+240($sp)
-la $6,L.190
+la $6,L.191
 jal TstCond
 l.d $f18,One
 l.d $f16,U2
@@ -1262,19 +1262,19 @@ s.d $f18,Z
 la $4,2
 l.d $f18,Zero
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.195
+c.eq.d $f16,$f18; bc1f L.196
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.195
+c.eq.d $f16,$f18; bc1f L.196
 l.d $f16,Z
-c.eq.d $f16,$f18; bc1f L.195
+c.eq.d $f16,$f18; bc1f L.196
 la $24,1
 sw $24,-44+240($sp)
-b L.196
-L.195:
-sw $0,-44+240($sp)
+b L.197
 L.196:
+sw $0,-44+240($sp)
+L.197:
 lw $5,-44+240($sp)
-la $6,L.194
+la $6,L.195
 jal TstCond
 l.d $f18,F9
 l.d $f16,One
@@ -1299,22 +1299,22 @@ sub.d $f18,$f16,$f18
 s.d $f18,X
 l.d $f18,Zero
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.197
+c.eq.d $f16,$f18; bc1f L.198
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.197
+c.eq.d $f16,$f18; bc1f L.198
 l.d $f16,Z
-c.eq.d $f16,$f18; bc1f L.197
+c.eq.d $f16,$f18; bc1f L.198
 la $24,1
 sw $24,GDiv
-b L.198
-L.197:
+b L.199
+L.198:
 move $24,$0
 sw $24,GDiv
 la $4,1
 move $5,$24
-la $6,L.199
+la $6,L.200
 jal TstCond
-L.198:
+L.199:
 l.d $f18,One
 l.d $f16,U2
 add.d $f16,$f18,$f16
@@ -1328,15 +1328,15 @@ s.d $f18,Y
 la $4,1
 l.d $f18,Y
 l.d $f16,Zero
-c.lt.d $f18,$f16; bc1f L.202
+c.lt.d $f18,$f16; bc1f L.203
 la $24,1
 sw $24,-48+240($sp)
-b L.203
-L.202:
-sw $0,-48+240($sp)
+b L.204
 L.203:
+sw $0,-48+240($sp)
+L.204:
 lw $5,-48+240($sp)
-la $6,L.201
+la $6,L.202
 jal TstCond
 l.d $f18,One
 l.d $f16,U2
@@ -1367,17 +1367,17 @@ s.d $f18,Y
 move $4,$0
 l.d $f18,Zero
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.206
+c.eq.d $f16,$f18; bc1f L.207
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.206
+c.eq.d $f16,$f18; bc1f L.207
 la $24,1
 sw $24,-52+240($sp)
-b L.207
-L.206:
-sw $0,-52+240($sp)
+b L.208
 L.207:
+sw $0,-52+240($sp)
+L.208:
 lw $5,-52+240($sp)
-la $6,L.205
+la $6,L.206
 jal TstCond
 l.d $f18,One
 l.d $f16,U1
@@ -1401,55 +1401,55 @@ sub.d $f18,$f18,$f16
 s.d $f18,T
 l.d $f18,U1
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.208
+c.eq.d $f16,$f18; bc1f L.209
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.208
+c.eq.d $f16,$f18; bc1f L.209
 l.d $f18,U2
 l.d $f16,Z
-c.eq.d $f16,$f18; bc1f L.208
+c.eq.d $f16,$f18; bc1f L.209
 l.d $f16,T
-c.eq.d $f16,$f18; bc1f L.208
+c.eq.d $f16,$f18; bc1f L.209
 la $24,1
 sw $24,GAddSub
-b L.209
-L.208:
+b L.210
+L.209:
 move $24,$0
 sw $24,GAddSub
 la $4,1
 move $5,$24
-la $6,L.210
+la $6,L.211
 jal TstCond
-L.209:
+L.210:
 l.d $f18,F9
 l.d $f16,One
-c.eq.d $f18,$f16; bc1t L.211
+c.eq.d $f18,$f16; bc1t L.212
 sub.d $f18,$f18,$f16
 l.d $f16,Zero
-c.ult.d $f18,$f16; bc1t L.211
+c.lt.d $f18,$f16; bc1t L.212
 la $4,1
-la $5,L.213
+la $5,L.214
 jal BadCond
-la $4,L.214
-jal printf
 la $4,L.215
 jal printf
 la $4,L.216
 jal printf
-L.211:
+la $4,L.217
+jal printf
+L.212:
 la $24,1
 lw $15,GMult
-bne $15,$24,L.217
+bne $15,$24,L.218
 lw $15,GDiv
-bne $15,$24,L.217
+bne $15,$24,L.218
 lw $15,GAddSub
-bne $15,$24,L.217
-la $4,L.219
+bne $15,$24,L.218
+la $4,L.220
 jal printf
-L.217:
+L.218:
 la $24,40
 sw $24,Milestone
 jal Pause
-la $4,L.220
+la $4,L.221
 jal printf
 sw $0,RMult
 sw $0,RDiv
@@ -1460,51 +1460,51 @@ div.d $f16,$f16,$f18
 s.d $f16,RadixD2
 s.d $f18,A1
 sw $0,Done
-L.221:
+L.222:
 l.d $f18,Radix
 s.d $f18,AInvrse
-L.224:
+L.225:
 l.d $f18,AInvrse
 s.d $f18,X
 l.d $f16,A1
 div.d $f18,$f18,$f16
 s.d $f18,AInvrse
-L.225:
+L.226:
 l.d $f12,AInvrse
 jal floor
 l.d $f16,AInvrse
-c.eq.d $f0,$f16; bc1t L.224
+c.eq.d $f0,$f16; bc1t L.225
 l.d $f18,X
 l.d $f16,One
-c.eq.d $f18,$f16; bc1t L.230
+c.eq.d $f18,$f16; bc1t L.231
 l.d $f18,A1
 l.d $f16,Three
-c.ule.d $f18,$f16; bc1t L.228
-L.230:
+c.le.d $f18,$f16; bc1t L.229
+L.231:
 la $24,1
 sw $24,-56+240($sp)
-b L.229
-L.228:
-sw $0,-56+240($sp)
+b L.230
 L.229:
+sw $0,-56+240($sp)
+L.230:
 lw $24,-56+240($sp)
 sw $24,Done
 lw $24,Done
-bne $24,$0,L.231
+bne $24,$0,L.232
 l.d $f18,Nine
 l.d $f16,One
 add.d $f18,$f18,$f16
 s.d $f18,A1
-L.231:
-L.222:
+L.232:
+L.223:
 lw $24,Done
-beq $24,$0,L.221
+beq $24,$0,L.222
 l.d $f18,X
 l.d $f16,One
-c.eq.d $f18,$f16; bc1f L.233
+c.eq.d $f18,$f16; bc1f L.234
 l.d $f18,Radix
 s.d $f18,A1
-L.233:
+L.234:
 l.d $f18,A1
 l.d $f16,One
 div.d $f16,$f16,$f18
@@ -1513,7 +1513,7 @@ s.d $f18,X
 l.d $f18,AInvrse
 s.d $f18,Y
 sw $0,Done
-L.235:
+L.236:
 l.d $f18,Half
 l.d $f16,X
 l.d $f10,Y
@@ -1522,25 +1522,25 @@ sub.d $f16,$f16,$f18
 s.d $f16,Z
 move $4,$0
 l.d $f16,Z
-c.eq.d $f16,$f18; bc1f L.240
+c.eq.d $f16,$f18; bc1f L.241
 la $24,1
 sw $24,-56+240($sp)
-b L.241
-L.240:
-sw $0,-56+240($sp)
+b L.242
 L.241:
+sw $0,-56+240($sp)
+L.242:
 lw $5,-56+240($sp)
-la $6,L.239
+la $6,L.240
 jal TstCond
 l.d $f18,X
 l.d $f16,Radix
-c.eq.d $f18,$f16; bc1f L.243
+c.eq.d $f18,$f16; bc1f L.244
 la $24,1
 sw $24,-60+240($sp)
-b L.244
-L.243:
-sw $0,-60+240($sp)
+b L.245
 L.244:
+sw $0,-60+240($sp)
+L.245:
 lw $24,-60+240($sp)
 sw $24,Done
 l.d $f18,Radix
@@ -1549,9 +1549,9 @@ l.d $f18,One
 l.d $f16,X
 div.d $f18,$f18,$f16
 s.d $f18,Y
-L.236:
+L.237:
 lw $24,Done
-beq $24,$0,L.235
+beq $24,$0,L.236
 l.d $f18,One
 l.d $f16,U2
 add.d $f10,$f18,$f16
@@ -1594,13 +1594,13 @@ sub.d $f18,$f18,$f16
 s.d $f18,Y
 l.d $f18,Zero
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.245
+c.eq.d $f16,$f18; bc1f L.246
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.245
+c.eq.d $f16,$f18; bc1f L.246
 l.d $f16,Z
-c.eq.d $f16,$f18; bc1f L.245
+c.eq.d $f16,$f18; bc1f L.246
 l.d $f16,T
-c.le.d $f16,$f18; bc1f L.245
+c.le.d $f16,$f18; bc1f L.246
 l.d $f18,OneAndHalf
 l.d $f16,U2
 add.d $f10,$f18,$f16
@@ -1652,64 +1652,64 @@ sub.d $f18,$f18,$f16
 s.d $f18,Y1
 l.d $f18,Zero
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.247
+c.eq.d $f16,$f18; bc1f L.248
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.247
+c.eq.d $f16,$f18; bc1f L.248
 l.d $f16,Z
-c.eq.d $f16,$f18; bc1f L.247
+c.eq.d $f16,$f18; bc1f L.248
 l.d $f16,T
-c.eq.d $f16,$f18; bc1f L.247
+c.eq.d $f16,$f18; bc1f L.248
 l.d $f16,StickyBit
-c.eq.d $f16,$f18; bc1f L.247
+c.eq.d $f16,$f18; bc1f L.248
 l.d $f18,Y1
 l.d $f16,Half
-c.eq.d $f18,$f16; bc1f L.247
+c.eq.d $f18,$f16; bc1f L.248
 la $24,1
 sw $24,RMult
-la $4,L.249
+la $4,L.250
 jal printf
-b L.248
-L.247:
+b L.249
+L.248:
 l.d $f18,U2
 l.d $f16,Zero
 l.d $f10,X
 add.d $f10,$f10,$f18
-c.eq.d $f10,$f16; bc1f L.250
+c.eq.d $f10,$f16; bc1f L.251
 l.d $f10,Y
-c.lt.d $f10,$f16; bc1f L.250
+c.lt.d $f10,$f16; bc1f L.251
 l.d $f10,Z
 add.d $f10,$f10,$f18
-c.eq.d $f10,$f16; bc1f L.250
+c.eq.d $f10,$f16; bc1f L.251
 l.d $f10,T
-c.lt.d $f10,$f16; bc1f L.250
+c.lt.d $f10,$f16; bc1f L.251
 l.d $f10,StickyBit
 add.d $f18,$f10,$f18
-c.eq.d $f18,$f16; bc1f L.250
+c.eq.d $f18,$f16; bc1f L.251
 l.d $f18,Y1
 l.d $f16,Half
-c.lt.d $f18,$f16; bc1f L.250
+c.lt.d $f18,$f16; bc1f L.251
 la $24,2
 sw $24,RMult
-la $4,L.252
-jal printf
-b L.251
-L.250:
 la $4,L.253
 jal printf
+b L.252
 L.251:
-L.248:
+la $4,L.254
+jal printf
+L.252:
+L.249:
 lw $24,RMult
 la $15,1
-bne $24,$15,L.246
+bne $24,$15,L.247
 lw $24,GMult
-bne $24,$0,L.246
-la $4,L.256
+bne $24,$0,L.247
+la $4,L.257
 jal notify
-b L.246
-L.245:
-la $4,L.253
-jal printf
+b L.247
 L.246:
+la $4,L.254
+jal printf
+L.247:
 la $24,45
 sw $24,Milestone
 l.d $f18,One
@@ -1759,13 +1759,13 @@ add.d $f18,$f18,$f16
 s.d $f18,T
 l.d $f18,Zero
 l.d $f16,X
-c.le.d $f16,$f18; bc1f L.257
+c.le.d $f16,$f18; bc1f L.258
 l.d $f16,Y
-c.le.d $f16,$f18; bc1f L.257
+c.le.d $f16,$f18; bc1f L.258
 l.d $f16,Z
-c.le.d $f16,$f18; bc1f L.257
+c.le.d $f16,$f18; bc1f L.258
 l.d $f16,T
-c.le.d $f16,$f18; bc1f L.257
+c.le.d $f16,$f18; bc1f L.258
 l.d $f18,OneAndHalf
 l.d $f16,Y2
 div.d $f10,$f18,$f16
@@ -1810,61 +1810,61 @@ div.d $f18,$f16,$f18
 s.d $f18,Y1
 l.d $f18,Zero
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.259
+c.eq.d $f16,$f18; bc1f L.260
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.259
+c.eq.d $f16,$f18; bc1f L.260
 l.d $f16,Z
-c.eq.d $f16,$f18; bc1f L.259
+c.eq.d $f16,$f18; bc1f L.260
 l.d $f16,T
-c.eq.d $f16,$f18; bc1f L.259
+c.eq.d $f16,$f18; bc1f L.260
 l.d $f16,Y2
-c.eq.d $f16,$f18; bc1f L.259
-c.eq.d $f16,$f18; bc1f L.259
+c.eq.d $f16,$f18; bc1f L.260
+c.eq.d $f16,$f18; bc1f L.260
 l.d $f18,Half
 l.d $f16,Y1
 sub.d $f16,$f16,$f18
 l.d $f10,F9
 sub.d $f18,$f10,$f18
-c.eq.d $f16,$f18; bc1f L.259
+c.eq.d $f16,$f18; bc1f L.260
 la $24,1
 sw $24,RDiv
-la $4,L.261
+la $4,L.262
 jal printf
 lw $24,GDiv
-bne $24,$0,L.260
-la $4,L.264
+bne $24,$0,L.261
+la $4,L.265
 jal notify
-b L.260
-L.259:
+b L.261
+L.260:
 l.d $f18,Zero
 l.d $f16,X
-c.lt.d $f16,$f18; bc1f L.265
+c.lt.d $f16,$f18; bc1f L.266
 l.d $f16,Y
-c.lt.d $f16,$f18; bc1f L.265
+c.lt.d $f16,$f18; bc1f L.266
 l.d $f16,Z
-c.lt.d $f16,$f18; bc1f L.265
+c.lt.d $f16,$f18; bc1f L.266
 l.d $f16,T
-c.lt.d $f16,$f18; bc1f L.265
+c.lt.d $f16,$f18; bc1f L.266
 l.d $f16,Y2
-c.lt.d $f16,$f18; bc1f L.265
+c.lt.d $f16,$f18; bc1f L.266
 l.d $f18,Half
 l.d $f16,Y1
 sub.d $f16,$f16,$f18
 l.d $f10,F9
 sub.d $f18,$f10,$f18
-c.lt.d $f16,$f18; bc1f L.265
+c.lt.d $f16,$f18; bc1f L.266
 la $24,2
 sw $24,RDiv
-la $4,L.267
+la $4,L.268
 jal printf
-L.265:
-L.260:
-L.257:
+L.266:
+L.261:
+L.258:
 lw $24,RDiv
-bne $24,$0,L.268
-la $4,L.270
+bne $24,$0,L.269
+la $4,L.271
 jal printf
-L.268:
+L.269:
 l.d $f18,Radix
 l.d $f16,One
 div.d $f16,$f16,$f18
@@ -1874,15 +1874,15 @@ l.d $f16,Half
 l.d $f10,BInvrse
 mul.d $f18,$f10,$f18
 sub.d $f18,$f18,$f16
-c.eq.d $f18,$f16; bc1f L.273
+c.eq.d $f18,$f16; bc1f L.274
 la $24,1
 sw $24,-84+240($sp)
-b L.274
-L.273:
-sw $0,-84+240($sp)
+b L.275
 L.274:
+sw $0,-84+240($sp)
+L.275:
 lw $5,-84+240($sp)
-la $6,L.272
+la $6,L.273
 jal TstCond
 la $24,50
 sw $24,Milestone
@@ -1892,7 +1892,7 @@ l.d $f16,F9
 l.d $f10,U1
 add.d $f16,$f16,$f10
 sub.d $f16,$f16,$f18
-c.eq.d $f16,$f18; bc1f L.277
+c.eq.d $f16,$f18; bc1f L.278
 l.d $f18,One
 l.d $f16,BMinusU2
 l.d $f10,U2
@@ -1900,15 +1900,15 @@ add.d $f16,$f16,$f10
 sub.d $f16,$f16,$f18
 l.d $f10,Radix
 sub.d $f18,$f10,$f18
-c.eq.d $f16,$f18; bc1f L.277
+c.eq.d $f16,$f18; bc1f L.278
 la $24,1
 sw $24,-88+240($sp)
-b L.278
-L.277:
-sw $0,-88+240($sp)
+b L.279
 L.278:
+sw $0,-88+240($sp)
+L.279:
 lw $5,-88+240($sp)
-la $6,L.276
+la $6,L.277
 jal TstCond
 l.d $f18,One
 l.d $f16,U1
@@ -1934,17 +1934,17 @@ sub.d $f18,$f16,$f18
 s.d $f18,Y
 l.d $f18,Zero
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.279
+c.eq.d $f16,$f18; bc1f L.280
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.279
+c.eq.d $f16,$f18; bc1f L.280
 la $24,2
 sw $24,RAddSub
-la $4,L.281
+la $4,L.282
 jal printf
-L.279:
+L.280:
 lw $24,GAddSub
 la $15,1
-bne $24,$15,L.282
+bne $24,$15,L.283
 l.d $f18,Half
 l.d $f16,U2
 add.d $f10,$f18,$f16
@@ -1969,9 +1969,9 @@ sub.d $f18,$f18,$f16
 s.d $f18,Y
 l.d $f18,Zero
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.284
+c.eq.d $f16,$f18; bc1f L.285
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.284
+c.eq.d $f16,$f18; bc1f L.285
 l.d $f18,Half
 l.d $f16,U2
 l.d $f10,U1
@@ -1997,30 +1997,30 @@ sub.d $f18,$f18,$f16
 s.d $f18,Y
 l.d $f18,Zero
 l.d $f16,X
-c.eq.d $f16,$f18; bc1f L.286
+c.eq.d $f16,$f18; bc1f L.287
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.286
+c.eq.d $f16,$f18; bc1f L.287
 la $24,1
 sw $24,RAddSub
-la $4,L.288
+la $4,L.289
 jal printf
 lw $24,GAddSub
-bne $24,$0,L.283
-la $4,L.291
+bne $24,$0,L.284
+la $4,L.292
 jal notify
-b L.283
-L.286:
-la $4,L.292
+b L.284
+L.287:
+la $4,L.293
 jal printf
-b L.283
-L.284:
-la $4,L.292
+b L.284
+L.285:
+la $4,L.293
 jal printf
-b L.283
-L.282:
-la $4,L.292
-jal printf
+b L.284
 L.283:
+la $4,L.293
+jal printf
+L.284:
 l.d $f18,One
 s.d $f18,S
 l.d $f16,Half
@@ -2044,33 +2044,33 @@ add.d $f18,$f18,$f16
 s.d $f18,StickyBit
 l.d $f18,StickyBit
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1t L.293
+c.eq.d $f18,$f16; bc1t L.294
 l.d $f18,Zero
 s.d $f18,S
 la $4,3
-la $5,L.295
+la $5,L.296
 jal BadCond
-L.293:
+L.294:
 l.d $f18,Zero
 s.d $f18,StickyBit
 la $24,1
 lw $15,GMult
-bne $15,$24,L.296
+bne $15,$24,L.297
 lw $15,GDiv
-bne $15,$24,L.296
+bne $15,$24,L.297
 lw $15,GAddSub
-bne $15,$24,L.296
+bne $15,$24,L.297
 lw $15,RMult
-bne $15,$24,L.296
+bne $15,$24,L.297
 lw $15,RDiv
-bne $15,$24,L.296
+bne $15,$24,L.297
 lw $15,RAddSub
-bne $15,$24,L.296
+bne $15,$24,L.297
 l.d $f12,RadixD2
 jal floor
 l.d $f16,RadixD2
-c.eq.d $f0,$f16; bc1f L.296
-la $4,L.298
+c.eq.d $f0,$f16; bc1f L.297
+la $4,L.299
 jal printf
 l.d $f18,Half
 l.d $f16,U2
@@ -2091,11 +2091,11 @@ l.d $f18,One
 l.d $f16,Z
 sub.d $f16,$f16,$f18
 l.d $f10,Zero
-c.le.d $f16,$f10; bc1f L.299
+c.le.d $f16,$f10; bc1f L.300
 l.d $f16,T
 sub.d $f18,$f16,$f18
 l.d $f16,U2
-c.ult.d $f18,$f16; bc1t L.299
+c.lt.d $f18,$f16; bc1t L.300
 l.d $f18,T
 l.d $f16,Y
 add.d $f18,$f18,$f16
@@ -2108,11 +2108,11 @@ l.d $f18,T
 l.d $f16,Z
 sub.d $f16,$f16,$f18
 l.d $f10,U2
-c.ult.d $f16,$f10; bc1t L.301
+c.lt.d $f16,$f10; bc1t L.302
 l.d $f16,Y
 sub.d $f18,$f16,$f18
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.301
+c.eq.d $f18,$f16; bc1f L.302
 l.d $f18,Half
 l.d $f16,U1
 add.d $f10,$f18,$f16
@@ -2131,11 +2131,11 @@ l.d $f18,Zero
 l.d $f16,Z
 l.d $f10,One
 sub.d $f16,$f16,$f10
-c.eq.d $f16,$f18; bc1f L.303
+c.eq.d $f16,$f18; bc1f L.304
 l.d $f16,T
 l.d $f10,F9
 sub.d $f16,$f16,$f10
-c.eq.d $f16,$f18; bc1f L.303
+c.eq.d $f16,$f18; bc1f L.304
 l.d $f18,U1
 l.d $f16,Half
 sub.d $f16,$f16,$f18
@@ -2152,12 +2152,12 @@ l.d $f18,F9
 l.d $f16,Zero
 l.d $f10,T
 sub.d $f10,$f10,$f18
-c.eq.d $f10,$f16; bc1f L.305
+c.eq.d $f10,$f16; bc1f L.306
 l.d $f10,U1
 sub.d $f18,$f18,$f10
 l.d $f10,Q
 sub.d $f18,$f18,$f10
-c.eq.d $f18,$f16; bc1f L.305
+c.eq.d $f18,$f16; bc1f L.306
 l.d $f18,One
 l.d $f16,U2
 l.d $f10,OneAndHalf
@@ -2183,7 +2183,7 @@ mul.d $f18,$f18,$f16
 s.d $f18,Z
 l.d $f18,Zero
 l.d $f16,T
-c.eq.d $f16,$f18; bc1f L.307
+c.eq.d $f16,$f18; bc1f L.308
 l.d $f16,X
 l.d $f10,Radix
 l.d $f8,U2
@@ -2191,10 +2191,10 @@ mul.d $f10,$f10,$f8
 add.d $f16,$f16,$f10
 l.d $f10,Z
 sub.d $f16,$f16,$f10
-c.eq.d $f16,$f18; bc1f L.307
+c.eq.d $f16,$f18; bc1f L.308
 l.d $f18,Radix
 l.d $f16,Two
-c.eq.d $f18,$f16; bc1t L.309
+c.eq.d $f18,$f16; bc1t L.310
 l.d $f18,Two
 l.d $f16,U2
 add.d $f16,$f18,$f16
@@ -2206,69 +2206,69 @@ l.d $f18,Y
 l.d $f16,One
 sub.d $f18,$f18,$f16
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.310
+c.eq.d $f18,$f16; bc1f L.311
 l.d $f18,S
 s.d $f18,StickyBit
-b L.310
-L.309:
-l.d $f18,S
-s.d $f18,StickyBit
+b L.311
 L.310:
-L.307:
-L.305:
-L.303:
-L.301:
-L.299:
-L.296:
+l.d $f18,S
+s.d $f18,StickyBit
+L.311:
+L.308:
+L.306:
+L.304:
+L.302:
+L.300:
+L.297:
 l.d $f18,StickyBit
 l.d $f16,One
-c.eq.d $f18,$f16; bc1f L.313
-la $4,L.315
-jal printf
-b L.314
-L.313:
+c.eq.d $f18,$f16; bc1f L.314
 la $4,L.316
 jal printf
+b L.315
 L.314:
+la $4,L.317
+jal printf
+L.315:
 la $4,3
 lw $15,GMult
-beq $15,$0,L.319
+beq $15,$0,L.320
 lw $15,GDiv
-beq $15,$0,L.319
+beq $15,$0,L.320
 lw $15,GAddSub
-beq $15,$0,L.319
+beq $15,$0,L.320
 lw $15,RMult
-beq $15,$0,L.319
+beq $15,$0,L.320
 lw $15,RDiv
-beq $15,$0,L.319
+beq $15,$0,L.320
 lw $15,RAddSub
-beq $15,$0,L.319
+beq $15,$0,L.320
 la $24,1
 sw $24,-92+240($sp)
-b L.320
-L.319:
-sw $0,-92+240($sp)
+b L.321
 L.320:
+sw $0,-92+240($sp)
+L.321:
 lw $5,-92+240($sp)
-la $6,L.318
+la $6,L.319
 jal TstCond
 la $24,60
 sw $24,Milestone
-la $4,L.44
-jal printf
-la $4,L.321
+la $4,L.45
 jal printf
 la $4,L.322
+jal printf
+la $4,L.323
 lw $5,NoTrials
 jal printf
-l.d $f12,L.323
+l.d $f12,L.324
 jal sqrt
 s.d $f0,Random9
 l.d $f18,Third
 s.d $f18,Random1
 la $24,1
 sw $24,I
-L.324:
+L.325:
 jal Random
 s.d $f0,X
 jal Random
@@ -2286,17 +2286,17 @@ s.d $f18,Z9
 lw $24,I
 la $24,1($24)
 sw $24,I
-L.325:
+L.326:
 lw $24,I
 lw $15,NoTrials
-bgt $24,$15,L.327
+bgt $24,$15,L.328
 l.d $f18,Z9
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1t L.324
-L.327:
+c.eq.d $f18,$f16; bc1t L.325
+L.328:
 lw $24,I
 lw $15,NoTrials
-bne $24,$15,L.328
+bne $24,$15,L.329
 l.d $f18,One
 l.d $f16,Half
 l.d $f10,Three
@@ -2317,55 +2317,55 @@ s.d $f10,Y
 mul.d $f18,$f16,$f18
 sub.d $f18,$f18,$f18
 s.d $f18,Z9
-L.328:
+L.329:
 lw $24,I
 lw $15,NoTrials
-beq $24,$15,L.330
+beq $24,$15,L.331
 l.d $f18,Z9
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1t L.330
+c.eq.d $f18,$f16; bc1t L.331
 la $4,2
-la $5,L.332
+la $5,L.333
 jal BadCond
-b L.331
-L.330:
-la $4,L.333
+b L.332
+L.331:
+la $4,L.334
 lw $5,NoTrials
 jal printf
-L.331:
+L.332:
 la $24,70
 sw $24,Milestone
-la $4,L.334
+la $4,L.335
 jal printf
 l.d $f18,Zero
 s.d $f18,-104+240($sp)
 mov.d $f12,$f18
 jal sqrt
 l.d $f16,-104+240($sp)
-c.eq.d $f16,$f0; bc1f L.337
+c.eq.d $f16,$f0; bc1f L.338
 l.d $f18,Zero
 neg.d $f18,$f18
 s.d $f18,-112+240($sp)
 mov.d $f12,$f18
 jal sqrt
 l.d $f16,-112+240($sp)
-c.eq.d $f16,$f0; bc1f L.337
+c.eq.d $f16,$f0; bc1f L.338
 l.d $f18,One
 s.d $f18,-120+240($sp)
 mov.d $f12,$f18
 jal sqrt
 mov.d $f18,$f0
 l.d $f16,-120+240($sp)
-c.eq.d $f16,$f18; bc1f L.337
+c.eq.d $f16,$f18; bc1f L.338
 la $24,1
 sw $24,-96+240($sp)
-b L.338
-L.337:
-sw $0,-96+240($sp)
+b L.339
 L.338:
+sw $0,-96+240($sp)
+L.339:
 move $4,$0
 lw $5,-96+240($sp)
-la $6,L.336
+la $6,L.337
 jal TstCond
 l.d $f18,Zero
 s.d $f18,MinSqEr
@@ -2392,10 +2392,10 @@ la $4,1
 jal SqXMinX
 l.d $f18,J
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1t L.339
+c.eq.d $f18,$f16; bc1t L.340
 jal Pause
-L.339:
-la $4,L.341
+L.340:
+la $4,L.342
 lw $5,NoTrials
 jal printf
 l.d $f18,Zero
@@ -2405,29 +2405,29 @@ s.d $f18,X
 l.d $f18,Radix
 s.d $f18,Y
 l.d $f16,One
-c.eq.d $f18,$f16; bc1t L.342
-L.344:
+c.eq.d $f18,$f16; bc1t L.343
+L.345:
 l.d $f18,Y
 s.d $f18,X
 l.d $f16,Radix
 mul.d $f18,$f16,$f18
 s.d $f18,Y
-L.345:
+L.346:
 l.d $f18,Y
 l.d $f16,X
 sub.d $f18,$f18,$f16
 lw $24,NoTrials
 mtc1 $24,$f16; cvt.d.w $f16,$f16
-c.ult.d $f18,$f16; bc1t L.344
-L.342:
+c.lt.d $f18,$f16; bc1t L.345
+L.343:
 l.d $f18,X
 l.d $f16,U2
 mul.d $f18,$f18,$f16
 s.d $f18,OneUlp
 la $24,1
 sw $24,I
-b L.348
-L.347:
+b L.349
+L.348:
 l.d $f18,X
 l.d $f16,One
 add.d $f18,$f18,$f16
@@ -2436,18 +2436,18 @@ la $4,2
 jal SqXMinX
 l.d $f18,J
 l.d $f16,Zero
-c.ule.d $f18,$f16; bc1t L.350
-b L.349
-L.350:
+c.le.d $f18,$f16; bc1t L.351
+b L.350
+L.351:
 lw $24,I
 la $24,1($24)
 sw $24,I
-L.348:
+L.349:
 lw $24,I
 lw $15,NoTrials
-ble $24,$15,L.347
-L.349:
-la $4,L.352
+ble $24,$15,L.348
+L.350:
+la $4,L.353
 jal printf
 la $24,-1
 sw $24,I
@@ -2461,8 +2461,8 @@ add.d $f18,$f18,$f16
 s.d $f18,Z
 sw $0,NotMonot
 sw $0,Monot
-b L.354
-L.353:
+b L.355
+L.354:
 lw $24,I
 la $24,1($24)
 sw $24,I
@@ -2477,39 +2477,39 @@ jal sqrt
 s.d $f0,Z
 l.d $f18,Q
 l.d $f16,X
-c.le.d $f16,$f18; bc1f L.358
+c.le.d $f16,$f18; bc1f L.359
 l.d $f16,Z
-c.ule.d $f18,$f16; bc1t L.356
-L.358:
+c.le.d $f18,$f16; bc1t L.357
+L.359:
 la $24,1
 sw $24,NotMonot
-b L.357
-L.356:
+b L.358
+L.357:
 l.d $f18,Q
 l.d $f16,Half
 add.d $f12,$f18,$f16
 jal floor
 s.d $f0,Q
 lw $24,I
-bgt $24,$0,L.361
+bgt $24,$0,L.362
 l.d $f18,Q
 l.d $f16,Radix
 mul.d $f18,$f18,$f18
-c.eq.d $f16,$f18; bc1f L.359
-L.361:
+c.eq.d $f16,$f18; bc1f L.360
+L.362:
 la $24,1
 sw $24,Monot
-b L.360
-L.359:
+b L.361
+L.360:
 lw $24,I
-ble $24,$0,L.362
+ble $24,$0,L.363
 lw $24,I
 la $15,1
-ble $24,$15,L.364
+ble $24,$15,L.365
 la $24,1
 sw $24,Monot
-b L.363
-L.364:
+b L.364
+L.365:
 l.d $f18,Y
 l.d $f16,BInvrse
 mul.d $f18,$f18,$f16
@@ -2520,8 +2520,8 @@ sub.d $f10,$f18,$f16
 s.d $f10,X
 add.d $f18,$f18,$f16
 s.d $f18,Z
-b L.363
-L.362:
+b L.364
+L.363:
 l.d $f18,Q
 s.d $f18,Y
 l.d $f18,Y
@@ -2530,29 +2530,29 @@ sub.d $f10,$f18,$f16
 s.d $f10,X
 add.d $f18,$f18,$f16
 s.d $f18,Z
-L.363:
-L.360:
-L.357:
-L.354:
+L.364:
+L.361:
+L.358:
+L.355:
 lw $15,NotMonot
-bne $15,$0,L.366
+bne $15,$0,L.367
 lw $15,Monot
-beq $15,$0,L.353
-L.366:
-lw $24,Monot
-beq $24,$0,L.367
-la $4,L.369
-jal printf
-b L.368
+beq $15,$0,L.354
 L.367:
-la $4,2
-la $5,L.157
-jal BadCond
+lw $24,Monot
+beq $24,$0,L.368
 la $4,L.370
+jal printf
+b L.369
+L.368:
+la $4,2
+la $5,L.158
+jal BadCond
+la $4,L.371
 l.d $f18,Y
 mfc1.d $6,$f18
 jal printf
-L.368:
+L.369:
 la $24,80
 sw $24,Milestone
 l.d $f18,Half
@@ -2579,10 +2579,10 @@ add.d $f18,$f18,$f16
 s.d $f18,SqEr
 l.d $f18,SqEr
 l.d $f16,MaxSqEr
-c.ule.d $f18,$f16; bc1t L.371
+c.le.d $f18,$f16; bc1t L.372
 l.d $f18,SqEr
 s.d $f18,MaxSqEr
-L.371:
+L.372:
 l.d $f18,Y
 l.d $f16,U2
 l.d $f10,Eight
@@ -2591,10 +2591,10 @@ add.d $f18,$f18,$f16
 s.d $f18,SqEr
 l.d $f18,SqEr
 l.d $f16,MinSqEr
-c.lt.d $f18,$f16; bc1f L.373
+c.lt.d $f18,$f16; bc1f L.374
 l.d $f18,SqEr
 s.d $f18,MinSqEr
-L.373:
+L.374:
 l.d $f12,F9
 jal sqrt
 l.d $f16,U2
@@ -2612,10 +2612,10 @@ add.d $f18,$f18,$f16
 s.d $f18,SqEr
 l.d $f18,SqEr
 l.d $f16,MaxSqEr
-c.ule.d $f18,$f16; bc1t L.375
+c.le.d $f18,$f16; bc1t L.376
 l.d $f18,SqEr
 s.d $f18,MaxSqEr
-L.375:
+L.376:
 l.d $f18,Y
 l.d $f16,One
 add.d $f18,$f18,$f16
@@ -2626,17 +2626,17 @@ add.d $f18,$f18,$f16
 s.d $f18,SqEr
 l.d $f18,SqEr
 l.d $f16,MinSqEr
-c.lt.d $f18,$f16; bc1f L.377
+c.lt.d $f18,$f16; bc1f L.378
 l.d $f18,SqEr
 s.d $f18,MinSqEr
-L.377:
+L.378:
 l.d $f18,U2
 s.d $f18,OneUlp
 l.d $f18,OneUlp
 s.d $f18,X
 la $24,1
 sw $24,Indx
-L.379:
+L.380:
 l.d $f18,X
 l.d $f16,U1
 add.d $f16,$f18,$f16
@@ -2673,10 +2673,10 @@ add.d $f18,$f18,$f16
 s.d $f18,SqEr
 l.d $f18,SqEr
 l.d $f16,MinSqEr
-c.lt.d $f18,$f16; bc1f L.383
+c.lt.d $f18,$f16; bc1f L.384
 l.d $f18,SqEr
 s.d $f18,MinSqEr
-L.383:
+L.384:
 l.d $f18,Y
 l.d $f16,Half
 sub.d $f18,$f18,$f16
@@ -2685,16 +2685,16 @@ add.d $f18,$f18,$f16
 s.d $f18,SqEr
 l.d $f18,SqEr
 l.d $f16,MaxSqEr
-c.ule.d $f18,$f16; bc1t L.385
+c.le.d $f18,$f16; bc1t L.386
 l.d $f18,SqEr
 s.d $f18,MaxSqEr
-L.385:
+L.386:
 lw $24,Indx
 la $15,1
-beq $24,$15,L.389
+beq $24,$15,L.390
 la $15,3
-bne $24,$15,L.387
-L.389:
+bne $24,$15,L.388
+L.390:
 l.d $f12,X
 jal Sign
 mov.d $f18,$f0
@@ -2711,21 +2711,21 @@ l.d $f10,-128+240($sp)
 mul.d $f16,$f16,$f10
 mul.d $f18,$f16,$f0
 s.d $f18,X
-b L.388
-L.387:
+b L.389
+L.388:
 l.d $f18,U1
 s.d $f18,OneUlp
 l.d $f18,OneUlp
 neg.d $f18,$f18
 s.d $f18,X
-L.388:
-L.380:
+L.389:
+L.381:
 lw $24,Indx
 la $24,1($24)
 sw $24,Indx
 lw $24,Indx
 la $15,3
-ble $24,$15,L.379
+ble $24,$15,L.380
 la $24,85
 sw $24,Milestone
 sw $0,SqRWrng
@@ -2733,8 +2733,8 @@ sw $0,Anomaly
 sw $0,RSqrt
 l.d $f18,Radix
 l.d $f16,One
-c.eq.d $f18,$f16; bc1t L.390
-la $4,L.392
+c.eq.d $f18,$f16; bc1t L.391
+la $4,L.393
 jal printf
 l.d $f18,Precision
 s.d $f18,-128+240($sp)
@@ -2764,18 +2764,18 @@ s.d $f18,-136+240($sp)
 mov.d $f12,$f18
 jal floor
 l.d $f16,-136+240($sp)
-c.eq.d $f16,$f0; bc1f L.395
+c.eq.d $f16,$f0; bc1f L.396
 l.d $f18,Y
 s.d $f18,-144+240($sp)
 mov.d $f12,$f18
 jal floor
 l.d $f16,-144+240($sp)
-c.eq.d $f16,$f0; bc1t L.393
-L.395:
+c.eq.d $f16,$f0; bc1t L.394
+L.396:
 la $24,1
 sw $24,Anomaly
-b L.394
-L.393:
+b L.395
+L.394:
 l.d $f18,Zero
 s.d $f18,X
 l.d $f18,X
@@ -2791,15 +2791,15 @@ l.d $f18,Four
 l.d $f16,D
 mul.d $f18,$f18,$f16
 s.d $f18,FourD
-L.396:
+L.397:
 l.d $f18,Y2
 l.d $f16,Z2
-c.ule.d $f18,$f16; bc1t L.399
+c.le.d $f18,$f16; bc1t L.400
 l.d $f18,Radix
 s.d $f18,Q
 l.d $f18,Y
 s.d $f18,Y1
-L.401:
+L.402:
 l.d $f18,Q
 s.d $f18,-152+240($sp)
 l.d $f16,Half
@@ -2817,19 +2817,19 @@ l.d $f18,Y1
 s.d $f18,Q
 l.d $f18,X1
 s.d $f18,Y1
-L.402:
+L.403:
 l.d $f18,X1
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.401
+c.le.d $f18,$f16; bc1f L.402
 l.d $f18,Q
 l.d $f16,One
-c.le.d $f18,$f16; bc1f L.404
+c.le.d $f18,$f16; bc1f L.405
 l.d $f18,Y2
 s.d $f18,Z2
 l.d $f18,Y
 s.d $f18,Z
-L.404:
-L.399:
+L.405:
+L.400:
 l.d $f18,Y
 l.d $f16,Two
 add.d $f18,$f18,$f16
@@ -2844,16 +2844,16 @@ add.d $f18,$f18,$f16
 s.d $f18,Y2
 l.d $f18,Y2
 l.d $f16,FourD
-c.ult.d $f18,$f16; bc1t L.406
+c.lt.d $f18,$f16; bc1t L.407
 l.d $f18,Y2
 l.d $f16,FourD
 sub.d $f18,$f18,$f16
 s.d $f18,Y2
-L.406:
-L.397:
+L.407:
+L.398:
 l.d $f18,Y
 l.d $f16,D
-c.ult.d $f18,$f16; bc1t L.396
+c.lt.d $f18,$f16; bc1t L.397
 l.d $f18,FourD
 l.d $f16,Z2
 sub.d $f16,$f18,$f16
@@ -2872,13 +2872,13 @@ s.d $f18,-152+240($sp)
 mov.d $f12,$f18
 jal floor
 l.d $f16,-152+240($sp)
-c.eq.d $f16,$f0; bc1t L.408
+c.eq.d $f16,$f0; bc1t L.409
 la $24,1
 sw $24,Anomaly
-b L.409
-L.408:
+b L.410
+L.409:
 sw $0,Break
-L.410:
+L.411:
 l.d $f18,Z1
 l.d $f16,Z
 mul.d $f18,$f18,$f16
@@ -2895,59 +2895,59 @@ sub.d $f18,$f16,$f18
 s.d $f18,X
 l.d $f18,X
 l.d $f16,One
-c.eq.d $f18,$f16; bc1f L.413
+c.eq.d $f18,$f16; bc1f L.414
 la $24,1
 sw $24,Break
-b L.414
-L.413:
+b L.415
+L.414:
 l.d $f18,Z1
 l.d $f16,One
 sub.d $f18,$f18,$f16
 s.d $f18,Z1
-L.414:
-L.411:
-lw $24,Break
-bne $24,$0,L.415
-l.d $f18,Z1
-l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.410
 L.415:
-l.d $f18,Z1
-l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.416
+L.412:
 lw $24,Break
 bne $24,$0,L.416
-la $24,1
-sw $24,Anomaly
-b L.417
+l.d $f18,Z1
+l.d $f16,Zero
+c.le.d $f18,$f16; bc1f L.411
 L.416:
 l.d $f18,Z1
+l.d $f16,Zero
+c.le.d $f18,$f16; bc1f L.417
+lw $24,Break
+bne $24,$0,L.417
+la $24,1
+sw $24,Anomaly
+b L.418
+L.417:
+l.d $f18,Z1
 l.d $f16,RadixD2
-c.ule.d $f18,$f16; bc1t L.418
+c.le.d $f18,$f16; bc1t L.419
 l.d $f18,Z1
 l.d $f16,Radix
 sub.d $f18,$f18,$f16
 s.d $f18,Z1
-L.418:
-L.420:
-jal NewD
+L.419:
 L.421:
+jal NewD
+L.422:
 l.d $f18,U2
 l.d $f16,D
 mul.d $f18,$f18,$f16
 l.d $f16,F9
-c.ult.d $f18,$f16; bc1t L.420
+c.lt.d $f18,$f16; bc1t L.421
 l.d $f18,D
 l.d $f16,Radix
 mul.d $f16,$f18,$f16
 sub.d $f16,$f16,$f18
 l.d $f10,W
 sub.d $f18,$f10,$f18
-c.eq.d $f16,$f18; bc1t L.423
+c.eq.d $f16,$f18; bc1t L.424
 la $24,1
 sw $24,Anomaly
-b L.424
-L.423:
+b L.425
+L.424:
 l.d $f18,D
 s.d $f18,Z2
 sw $0,I
@@ -2987,11 +2987,11 @@ l.d $f16,D
 sub.d $f16,$f16,$f18
 l.d $f10,W
 sub.d $f18,$f10,$f18
-c.eq.d $f16,$f18; bc1t L.425
+c.eq.d $f16,$f18; bc1t L.426
 la $24,1
 sw $24,Anomaly
-b L.426
-L.425:
+b L.427
+L.426:
 l.d $f18,Z2
 l.d $f16,D
 sub.d $f16,$f16,$f18
@@ -3019,80 +3019,80 @@ l.d $f18,Q
 s.d $f18,X
 jal SR3750
 lw $24,I
-bne $24,$0,L.427
+bne $24,$0,L.428
 la $24,1
 sw $24,Anomaly
+L.428:
 L.427:
-L.426:
-L.424:
-L.417:
-L.409:
-L.394:
+L.425:
+L.418:
+L.410:
+L.395:
 lw $15,I
-beq $15,$0,L.431
+beq $15,$0,L.432
 lw $15,Anomaly
-beq $15,$0,L.429
-L.431:
+beq $15,$0,L.430
+L.432:
 move $4,$0
-la $5,L.432
+la $5,L.433
 jal BadCond
-la $4,L.433
+la $4,L.434
 l.d $f18,W
 mfc1.d $6,$f18
 jal printf
-la $4,L.434
+la $4,L.435
 jal printf
 la $24,1
 sw $24,SqRWrng
-L.429:
-L.390:
+L.430:
+L.391:
 lw $24,Anomaly
-bne $24,$0,L.435
+bne $24,$0,L.436
 l.d $f18,Zero
 l.d $f16,MinSqEr
-c.ult.d $f16,$f18; bc1t L.437
+c.lt.d $f16,$f18; bc1t L.438
 l.d $f16,MaxSqEr
-c.le.d $f16,$f18; bc1f L.437
+c.le.d $f16,$f18; bc1f L.438
 la $24,1
 sw $24,RSqrt
-la $4,L.439
+la $4,L.440
 jal printf
-b L.438
-L.437:
+b L.439
+L.438:
 l.d $f18,U2
 l.d $f16,Half
 l.d $f10,MaxSqEr
 add.d $f10,$f10,$f18
 sub.d $f18,$f18,$f16
-c.le.d $f10,$f18; bc1f L.443
+c.le.d $f10,$f18; bc1f L.444
 l.d $f18,MinSqEr
-c.le.d $f18,$f16; bc1f L.443
+c.le.d $f18,$f16; bc1f L.444
 l.d $f10,Radix
 add.d $f18,$f18,$f10
-c.lt.d $f18,$f16; bc1f L.440
-L.443:
+c.lt.d $f18,$f16; bc1f L.441
+L.444:
 la $24,1
 sw $24,SqRWrng
-b L.441
-L.440:
+b L.442
+L.441:
 la $24,2
 sw $24,RSqrt
-la $4,L.444
+la $4,L.445
 jal printf
-L.441:
-L.438:
-L.435:
+L.442:
+L.439:
+L.436:
 lw $24,SqRWrng
-beq $24,$0,L.445
-la $4,L.447
-jal printf
+beq $24,$0,L.446
 la $4,L.448
+jal printf
+la $4,L.449
 l.d $f18,MinSqEr
 l.d $f16,Half
 sub.d $f18,$f18,$f16
 mfc1.d $6,$f18
 jal printf
-la $4,L.449
+la $4,L.450
 l.d $f18,Half
 l.d $f16,MaxSqEr
 add.d $f18,$f18,$f16
@@ -3104,21 +3104,21 @@ l.d $f16,MaxSqEr
 l.d $f10,MinSqEr
 sub.d $f16,$f16,$f10
 mul.d $f18,$f18,$f18
-c.lt.d $f16,$f18; bc1f L.452
+c.lt.d $f16,$f18; bc1f L.453
 la $24,1
 sw $24,-124+240($sp)
-b L.453
-L.452:
-sw $0,-124+240($sp)
+b L.454
 L.453:
+sw $0,-124+240($sp)
+L.454:
 lw $5,-124+240($sp)
-la $6,L.451
+la $6,L.452
 jal TstCond
-L.445:
+L.446:
 la $24,90
 sw $24,Milestone
 jal Pause
-la $4,L.454
+la $4,L.455
 jal printf
 sw $0,N
 sw $0,I
@@ -3128,34 +3128,34 @@ s.d $f18,Z
 la $15,3
 sw $15,M
 sw $0,Break
-L.455:
+L.456:
 l.d $f18,One
 s.d $f18,X
 jal SR3980
 lw $24,I
 la $15,10
-bgt $24,$15,L.458
+bgt $24,$15,L.459
 la $24,1023
 sw $24,I
 jal SR3980
-L.458:
+L.459:
 l.d $f18,Z
 l.d $f16,MinusOne
-c.eq.d $f18,$f16; bc1f L.460
+c.eq.d $f18,$f16; bc1f L.461
 la $24,1
 sw $24,Break
-b L.461
-L.460:
+b L.462
+L.461:
 l.d $f18,MinusOne
 s.d $f18,Z
 jal PrintIfNPositive
 sw $0,N
 la $24,-4
 sw $24,I
-L.461:
-L.456:
+L.462:
+L.457:
 lw $24,Break
-beq $24,$0,L.455
+beq $24,$0,L.456
 jal PrintIfNPositive
 lw $24,N
 sw $24,N1
@@ -3177,7 +3177,7 @@ jal floor
 trunc.w.d $f2,$f0,$24; mfc1 $24,$f2
 sw $24,M
 sw $0,Break
-L.462:
+L.463:
 l.d $f18,Z
 s.d $f18,X
 la $24,1
@@ -3185,35 +3185,35 @@ sw $24,I
 jal SR3980
 l.d $f18,Z
 l.d $f16,AInvrse
-c.eq.d $f18,$f16; bc1f L.465
+c.eq.d $f18,$f16; bc1f L.466
 la $24,1
 sw $24,Break
-b L.466
-L.465:
+b L.467
+L.466:
 l.d $f18,AInvrse
 s.d $f18,Z
-L.466:
-L.463:
+L.467:
+L.464:
 lw $24,Break
-beq $24,$0,L.462
+beq $24,$0,L.463
 la $24,100
 sw $24,Milestone
 lw $24,NoTrials
 sw $24,M
 l.d $f18,Three
 s.d $f18,Z
-L.467:
+L.468:
 l.d $f18,Z
 s.d $f18,X
 la $24,1
 sw $24,I
 jal SR3980
-L.470:
+L.471:
 l.d $f18,Z
 l.d $f16,Two
 add.d $f18,$f18,$f16
 s.d $f18,Z
-L.471:
+L.472:
 l.d $f18,Three
 s.d $f18,-136+240($sp)
 l.d $f16,Z
@@ -3222,41 +3222,41 @@ jal floor
 l.d $f16,-136+240($sp)
 mul.d $f18,$f16,$f0
 l.d $f16,Z
-c.eq.d $f18,$f16; bc1t L.470
-L.468:
+c.eq.d $f18,$f16; bc1t L.471
+L.469:
 l.d $f18,Z
 l.d $f16,Eight
 l.d $f10,Three
 mul.d $f16,$f16,$f10
-c.ult.d $f18,$f16; bc1t L.467
+c.lt.d $f18,$f16; bc1t L.468
 lw $24,N
-ble $24,$0,L.473
-la $4,L.475
-jal printf
+ble $24,$0,L.474
 la $4,L.476
 jal printf
-L.473:
+la $4,L.477
+jal printf
+L.474:
 jal PrintIfNPositive
 lw $24,N
 lw $15,N1
 addu $24,$24,$15
 sw $24,N
 lw $24,N
-bne $24,$0,L.477
-la $4,L.479
+bne $24,$0,L.478
+la $4,L.480
 jal printf
-L.477:
+L.478:
 lw $24,N
-ble $24,$0,L.480
+ble $24,$0,L.481
 jal Pause
-b L.481
-L.480:
-la $4,L.44
-jal printf
+b L.482
 L.481:
+la $4,L.45
+jal printf
+L.482:
 la $24,110
 sw $24,Milestone
-la $4,L.482
+la $4,L.483
 jal printf
 l.d $f18,U1
 s.d $f18,D
@@ -3265,12 +3265,12 @@ s.d $f18,-136+240($sp)
 mov.d $f12,$f18
 jal floor
 l.d $f16,-136+240($sp)
-c.eq.d $f16,$f0; bc1t L.483
+c.eq.d $f16,$f0; bc1t L.484
 l.d $f18,BInvrse
 s.d $f18,D
 l.d $f18,Precision
 s.d $f18,X
-L.485:
+L.486:
 l.d $f18,D
 l.d $f16,BInvrse
 mul.d $f18,$f18,$f16
@@ -3279,16 +3279,16 @@ l.d $f18,X
 l.d $f16,One
 sub.d $f18,$f18,$f16
 s.d $f18,X
-L.486:
+L.487:
 l.d $f18,X
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.485
-L.483:
+c.le.d $f18,$f16; bc1f L.486
+L.484:
 l.d $f18,One
 s.d $f18,Y
 l.d $f18,D
 s.d $f18,Z
-L.488:
+L.489:
 l.d $f18,Y
 s.d $f18,C
 l.d $f18,Z
@@ -3296,20 +3296,20 @@ s.d $f18,Y
 l.d $f18,Y
 mul.d $f18,$f18,$f18
 s.d $f18,Z
-L.489:
+L.490:
 l.d $f18,Z
 l.d $f16,Y
-c.ule.d $f16,$f18; bc1t L.491
+c.le.d $f16,$f18; bc1t L.492
 add.d $f16,$f18,$f18
-c.le.d $f16,$f18; bc1f L.488
-L.491:
+c.le.d $f16,$f18; bc1f L.489
+L.492:
 l.d $f18,C
 s.d $f18,Y
 l.d $f18,Y
 l.d $f16,D
 mul.d $f18,$f18,$f16
 s.d $f18,Z
-L.492:
+L.493:
 l.d $f18,Y
 s.d $f18,C
 l.d $f18,Z
@@ -3318,23 +3318,23 @@ l.d $f18,Y
 l.d $f16,D
 mul.d $f18,$f18,$f16
 s.d $f18,Z
-L.493:
+L.494:
 l.d $f18,Z
 l.d $f16,Y
-c.ule.d $f16,$f18; bc1t L.495
+c.le.d $f16,$f18; bc1t L.496
 add.d $f16,$f18,$f18
-c.le.d $f16,$f18; bc1f L.492
-L.495:
-l.d $f18,Radix
-l.d $f16,Two
-c.lt.d $f18,$f16; bc1f L.496
-l.d $f18,Two
-s.d $f18,HInvrse
-b L.497
+c.le.d $f16,$f18; bc1f L.493
 L.496:
 l.d $f18,Radix
+l.d $f16,Two
+c.lt.d $f18,$f16; bc1f L.497
+l.d $f18,Two
 s.d $f18,HInvrse
+b L.498
 L.497:
+l.d $f18,Radix
+s.d $f18,HInvrse
+L.498:
 l.d $f18,One
 l.d $f16,HInvrse
 div.d $f16,$f18,$f16
@@ -3347,7 +3347,7 @@ l.d $f18,E0
 l.d $f16,H
 mul.d $f18,$f18,$f16
 s.d $f18,Z
-L.498:
+L.499:
 l.d $f18,E0
 s.d $f18,Y
 l.d $f18,Z
@@ -3356,13 +3356,13 @@ l.d $f18,E0
 l.d $f16,H
 mul.d $f18,$f18,$f16
 s.d $f18,Z
-L.499:
+L.500:
 l.d $f18,Z
 l.d $f16,E0
-c.ule.d $f16,$f18; bc1t L.501
+c.le.d $f16,$f18; bc1t L.502
 add.d $f16,$f18,$f18
-c.le.d $f16,$f18; bc1f L.498
-L.501:
+c.le.d $f16,$f18; bc1f L.499
+L.502:
 l.d $f18,E0
 s.d $f18,UfThold
 l.d $f18,Zero
@@ -3379,7 +3379,7 @@ l.d $f16,S
 mul.d $f16,$f18,$f16
 s.d $f16,D
 l.d $f16,D
-c.le.d $f16,$f18; bc1f L.502
+c.le.d $f16,$f18; bc1f L.503
 l.d $f18,Radix
 l.d $f16,U2
 mul.d $f18,$f18,$f16
@@ -3393,9 +3393,9 @@ l.d $f16,S
 mul.d $f16,$f18,$f16
 s.d $f16,D
 l.d $f16,D
-c.le.d $f16,$f18; bc1f L.503
+c.le.d $f16,$f18; bc1f L.504
 move $4,$0
-la $5,L.506
+la $5,L.507
 jal BadCond
 l.d $f18,E0
 s.d $f18,Underflow
@@ -3404,8 +3404,8 @@ s.d $f18,Y1
 l.d $f18,Z
 s.d $f18,PseudoZero
 jal Pause
-b L.503
-L.502:
+b L.504
+L.503:
 l.d $f18,D
 s.d $f18,Underflow
 l.d $f18,Underflow
@@ -3414,14 +3414,14 @@ mul.d $f18,$f18,$f16
 s.d $f18,PseudoZero
 l.d $f18,Zero
 s.d $f18,UfThold
-L.507:
+L.508:
 l.d $f18,Underflow
 s.d $f18,Y1
 l.d $f18,PseudoZero
 s.d $f18,Underflow
 l.d $f18,E1
 add.d $f16,$f18,$f18
-c.le.d $f16,$f18; bc1f L.510
+c.le.d $f16,$f18; bc1f L.511
 l.d $f18,Underflow
 l.d $f16,HInvrse
 mul.d $f18,$f18,$f16
@@ -3435,41 +3435,41 @@ l.d $f18,Y1
 s.d $f18,Q
 l.d $f18,UfThold
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.512
+c.eq.d $f18,$f16; bc1f L.513
 l.d $f18,Y1
 l.d $f16,Y2
-c.eq.d $f18,$f16; bc1t L.512
+c.eq.d $f18,$f16; bc1t L.513
 l.d $f18,Y1
 s.d $f18,UfThold
-L.512:
-L.510:
+L.513:
+L.511:
 l.d $f18,PseudoZero
 l.d $f16,H
 mul.d $f18,$f18,$f16
 s.d $f18,PseudoZero
-L.508:
+L.509:
 l.d $f18,PseudoZero
 l.d $f16,Underflow
-c.ule.d $f16,$f18; bc1t L.514
+c.le.d $f16,$f18; bc1t L.515
 add.d $f16,$f18,$f18
-c.le.d $f16,$f18; bc1f L.507
-L.514:
-L.503:
+c.le.d $f16,$f18; bc1f L.508
+L.515:
+L.504:
 l.d $f18,PseudoZero
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1t L.515
-la $4,L.44
+c.eq.d $f18,$f16; bc1t L.516
+la $4,L.45
 jal printf
 l.d $f18,PseudoZero
 s.d $f18,Z
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.517
+c.le.d $f18,$f16; bc1f L.518
 move $4,$0
-la $5,L.519
+la $5,L.520
 jal BadCond
-la $4,L.520
-jal printf
 la $4,L.521
+jal printf
+la $4,L.522
 l.d $f18,PseudoZero
 mfc1.d $6,$f18
 jal printf
@@ -3478,25 +3478,25 @@ neg.d $f18,$f18
 s.d $f18,X
 l.d $f18,X
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.518
-la $4,L.524
-jal printf
+c.le.d $f18,$f16; bc1f L.519
 la $4,L.525
+jal printf
+la $4,L.526
 l.d $f18,X
 mfc1.d $6,$f18
 jal printf
-b L.518
-L.517:
+b L.519
+L.518:
 la $4,3
-la $5,L.526
+la $5,L.527
 jal BadCond
-la $4,L.527
+la $4,L.528
 l.d $f18,PseudoZero
 mfc1.d $6,$f18
 jal printf
-L.518:
+L.519:
 jal TstPtUf
-L.515:
+L.516:
 la $24,120
 sw $24,Milestone
 l.d $f18,CInvrse
@@ -3504,43 +3504,43 @@ l.d $f16,Y
 mul.d $f16,$f18,$f16
 l.d $f10,Y1
 mul.d $f18,$f18,$f10
-c.ule.d $f16,$f18; bc1t L.528
+c.le.d $f16,$f18; bc1t L.529
 l.d $f18,H
 l.d $f16,S
 mul.d $f18,$f18,$f16
 s.d $f18,S
 l.d $f18,Underflow
 s.d $f18,E0
-L.528:
+L.529:
 l.d $f18,E1
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1t L.530
+c.eq.d $f18,$f16; bc1t L.531
 l.d $f16,E0
-c.eq.d $f18,$f16; bc1t L.530
+c.eq.d $f18,$f16; bc1t L.531
 la $4,2
-la $5,L.157
+la $5,L.158
 jal BadCond
 l.d $f18,E1
 l.d $f16,E0
-c.lt.d $f18,$f16; bc1f L.532
-la $4,L.534
-jal printf
+c.lt.d $f18,$f16; bc1f L.533
 la $4,L.535
+jal printf
+la $4,L.536
 jal printf
 l.d $f18,PseudoZero
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.533
+c.eq.d $f18,$f16; bc1f L.534
 l.d $f18,E1
 s.d $f18,E0
-b L.533
-L.532:
-la $4,L.538
-jal printf
+b L.534
+L.533:
 la $4,L.539
 jal printf
-L.533:
-L.530:
 la $4,L.540
+jal printf
+L.534:
+L.531:
+la $4,L.541
 l.d $f18,E0
 mfc1.d $6,$f18
 jal printf
@@ -3551,45 +3551,45 @@ l.d $f18,E0
 s.d $f18,Underflow
 lw $24,N
 la $15,1
-bne $24,$15,L.541
+bne $24,$15,L.542
 l.d $f18,Y
 s.d $f18,Underflow
-L.541:
+L.542:
 la $24,4
 sw $24,I
 l.d $f18,E1
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.543
+c.eq.d $f18,$f16; bc1f L.544
 la $24,3
 sw $24,I
-L.543:
+L.544:
 l.d $f18,UfThold
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.545
+c.eq.d $f18,$f16; bc1f L.546
 lw $24,I
 subu $24,$24,2
 sw $24,I
-L.545:
+L.546:
 la $24,1
 sw $24,UfNGrad
 lw $24,I
 la $15,1
-blt $24,$15,L.547
+blt $24,$15,L.548
 la $15,4
-bgt $24,$15,L.547
+bgt $24,$15,L.548
 sll $24,$24,2
-lw $24,L.570-4($24)
+lw $24,L.571-4($24)
 .cpadd $24
 j $24
 .rdata
 .align 2
-L.570:
-.gpword L.549
-.gpword L.556
-.gpword L.561
+L.571:
+.gpword L.550
+.gpword L.557
 .gpword L.562
+.gpword L.563
 .text
-L.549:
+L.550:
 l.d $f18,Underflow
 s.d $f18,UfThold
 l.d $f18,CInvrse
@@ -3599,32 +3599,32 @@ l.d $f10,Y
 mul.d $f18,$f18,$f10
 l.d $f10,S
 mul.d $f18,$f18,$f10
-c.eq.d $f16,$f18; bc1t L.550
+c.eq.d $f16,$f18; bc1t L.551
 l.d $f18,Y
 s.d $f18,UfThold
 move $4,$0
-la $5,L.552
+la $5,L.553
 jal BadCond
-la $4,L.553
+la $4,L.554
 l.d $f18,UfThold
 mfc1.d $6,$f18
 jal printf
-la $4,L.554
+la $4,L.555
 l.d $f18,C
 mfc1.d $6,$f18
 jal printf
-la $4,L.555
+la $4,L.556
 jal printf
-L.550:
+L.551:
 jal Pause
-b L.548
-L.556:
+b L.549
+L.557:
 move $4,$0
-la $5,L.557
+la $5,L.558
 jal BadCond
-la $4,L.558
-jal printf
 la $4,L.559
+jal printf
+la $4,L.560
 l.d $f18,Q
 mfc1.d $6,$f18
 l.d $f18,Y2
@@ -3635,33 +3635,33 @@ l.d $f16,Y2
 sub.d $f12,$f18,$f16
 jal fabs
 mov.d $f18,$f0
-la $4,L.560
+la $4,L.561
 mfc1.d $6,$f18
 jal printf
 l.d $f18,Q
 s.d $f18,UfThold
-b L.548
-L.561:
+b L.549
+L.562:
 l.d $f18,X
 s.d $f18,X
-b L.548
-L.562:
+b L.549
+L.563:
 l.d $f18,UfThold
 l.d $f16,Q
-c.eq.d $f16,$f18; bc1f L.563
+c.eq.d $f16,$f18; bc1f L.564
 l.d $f16,E1
 l.d $f10,E0
-c.eq.d $f16,$f10; bc1f L.563
+c.eq.d $f16,$f10; bc1f L.564
 l.d $f10,E9
 div.d $f16,$f16,$f10
 sub.d $f12,$f18,$f16
 jal fabs
 l.d $f16,E1
-c.le.d $f0,$f16; bc1f L.563
+c.le.d $f0,$f16; bc1f L.564
 sw $0,UfNGrad
-la $4,L.565
-jal printf
 la $4,L.566
+jal printf
+la $4,L.567
 jal printf
 l.d $f18,E0
 l.d $f16,CInvrse
@@ -3682,44 +3682,44 @@ l.d $f10,X
 div.d $f16,$f16,$f10
 s.d $f16,Y
 l.d $f16,Y
-c.eq.d $f16,$f18; bc1f L.568
+c.eq.d $f16,$f18; bc1f L.569
 la $24,1
 sw $24,-140+240($sp)
-b L.569
-L.568:
-sw $0,-140+240($sp)
+b L.570
 L.569:
+sw $0,-140+240($sp)
+L.570:
 lw $24,-140+240($sp)
 sw $24,IEEE
-L.563:
-L.547:
+L.564:
 L.548:
+L.549:
 lw $24,UfNGrad
-beq $24,$0,L.572
-la $4,L.44
+beq $24,$0,L.573
+la $4,L.45
 jal printf
 la $24,sigfpe
 sw $24,sigsave
 la $4,ovfl_buf
 jal setjmp
-beq $2,$0,L.574
-la $4,L.576
+beq $2,$0,L.575
+la $4,L.577
 jal printf
 l.d $f18,H
 add.d $f18,$f18,$f18
 s.d $f18,R
-b L.575
-L.574:
+b L.576
+L.575:
 l.d $f18,Underflow
 l.d $f16,UfThold
 div.d $f12,$f18,$f16
 jal sqrt
 s.d $f0,R
-L.575:
+L.576:
 sw $0,sigsave
 l.d $f18,R
 l.d $f16,H
-c.le.d $f18,$f16; bc1f L.577
+c.le.d $f18,$f16; bc1f L.578
 l.d $f18,R
 l.d $f16,UfThold
 mul.d $f16,$f18,$f16
@@ -3733,8 +3733,8 @@ mul.d $f18,$f18,$f10
 add.d $f18,$f16,$f18
 mul.d $f18,$f8,$f18
 s.d $f18,X
-b L.578
-L.577:
+b L.579
+L.578:
 l.d $f18,UfThold
 s.d $f18,Z
 l.d $f18,One
@@ -3746,17 +3746,17 @@ mul.d $f16,$f8,$f16
 add.d $f18,$f18,$f16
 mul.d $f18,$f10,$f18
 s.d $f18,X
-L.578:
+L.579:
 l.d $f18,X
 l.d $f16,Z
-c.eq.d $f18,$f16; bc1t L.579
+c.eq.d $f18,$f16; bc1t L.580
 sub.d $f18,$f18,$f16
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.579
+c.eq.d $f18,$f16; bc1f L.580
 la $4,3
-la $5,L.157
+la $5,L.158
 jal BadCond
-la $4,L.581
+la $4,L.582
 l.d $f18,X
 mfc1.d $6,$f18
 l.d $f18,Z
@@ -3766,11 +3766,9 @@ l.d $f18,X
 l.d $f16,Z
 sub.d $f18,$f18,$f16
 s.d $f18,Z9
-la $4,L.582
+la $4,L.583
 l.d $f18,Z9
 mfc1.d $6,$f18
-jal printf
-la $4,L.583
 jal printf
 la $4,L.584
 jal printf
@@ -3782,16 +3780,18 @@ la $4,L.587
 jal printf
 la $4,L.588
 jal printf
+la $4,L.589
+jal printf
 la $24,sigfpe
 sw $24,sigsave
 la $4,ovfl_buf
 jal setjmp
-beq $2,$0,L.589
-la $4,L.591
-jal printf
-b L.590
-L.589:
+beq $2,$0,L.590
 la $4,L.592
+jal printf
+b L.591
+L.590:
+la $4,L.593
 l.d $f18,Half
 l.d $f16,X
 l.d $f10,Z
@@ -3800,19 +3800,19 @@ sub.d $f16,$f16,$f18
 sub.d $f18,$f16,$f18
 mfc1.d $6,$f18
 jal printf
-L.590:
+L.591:
 sw $0,sigsave
-L.579:
-L.572:
-la $4,L.593
+L.580:
+L.573:
+la $4,L.594
 l.d $f18,UfThold
 mfc1.d $6,$f18
-la $24,L.594
+la $24,L.595
 sw $24,16($sp)
 jal printf
-la $4,L.595
-jal printf
 la $4,L.596
+jal printf
+la $4,L.597
 jal printf
 l.d $f18,U1
 mul.d $f16,$f18,$f18
@@ -3825,27 +3825,27 @@ mul.d $f18,$f16,$f18
 s.d $f18,Y2
 l.d $f18,Y2
 l.d $f16,UfThold
-c.le.d $f18,$f16; bc1f L.597
+c.le.d $f18,$f16; bc1f L.598
 l.d $f18,Y
 l.d $f16,E0
-c.ule.d $f18,$f16; bc1t L.599
+c.le.d $f18,$f16; bc1t L.600
 la $4,2
-la $5,L.157
+la $5,L.158
 jal BadCond
 la $24,5
 sw $24,I
-b L.600
-L.599:
+b L.601
+L.600:
 la $4,1
-la $5,L.157
+la $5,L.158
 jal BadCond
 la $24,4
 sw $24,I
-L.600:
-la $4,L.601
+L.601:
+la $4,L.602
 lw $5,I
 jal printf
-L.597:
+L.598:
 la $24,130
 sw $24,Milestone
 l.d $f12,UfThold
@@ -3868,15 +3868,15 @@ s.d $f18,Y
 l.d $f18,Y
 add.d $f18,$f18,$f18
 s.d $f18,Y2
-la $4,L.602
-jal printf
 la $4,L.603
+jal printf
+la $4,L.604
 l.d $f18,HInvrse
 mfc1.d $6,$f18
 l.d $f18,Y
 s.d $f18,16($sp)
 jal printf
-la $4,L.604
+la $4,L.605
 l.d $f18,HInvrse
 mfc1.d $6,$f18
 l.d $f18,Y
@@ -3886,53 +3886,53 @@ l.d $f12,HInvrse
 l.d $f14,Y2
 jal pow
 s.d $f0,V9
-la $4,L.605
+la $4,L.606
 l.d $f18,V9
 mfc1.d $6,$f18
 jal printf
 l.d $f18,V9
 l.d $f16,Zero
-c.ult.d $f18,$f16; bc1t L.608
+c.lt.d $f18,$f16; bc1t L.609
 l.d $f16,Radix
 add.d $f16,$f16,$f16
 l.d $f10,E9
 add.d $f16,$f16,$f10
 l.d $f10,UfThold
 mul.d $f16,$f16,$f10
-c.ule.d $f18,$f16; bc1t L.606
-L.608:
+c.le.d $f18,$f16; bc1t L.607
+L.609:
 la $4,1
-la $5,L.609
+la $5,L.610
 jal BadCond
-la $4,L.610
+la $4,L.611
 l.d $f18,UfThold
 mfc1.d $6,$f18
 jal printf
-b L.607
-L.606:
+b L.608
+L.607:
 l.d $f18,V9
 l.d $f16,UfThold
 l.d $f10,One
 l.d $f8,E9
 add.d $f10,$f10,$f8
 mul.d $f16,$f16,$f10
-c.le.d $f18,$f16; bc1f L.611
-la $4,L.613
+c.le.d $f18,$f16; bc1f L.612
+la $4,L.614
 jal printf
-b L.612
-L.611:
+b L.613
+L.612:
 la $4,2
-la $5,L.609
+la $5,L.610
 jal BadCond
-la $4,L.610
+la $4,L.611
 l.d $f18,UfThold
 mfc1.d $6,$f18
 jal printf
-L.612:
-L.607:
+L.613:
+L.608:
 la $24,140
 sw $24,Milestone
-la $4,L.44
+la $4,L.45
 jal printf
 l.d $f18,Zero
 s.d $f18,X
@@ -3944,7 +3944,7 @@ mul.d $f16,$f16,$f10
 s.d $f16,Y
 s.d $f18,Q
 sw $0,N
-L.614:
+L.615:
 l.d $f18,X
 s.d $f18,Z
 lw $24,I
@@ -3968,10 +3968,10 @@ l.d $f10,X
 sub.d $f18,$f18,$f10
 add.d $f18,$f18,$f16
 s.d $f18,Q
-L.615:
+L.616:
 l.d $f18,X
 l.d $f16,Z
-c.le.d $f18,$f16; bc1f L.614
+c.le.d $f18,$f16; bc1f L.615
 l.d $f18,OneAndHalf
 l.d $f16,One
 l.d $f10,Eight
@@ -3995,13 +3995,13 @@ l.d $f18,X
 l.d $f16,U1
 sub.d $f18,$f18,$f16
 s.d $f18,Y
-la $4,L.617
+la $4,L.618
 l.d $f18,Exp2
 mfc1.d $6,$f18
 jal printf
 la $24,1
 sw $24,I
-L.618:
+L.619:
 l.d $f18,X
 l.d $f16,BInvrse
 sub.d $f10,$f18,$f16
@@ -4024,7 +4024,7 @@ jal fabs
 l.d $f16,TwoForty
 l.d $f10,U2
 mul.d $f16,$f16,$f10
-c.ule.d $f0,$f16; bc1t L.622
+c.le.d $f0,$f16; bc1t L.623
 la $24,1
 sw $24,N
 l.d $f18,BInvrse
@@ -4035,31 +4035,31 @@ sub.d $f18,$f10,$f18
 sub.d $f18,$f16,$f18
 s.d $f18,V9
 la $4,2
-la $5,L.624
+la $5,L.625
 jal BadCond
 l.d $f12,X
 l.d $f14,Z
 jal pow
 mov.d $f18,$f0
-la $4,L.625
+la $4,L.626
 mfc1.d $6,$f18
 jal printf
-la $4,L.626
+la $4,L.627
 l.d $f18,V9
 mfc1.d $6,$f18
 l.d $f18,Z
 s.d $f18,16($sp)
 jal printf
-la $4,L.627
+la $4,L.628
 l.d $f18,Q
 mfc1.d $6,$f18
 jal printf
-la $4,L.628
-jal printf
 la $4,L.629
 jal printf
-b L.620
-L.622:
+la $4,L.630
+jal printf
+b L.621
+L.623:
 l.d $f18,Y
 l.d $f16,X
 sub.d $f16,$f18,$f16
@@ -4079,24 +4079,24 @@ add.d $f18,$f16,$f18
 s.d $f18,Z
 l.d $f18,Z
 l.d $f16,One
-c.ule.d $f18,$f16; bc1t L.630
+c.le.d $f18,$f16; bc1t L.631
 lw $24,I
 lw $15,NoTrials
-bge $24,$15,L.630
+bge $24,$15,L.631
 lw $24,I
 la $24,1($24)
 sw $24,I
-b L.618
-L.630:
+b L.619
+L.631:
 l.d $f18,X
 l.d $f16,One
-c.ule.d $f18,$f16; bc1t L.632
+c.le.d $f18,$f16; bc1t L.633
 lw $24,N
-bne $24,$0,L.620
-la $4,L.636
+bne $24,$0,L.621
+la $4,L.637
 jal printf
-b L.620
-L.632:
+b L.621
+L.633:
 l.d $f18,U2
 l.d $f16,One
 add.d $f16,$f16,$f18
@@ -4109,11 +4109,11 @@ add.d $f18,$f18,$f16
 s.d $f18,Y
 la $24,1
 sw $24,I
-b L.618
-L.620:
+b L.619
+L.621:
 la $24,150
 sw $24,Milestone
-la $4,L.637
+la $4,L.638
 jal printf
 sw $0,N
 l.d $f18,A1
@@ -4131,7 +4131,7 @@ sub.d $f12,$f16,$f18
 jal floor
 s.d $f0,Q
 sw $0,Break
-L.638:
+L.639:
 l.d $f18,CInvrse
 s.d $f18,X
 l.d $f12,Z
@@ -4151,31 +4151,31 @@ s.d $f0,Y
 jal IsYeqX
 l.d $f18,Z
 l.d $f16,One
-c.lt.d $f18,$f16; bc1f L.641
+c.lt.d $f18,$f16; bc1f L.642
 la $24,1
 sw $24,Break
-b L.642
-L.641:
+b L.643
+L.642:
 l.d $f18,AInvrse
 s.d $f18,Z
-L.642:
-L.639:
+L.643:
+L.640:
 lw $24,Break
-beq $24,$0,L.638
+beq $24,$0,L.639
 jal PrintIfNPositive
 lw $24,N
-bne $24,$0,L.643
-la $4,L.645
+bne $24,$0,L.644
+la $4,L.646
 jal printf
-L.643:
-la $4,L.44
+L.644:
+la $4,L.45
 jal printf
 la $24,160
 sw $24,Milestone
 jal Pause
-la $4,L.646
-jal printf
 la $4,L.647
+jal printf
+la $4,L.648
 jal printf
 l.d $f18,CInvrse
 neg.d $f18,$f18
@@ -4188,13 +4188,13 @@ la $24,sigfpe
 sw $24,sigsave
 la $4,ovfl_buf
 jal setjmp
-beq $2,$0,L.648
+beq $2,$0,L.649
 sw $0,I
 l.d $f18,Y
 s.d $f18,V9
-b L.650
-L.648:
-L.651:
+b L.651
+L.649:
+L.652:
 l.d $f18,Y
 s.d $f18,V
 l.d $f18,V9
@@ -4203,19 +4203,19 @@ l.d $f18,HInvrse
 l.d $f16,Y
 mul.d $f18,$f18,$f16
 s.d $f18,V9
-L.652:
+L.653:
 l.d $f18,V9
 l.d $f16,Y
-c.ult.d $f18,$f16; bc1t L.651
+c.lt.d $f18,$f16; bc1t L.652
 la $24,1
 sw $24,I
-L.650:
+L.651:
 sw $0,sigsave
 l.d $f18,V9
 s.d $f18,Z
-la $4,L.654
-jal printf
 la $4,L.655
+jal printf
+la $4,L.656
 l.d $f18,Y
 mfc1.d $6,$f18
 jal printf
@@ -4228,32 +4228,32 @@ l.d $f16,V
 sub.d $f18,$f16,$f18
 l.d $f10,V0
 add.d $f16,$f16,$f10
-c.eq.d $f18,$f16; bc1f L.656
-la $4,L.658
-jal printf
-b L.657
-L.656:
+c.eq.d $f18,$f16; bc1f L.657
 la $4,L.659
 jal printf
-la $4,3
-la $5,L.660
-jal BadCond
+b L.658
 L.657:
+la $4,L.660
+jal printf
+la $4,3
+la $5,L.661
+jal BadCond
+L.658:
 l.d $f18,Z
 l.d $f16,Y
-c.eq.d $f18,$f16; bc1t L.661
+c.eq.d $f18,$f16; bc1t L.662
 la $4,1
-la $5,L.157
+la $5,L.158
 jal BadCond
-la $4,L.663
+la $4,L.664
 l.d $f18,Y
 mfc1.d $6,$f18
 l.d $f18,Z
 s.d $f18,16($sp)
 jal printf
-L.661:
+L.662:
 lw $24,I
-beq $24,$0,L.664
+beq $24,$0,L.665
 l.d $f18,V
 l.d $f16,HInvrse
 l.d $f10,U2
@@ -4270,24 +4270,24 @@ add.d $f18,$f8,$f18
 s.d $f18,Z
 l.d $f18,Z
 l.d $f16,V0
-c.lt.d $f18,$f16; bc1f L.666
+c.lt.d $f18,$f16; bc1f L.667
 l.d $f18,Z
 s.d $f18,Y
-L.666:
+L.667:
 l.d $f18,Y
 l.d $f16,V0
-c.lt.d $f18,$f16; bc1f L.668
+c.lt.d $f18,$f16; bc1f L.669
 l.d $f18,Y
 s.d $f18,V
-L.668:
+L.669:
 l.d $f18,V0
 l.d $f16,V
 sub.d $f16,$f18,$f16
-c.lt.d $f16,$f18; bc1f L.665
+c.lt.d $f16,$f18; bc1f L.666
 l.d $f18,V0
 s.d $f18,V
-b L.665
-L.664:
+b L.666
+L.665:
 l.d $f18,Y
 l.d $f16,HInvrse
 l.d $f10,U2
@@ -4302,27 +4302,27 @@ mul.d $f16,$f16,$f10
 mul.d $f18,$f16,$f18
 add.d $f18,$f8,$f18
 s.d $f18,V
-L.665:
-la $4,L.672
+L.666:
+la $4,L.673
 l.d $f18,V
 mfc1.d $6,$f18
 jal printf
 lw $24,I
-beq $24,$0,L.673
-la $4,L.675
+beq $24,$0,L.674
+la $4,L.676
 l.d $f18,V0
 mfc1.d $6,$f18
 jal printf
-b L.674
-L.673:
-la $4,L.676
-jal printf
+b L.675
 L.674:
+la $4,L.677
+jal printf
+L.675:
 l.d $f18,V
 l.d $f16,One
 mul.d $f18,$f18,$f16
 s.d $f18,V9
-la $4,L.677
+la $4,L.678
 l.d $f18,V9
 mfc1.d $6,$f18
 jal printf
@@ -4330,31 +4330,31 @@ l.d $f18,V
 l.d $f16,One
 div.d $f18,$f18,$f16
 s.d $f18,V9
-la $4,L.678
+la $4,L.679
 l.d $f18,V9
 mfc1.d $6,$f18
 jal printf
-la $4,L.679
-jal printf
 la $4,L.680
+jal printf
+la $4,L.681
 jal printf
 la $24,170
 sw $24,Milestone
 l.d $f18,V
 neg.d $f16,$f18
-c.lt.d $f16,$f18; bc1f L.685
+c.lt.d $f16,$f18; bc1f L.686
 l.d $f16,V0
 neg.d $f10,$f16
-c.lt.d $f10,$f16; bc1f L.685
+c.lt.d $f10,$f16; bc1f L.686
 l.d $f16,UfThold
 neg.d $f10,$f16
-c.lt.d $f10,$f18; bc1f L.685
-c.ult.d $f16,$f18; bc1t L.681
-L.685:
+c.lt.d $f10,$f18; bc1f L.686
+c.lt.d $f16,$f18; bc1t L.682
+L.686:
 move $4,$0
-la $5,L.686
+la $5,L.687
 jal BadCond
-la $4,L.687
+la $4,L.688
 l.d $f18,V
 mfc1.d $6,$f18
 l.d $f18,V0
@@ -4362,38 +4362,38 @@ s.d $f18,16($sp)
 l.d $f18,UfThold
 s.d $f18,24($sp)
 jal printf
-L.681:
+L.682:
 la $24,175
 sw $24,Milestone
-la $4,L.44
+la $4,L.45
 jal printf
 la $24,1
 sw $24,Indx
-L.688:
+L.689:
 lw $24,Indx
 la $15,1
-beq $24,$15,L.694
-la $15,2
 beq $24,$15,L.695
-la $15,3
+la $15,2
 beq $24,$15,L.696
-b L.692
-L.694:
-l.d $f18,UfThold
-s.d $f18,Z
+la $15,3
+beq $24,$15,L.697
 b L.693
 L.695:
+l.d $f18,UfThold
+s.d $f18,Z
+b L.694
+L.696:
 l.d $f18,E0
 s.d $f18,Z
-b L.693
-L.696:
+b L.694
+L.697:
 l.d $f18,PseudoZero
 s.d $f18,Z
-L.692:
 L.693:
+L.694:
 l.d $f18,Z
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1t L.697
+c.eq.d $f18,$f16; bc1t L.698
 l.d $f12,Z
 jal sqrt
 s.d $f0,V9
@@ -4408,55 +4408,55 @@ mul.d $f10,$f10,$f8
 l.d $f8,Z
 sub.d $f6,$f16,$f10
 div.d $f6,$f18,$f6
-c.ult.d $f6,$f8; bc1t L.701
+c.lt.d $f6,$f8; bc1t L.702
 add.d $f16,$f16,$f10
 mul.d $f16,$f16,$f8
-c.ule.d $f18,$f16; bc1t L.699
-L.701:
+c.le.d $f18,$f16; bc1t L.700
+L.702:
 l.d $f18,V9
 l.d $f16,U1
-c.ule.d $f18,$f16; bc1t L.702
+c.le.d $f18,$f16; bc1t L.703
 la $4,1
-la $5,L.157
+la $5,L.158
 jal BadCond
-b L.703
-L.702:
-la $4,2
-la $5,L.157
-jal BadCond
+b L.704
 L.703:
-la $4,L.704
+la $4,2
+la $5,L.158
+jal BadCond
+L.704:
+la $4,L.705
 l.d $f18,Z
 mfc1.d $6,$f18
 jal printf
-la $4,L.705
+la $4,L.706
 l.d $f18,Y
 mfc1.d $6,$f18
 jal printf
-L.699:
-L.697:
-L.689:
+L.700:
+L.698:
+L.690:
 lw $24,Indx
 la $24,1($24)
 sw $24,Indx
 lw $24,Indx
 la $15,3
-ble $24,$15,L.688
+ble $24,$15,L.689
 la $24,180
 sw $24,Milestone
 la $24,1
 sw $24,Indx
-L.706:
+L.707:
 lw $24,Indx
 la $15,1
-bne $24,$15,L.710
+bne $24,$15,L.711
 l.d $f18,V
 s.d $f18,Z
-b L.711
-L.710:
+b L.712
+L.711:
 l.d $f18,V0
 s.d $f18,Z
-L.711:
+L.712:
 l.d $f12,Z
 jal sqrt
 s.d $f0,V9
@@ -4481,39 +4481,39 @@ l.d $f6,E9
 mul.d $f8,$f8,$f6
 sub.d $f10,$f10,$f8
 mul.d $f10,$f10,$f16
-c.ult.d $f18,$f10; bc1t L.714
-c.ule.d $f18,$f16; bc1t L.712
-L.714:
+c.lt.d $f18,$f10; bc1t L.715
+c.le.d $f18,$f16; bc1t L.713
+L.715:
 l.d $f18,V9
 s.d $f18,Y
 l.d $f18,X
 l.d $f16,W
-c.lt.d $f18,$f16; bc1f L.715
+c.lt.d $f18,$f16; bc1f L.716
 la $4,1
-la $5,L.157
+la $5,L.158
 jal BadCond
-b L.716
-L.715:
-la $4,2
-la $5,L.157
-jal BadCond
+b L.717
 L.716:
-la $4,L.717
+la $4,2
+la $5,L.158
+jal BadCond
+L.717:
+la $4,L.718
 l.d $f18,Z
 mfc1.d $6,$f18
 jal printf
-la $4,L.718
+la $4,L.719
 l.d $f18,Y
 mfc1.d $6,$f18
 jal printf
-L.712:
-L.707:
+L.713:
+L.708:
 lw $24,Indx
 la $24,1($24)
 sw $24,Indx
 lw $24,Indx
 la $15,2
-ble $24,$15,L.706
+ble $24,$15,L.707
 la $24,190
 sw $24,Milestone
 jal Pause
@@ -4528,89 +4528,89 @@ l.d $f18,X
 l.d $f16,Y
 mul.d $f10,$f18,$f16
 l.d $f8,One
-c.ult.d $f10,$f8; bc1t L.721
-c.ule.d $f18,$f16; bc1t L.719
-L.721:
+c.lt.d $f10,$f8; bc1t L.722
+c.le.d $f18,$f16; bc1t L.720
+L.722:
 l.d $f18,X
 l.d $f16,Y
 l.d $f10,U1
 mul.d $f8,$f18,$f16
-c.ult.d $f8,$f10; bc1t L.724
+c.lt.d $f8,$f10; bc1t L.725
 div.d $f16,$f16,$f10
-c.ule.d $f18,$f16; bc1t L.722
-L.724:
+c.le.d $f18,$f16; bc1t L.723
+L.725:
 la $4,2
-la $5,L.725
+la $5,L.726
 jal BadCond
-b L.723
-L.722:
-la $4,3
-la $5,L.157
-jal BadCond
+b L.724
 L.723:
-la $4,L.726
+la $4,3
+la $5,L.158
+jal BadCond
+L.724:
+la $4,L.727
 l.d $f18,X
 mfc1.d $6,$f18
-la $24,L.727
+la $24,L.728
 sw $24,16($sp)
 jal printf
-L.719:
+L.720:
 la $24,200
 sw $24,Milestone
 la $24,1
 sw $24,Indx
-L.728:
+L.729:
 l.d $f18,F9
 s.d $f18,X
 lw $24,Indx
 la $15,2
-blt $24,$15,L.732
+blt $24,$15,L.733
 la $15,5
-bgt $24,$15,L.732
+bgt $24,$15,L.733
 sll $24,$24,2
-lw $24,L.738-8($24)
+lw $24,L.739-8($24)
 .cpadd $24
 j $24
 .rdata
 .align 2
-L.738:
-.gpword L.734
+L.739:
 .gpword L.735
 .gpword L.736
 .gpword L.737
+.gpword L.738
 .text
-L.734:
+L.735:
 l.d $f18,One
 l.d $f16,U2
 add.d $f18,$f18,$f16
 s.d $f18,X
-b L.733
-L.735:
+b L.734
+L.736:
 l.d $f18,V
 s.d $f18,X
-b L.733
-L.736:
+b L.734
+L.737:
 l.d $f18,UfThold
 s.d $f18,X
-b L.733
-L.737:
+b L.734
+L.738:
 l.d $f18,Radix
 s.d $f18,X
-L.732:
 L.733:
+L.734:
 l.d $f18,X
 s.d $f18,Y
 la $24,sigfpe
 sw $24,sigsave
 la $4,ovfl_buf
 jal setjmp
-beq $2,$0,L.740
-la $4,L.742
+beq $2,$0,L.741
+la $4,L.743
 l.d $f18,X
 mfc1.d $6,$f18
 jal printf
-b L.741
-L.740:
+b L.742
+L.741:
 l.d $f18,Half
 l.d $f16,Y
 l.d $f10,X
@@ -4620,106 +4620,106 @@ sub.d $f18,$f16,$f18
 s.d $f18,V9
 l.d $f18,V9
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.743
-b L.729
-L.743:
+c.eq.d $f18,$f16; bc1f L.744
+b L.730
+L.744:
 l.d $f18,V9
 l.d $f16,U1
 neg.d $f16,$f16
-c.eq.d $f18,$f16; bc1f L.745
+c.eq.d $f18,$f16; bc1f L.746
 lw $24,Indx
 la $15,5
-bge $24,$15,L.745
+bge $24,$15,L.746
 la $4,3
-la $5,L.157
+la $5,L.158
 jal BadCond
-b L.746
-L.745:
-la $4,1
-la $5,L.157
-jal BadCond
+b L.747
 L.746:
-la $4,L.747
+la $4,1
+la $5,L.158
+jal BadCond
+L.747:
+la $4,L.748
 l.d $f18,X
 mfc1.d $6,$f18
 jal printf
-la $4,L.748
+la $4,L.749
 l.d $f18,V9
 mfc1.d $6,$f18
 jal printf
-L.741:
+L.742:
 sw $0,sigsave
-L.729:
+L.730:
 lw $24,Indx
 la $24,1($24)
 sw $24,Indx
 lw $24,Indx
 la $15,5
-ble $24,$15,L.728
+ble $24,$15,L.729
 la $24,210
 sw $24,Milestone
 l.d $f18,Zero
 s.d $f18,MyZero
-la $4,L.44
+la $4,L.45
 jal printf
-la $4,L.749
+la $4,L.750
 jal printf
 la $24,sigfpe
 sw $24,sigsave
-la $4,L.750
+la $4,L.751
 jal printf
 la $4,ovfl_buf
 jal setjmp
-bne $2,$0,L.751
-la $4,L.753
+bne $2,$0,L.752
+la $4,L.754
 l.d $f18,One
 l.d $f16,MyZero
 div.d $f18,$f18,$f16
 mfc1.d $6,$f18
 jal printf
-L.751:
+L.752:
 sw $0,sigsave
 la $24,sigfpe
 sw $24,sigsave
-la $4,L.754
+la $4,L.755
 jal printf
 la $4,ovfl_buf
 jal setjmp
-bne $2,$0,L.755
-la $4,L.753
+bne $2,$0,L.756
+la $4,L.754
 l.d $f18,Zero
 l.d $f16,MyZero
 div.d $f18,$f18,$f16
 mfc1.d $6,$f18
 jal printf
-L.755:
+L.756:
 sw $0,sigsave
 la $24,220
 sw $24,Milestone
 jal Pause
-la $4,L.44
+la $4,L.45
 jal printf
 sw $0,-156+240($sp)
-L.762:
+L.763:
 lw $24,-156+240($sp)
 sll $24,$24,2
 lw $24,ErrCnt($24)
-beq $24,$0,L.766
-la $4,L.768
+beq $24,$0,L.767
+la $4,L.769
 lw $24,-156+240($sp)
 sll $24,$24,2
-lw $5,L.757($24)
+lw $5,L.758($24)
 lw $6,ErrCnt($24)
 jal printf
-L.766:
-L.763:
+L.767:
+L.764:
 lw $24,-156+240($sp)
 la $24,1($24)
 sw $24,-156+240($sp)
 lw $24,-156+240($sp)
 la $15,4
-blt $24,$15,L.762
-la $4,L.44
+blt $24,$15,L.763
+la $4,L.45
 jal printf
 lw $24,ErrCnt
 lw $15,ErrCnt+4
@@ -4728,67 +4728,67 @@ lw $15,ErrCnt+8
 addu $24,$24,$15
 lw $15,ErrCnt+12
 addu $24,$24,$15
-ble $24,$0,L.769
+ble $24,$0,L.770
 lw $15,ErrCnt
 lw $14,ErrCnt+4
 addu $15,$15,$14
 lw $14,ErrCnt+8
 addu $15,$15,$14
-bne $15,$0,L.774
+bne $15,$0,L.775
 lw $15,ErrCnt+12
-ble $15,$0,L.774
-la $4,L.779
-jal printf
+ble $15,$0,L.775
 la $4,L.780
 jal printf
-L.774:
+la $4,L.781
+jal printf
+L.775:
 lw $15,ErrCnt
 lw $14,ErrCnt+4
 addu $15,$15,$14
-bne $15,$0,L.781
+bne $15,$0,L.782
 lw $15,ErrCnt+8
-ble $15,$0,L.781
-la $4,L.785
-jal printf
+ble $15,$0,L.782
 la $4,L.786
 jal printf
-L.781:
+la $4,L.787
+jal printf
+L.782:
 lw $24,ErrCnt
 lw $15,ErrCnt+4
 addu $24,$24,$15
-ble $24,$0,L.787
-la $4,L.790
-jal printf
+ble $24,$0,L.788
 la $4,L.791
 jal printf
-L.787:
-lw $24,ErrCnt
-ble $24,$0,L.770
-la $4,L.794
+la $4,L.792
 jal printf
+L.788:
+lw $24,ErrCnt
+ble $24,$0,L.771
 la $4,L.795
 jal printf
-b L.770
-L.769:
 la $4,L.796
+jal printf
+b L.771
+L.770:
+la $4,L.797
 jal printf
 la $24,1
 lw $15,RMult
-bne $15,$24,L.801
+bne $15,$24,L.802
 lw $15,RDiv
-bne $15,$24,L.801
+bne $15,$24,L.802
 lw $15,RAddSub
-bne $15,$24,L.801
+bne $15,$24,L.802
 lw $15,RSqrt
-beq $15,$24,L.797
-L.801:
-la $4,L.802
+beq $15,$24,L.798
+L.802:
+la $4,L.803
 jal printf
-b L.798
-L.797:
+b L.799
+L.798:
 l.d $f18,One
 l.d $f16,StickyBit
-c.ult.d $f16,$f18; bc1t L.803
+c.lt.d $f16,$f18; bc1t L.804
 l.d $f16,Radix
 l.d $f10,Two
 sub.d $f10,$f16,$f10
@@ -4797,14 +4797,14 @@ sub.d $f16,$f16,$f8
 sub.d $f18,$f16,$f18
 mul.d $f18,$f10,$f18
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.803
-la $4,L.805
-jal printf
+c.eq.d $f18,$f16; bc1f L.804
 la $4,L.806
+jal printf
+la $4,L.807
 jal printf
 l.d $f18,Two
 l.d $f16,Radix
-c.eq.d $f16,$f18; bc1f L.807
+c.eq.d $f16,$f18; bc1f L.808
 l.d $f16,Precision
 l.d $f10,TwentySeven
 l.d $f8,Four
@@ -4818,40 +4818,40 @@ l.d $f10,One
 add.d $f16,$f16,$f10
 mul.d $f18,$f18,$f16
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1f L.807
-la $4,L.809
-jal printf
-b L.808
-L.807:
+c.eq.d $f18,$f16; bc1f L.808
 la $4,L.810
 jal printf
+b L.809
 L.808:
-lw $24,IEEE
-beq $24,$0,L.811
-la $4,L.813
+la $4,L.811
 jal printf
-b L.812
-L.811:
+L.809:
+lw $24,IEEE
+beq $24,$0,L.812
 la $4,L.814
 jal printf
+b L.813
+L.812:
 la $4,L.815
 jal printf
-L.812:
-L.803:
 la $4,L.816
 jal printf
-L.798:
-L.770:
+L.813:
+L.804:
+la $4,L.817
+jal printf
+L.799:
+L.771:
 lw $24,fpecount
-beq $24,$0,L.817
-la $4,L.819
+beq $24,$0,L.818
+la $4,L.820
 lw $5,fpecount
 jal printf
-L.817:
-la $4,L.820
+L.818:
+la $4,L.821
 jal printf
 move $2,$0
-L.6:
+L.7:
 lw $16,32($sp)
 lw $17,36($sp)
 lw $18,40($sp)
@@ -4871,24 +4871,24 @@ j $31
 .align 2
 .ent Sign
 Sign:
-.frame $sp,16,$31
+.frame $sp,8,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-16
-.fmask 0xc0000000,-16
+addu $sp,$sp,-8
+.fmask 0xc0000000,-8
 s.d $f30,0($sp)
-l.d $f18,L.7
-c.ult.d $f12,$f18; bc1t L.823
-l.d $f30,L.8
-b L.824
-L.823:
-l.d $f30,L.825
-L.824:
+l.d $f18,L.8
+c.lt.d $f12,$f18; bc1t L.1532
+l.d $f30,L.9
+b L.1533
+L.1532:
+l.d $f30,L.1534
+L.1533:
 mov.d $f0,$f30
-L.821:
+L.1530:
 l.d $f30,0($sp)
-addu $sp,$sp,16
+addu $sp,$sp,8
 j $31
 .end Sign
 .globl Pause
@@ -4896,18 +4896,18 @@ j $31
 .align 2
 .ent Pause
 Pause:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
-la $4,L.827
+la $4,L.1536
 lw $5,Milestone
 jal printf
-la $4,L.828
+la $4,L.1537
 lw $5,PageNo
 jal printf
 lw $24,Milestone
@@ -4916,11 +4916,10 @@ sw $24,Milestone
 lw $24,PageNo
 la $24,1($24)
 sw $24,PageNo
-move $2,$0
-L.826:
+L.1535:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end Pause
 .globl TstCond
@@ -4928,39 +4927,38 @@ j $31
 .align 2
 .ent TstCond
 TstCond:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
-sw $4,32($sp)
-sw $5,36($sp)
-sw $6,40($sp)
-lw $24,4+32($sp)
-bne $24,$0,L.830
-lw $4,0+32($sp)
-lw $5,8+32($sp)
+sw $4,24($sp)
+sw $5,28($sp)
+sw $6,32($sp)
+lw $24,4+24($sp)
+bne $24,$0,L.1542
+lw $4,0+24($sp)
+lw $5,8+24($sp)
 jal BadCond
-la $4,L.813
+la $4,L.814
 jal printf
-L.830:
-move $2,$0
-L.829:
+L.1542:
+L.1541:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end TstCond
 .data
 .align 2
-L.833:
-.word L.834
-.word L.835
-.word L.836
-.word L.837
+L.1545:
+.word L.1546
+.word L.1547
+.word L.1548
+.word L.1549
 .globl BadCond
 .text
 .text
@@ -4983,13 +4981,12 @@ la $24,ErrCnt($24)
 lw $15,($24)
 la $15,1($15)
 sw $15,($24)
-la $4,L.838
+la $4,L.1550
 sll $24,$30,2
-lw $5,L.833($24)
+lw $5,L.1545($24)
 lw $6,4+32($sp)
 jal printf
-move $2,$0
-L.832:
+L.1544:
 lw $25,16($sp)
 lw $30,20($sp)
 lw $31,24($sp)
@@ -5001,13 +4998,13 @@ j $31
 .align 2
 .ent Random
 Random:
-.frame $sp,48,$31
+.frame $sp,40,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-48
-.fmask 0xf0000000,-24
-.mask 0x82000000,-12
+addu $sp,$sp,-40
+.fmask 0xf0000000,-16
+.mask 0x82000000,-4
 s.d $f28,16($sp)
 s.d $f30,24($sp)
 .cprestore 32
@@ -5021,17 +5018,17 @@ mul.d $f30,$f30,$f28
 mov.d $f12,$f30
 jal floor
 sub.d $f28,$f30,$f0
-l.d $f18,L.840
+l.d $f18,L.1553
 mul.d $f18,$f18,$f30
 add.d $f18,$f28,$f18
 s.d $f18,Random1
 l.d $f0,Random1
-L.839:
+L.1552:
 l.d $f28,16($sp)
 l.d $f30,24($sp)
 lw $25,32($sp)
 lw $31,36($sp)
-addu $sp,$sp,48
+addu $sp,$sp,40
 j $31
 .end Random
 .globl SqXMinX
@@ -5039,53 +5036,53 @@ j $31
 .align 2
 .ent SqXMinX
 SqXMinX:
-.frame $sp,64,$31
+.frame $sp,56,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-64
-.fmask 0xc0000000,-32
-.mask 0x82000000,-20
+addu $sp,$sp,-56
+.fmask 0xc0000000,-24
+.mask 0x82000000,-12
 s.d $f30,32($sp)
 .cprestore 40
 sw $31,44($sp)
-sw $4,64($sp)
+sw $4,56($sp)
 l.d $f18,X
 l.d $f16,BInvrse
 mul.d $f30,$f18,$f16
 sub.d $f16,$f18,$f30
-s.d $f16,-8+64($sp)
+s.d $f16,-8+56($sp)
 mul.d $f12,$f18,$f18
 jal sqrt
 sub.d $f18,$f0,$f30
-l.d $f16,-8+64($sp)
+l.d $f16,-8+56($sp)
 sub.d $f18,$f18,$f16
 l.d $f16,OneUlp
 div.d $f18,$f18,$f16
 s.d $f18,SqEr
 l.d $f18,SqEr
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1t L.842
+c.eq.d $f18,$f16; bc1t L.1557
 l.d $f18,SqEr
 l.d $f16,MinSqEr
-c.lt.d $f18,$f16; bc1f L.844
+c.lt.d $f18,$f16; bc1f L.1559
 l.d $f18,SqEr
 s.d $f18,MinSqEr
-L.844:
+L.1559:
 l.d $f18,SqEr
 l.d $f16,MaxSqEr
-c.ule.d $f18,$f16; bc1t L.846
+c.le.d $f18,$f16; bc1t L.1561
 l.d $f18,SqEr
 s.d $f18,MaxSqEr
-L.846:
+L.1561:
 l.d $f18,J
-l.d $f16,L.8
+l.d $f16,L.9
 add.d $f18,$f18,$f16
 s.d $f18,J
-lw $4,0+64($sp)
-la $5,L.44
+lw $4,0+56($sp)
+la $5,L.45
 jal BadCond
-la $4,L.848
+la $4,L.1563
 l.d $f18,X
 mul.d $f16,$f18,$f18
 mfc1.d $6,$f16
@@ -5095,15 +5092,14 @@ l.d $f16,SqEr
 mul.d $f18,$f18,$f16
 s.d $f18,24($sp)
 jal printf
-la $4,L.849
+la $4,L.1564
 jal printf
-L.842:
-move $2,$0
-L.841:
+L.1557:
+L.1556:
 l.d $f30,32($sp)
 lw $25,40($sp)
 lw $31,44($sp)
-addu $sp,$sp,64
+addu $sp,$sp,56
 j $31
 .end SqXMinX
 .globl NewD
@@ -5111,12 +5107,12 @@ j $31
 .align 2
 .ent NewD
 NewD:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
 l.d $f18,Z1
@@ -5153,23 +5149,22 @@ sub.d $f18,$f10,$f18
 s.d $f18,Z
 l.d $f18,Z
 l.d $f16,Zero
-c.le.d $f18,$f16; bc1f L.851
+c.le.d $f18,$f16; bc1f L.1570
 l.d $f18,Z
 neg.d $f18,$f18
 s.d $f18,Z
 l.d $f18,Z1
 neg.d $f18,$f18
 s.d $f18,Z1
-L.851:
+L.1570:
 l.d $f18,Radix
 l.d $f16,D
 mul.d $f18,$f18,$f16
 s.d $f18,D
-move $2,$0
-L.850:
+L.1569:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end NewD
 .globl SR3750
@@ -5177,12 +5172,12 @@ j $31
 .align 2
 .ent SR3750
 SR3750:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
 l.d $f18,X
@@ -5190,11 +5185,11 @@ l.d $f16,Radix
 l.d $f10,Z2
 sub.d $f8,$f18,$f16
 sub.d $f16,$f10,$f16
-c.ult.d $f8,$f16; bc1t L.854
+c.lt.d $f8,$f16; bc1t L.1585
 sub.d $f18,$f18,$f10
 l.d $f16,W
 sub.d $f16,$f16,$f10
-c.le.d $f18,$f16; bc1f L.854
+c.le.d $f18,$f16; bc1f L.1585
 lw $24,I
 la $24,1($24)
 sw $24,I
@@ -5228,26 +5223,25 @@ add.d $f18,$f16,$f18
 s.d $f18,SqEr
 l.d $f18,SqEr
 l.d $f16,MinSqEr
-c.lt.d $f18,$f16; bc1f L.856
+c.lt.d $f18,$f16; bc1f L.1587
 l.d $f18,SqEr
 s.d $f18,MinSqEr
-L.856:
+L.1587:
 l.d $f18,Y2
 l.d $f16,X2
 sub.d $f18,$f18,$f16
 s.d $f18,SqEr
 l.d $f18,SqEr
 l.d $f16,MaxSqEr
-c.ule.d $f18,$f16; bc1t L.858
+c.le.d $f18,$f16; bc1t L.1589
 l.d $f18,SqEr
 s.d $f18,MaxSqEr
-L.858:
-L.854:
-move $2,$0
-L.853:
+L.1589:
+L.1585:
+L.1584:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end SR3750
 .globl IsYeqX
@@ -5265,49 +5259,48 @@ addu $sp,$sp,-32
 sw $31,28($sp)
 l.d $f18,Y
 l.d $f16,X
-c.eq.d $f18,$f16; bc1t L.861
+c.eq.d $f18,$f16; bc1t L.1605
 lw $24,N
-bgt $24,$0,L.863
+bgt $24,$0,L.1607
 l.d $f18,Zero
 l.d $f16,Z
-c.eq.d $f16,$f18; bc1f L.865
+c.eq.d $f16,$f18; bc1f L.1609
 l.d $f16,Q
-c.le.d $f16,$f18; bc1f L.865
-la $4,L.867
+c.le.d $f16,$f18; bc1f L.1609
+la $4,L.1611
 jal printf
-b L.866
-L.865:
+b L.1610
+L.1609:
 la $4,2
-la $5,L.868
+la $5,L.1612
 jal BadCond
-L.866:
-la $4,L.869
+L.1610:
+la $4,L.1613
 l.d $f18,Z
 mfc1.d $6,$f18
 l.d $f18,Q
 s.d $f18,16($sp)
 jal printf
-la $4,L.870
+la $4,L.1614
 l.d $f18,Y
 mfc1.d $6,$f18
 jal printf
-la $4,L.871
+la $4,L.1615
 l.d $f18,X
 mfc1.d $6,$f18
 jal printf
-la $4,L.872
+la $4,L.1616
 l.d $f18,Y
 l.d $f16,X
 sub.d $f18,$f18,$f16
 mfc1.d $6,$f18
 jal printf
-L.863:
+L.1607:
 lw $24,N
 la $24,1($24)
 sw $24,N
-L.861:
-move $2,$0
-L.860:
+L.1605:
+L.1604:
 lw $25,24($sp)
 lw $31,28($sp)
 addu $sp,$sp,32
@@ -5318,15 +5311,15 @@ j $31
 .align 2
 .ent SR3980
 SR3980:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
-L.874:
+L.1620:
 lw $24,I
 mtc1 $24,$f18; cvt.d.w $f18,$f18
 s.d $f18,Q
@@ -5339,23 +5332,22 @@ lw $24,I
 la $24,1($24)
 sw $24,I
 lw $15,M
-ble $24,$15,L.877
-b L.876
-L.877:
+ble $24,$15,L.1623
+b L.1622
+L.1623:
 l.d $f18,Z
 l.d $f16,X
 mul.d $f18,$f18,$f16
 s.d $f18,X
-L.875:
+L.1621:
 l.d $f18,X
 l.d $f16,W
-c.ult.d $f18,$f16; bc1t L.874
-L.876:
-move $2,$0
-L.873:
+c.lt.d $f18,$f16; bc1t L.1620
+L.1622:
+L.1619:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end SR3980
 .globl PrintIfNPositive
@@ -5363,25 +5355,24 @@ j $31
 .align 2
 .ent PrintIfNPositive
 PrintIfNPositive:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
 lw $24,N
-ble $24,$0,L.880
-la $4,L.882
+ble $24,$0,L.1631
+la $4,L.1633
 lw $5,N
 jal printf
-L.880:
-move $2,$0
-L.879:
+L.1631:
+L.1630:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end PrintIfNPositive
 .globl TstPtUf
@@ -5389,34 +5380,34 @@ j $31
 .align 2
 .ent TstPtUf
 TstPtUf:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
 sw $0,N
 l.d $f18,Z
 l.d $f16,Zero
-c.eq.d $f18,$f16; bc1t L.884
-la $4,L.886
+c.eq.d $f18,$f16; bc1t L.1635
+la $4,L.1637
 jal printf
-la $4,L.887
+la $4,L.1638
 jal printf
 la $24,sigfpe
 sw $24,sigsave
 la $4,ovfl_buf
 jal setjmp
-beq $2,$0,L.888
-b L.890
-L.888:
+beq $2,$0,L.1639
+b L.1641
+L.1639:
 l.d $f18,Z
 add.d $f16,$f18,$f18
 div.d $f18,$f16,$f18
 s.d $f18,Q9
-la $4,L.891
+la $4,L.1642
 l.d $f18,Q9
 mfc1.d $6,$f18
 jal printf
@@ -5427,38 +5418,38 @@ jal fabs
 l.d $f16,Radix
 l.d $f10,U2
 mul.d $f16,$f16,$f10
-c.lt.d $f0,$f16; bc1f L.892
-la $4,L.894
+c.lt.d $f0,$f16; bc1f L.1643
+la $4,L.1645
 jal printf
-la $4,L.895
+la $4,L.1646
 jal printf
-b L.893
-L.892:
+b L.1644
+L.1643:
 l.d $f18,Q9
 l.d $f16,One
-c.ult.d $f18,$f16; bc1t L.898
+c.lt.d $f18,$f16; bc1t L.1649
 l.d $f16,Two
-c.ule.d $f18,$f16; bc1t L.896
-L.898:
-L.890:
+c.le.d $f18,$f16; bc1t L.1647
+L.1649:
+L.1641:
 la $24,1
 sw $24,N
 lw $24,ErrCnt+4
 la $24,1($24)
 sw $24,ErrCnt+4
-la $4,L.901
+la $4,L.1652
 jal printf
-b L.897
-L.896:
+b L.1648
+L.1647:
 la $24,1
 sw $24,N
 lw $24,ErrCnt+8
 la $24,1($24)
 sw $24,ErrCnt+8
-la $4,L.904
+la $4,L.1655
 jal printf
-L.897:
-L.893:
+L.1648:
+L.1644:
 sw $0,sigsave
 l.d $f18,Z
 l.d $f16,One
@@ -5474,77 +5465,76 @@ div.d $f18,$f18,$f16
 s.d $f18,V9
 l.d $f18,Z
 l.d $f16,Random1
-c.eq.d $f18,$f16; bc1f L.905
+c.eq.d $f18,$f16; bc1f L.1656
 l.d $f16,Random2
-c.eq.d $f18,$f16; bc1f L.905
+c.eq.d $f18,$f16; bc1f L.1656
 l.d $f16,V9
-c.eq.d $f18,$f16; bc1f L.905
+c.eq.d $f18,$f16; bc1f L.1656
 lw $24,N
-ble $24,$0,L.906
+ble $24,$0,L.1657
 jal Pause
-b L.906
-L.905:
+b L.1657
+L.1656:
 la $24,1
 sw $24,N
 la $4,2
-la $5,L.909
+la $5,L.1660
 jal BadCond
-la $4,L.910
+la $4,L.1661
 l.d $f18,Z
 mfc1.d $6,$f18
 jal printf
 l.d $f18,Z
 l.d $f16,Random1
-c.eq.d $f18,$f16; bc1t L.911
-la $4,L.913
+c.eq.d $f18,$f16; bc1t L.1662
+la $4,L.1664
 l.d $f18,Random1
 mfc1.d $6,$f18
 jal printf
-L.911:
+L.1662:
 l.d $f18,Random2
 l.d $f16,Z
-c.eq.d $f16,$f18; bc1t L.914
+c.eq.d $f16,$f18; bc1t L.1665
 l.d $f16,Random1
-c.eq.d $f18,$f16; bc1t L.914
-la $4,L.916
+c.eq.d $f18,$f16; bc1t L.1665
+la $4,L.1667
 l.d $f18,Random2
 mfc1.d $6,$f18
 jal printf
-L.914:
+L.1665:
 l.d $f18,Z
 l.d $f16,V9
-c.eq.d $f18,$f16; bc1t L.917
-la $4,L.919
+c.eq.d $f18,$f16; bc1t L.1668
+la $4,L.1670
 l.d $f18,V9
 mfc1.d $6,$f18
 jal printf
-L.917:
+L.1668:
 l.d $f18,Random2
 l.d $f16,Random1
-c.eq.d $f18,$f16; bc1t L.920
+c.eq.d $f18,$f16; bc1t L.1671
 lw $24,ErrCnt+8
 la $24,1($24)
 sw $24,ErrCnt+8
 la $4,2
-la $5,L.924
+la $5,L.1675
 jal BadCond
-la $4,L.925
+la $4,L.1676
 l.d $f18,Random2
 mfc1.d $6,$f18
 jal printf
-la $4,L.926
+la $4,L.1677
 l.d $f18,Random1
 mfc1.d $6,$f18
 jal printf
-L.920:
+L.1671:
 jal Pause
-L.906:
-L.884:
-move $2,$0
-L.883:
+L.1657:
+L.1635:
+L.1634:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end TstPtUf
 .globl notify
@@ -5552,25 +5542,24 @@ j $31
 .align 2
 .ent notify
 notify:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
-sw $4,32($sp)
-la $4,L.928
-lw $5,0+32($sp)
+sw $4,24($sp)
+la $4,L.1691
+lw $5,0+24($sp)
 jal printf
-la $4,L.929
+la $4,L.1692
 jal printf
-move $2,$0
-L.927:
+L.1690:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end notify
 .globl msglist
@@ -5588,18 +5577,17 @@ addu $sp,$sp,-32
 sw $30,20($sp)
 sw $31,24($sp)
 move $30,$4
-b L.932
-L.931:
-la $4,L.934
+b L.1695
+L.1694:
+la $4,L.1697
 move $24,$30
 la $30,4($24)
 lw $5,($24)
 jal printf
-L.932:
+L.1695:
 lw $24,($30)
-bne $24,$0,L.931
-move $2,$0
-L.930:
+bne $24,$0,L.1694
+L.1693:
 lw $25,16($sp)
 lw $30,20($sp)
 lw $31,24($sp)
@@ -5608,16 +5596,16 @@ j $31
 .end msglist
 .data
 .align 2
-L.936:
-.word L.937
-.word L.938
-.word L.939
-.word L.940
-.word L.941
-.word L.942
-.word L.943
-.word L.944
-.word L.945
+L.1700:
+.word L.1701
+.word L.1702
+.word L.1703
+.word L.1704
+.word L.1705
+.word L.1706
+.word L.1707
+.word L.1708
+.word L.1709
 .word 0x0
 .globl Instructions
 .text
@@ -5625,40 +5613,39 @@ L.936:
 .align 2
 .ent Instructions
 Instructions:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
-la $4,L.936
+la $4,L.1700
 jal msglist
-move $2,$0
-L.935:
+L.1699:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end Instructions
 .data
 .align 2
-L.947:
-.word L.948
-.word L.949
-.word L.950
-.word L.951
-.word L.952
-.word L.953
-.word L.954
-.word L.955
-.word L.956
-.word L.957
-.word L.958
-.word L.959
-.word L.960
-.word L.961
+L.1711:
+.word L.1712
+.word L.1713
+.word L.1714
+.word L.1715
+.word L.1716
+.word L.1717
+.word L.1718
+.word L.1719
+.word L.1720
+.word L.1721
+.word L.1722
+.word L.1723
+.word L.1724
+.word L.1725
 .word 0x0
 .globl Heading
 .text
@@ -5666,45 +5653,44 @@ L.947:
 .align 2
 .ent Heading
 Heading:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
-la $4,L.947
+la $4,L.1711
 jal msglist
-move $2,$0
-L.946:
+L.1710:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end Heading
 .data
 .align 2
-L.963:
-.word L.964
-.word L.965
-.word L.966
-.word L.967
-.word L.968
-.word L.969
-.word L.970
-.word L.971
-.word L.972
-.word L.973
-.word L.974
-.word L.975
-.word L.976
-.word L.977
-.word L.978
-.word L.979
-.word L.980
-.word L.981
-.word L.982
+L.1727:
+.word L.1728
+.word L.1729
+.word L.1730
+.word L.1731
+.word L.1732
+.word L.1733
+.word L.1734
+.word L.1735
+.word L.1736
+.word L.1737
+.word L.1738
+.word L.1739
+.word L.1740
+.word L.1741
+.word L.1742
+.word L.1743
+.word L.1744
+.word L.1745
+.word L.1746
 .word 0x0
 .globl Characteristics
 .text
@@ -5712,43 +5698,42 @@ L.963:
 .align 2
 .ent Characteristics
 Characteristics:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
-la $4,L.963
+la $4,L.1727
 jal msglist
-move $2,$0
-L.962:
+L.1726:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end Characteristics
 .data
 .align 2
-L.984:
-.word L.985
-.word L.986
-.word L.987
-.word L.988
-.word L.989
-.word L.990
-.word L.991
-.word L.992
-.word L.993
-.word L.994
-.word L.995
-.word L.996
-.word L.997
-.word L.998
-.word L.999
-.word L.1000
-.word L.1001
+L.1748:
+.word L.1749
+.word L.1750
+.word L.1751
+.word L.1752
+.word L.1753
+.word L.1754
+.word L.1755
+.word L.1756
+.word L.1757
+.word L.1758
+.word L.1759
+.word L.1760
+.word L.1761
+.word L.1762
+.word L.1763
+.word L.1764
+.word L.1765
 .word 0x0
 .globl History
 .text
@@ -5756,21 +5741,20 @@ L.984:
 .align 2
 .ent History
 History:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
-la $4,L.984
+la $4,L.1748
 jal msglist
-move $2,$0
-L.983:
+L.1747:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end History
 .globl pow
@@ -5778,13 +5762,13 @@ j $31
 .align 2
 .ent pow
 pow:
-.frame $sp,80,$31
+.frame $sp,72,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-80
-.fmask 0xfc000000,-48
-.mask 0xc2800000,-28
+addu $sp,$sp,-72
+.fmask 0xfc000000,-40
+.mask 0xc2800000,-20
 s.d $f26,16($sp)
 s.d $f28,24($sp)
 s.d $f30,32($sp)
@@ -5795,94 +5779,94 @@ sw $31,52($sp)
 mov.d $f30,$f12
 mov.d $f28,$f14
 move $23,$0
-sw $0,-8+80($sp)
-l.d $f18,L.7
-c.eq.d $f28,$f18; bc1f L.1003
-l.d $f0,L.8
-b L.1002
-L.1003:
-l.d $f18,L.1008
-c.ult.d $f28,$f18; bc1t L.1007
-l.d $f18,L.1009
-c.ule.d $f28,$f18; bc1t L.1005
-L.1007:
-l.d $f18,L.825
-c.eq.d $f30,$f18; bc1t L.1005
+sw $0,-8+72($sp)
+l.d $f18,L.8
+c.eq.d $f28,$f18; bc1f L.1767
+l.d $f0,L.9
+b L.1766
+L.1767:
+l.d $f18,L.1772
+c.lt.d $f28,$f18; bc1t L.1771
+l.d $f18,L.1773
+c.le.d $f28,$f18; bc1t L.1769
+L.1771:
+l.d $f18,L.1534
+c.eq.d $f30,$f18; bc1t L.1769
 mov.d $f12,$f30
 jal log
 mov.d $f18,$f0
 mul.d $f12,$f28,$f18
 jal exp
 mov.d $f18,$f0
-b L.1002
-L.1005:
-l.d $f18,L.7
-c.lt.d $f28,$f18; bc1f L.1010
+b L.1766
+L.1769:
+l.d $f18,L.8
+c.lt.d $f28,$f18; bc1f L.1774
 neg.d $f28,$f28
 la $24,1
-sw $24,-8+80($sp)
-L.1010:
+sw $24,-8+72($sp)
+L.1774:
 mov.d $f12,$f28
-la $6,-16+80($sp)
+la $6,-16+72($sp)
 jal modf
 mov.d $f28,$f0
-l.d $f18,L.7
-c.eq.d $f28,$f18; bc1t L.1012
+l.d $f18,L.8
+c.eq.d $f28,$f18; bc1t L.1776
 mov.d $f12,$f30
 jal log
 mov.d $f18,$f0
 mul.d $f12,$f28,$f18
 jal exp
 mov.d $f26,$f0
-b L.1013
-L.1012:
-l.d $f26,L.8
-L.1013:
+b L.1777
+L.1776:
+l.d $f26,L.9
+L.1777:
 mov.d $f12,$f30
-la $6,-4+80($sp)
+la $6,-4+72($sp)
 jal frexp
 mov.d $f30,$f0
-l.d $f18,-16+80($sp)
+l.d $f18,-16+72($sp)
 trunc.w.d $f2,$f18,$24; mfc1 $24,$f2
 move $30,$24
-beq $24,$0,L.1014
-L.1016:
+beq $24,$0,L.1778
+L.1780:
 and $24,$30,1
-beq $24,$0,L.1020
+beq $24,$0,L.1784
 mul.d $f26,$f26,$f30
-lw $24,-4+80($sp)
+lw $24,-4+72($sp)
 addu $23,$23,$24
-L.1020:
+L.1784:
 sra $24,$30,1
 move $30,$24
-bne $24,$0,L.1022
-b L.1018
-L.1022:
+bne $24,$0,L.1786
+b L.1782
+L.1786:
 mul.d $f30,$f30,$f30
-lw $24,-4+80($sp)
+lw $24,-4+72($sp)
 sll $24,$24,1
-sw $24,-4+80($sp)
-l.d $f18,L.1026
-c.lt.d $f30,$f18; bc1f L.1016
-l.d $f18,L.1027
+sw $24,-4+72($sp)
+l.d $f18,L.1790
+c.lt.d $f30,$f18; bc1f L.1780
+l.d $f18,L.1791
 mul.d $f30,$f18,$f30
-lw $24,-4+80($sp)
+lw $24,-4+72($sp)
 subu $24,$24,1
-sw $24,-4+80($sp)
-b L.1016
-L.1018:
-L.1014:
-lw $24,-8+80($sp)
-beq $24,$0,L.1028
-l.d $f18,L.8
+sw $24,-4+72($sp)
+b L.1780
+L.1782:
+L.1778:
+lw $24,-8+72($sp)
+beq $24,$0,L.1792
+l.d $f18,L.9
 div.d $f26,$f18,$f26
 negu $23,$23
-L.1028:
+L.1792:
 mov.d $f12,$f26
 move $6,$23
 jal ldexp
 mov.d $f18,$f0
-L.1002:
+L.1766:
 l.d $f26,16($sp)
 l.d $f28,24($sp)
 l.d $f30,32($sp)
@@ -5890,7 +5874,7 @@ lw $23,40($sp)
 lw $25,44($sp)
 lw $30,48($sp)
 lw $31,52($sp)
-addu $sp,$sp,80
+addu $sp,$sp,72
 j $31
 .end pow
 .globl UfNGrad
@@ -6062,23 +6046,23 @@ j $31
 .extern _iob 0
 .rdata
 .align 3
-L.1027:
+L.1791:
 .word 0x40000000
 .word 0x0
 .align 3
-L.1026:
+L.1790:
 .word 0x3fe00000
 .word 0x0
 .align 3
-L.1009:
+L.1773:
 .word 0x40913000
 .word 0x0
 .align 3
-L.1008:
+L.1772:
 .word 0xc0913000
 .word 0x0
 .align 0
-L.1001:
+L.1765:
 .byte 115
 .byte 101
 .byte 101
@@ -6118,7 +6102,7 @@ L.1001:
 .byte 46
 .byte 0
 .align 0
-L.1000:
+L.1764:
 .byte 66
 .byte 65
 .byte 83
@@ -6181,7 +6165,7 @@ L.1000:
 .byte 59
 .byte 0
 .align 0
-L.999:
+L.1763:
 .byte 97
 .byte 115
 .byte 32
@@ -6224,7 +6208,7 @@ L.999:
 .byte 10
 .byte 0
 .align 0
-L.998:
+L.1762:
 .byte 102
 .byte 108
 .byte 111
@@ -6287,7 +6271,7 @@ L.998:
 .byte 103
 .byte 0
 .align 0
-L.997:
+L.1761:
 .byte 10
 .byte 84
 .byte 104
@@ -6356,7 +6340,7 @@ L.997:
 .byte 114
 .byte 0
 .align 0
-L.996:
+L.1760:
 .byte 111
 .byte 102
 .byte 32
@@ -6425,7 +6409,7 @@ L.996:
 .byte 46
 .byte 0
 .align 0
-L.995:
+L.1759:
 .byte 111
 .byte 102
 .byte 32
@@ -6494,7 +6478,7 @@ L.995:
 .byte 121
 .byte 0
 .align 0
-L.994:
+L.1758:
 .byte 116
 .byte 104
 .byte 101
@@ -6555,7 +6539,7 @@ L.994:
 .byte 41
 .byte 0
 .align 0
-L.993:
+L.1757:
 .byte 87
 .byte 46
 .byte 32
@@ -6621,7 +6605,7 @@ L.993:
 .byte 114
 .byte 0
 .align 0
-L.992:
+L.1756:
 .byte 98
 .byte 111
 .byte 111
@@ -6686,7 +6670,7 @@ L.992:
 .byte 121
 .byte 0
 .align 0
-L.991:
+L.1755:
 .byte 112
 .byte 114
 .byte 111
@@ -6750,7 +6734,7 @@ L.991:
 .byte 101
 .byte 0
 .align 0
-L.990:
+L.1754:
 .byte 84
 .byte 104
 .byte 101
@@ -6817,7 +6801,7 @@ L.990:
 .byte 114
 .byte 0
 .align 0
-L.989:
+L.1753:
 .byte 70
 .byte 97
 .byte 105
@@ -6864,7 +6848,7 @@ L.989:
 .byte 10
 .byte 0
 .align 0
-L.988:
+L.1752:
 .byte 32
 .byte 32
 .byte 32
@@ -6895,7 +6879,7 @@ L.988:
 .byte 46
 .byte 0
 .align 0
-L.987:
+L.1751:
 .byte 32
 .byte 32
 .byte 32
@@ -6949,7 +6933,7 @@ L.987:
 .byte 100
 .byte 0
 .align 0
-L.986:
+L.1750:
 .byte 32
 .byte 32
 .byte 32
@@ -6988,7 +6972,7 @@ L.986:
 .byte 44
 .byte 0
 .align 0
-L.985:
+L.1749:
 .byte 84
 .byte 104
 .byte 101
@@ -7033,7 +7017,7 @@ L.985:
 .byte 103
 .byte 0
 .align 0
-L.982:
+L.1746:
 .byte 32
 .byte 32
 .byte 32
@@ -7098,7 +7082,7 @@ L.982:
 .byte 46
 .byte 0
 .align 0
-L.981:
+L.1745:
 .byte 32
 .byte 32
 .byte 32
@@ -7167,7 +7151,7 @@ L.981:
 .byte 46
 .byte 0
 .align 0
-L.980:
+L.1744:
 .byte 32
 .byte 32
 .byte 32
@@ -7210,7 +7194,7 @@ L.980:
 .byte 46
 .byte 0
 .align 0
-L.979:
+L.1743:
 .byte 9
 .byte 97
 .byte 110
@@ -7254,7 +7238,7 @@ L.979:
 .byte 46
 .byte 0
 .align 0
-L.978:
+L.1742:
 .byte 32
 .byte 32
 .byte 32
@@ -7319,7 +7303,7 @@ L.978:
 .byte 110
 .byte 0
 .align 0
-L.977:
+L.1741:
 .byte 32
 .byte 32
 .byte 32
@@ -7381,7 +7365,7 @@ L.977:
 .byte 46
 .byte 0
 .align 0
-L.976:
+L.1740:
 .byte 32
 .byte 32
 .byte 32
@@ -7424,7 +7408,7 @@ L.976:
 .byte 46
 .byte 0
 .align 0
-L.975:
+L.1739:
 .byte 32
 .byte 32
 .byte 32
@@ -7502,7 +7486,7 @@ L.975:
 .byte 46
 .byte 0
 .align 0
-L.974:
+L.1738:
 .byte 32
 .byte 32
 .byte 32
@@ -7554,7 +7538,7 @@ L.974:
 .byte 46
 .byte 0
 .align 0
-L.973:
+L.1737:
 .byte 32
 .byte 32
 .byte 32
@@ -7611,7 +7595,7 @@ L.973:
 .byte 46
 .byte 0
 .align 0
-L.972:
+L.1736:
 .byte 9
 .byte 102
 .byte 111
@@ -7651,7 +7635,7 @@ L.972:
 .byte 46
 .byte 0
 .align 0
-L.971:
+L.1735:
 .byte 32
 .byte 32
 .byte 32
@@ -7726,7 +7710,7 @@ L.971:
 .byte 101
 .byte 0
 .align 0
-L.970:
+L.1734:
 .byte 32
 .byte 32
 .byte 32
@@ -7784,7 +7768,7 @@ L.970:
 .byte 46
 .byte 0
 .align 0
-L.969:
+L.1733:
 .byte 32
 .byte 32
 .byte 32
@@ -7860,7 +7844,7 @@ L.969:
 .byte 46
 .byte 0
 .align 0
-L.968:
+L.1732:
 .byte 9
 .byte 40
 .byte 79
@@ -7907,7 +7891,7 @@ L.968:
 .byte 46
 .byte 0
 .align 0
-L.967:
+L.1731:
 .byte 32
 .byte 32
 .byte 32
@@ -7951,7 +7935,7 @@ L.967:
 .byte 112
 .byte 0
 .align 0
-L.966:
+L.1730:
 .byte 32
 .byte 32
 .byte 32
@@ -8008,7 +7992,7 @@ L.966:
 .byte 46
 .byte 0
 .align 0
-L.965:
+L.1729:
 .byte 32
 .byte 32
 .byte 32
@@ -8056,7 +8040,7 @@ L.965:
 .byte 46
 .byte 0
 .align 0
-L.964:
+L.1728:
 .byte 82
 .byte 117
 .byte 110
@@ -8116,7 +8100,7 @@ L.964:
 .byte 58
 .byte 0
 .align 0
-L.961:
+L.1725:
 .byte 9
 .byte 79
 .byte 116
@@ -8152,7 +8136,7 @@ L.961:
 .byte 58
 .byte 0
 .align 0
-L.960:
+L.1724:
 .byte 9
 .byte 79
 .byte 112
@@ -8176,7 +8160,7 @@ L.960:
 .byte 10
 .byte 0
 .align 0
-L.959:
+L.1723:
 .byte 9
 .byte 67
 .byte 111
@@ -8190,7 +8174,7 @@ L.959:
 .byte 10
 .byte 0
 .align 0
-L.958:
+L.1722:
 .byte 9
 .byte 67
 .byte 111
@@ -8204,7 +8188,7 @@ L.958:
 .byte 10
 .byte 0
 .align 0
-L.957:
+L.1721:
 .byte 9
 .byte 86
 .byte 101
@@ -8234,7 +8218,7 @@ L.957:
 .byte 59
 .byte 0
 .align 0
-L.956:
+L.1720:
 .byte 9
 .byte 80
 .byte 114
@@ -8256,7 +8240,7 @@ L.956:
 .byte 59
 .byte 0
 .align 0
-L.955:
+L.1719:
 .byte 73
 .byte 110
 .byte 32
@@ -8313,7 +8297,7 @@ L.955:
 .byte 58
 .byte 0
 .align 0
-L.954:
+L.1718:
 .byte 9
 .byte 83
 .byte 97
@@ -8351,7 +8335,7 @@ L.954:
 .byte 10
 .byte 0
 .align 0
-L.953:
+L.1717:
 .byte 9
 .byte 85
 .byte 110
@@ -8379,7 +8363,7 @@ L.953:
 .byte 97
 .byte 0
 .align 0
-L.952:
+L.1716:
 .byte 9
 .byte 67
 .byte 111
@@ -8403,7 +8387,7 @@ L.952:
 .byte 54
 .byte 0
 .align 0
-L.951:
+L.1715:
 .byte 9
 .byte 82
 .byte 105
@@ -8424,7 +8408,7 @@ L.951:
 .byte 105
 .byte 0
 .align 0
-L.950:
+L.1714:
 .byte 80
 .byte 108
 .byte 101
@@ -8477,7 +8461,7 @@ L.950:
 .byte 111
 .byte 0
 .align 0
-L.949:
+L.1713:
 .byte 99
 .byte 111
 .byte 112
@@ -8548,7 +8532,7 @@ L.949:
 .byte 10
 .byte 0
 .align 0
-L.948:
+L.1712:
 .byte 85
 .byte 115
 .byte 101
@@ -8618,7 +8602,7 @@ L.948:
 .byte 108
 .byte 0
 .align 0
-L.945:
+L.1709:
 .byte 65
 .byte 110
 .byte 115
@@ -8686,7 +8670,7 @@ L.945:
 .byte 10
 .byte 0
 .align 0
-L.944:
+L.1708:
 .byte 97
 .byte 109
 .byte 101
@@ -8724,7 +8708,7 @@ L.944:
 .byte 10
 .byte 0
 .align 0
-L.943:
+L.1707:
 .byte 112
 .byte 114
 .byte 111
@@ -8788,7 +8772,7 @@ L.943:
 .byte 110
 .byte 0
 .align 0
-L.942:
+L.1706:
 .byte 119
 .byte 97
 .byte 114
@@ -8856,7 +8840,7 @@ L.942:
 .byte 115
 .byte 0
 .align 0
-L.941:
+L.1705:
 .byte 116
 .byte 111
 .byte 32
@@ -8926,7 +8910,7 @@ L.941:
 .byte 101
 .byte 0
 .align 0
-L.940:
+L.1704:
 .byte 101
 .byte 114
 .byte 114
@@ -8993,7 +8977,7 @@ L.940:
 .byte 114
 .byte 0
 .align 0
-L.939:
+L.1703:
 .byte 116
 .byte 114
 .byte 121
@@ -9059,7 +9043,7 @@ L.939:
 .byte 110
 .byte 0
 .align 0
-L.938:
+L.1702:
 .byte 32
 .byte 32
 .byte 32
@@ -9081,7 +9065,7 @@ L.938:
 .byte 10
 .byte 0
 .align 0
-L.937:
+L.1701:
 .byte 76
 .byte 101
 .byte 115
@@ -9143,13 +9127,13 @@ L.937:
 .byte 10
 .byte 0
 .align 0
-L.934:
+L.1697:
 .byte 37
 .byte 115
 .byte 10
 .byte 0
 .align 0
-L.929:
+L.1692:
 .byte 32
 .byte 32
 .byte 32
@@ -9180,7 +9164,7 @@ L.929:
 .byte 10
 .byte 0
 .align 0
-L.928:
+L.1691:
 .byte 37
 .byte 115
 .byte 32
@@ -9221,7 +9205,7 @@ L.928:
 .byte 10
 .byte 0
 .align 0
-L.926:
+L.1677:
 .byte 9
 .byte 100
 .byte 105
@@ -9252,7 +9236,7 @@ L.926:
 .byte 10
 .byte 0
 .align 0
-L.925:
+L.1676:
 .byte 9
 .byte 67
 .byte 111
@@ -9294,7 +9278,7 @@ L.925:
 .byte 10
 .byte 0
 .align 0
-L.924:
+L.1675:
 .byte 77
 .byte 117
 .byte 108
@@ -9330,7 +9314,7 @@ L.924:
 .byte 10
 .byte 0
 .align 0
-L.919:
+L.1670:
 .byte 90
 .byte 32
 .byte 47
@@ -9347,7 +9331,7 @@ L.919:
 .byte 10
 .byte 0
 .align 0
-L.916:
+L.1667:
 .byte 49
 .byte 32
 .byte 42
@@ -9362,7 +9346,7 @@ L.916:
 .byte 10
 .byte 0
 .align 0
-L.913:
+L.1664:
 .byte 90
 .byte 32
 .byte 42
@@ -9379,7 +9363,7 @@ L.913:
 .byte 32
 .byte 0
 .align 0
-L.910:
+L.1661:
 .byte 37
 .byte 46
 .byte 49
@@ -9414,7 +9398,7 @@ L.910:
 .byte 32
 .byte 0
 .align 0
-L.909:
+L.1660:
 .byte 87
 .byte 104
 .byte 97
@@ -9436,7 +9420,7 @@ L.909:
 .byte 32
 .byte 0
 .align 0
-L.904:
+L.1655:
 .byte 84
 .byte 104
 .byte 105
@@ -9457,7 +9441,7 @@ L.904:
 .byte 10
 .byte 0
 .align 0
-L.901:
+L.1652:
 .byte 84
 .byte 104
 .byte 105
@@ -9491,7 +9475,7 @@ L.901:
 .byte 10
 .byte 0
 .align 0
-L.895:
+L.1646:
 .byte 32
 .byte 104
 .byte 97
@@ -9523,7 +9507,7 @@ L.895:
 .byte 10
 .byte 0
 .align 0
-L.894:
+L.1645:
 .byte 84
 .byte 104
 .byte 105
@@ -9563,7 +9547,7 @@ L.894:
 .byte 119
 .byte 0
 .align 0
-L.891:
+L.1642:
 .byte 87
 .byte 104
 .byte 97
@@ -9616,7 +9600,7 @@ L.891:
 .byte 10
 .byte 0
 .align 0
-L.887:
+L.1638:
 .byte 40
 .byte 90
 .byte 32
@@ -9647,7 +9631,7 @@ L.887:
 .byte 10
 .byte 0
 .align 0
-L.886:
+L.1637:
 .byte 83
 .byte 105
 .byte 110
@@ -9692,7 +9676,7 @@ L.886:
 .byte 32
 .byte 0
 .align 0
-L.882:
+L.1633:
 .byte 83
 .byte 105
 .byte 109
@@ -9741,7 +9725,7 @@ L.882:
 .byte 10
 .byte 0
 .align 0
-L.872:
+L.1616:
 .byte 9
 .byte 9
 .byte 116
@@ -9769,7 +9753,7 @@ L.872:
 .byte 10
 .byte 0
 .align 0
-L.871:
+L.1615:
 .byte 9
 .byte 119
 .byte 104
@@ -9815,7 +9799,7 @@ L.871:
 .byte 10
 .byte 0
 .align 0
-L.870:
+L.1614:
 .byte 9
 .byte 121
 .byte 105
@@ -9834,7 +9818,7 @@ L.870:
 .byte 10
 .byte 0
 .align 0
-L.869:
+L.1613:
 .byte 9
 .byte 40
 .byte 37
@@ -9856,7 +9840,7 @@ L.869:
 .byte 10
 .byte 0
 .align 0
-L.868:
+L.1612:
 .byte 99
 .byte 111
 .byte 109
@@ -9869,7 +9853,7 @@ L.868:
 .byte 10
 .byte 0
 .align 0
-L.867:
+L.1611:
 .byte 87
 .byte 65
 .byte 82
@@ -9892,7 +9876,7 @@ L.867:
 .byte 10
 .byte 0
 .align 0
-L.849:
+L.1564:
 .byte 9
 .byte 105
 .byte 110
@@ -9925,7 +9909,7 @@ L.849:
 .byte 10
 .byte 0
 .align 0
-L.848:
+L.1563:
 .byte 115
 .byte 113
 .byte 114
@@ -9958,11 +9942,11 @@ L.848:
 .byte 10
 .byte 0
 .align 3
-L.840:
+L.1553:
 .word 0x3ed4f8b5
 .word 0x88e368f1
 .align 0
-L.838:
+L.1550:
 .byte 37
 .byte 115
 .byte 58
@@ -9972,14 +9956,14 @@ L.838:
 .byte 115
 .byte 0
 .align 0
-L.837:
+L.1549:
 .byte 70
 .byte 76
 .byte 65
 .byte 87
 .byte 0
 .align 0
-L.836:
+L.1548:
 .byte 68
 .byte 69
 .byte 70
@@ -9988,7 +9972,7 @@ L.836:
 .byte 84
 .byte 0
 .align 0
-L.835:
+L.1547:
 .byte 83
 .byte 69
 .byte 82
@@ -10005,7 +9989,7 @@ L.835:
 .byte 84
 .byte 0
 .align 0
-L.834:
+L.1546:
 .byte 70
 .byte 65
 .byte 73
@@ -10015,7 +9999,7 @@ L.834:
 .byte 69
 .byte 0
 .align 0
-L.828:
+L.1537:
 .byte 32
 .byte 32
 .byte 32
@@ -10038,7 +10022,7 @@ L.828:
 .byte 10
 .byte 0
 .align 0
-L.827:
+L.1536:
 .byte 10
 .byte 68
 .byte 105
@@ -10085,11 +10069,11 @@ L.827:
 .byte 100
 .byte 0
 .align 3
-L.825:
+L.1534:
 .word 0xbff00000
 .word 0x0
 .align 0
-L.820:
+L.821:
 .byte 69
 .byte 78
 .byte 68
@@ -10105,7 +10089,7 @@ L.820:
 .byte 10
 .byte 0
 .align 0
-L.819:
+L.820:
 .byte 10
 .byte 65
 .byte 32
@@ -10166,7 +10150,7 @@ L.819:
 .byte 10
 .byte 0
 .align 0
-L.816:
+L.817:
 .byte 84
 .byte 104
 .byte 101
@@ -10219,7 +10203,7 @@ L.816:
 .byte 10
 .byte 0
 .align 0
-L.815:
+L.816:
 .byte 32
 .byte 100
 .byte 117
@@ -10249,7 +10233,7 @@ L.815:
 .byte 10
 .byte 0
 .align 0
-L.814:
+L.815:
 .byte 44
 .byte 10
 .byte 101
@@ -10289,24 +10273,24 @@ L.814:
 .byte 103
 .byte 0
 .align 0
-L.813:
+L.814:
 .byte 46
 .byte 10
 .byte 0
 .align 0
-L.810:
+L.811:
 .byte 56
 .byte 53
 .byte 52
 .byte 0
 .align 0
-L.809:
+L.810:
 .byte 55
 .byte 53
 .byte 52
 .byte 0
 .align 0
-L.806:
+L.807:
 .byte 116
 .byte 104
 .byte 101
@@ -10337,7 +10321,7 @@ L.806:
 .byte 80
 .byte 0
 .align 0
-L.805:
+L.806:
 .byte 82
 .byte 111
 .byte 117
@@ -10371,7 +10355,7 @@ L.805:
 .byte 32
 .byte 0
 .align 0
-L.802:
+L.803:
 .byte 84
 .byte 104
 .byte 101
@@ -10419,7 +10403,7 @@ L.802:
 .byte 10
 .byte 0
 .align 0
-L.796:
+L.797:
 .byte 78
 .byte 111
 .byte 32
@@ -10475,7 +10459,7 @@ L.796:
 .byte 10
 .byte 0
 .align 0
-L.795:
+L.796:
 .byte 32
 .byte 112
 .byte 114
@@ -10511,7 +10495,7 @@ L.795:
 .byte 10
 .byte 0
 .align 0
-L.794:
+L.795:
 .byte 80
 .byte 111
 .byte 116
@@ -10561,7 +10545,7 @@ L.794:
 .byte 115
 .byte 0
 .align 0
-L.791:
+L.792:
 .byte 117
 .byte 110
 .byte 97
@@ -10594,7 +10578,7 @@ L.791:
 .byte 10
 .byte 0
 .align 0
-L.790:
+L.791:
 .byte 84
 .byte 104
 .byte 101
@@ -10626,7 +10610,7 @@ L.790:
 .byte 32
 .byte 0
 .align 0
-L.786:
+L.787:
 .byte 100
 .byte 101
 .byte 115
@@ -10659,7 +10643,7 @@ L.786:
 .byte 10
 .byte 0
 .align 0
-L.785:
+L.786:
 .byte 84
 .byte 104
 .byte 101
@@ -10705,7 +10689,7 @@ L.785:
 .byte 10
 .byte 0
 .align 0
-L.780:
+L.781:
 .byte 83
 .byte 97
 .byte 116
@@ -10736,7 +10720,7 @@ L.780:
 .byte 10
 .byte 0
 .align 0
-L.779:
+L.780:
 .byte 84
 .byte 104
 .byte 101
@@ -10770,7 +10754,7 @@ L.779:
 .byte 32
 .byte 0
 .align 0
-L.768:
+L.769:
 .byte 84
 .byte 104
 .byte 101
@@ -10798,7 +10782,7 @@ L.768:
 .byte 10
 .byte 0
 .align 0
-L.761:
+L.762:
 .byte 70
 .byte 76
 .byte 65
@@ -10820,7 +10804,7 @@ L.761:
 .byte 61
 .byte 0
 .align 0
-L.760:
+L.761:
 .byte 68
 .byte 69
 .byte 70
@@ -10844,7 +10828,7 @@ L.760:
 .byte 61
 .byte 0
 .align 0
-L.759:
+L.760:
 .byte 83
 .byte 69
 .byte 82
@@ -10876,7 +10860,7 @@ L.759:
 .byte 61
 .byte 0
 .align 0
-L.758:
+L.759:
 .byte 70
 .byte 65
 .byte 73
@@ -10902,7 +10886,7 @@ L.758:
 .byte 61
 .byte 0
 .align 0
-L.754:
+L.755:
 .byte 10
 .byte 32
 .byte 32
@@ -10946,7 +10930,7 @@ L.754:
 .byte 46
 .byte 0
 .align 0
-L.753:
+L.754:
 .byte 32
 .byte 32
 .byte 37
@@ -10958,7 +10942,7 @@ L.753:
 .byte 10
 .byte 0
 .align 0
-L.750:
+L.751:
 .byte 32
 .byte 32
 .byte 32
@@ -11001,7 +10985,7 @@ L.750:
 .byte 46
 .byte 0
 .align 0
-L.749:
+L.750:
 .byte 87
 .byte 104
 .byte 97
@@ -11062,7 +11046,7 @@ L.749:
 .byte 10
 .byte 0
 .align 0
-L.748:
+L.749:
 .byte 32
 .byte 32
 .byte 105
@@ -11104,7 +11088,7 @@ L.748:
 .byte 10
 .byte 0
 .align 0
-L.747:
+L.748:
 .byte 32
 .byte 32
 .byte 88
@@ -11145,7 +11129,7 @@ L.747:
 .byte 10
 .byte 0
 .align 0
-L.742:
+L.743:
 .byte 32
 .byte 32
 .byte 88
@@ -11175,7 +11159,7 @@ L.742:
 .byte 10
 .byte 0
 .align 0
-L.727:
+L.728:
 .byte 105
 .byte 115
 .byte 32
@@ -11197,7 +11181,7 @@ L.727:
 .byte 10
 .byte 0
 .align 0
-L.726:
+L.727:
 .byte 32
 .byte 117
 .byte 110
@@ -11243,7 +11227,7 @@ L.726:
 .byte 10
 .byte 0
 .align 0
-L.725:
+L.726:
 .byte 66
 .byte 97
 .byte 100
@@ -11251,7 +11235,7 @@ L.725:
 .byte 121
 .byte 0
 .align 0
-L.718:
+L.719:
 .byte 32
 .byte 105
 .byte 115
@@ -11293,7 +11277,7 @@ L.718:
 .byte 10
 .byte 0
 .align 0
-L.717:
+L.718:
 .byte 67
 .byte 111
 .byte 109
@@ -11329,7 +11313,7 @@ L.717:
 .byte 10
 .byte 0
 .align 0
-L.705:
+L.706:
 .byte 32
 .byte 105
 .byte 115
@@ -11371,7 +11355,7 @@ L.705:
 .byte 10
 .byte 0
 .align 0
-L.704:
+L.705:
 .byte 67
 .byte 111
 .byte 109
@@ -11423,7 +11407,7 @@ L.704:
 .byte 10
 .byte 0
 .align 0
-L.687:
+L.688:
 .byte 43
 .byte 45
 .byte 37
@@ -11471,7 +11455,7 @@ L.687:
 .byte 46
 .byte 0
 .align 0
-L.686:
+L.687:
 .byte 67
 .byte 111
 .byte 109
@@ -11496,7 +11480,7 @@ L.686:
 .byte 32
 .byte 0
 .align 0
-L.680:
+L.681:
 .byte 97
 .byte 98
 .byte 111
@@ -11518,7 +11502,7 @@ L.680:
 .byte 10
 .byte 0
 .align 0
-L.679:
+L.680:
 .byte 65
 .byte 110
 .byte 121
@@ -11572,7 +11556,7 @@ L.679:
 .byte 10
 .byte 0
 .align 0
-L.678:
+L.679:
 .byte 32
 .byte 32
 .byte 32
@@ -11626,7 +11610,7 @@ L.678:
 .byte 10
 .byte 0
 .align 0
-L.677:
+L.678:
 .byte 78
 .byte 111
 .byte 32
@@ -11678,7 +11662,7 @@ L.677:
 .byte 10
 .byte 0
 .align 0
-L.676:
+L.677:
 .byte 84
 .byte 104
 .byte 101
@@ -11748,7 +11732,7 @@ L.676:
 .byte 10
 .byte 0
 .align 0
-L.675:
+L.676:
 .byte 79
 .byte 118
 .byte 101
@@ -11786,7 +11770,7 @@ L.675:
 .byte 10
 .byte 0
 .align 0
-L.672:
+L.673:
 .byte 79
 .byte 118
 .byte 101
@@ -11824,7 +11808,7 @@ L.672:
 .byte 10
 .byte 0
 .align 0
-L.663:
+L.664:
 .byte 111
 .byte 118
 .byte 101
@@ -11867,7 +11851,7 @@ L.663:
 .byte 10
 .byte 0
 .align 0
-L.660:
+L.661:
 .byte 45
 .byte 40
 .byte 45
@@ -11892,7 +11876,7 @@ L.660:
 .byte 10
 .byte 0
 .align 0
-L.659:
+L.660:
 .byte 102
 .byte 105
 .byte 110
@@ -11903,7 +11887,7 @@ L.659:
 .byte 32
 .byte 0
 .align 0
-L.658:
+L.659:
 .byte 83
 .byte 101
 .byte 101
@@ -11917,7 +11901,7 @@ L.658:
 .byte 10
 .byte 0
 .align 0
-L.655:
+L.656:
 .byte 84
 .byte 114
 .byte 121
@@ -11945,7 +11929,7 @@ L.655:
 .byte 10
 .byte 0
 .align 0
-L.654:
+L.655:
 .byte 67
 .byte 97
 .byte 110
@@ -11971,7 +11955,7 @@ L.654:
 .byte 10
 .byte 0
 .align 0
-L.647:
+L.648:
 .byte 84
 .byte 104
 .byte 105
@@ -12002,7 +11986,7 @@ L.647:
 .byte 10
 .byte 0
 .align 0
-L.646:
+L.647:
 .byte 83
 .byte 101
 .byte 97
@@ -12039,7 +12023,7 @@ L.646:
 .byte 10
 .byte 0
 .align 0
-L.645:
+L.646:
 .byte 32
 .byte 46
 .byte 46
@@ -12071,7 +12055,7 @@ L.645:
 .byte 10
 .byte 0
 .align 0
-L.637:
+L.638:
 .byte 84
 .byte 101
 .byte 115
@@ -12124,7 +12108,7 @@ L.637:
 .byte 10
 .byte 0
 .align 0
-L.636:
+L.637:
 .byte 65
 .byte 99
 .byte 99
@@ -12152,7 +12136,7 @@ L.636:
 .byte 10
 .byte 0
 .align 0
-L.629:
+L.630:
 .byte 9
 .byte 99
 .byte 97
@@ -12200,7 +12184,7 @@ L.629:
 .byte 10
 .byte 0
 .align 0
-L.628:
+L.629:
 .byte 9
 .byte 84
 .byte 104
@@ -12240,7 +12224,7 @@ L.628:
 .byte 10
 .byte 0
 .align 0
-L.627:
+L.628:
 .byte 9
 .byte 100
 .byte 105
@@ -12282,7 +12266,7 @@ L.627:
 .byte 10
 .byte 0
 .align 0
-L.626:
+L.627:
 .byte 9
 .byte 40
 .byte 49
@@ -12310,7 +12294,7 @@ L.626:
 .byte 10
 .byte 0
 .align 0
-L.625:
+L.626:
 .byte 32
 .byte 37
 .byte 46
@@ -12324,7 +12308,7 @@ L.625:
 .byte 10
 .byte 0
 .align 0
-L.624:
+L.625:
 .byte 67
 .byte 97
 .byte 108
@@ -12337,7 +12321,7 @@ L.624:
 .byte 100
 .byte 0
 .align 0
-L.617:
+L.618:
 .byte 84
 .byte 101
 .byte 115
@@ -12400,7 +12384,7 @@ L.617:
 .byte 10
 .byte 0
 .align 0
-L.613:
+L.614:
 .byte 84
 .byte 104
 .byte 105
@@ -12431,7 +12415,7 @@ L.613:
 .byte 10
 .byte 0
 .align 0
-L.610:
+L.611:
 .byte 32
 .byte 32
 .byte 32
@@ -12457,7 +12441,7 @@ L.610:
 .byte 10
 .byte 0
 .align 0
-L.609:
+L.610:
 .byte 116
 .byte 104
 .byte 105
@@ -12496,7 +12480,7 @@ L.609:
 .byte 10
 .byte 0
 .align 0
-L.605:
+L.606:
 .byte 97
 .byte 99
 .byte 116
@@ -12536,7 +12520,7 @@ L.605:
 .byte 10
 .byte 0
 .align 0
-L.604:
+L.605:
 .byte 115
 .byte 104
 .byte 111
@@ -12589,7 +12573,7 @@ L.604:
 .byte 10
 .byte 0
 .align 0
-L.603:
+L.604:
 .byte 85
 .byte 102
 .byte 84
@@ -12635,7 +12619,7 @@ L.603:
 .byte 32
 .byte 0
 .align 0
-L.602:
+L.603:
 .byte 83
 .byte 105
 .byte 110
@@ -12681,7 +12665,7 @@ L.602:
 .byte 10
 .byte 0
 .align 0
-L.601:
+L.602:
 .byte 82
 .byte 97
 .byte 110
@@ -12723,7 +12707,7 @@ L.601:
 .byte 10
 .byte 0
 .align 0
-L.596:
+L.597:
 .byte 109
 .byte 101
 .byte 114
@@ -12743,7 +12727,7 @@ L.596:
 .byte 10
 .byte 0
 .align 0
-L.595:
+L.596:
 .byte 99
 .byte 97
 .byte 108
@@ -12796,7 +12780,7 @@ L.595:
 .byte 32
 .byte 0
 .align 0
-L.594:
+L.595:
 .byte 32
 .byte 98
 .byte 101
@@ -12811,7 +12795,7 @@ L.594:
 .byte 104
 .byte 0
 .align 0
-L.593:
+L.594:
 .byte 84
 .byte 104
 .byte 101
@@ -12851,7 +12835,7 @@ L.593:
 .byte 10
 .byte 0
 .align 0
-L.592:
+L.593:
 .byte 88
 .byte 32
 .byte 47
@@ -12871,7 +12855,7 @@ L.592:
 .byte 10
 .byte 0
 .align 0
-L.591:
+L.592:
 .byte 88
 .byte 32
 .byte 47
@@ -12887,7 +12871,7 @@ L.591:
 .byte 10
 .byte 0
 .align 0
-L.588:
+L.589:
 .byte 101
 .byte 110
 .byte 99
@@ -12935,7 +12919,7 @@ L.588:
 .byte 10
 .byte 0
 .align 0
-L.587:
+L.588:
 .byte 32
 .byte 32
 .byte 46
@@ -12972,7 +12956,7 @@ L.587:
 .byte 10
 .byte 0
 .align 0
-L.586:
+L.587:
 .byte 32
 .byte 32
 .byte 32
@@ -13001,7 +12985,7 @@ L.586:
 .byte 101
 .byte 0
 .align 0
-L.585:
+L.586:
 .byte 99
 .byte 111
 .byte 110
@@ -13044,7 +13028,7 @@ L.585:
 .byte 10
 .byte 0
 .align 0
-L.584:
+L.585:
 .byte 116
 .byte 104
 .byte 105
@@ -13084,7 +13068,7 @@ L.584:
 .byte 32
 .byte 0
 .align 0
-L.583:
+L.584:
 .byte 32
 .byte 32
 .byte 32
@@ -13125,7 +13109,7 @@ L.583:
 .byte 32
 .byte 0
 .align 0
-L.582:
+L.583:
 .byte 121
 .byte 101
 .byte 116
@@ -13153,7 +13137,7 @@ L.582:
 .byte 10
 .byte 0
 .align 0
-L.581:
+L.582:
 .byte 88
 .byte 32
 .byte 61
@@ -13195,7 +13179,7 @@ L.581:
 .byte 10
 .byte 0
 .align 0
-L.576:
+L.577:
 .byte 85
 .byte 110
 .byte 100
@@ -13226,7 +13210,7 @@ L.576:
 .byte 10
 .byte 0
 .align 0
-L.566:
+L.567:
 .byte 40
 .byte 114
 .byte 111
@@ -13257,7 +13241,7 @@ L.566:
 .byte 10
 .byte 0
 .align 0
-L.565:
+L.566:
 .byte 85
 .byte 110
 .byte 100
@@ -13309,7 +13293,7 @@ L.565:
 .byte 10
 .byte 0
 .align 0
-L.560:
+L.561:
 .byte 124
 .byte 81
 .byte 32
@@ -13330,7 +13314,7 @@ L.560:
 .byte 10
 .byte 0
 .align 0
-L.559:
+L.560:
 .byte 112
 .byte 114
 .byte 105
@@ -13369,7 +13353,7 @@ L.559:
 .byte 10
 .byte 0
 .align 0
-L.558:
+L.559:
 .byte 81
 .byte 32
 .byte 61
@@ -13425,7 +13409,7 @@ L.558:
 .byte 10
 .byte 0
 .align 0
-L.557:
+L.558:
 .byte 85
 .byte 110
 .byte 100
@@ -13478,7 +13462,7 @@ L.557:
 .byte 10
 .byte 0
 .align 0
-L.555:
+L.556:
 .byte 32
 .byte 111
 .byte 114
@@ -13538,7 +13522,7 @@ L.555:
 .byte 10
 .byte 0
 .align 0
-L.554:
+L.555:
 .byte 32
 .byte 99
 .byte 111
@@ -13565,7 +13549,7 @@ L.554:
 .byte 10
 .byte 0
 .align 0
-L.553:
+L.554:
 .byte 97
 .byte 112
 .byte 112
@@ -13597,7 +13581,7 @@ L.553:
 .byte 10
 .byte 0
 .align 0
-L.552:
+L.553:
 .byte 69
 .byte 105
 .byte 116
@@ -13640,7 +13624,7 @@ L.552:
 .byte 10
 .byte 0
 .align 0
-L.540:
+L.541:
 .byte 83
 .byte 109
 .byte 97
@@ -13696,7 +13680,7 @@ L.540:
 .byte 10
 .byte 0
 .align 0
-L.539:
+L.540:
 .byte 32
 .byte 116
 .byte 104
@@ -13725,7 +13709,7 @@ L.539:
 .byte 10
 .byte 0
 .align 0
-L.538:
+L.539:
 .byte 68
 .byte 105
 .byte 102
@@ -13761,7 +13745,7 @@ L.538:
 .byte 114
 .byte 0
 .align 0
-L.535:
+L.536:
 .byte 32
 .byte 116
 .byte 104
@@ -13793,7 +13777,7 @@ L.535:
 .byte 10
 .byte 0
 .align 0
-L.534:
+L.535:
 .byte 80
 .byte 114
 .byte 111
@@ -13826,7 +13810,7 @@ L.534:
 .byte 114
 .byte 0
 .align 0
-L.527:
+L.528:
 .byte 118
 .byte 97
 .byte 108
@@ -13870,7 +13854,7 @@ L.527:
 .byte 10
 .byte 0
 .align 0
-L.526:
+L.527:
 .byte 85
 .byte 110
 .byte 100
@@ -13918,7 +13902,7 @@ L.526:
 .byte 10
 .byte 0
 .align 0
-L.525:
+L.526:
 .byte 112
 .byte 111
 .byte 115
@@ -13961,7 +13945,7 @@ L.525:
 .byte 10
 .byte 0
 .align 0
-L.524:
+L.525:
 .byte 66
 .byte 117
 .byte 116
@@ -13997,7 +13981,7 @@ L.524:
 .byte 10
 .byte 0
 .align 0
-L.521:
+L.522:
 .byte 80
 .byte 115
 .byte 101
@@ -14036,7 +14020,7 @@ L.521:
 .byte 10
 .byte 0
 .align 0
-L.520:
+L.521:
 .byte 97
 .byte 108
 .byte 108
@@ -14064,7 +14048,7 @@ L.520:
 .byte 10
 .byte 0
 .align 0
-L.519:
+L.520:
 .byte 80
 .byte 111
 .byte 115
@@ -14108,7 +14092,7 @@ L.519:
 .byte 10
 .byte 0
 .align 0
-L.506:
+L.507:
 .byte 109
 .byte 117
 .byte 108
@@ -14159,7 +14143,7 @@ L.506:
 .byte 10
 .byte 0
 .align 0
-L.482:
+L.483:
 .byte 83
 .byte 101
 .byte 101
@@ -14207,7 +14191,7 @@ L.482:
 .byte 10
 .byte 0
 .align 0
-L.479:
+L.480:
 .byte 46
 .byte 46
 .byte 46
@@ -14237,7 +14221,7 @@ L.479:
 .byte 10
 .byte 0
 .align 0
-L.476:
+L.477:
 .byte 9
 .byte 105
 .byte 110
@@ -14267,7 +14251,7 @@ L.476:
 .byte 10
 .byte 0
 .align 0
-L.475:
+L.476:
 .byte 69
 .byte 114
 .byte 114
@@ -14325,7 +14309,7 @@ L.475:
 .byte 10
 .byte 0
 .align 0
-L.454:
+L.455:
 .byte 84
 .byte 101
 .byte 115
@@ -14375,7 +14359,7 @@ L.454:
 .byte 10
 .byte 0
 .align 0
-L.451:
+L.452:
 .byte 115
 .byte 113
 .byte 114
@@ -14414,7 +14398,7 @@ L.451:
 .byte 103
 .byte 0
 .align 0
-L.449:
+L.450:
 .byte 116
 .byte 111
 .byte 32
@@ -14431,7 +14415,7 @@ L.449:
 .byte 10
 .byte 0
 .align 0
-L.448:
+L.449:
 .byte 79
 .byte 98
 .byte 115
@@ -14464,7 +14448,7 @@ L.448:
 .byte 32
 .byte 0
 .align 0
-L.447:
+L.448:
 .byte 83
 .byte 113
 .byte 117
@@ -14521,7 +14505,7 @@ L.447:
 .byte 10
 .byte 0
 .align 0
-L.444:
+L.445:
 .byte 83
 .byte 113
 .byte 117
@@ -14559,7 +14543,7 @@ L.444:
 .byte 10
 .byte 0
 .align 0
-L.439:
+L.440:
 .byte 83
 .byte 113
 .byte 117
@@ -14607,7 +14591,7 @@ L.439:
 .byte 10
 .byte 0
 .align 0
-L.434:
+L.435:
 .byte 32
 .byte 102
 .byte 97
@@ -14652,7 +14636,7 @@ L.434:
 .byte 10
 .byte 0
 .align 0
-L.433:
+L.434:
 .byte 82
 .byte 97
 .byte 100
@@ -14678,7 +14662,7 @@ L.433:
 .byte 10
 .byte 0
 .align 0
-L.432:
+L.433:
 .byte 65
 .byte 110
 .byte 111
@@ -14717,7 +14701,7 @@ L.432:
 .byte 32
 .byte 0
 .align 0
-L.392:
+L.393:
 .byte 84
 .byte 101
 .byte 115
@@ -14764,7 +14748,7 @@ L.392:
 .byte 10
 .byte 0
 .align 0
-L.370:
+L.371:
 .byte 115
 .byte 113
 .byte 114
@@ -14810,7 +14794,7 @@ L.370:
 .byte 10
 .byte 0
 .align 0
-L.369:
+L.370:
 .byte 115
 .byte 113
 .byte 114
@@ -14854,7 +14838,7 @@ L.369:
 .byte 10
 .byte 0
 .align 0
-L.352:
+L.353:
 .byte 84
 .byte 101
 .byte 115
@@ -14885,7 +14869,7 @@ L.352:
 .byte 10
 .byte 0
 .align 0
-L.341:
+L.342:
 .byte 84
 .byte 101
 .byte 115
@@ -14935,7 +14919,7 @@ L.341:
 .byte 10
 .byte 0
 .align 0
-L.336:
+L.337:
 .byte 83
 .byte 113
 .byte 117
@@ -14975,7 +14959,7 @@ L.336:
 .byte 103
 .byte 0
 .align 0
-L.334:
+L.335:
 .byte 10
 .byte 82
 .byte 117
@@ -15011,7 +14995,7 @@ L.334:
 .byte 10
 .byte 0
 .align 0
-L.333:
+L.334:
 .byte 32
 .byte 32
 .byte 32
@@ -15058,7 +15042,7 @@ L.333:
 .byte 10
 .byte 0
 .align 0
-L.332:
+L.333:
 .byte 88
 .byte 32
 .byte 42
@@ -15089,11 +15073,11 @@ L.332:
 .byte 10
 .byte 0
 .align 3
-L.323:
+L.324:
 .word 0x40080000
 .word 0x0
 .align 0
-L.322:
+L.323:
 .byte 84
 .byte 101
 .byte 115
@@ -15124,7 +15108,7 @@ L.322:
 .byte 10
 .byte 0
 .align 0
-L.321:
+L.322:
 .byte 68
 .byte 111
 .byte 101
@@ -15157,7 +15141,7 @@ L.321:
 .byte 32
 .byte 0
 .align 0
-L.318:
+L.319:
 .byte 108
 .byte 97
 .byte 99
@@ -15281,6 +15265,52 @@ L.318:
 .byte 119
 .byte 0
 .align 0
+L.317:
+.byte 83
+.byte 116
+.byte 105
+.byte 99
+.byte 107
+.byte 121
+.byte 32
+.byte 98
+.byte 105
+.byte 116
+.byte 32
+.byte 117
+.byte 115
+.byte 101
+.byte 100
+.byte 32
+.byte 105
+.byte 110
+.byte 99
+.byte 111
+.byte 114
+.byte 114
+.byte 101
+.byte 99
+.byte 116
+.byte 108
+.byte 121
+.byte 32
+.byte 111
+.byte 114
+.byte 32
+.byte 110
+.byte 111
+.byte 116
+.byte 32
+.byte 97
+.byte 116
+.byte 32
+.byte 97
+.byte 108
+.byte 108
+.byte 46
+.byte 10
+.byte 0
+.align 0
 L.316:
 .byte 83
 .byte 116
@@ -15293,52 +15323,6 @@ L.316:
 .byte 105
 .byte 116
 .byte 32
-.byte 117
-.byte 115
-.byte 101
-.byte 100
-.byte 32
-.byte 105
-.byte 110
-.byte 99
-.byte 111
-.byte 114
-.byte 114
-.byte 101
-.byte 99
-.byte 116
-.byte 108
-.byte 121
-.byte 32
-.byte 111
-.byte 114
-.byte 32
-.byte 110
-.byte 111
-.byte 116
-.byte 32
-.byte 97
-.byte 116
-.byte 32
-.byte 97
-.byte 108
-.byte 108
-.byte 46
-.byte 10
-.byte 0
-.align 0
-L.315:
-.byte 83
-.byte 116
-.byte 105
-.byte 99
-.byte 107
-.byte 121
-.byte 32
-.byte 98
-.byte 105
-.byte 116
-.byte 32
 .byte 97
 .byte 112
 .byte 112
@@ -15368,7 +15352,7 @@ L.315:
 .byte 10
 .byte 0
 .align 0
-L.298:
+L.299:
 .byte 67
 .byte 104
 .byte 101
@@ -15396,7 +15380,7 @@ L.298:
 .byte 10
 .byte 0
 .align 0
-L.295:
+L.296:
 .byte 40
 .byte 88
 .byte 32
@@ -15430,7 +15414,7 @@ L.295:
 .byte 10
 .byte 0
 .align 0
-L.292:
+L.293:
 .byte 65
 .byte 100
 .byte 100
@@ -15480,7 +15464,7 @@ L.292:
 .byte 10
 .byte 0
 .align 0
-L.291:
+L.292:
 .byte 65
 .byte 100
 .byte 100
@@ -15495,7 +15479,7 @@ L.291:
 .byte 116
 .byte 0
 .align 0
-L.288:
+L.289:
 .byte 65
 .byte 100
 .byte 100
@@ -15547,7 +15531,7 @@ L.288:
 .byte 10
 .byte 0
 .align 0
-L.281:
+L.282:
 .byte 65
 .byte 100
 .byte 100
@@ -15586,7 +15570,7 @@ L.281:
 .byte 10
 .byte 0
 .align 0
-L.276:
+L.277:
 .byte 73
 .byte 110
 .byte 99
@@ -15629,7 +15613,7 @@ L.276:
 .byte 110
 .byte 0
 .align 0
-L.272:
+L.273:
 .byte 82
 .byte 97
 .byte 100
@@ -15668,7 +15652,7 @@ L.272:
 .byte 49
 .byte 0
 .align 0
-L.270:
+L.271:
 .byte 47
 .byte 32
 .byte 105
@@ -15715,7 +15699,7 @@ L.270:
 .byte 10
 .byte 0
 .align 0
-L.267:
+L.268:
 .byte 68
 .byte 105
 .byte 118
@@ -15744,7 +15728,7 @@ L.267:
 .byte 10
 .byte 0
 .align 0
-L.264:
+L.265:
 .byte 68
 .byte 105
 .byte 118
@@ -15755,7 +15739,7 @@ L.264:
 .byte 110
 .byte 0
 .align 0
-L.261:
+L.262:
 .byte 68
 .byte 105
 .byte 118
@@ -15795,7 +15779,7 @@ L.261:
 .byte 10
 .byte 0
 .align 0
-L.256:
+L.257:
 .byte 77
 .byte 117
 .byte 108
@@ -15810,56 +15794,56 @@ L.256:
 .byte 105
 .byte 111
 .byte 110
+.byte 0
+.align 0
+L.254:
+.byte 42
+.byte 32
+.byte 105
+.byte 115
+.byte 32
+.byte 110
+.byte 101
+.byte 105
+.byte 116
+.byte 104
+.byte 101
+.byte 114
+.byte 32
+.byte 99
+.byte 104
+.byte 111
+.byte 112
+.byte 112
+.byte 101
+.byte 100
+.byte 32
+.byte 110
+.byte 111
+.byte 114
+.byte 32
+.byte 99
+.byte 111
+.byte 114
+.byte 114
+.byte 101
+.byte 99
+.byte 116
+.byte 108
+.byte 121
+.byte 32
+.byte 114
+.byte 111
+.byte 117
+.byte 110
+.byte 100
+.byte 101
+.byte 100
+.byte 46
+.byte 10
 .byte 0
 .align 0
 L.253:
-.byte 42
-.byte 32
-.byte 105
-.byte 115
-.byte 32
-.byte 110
-.byte 101
-.byte 105
-.byte 116
-.byte 104
-.byte 101
-.byte 114
-.byte 32
-.byte 99
-.byte 104
-.byte 111
-.byte 112
-.byte 112
-.byte 101
-.byte 100
-.byte 32
-.byte 110
-.byte 111
-.byte 114
-.byte 32
-.byte 99
-.byte 111
-.byte 114
-.byte 114
-.byte 101
-.byte 99
-.byte 116
-.byte 108
-.byte 121
-.byte 32
-.byte 114
-.byte 111
-.byte 117
-.byte 110
-.byte 100
-.byte 101
-.byte 100
-.byte 46
-.byte 10
-.byte 0
-.align 0
-L.252:
 .byte 77
 .byte 117
 .byte 108
@@ -15894,7 +15878,7 @@ L.252:
 .byte 10
 .byte 0
 .align 0
-L.249:
+L.250:
 .byte 77
 .byte 117
 .byte 108
@@ -15940,7 +15924,7 @@ L.249:
 .byte 10
 .byte 0
 .align 0
-L.239:
+L.240:
 .byte 88
 .byte 32
 .byte 42
@@ -15967,7 +15951,7 @@ L.239:
 .byte 49
 .byte 0
 .align 0
-L.220:
+L.221:
 .byte 67
 .byte 104
 .byte 101
@@ -16026,7 +16010,7 @@ L.220:
 .byte 10
 .byte 0
 .align 0
-L.219:
+L.220:
 .byte 32
 .byte 32
 .byte 32
@@ -16091,7 +16075,7 @@ L.219:
 .byte 10
 .byte 0
 .align 0
-L.216:
+L.217:
 .byte 32
 .byte 32
 .byte 46
@@ -16145,7 +16129,7 @@ L.216:
 .byte 10
 .byte 0
 .align 0
-L.215:
+L.216:
 .byte 32
 .byte 32
 .byte 115
@@ -16195,7 +16179,7 @@ L.215:
 .byte 10
 .byte 0
 .align 0
-L.214:
+L.215:
 .byte 32
 .byte 32
 .byte 115
@@ -16255,7 +16239,7 @@ L.214:
 .byte 10
 .byte 0
 .align 0
-L.213:
+L.214:
 .byte 99
 .byte 111
 .byte 109
@@ -16299,7 +16283,7 @@ L.213:
 .byte 10
 .byte 0
 .align 0
-L.210:
+L.211:
 .byte 45
 .byte 32
 .byte 108
@@ -16350,7 +16334,7 @@ L.210:
 .byte 100
 .byte 0
 .align 0
-L.205:
+L.206:
 .byte 42
 .byte 32
 .byte 97
@@ -16395,7 +16379,7 @@ L.205:
 .byte 103
 .byte 0
 .align 0
-L.201:
+L.202:
 .byte 67
 .byte 111
 .byte 109
@@ -16431,7 +16415,7 @@ L.201:
 .byte 49
 .byte 0
 .align 0
-L.199:
+L.200:
 .byte 68
 .byte 105
 .byte 118
@@ -16475,7 +16459,7 @@ L.199:
 .byte 88
 .byte 0
 .align 0
-L.194:
+L.195:
 .byte 68
 .byte 105
 .byte 118
@@ -16575,7 +16559,7 @@ L.194:
 .byte 101
 .byte 0
 .align 0
-L.190:
+L.191:
 .byte 42
 .byte 32
 .byte 103
@@ -16614,7 +16598,7 @@ L.190:
 .byte 10
 .byte 0
 .align 0
-L.188:
+L.189:
 .byte 42
 .byte 32
 .byte 108
@@ -16651,7 +16635,7 @@ L.188:
 .byte 88
 .byte 0
 .align 0
-L.185:
+L.186:
 .byte 10
 .byte 67
 .byte 104
@@ -16696,7 +16680,7 @@ L.185:
 .byte 10
 .byte 0
 .align 0
-L.184:
+L.185:
 .byte 83
 .byte 117
 .byte 98
@@ -16753,7 +16737,7 @@ L.184:
 .byte 46
 .byte 0
 .align 0
-L.179:
+L.180:
 .byte 83
 .byte 117
 .byte 98
@@ -16801,7 +16785,7 @@ L.179:
 .byte 33
 .byte 0
 .align 0
-L.175:
+L.176:
 .byte 114
 .byte 111
 .byte 117
@@ -16843,7 +16827,7 @@ L.175:
 .byte 10
 .byte 0
 .align 0
-L.174:
+L.175:
 .byte 112
 .byte 114
 .byte 101
@@ -16891,7 +16875,7 @@ L.174:
 .byte 10
 .byte 0
 .align 0
-L.173:
+L.174:
 .byte 83
 .byte 111
 .byte 109
@@ -16944,7 +16928,7 @@ L.173:
 .byte 10
 .byte 0
 .align 0
-L.167:
+L.168:
 .byte 111
 .byte 102
 .byte 32
@@ -16968,7 +16952,7 @@ L.167:
 .byte 110
 .byte 0
 .align 0
-L.166:
+L.167:
 .byte 90
 .byte 49
 .byte 32
@@ -16995,7 +16979,7 @@ L.166:
 .byte 32
 .byte 0
 .align 0
-L.165:
+L.166:
 .byte 44
 .byte 32
 .byte 111
@@ -17038,7 +17022,7 @@ L.165:
 .byte 10
 .byte 0
 .align 0
-L.164:
+L.165:
 .byte 66
 .byte 101
 .byte 99
@@ -17070,7 +17054,7 @@ L.164:
 .byte 102
 .byte 0
 .align 0
-L.160:
+L.161:
 .byte 9
 .byte 85
 .byte 50
@@ -17090,6 +17074,36 @@ L.160:
 .byte 32
 .byte 85
 .byte 50
+.byte 32
+.byte 61
+.byte 32
+.byte 37
+.byte 46
+.byte 55
+.byte 101
+.byte 10
+.byte 0
+.align 0
+L.160:
+.byte 9
+.byte 85
+.byte 49
+.byte 32
+.byte 61
+.byte 32
+.byte 37
+.byte 46
+.byte 55
+.byte 101
+.byte 44
+.byte 32
+.byte 90
+.byte 49
+.byte 32
+.byte 45
+.byte 32
+.byte 85
+.byte 49
 .byte 32
 .byte 61
 .byte 32
@@ -17101,36 +17115,6 @@ L.160:
 .byte 0
 .align 0
 L.159:
-.byte 9
-.byte 85
-.byte 49
-.byte 32
-.byte 61
-.byte 32
-.byte 37
-.byte 46
-.byte 55
-.byte 101
-.byte 44
-.byte 32
-.byte 90
-.byte 49
-.byte 32
-.byte 45
-.byte 32
-.byte 85
-.byte 49
-.byte 32
-.byte 61
-.byte 32
-.byte 37
-.byte 46
-.byte 55
-.byte 101
-.byte 10
-.byte 0
-.align 0
-L.158:
 .byte 80
 .byte 114
 .byte 101
@@ -17142,10 +17126,10 @@ L.158:
 .byte 110
 .byte 0
 .align 0
-L.157:
+L.158:
 .byte 0
 .align 0
-L.150:
+L.151:
 .byte 84
 .byte 104
 .byte 97
@@ -17200,7 +17184,7 @@ L.150:
 .byte 10
 .byte 0
 .align 0
-L.145:
+L.146:
 .byte 80
 .byte 111
 .byte 115
@@ -17229,7 +17213,7 @@ L.145:
 .byte 115
 .byte 0
 .align 0
-L.144:
+L.145:
 .byte 98
 .byte 121
 .byte 32
@@ -17290,7 +17274,7 @@ L.144:
 .byte 10
 .byte 0
 .align 0
-L.143:
+L.144:
 .byte 97
 .byte 114
 .byte 101
@@ -17336,7 +17320,7 @@ L.143:
 .byte 10
 .byte 0
 .align 0
-L.142:
+L.143:
 .byte 114
 .byte 101
 .byte 115
@@ -17373,7 +17357,7 @@ L.142:
 .byte 10
 .byte 0
 .align 0
-L.141:
+L.142:
 .byte 68
 .byte 105
 .byte 115
@@ -17419,7 +17403,7 @@ L.141:
 .byte 10
 .byte 0
 .align 0
-L.119:
+L.120:
 .byte 80
 .byte 114
 .byte 101
@@ -17462,7 +17446,7 @@ L.119:
 .byte 32
 .byte 0
 .align 0
-L.117:
+L.118:
 .byte 84
 .byte 104
 .byte 101
@@ -17519,7 +17503,7 @@ L.117:
 .byte 10
 .byte 0
 .align 0
-L.116:
+L.117:
 .byte 108
 .byte 111
 .byte 103
@@ -17585,7 +17569,7 @@ L.116:
 .byte 10
 .byte 0
 .align 0
-L.113:
+L.114:
 .byte 111
 .byte 102
 .byte 32
@@ -17648,7 +17632,7 @@ L.113:
 .byte 10
 .byte 0
 .align 0
-L.112:
+L.113:
 .byte 80
 .byte 114
 .byte 101
@@ -17706,7 +17690,7 @@ L.112:
 .byte 10
 .byte 0
 .align 0
-L.99:
+L.100:
 .byte 67
 .byte 111
 .byte 109
@@ -17751,7 +17735,7 @@ L.99:
 .byte 48
 .byte 0
 .align 0
-L.95:
+L.96:
 .byte 40
 .byte 49
 .byte 45
@@ -17793,11 +17777,11 @@ L.95:
 .byte 63
 .byte 0
 .align 3
-L.93:
+L.94:
 .word 0x40240000
 .word 0x0
 .align 0
-L.88:
+L.89:
 .byte 82
 .byte 97
 .byte 100
@@ -17831,7 +17815,7 @@ L.88:
 .byte 48
 .byte 0
 .align 0
-L.84:
+L.85:
 .byte 82
 .byte 97
 .byte 100
@@ -17869,7 +17853,7 @@ L.84:
 .byte 115
 .byte 0
 .align 0
-L.82:
+L.83:
 .byte 77
 .byte 89
 .byte 83
@@ -17909,7 +17893,7 @@ L.82:
 .byte 10
 .byte 0
 .align 0
-L.81:
+L.82:
 .byte 82
 .byte 97
 .byte 100
@@ -17929,11 +17913,11 @@ L.81:
 .byte 10
 .byte 0
 .align 3
-L.78:
+L.79:
 .word 0x3f847ae1
 .word 0x47ae147b
 .align 0
-L.77:
+L.78:
 .byte 103
 .byte 101
 .byte 116
@@ -17988,7 +17972,7 @@ L.77:
 .byte 10
 .byte 0
 .align 0
-L.76:
+L.77:
 .byte 99
 .byte 111
 .byte 110
@@ -18033,7 +18017,7 @@ L.76:
 .byte 10
 .byte 0
 .align 0
-L.61:
+L.62:
 .byte 82
 .byte 101
 .byte 99
@@ -18071,7 +18055,7 @@ L.61:
 .byte 32
 .byte 0
 .align 0
-L.60:
+L.61:
 .byte 67
 .byte 108
 .byte 111
@@ -18124,7 +18108,7 @@ L.60:
 .byte 10
 .byte 0
 .align 0
-L.54:
+L.55:
 .byte 82
 .byte 97
 .byte 100
@@ -18140,7 +18124,7 @@ L.54:
 .byte 10
 .byte 0
 .align 0
-L.45:
+L.46:
 .byte 83
 .byte 101
 .byte 97
@@ -18178,11 +18162,11 @@ L.45:
 .byte 10
 .byte 0
 .align 0
-L.44:
+L.45:
 .byte 10
 .byte 0
 .align 0
-L.43:
+L.44:
 .byte 45
 .byte 49
 .byte 44
@@ -18237,7 +18221,7 @@ L.43:
 .byte 10
 .byte 0
 .align 0
-L.38:
+L.39:
 .byte 53
 .byte 32
 .byte 33
@@ -18290,7 +18274,7 @@ L.38:
 .byte 56
 .byte 0
 .align 0
-L.34:
+L.35:
 .byte 57
 .byte 32
 .byte 33
@@ -18342,7 +18326,7 @@ L.34:
 .byte 48
 .byte 0
 .align 0
-L.30:
+L.31:
 .byte 49
 .byte 47
 .byte 50
@@ -18366,7 +18350,7 @@ L.30:
 .byte 48
 .byte 0
 .align 0
-L.26:
+L.27:
 .byte 45
 .byte 49
 .byte 43
@@ -18418,7 +18402,7 @@ L.26:
 .byte 48
 .byte 0
 .align 0
-L.22:
+L.23:
 .byte 51
 .byte 32
 .byte 33
@@ -18469,11 +18453,11 @@ L.22:
 .byte 48
 .byte 0
 .align 3
-L.20:
+L.21:
 .word 0x3f50624d
 .word 0xd2f1a9fc
 .align 0
-L.19:
+L.20:
 .byte 67
 .byte 111
 .byte 109
@@ -18518,7 +18502,7 @@ L.19:
 .byte 10
 .byte 0
 .align 0
-L.14:
+L.15:
 .byte 48
 .byte 43
 .byte 48
@@ -18560,7 +18544,7 @@ L.14:
 .byte 50
 .byte 0
 .align 0
-L.12:
+L.13:
 .byte 80
 .byte 114
 .byte 111
@@ -18611,11 +18595,11 @@ L.12:
 .byte 10
 .byte 0
 .align 3
-L.8:
+L.9:
 .word 0x3ff00000
 .word 0x0
 .align 3
-L.7:
+L.8:
 .word 0x0
 .word 0x0
 .align 0

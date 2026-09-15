@@ -2,15 +2,15 @@
 #include <stdio.h>
 #include "lburg.h"
 static char rcsid[] = "$Id$";
-/*lint -e616 -e527 -e652 -esym(552,yynerrs) -esym(563,yynewstate,yyerrlab) */
 static int yylineno = 0;
+/*lint -e616 -e527 -e652 -esym(552,yynerrs) -esym(563,yynewstate,yyerrlab) */
 %}
 %union {
 	int n;
 	char *string;
 	Tree tree;
 }
-%term TERMINAL
+%term TERM
 %term START
 %term PPERCENT
 
@@ -27,7 +27,7 @@ decls	: /* lambda */
 	| decls decl
 	;
 
-decl	: TERMINAL  blist '\n'
+decl	: TERM  blist '\n'
 	| START nonterm '\n'		{
 		if (nonterm($2)->number != 1)
 			yyerror("redeclaration of the start symbol\n");
@@ -72,10 +72,9 @@ static int code = 0;
 
 static int get(void) {
 	if (*bp == 0) {
-		bp = buf;
-		*bp = 0;
 		if (fgets(buf, sizeof buf, infp) == NULL)
 			return EOF;
+		bp = buf;
 		yylineno++;
 		while (buf[0] == '%' && buf[1] == '{' && buf[2] == '\n') {
 			for (;;) {
@@ -106,7 +105,6 @@ void yyerror(char *fmt, ...) {
 	if (fmt[strlen(fmt)-1] != '\n')
 		 fprintf(stderr, "\n");
 	errcnt++;
-	va_end(ap);
 }
 
 int yylex(void) {
@@ -116,8 +114,6 @@ int yylex(void) {
 		char *p;
 		bp += strspn(bp, " \t\f");
 		p = strchr(bp, '\n');
-		if (p == NULL)
-			p = strchr(bp, '\n');
 		while (p > bp && isspace(p[-1]))
 			p--;
 		yylval.string = alloc(p - bp + 1);
@@ -142,7 +138,7 @@ int yylex(void) {
 		} else if (c == '%' && strncmp(bp, "term", 4) == 0
 		&& isspace(bp[4])) {
 			bp += 4;
-			return TERMINAL;
+			return TERM;
 		} else if (c == '%' && strncmp(bp, "start", 5) == 0
 		&& isspace(bp[5])) {
 			bp += 5;
@@ -152,8 +148,6 @@ int yylex(void) {
 			if (p == NULL) {
 				yyerror("missing \" in assembler template\n");
 				p = strchr(bp, '\n');
-				if (p == NULL)
-					p = strchr(bp, '\0');
 			}
 			assert(p);
 			yylval.string = alloc(p - bp + 1);
@@ -171,22 +165,23 @@ int yylex(void) {
 				else
 					n = 10*n + d;
 				c = get();
-			} while (c != EOF && isdigit(c));
+			} while (isdigit(c));
 			bp--;
 			yylval.n = n;
 			return INT;
 		} else if (isalpha(c)) {
 			char *p = bp - 1;
-			while (isalpha(*bp) || isdigit(*bp) || *bp == '_')
-				bp++;
+			while (isalpha(c) || isdigit(c) || c == '_')
+				c = get();
+			bp--;
 			yylval.string = alloc(bp - p + 1);
 			strncpy(yylval.string, p, bp - p);
 			yylval.string[bp - p] = 0;
 			return ID;
 		} else if (isprint(c))
-			yyerror("invalid character `%c'\n", c);
+			yyerror("illegal character `%c'\n", c);
 		else
-			yyerror("invalid character `\\%03o'\n", (unsigned char)c);
+			yyerror("illegal character `\0%o'\n", c);
 	}
 	return 0;
 }

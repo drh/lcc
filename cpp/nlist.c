@@ -9,6 +9,7 @@ extern	int	optind;
 extern	int	verbose;
 extern	int	Cplusplus;
 Nlist	*kwdefined;
+char	wd[128];
 
 #define	NLSIZE	128
 
@@ -33,7 +34,6 @@ struct	kwtab {
 	"pragma",	KPRAGMA,	ISKW,
 	"eval",		KEVAL,		ISKW,
 	"defined",	KDEFINED,	ISDEFINED+ISUNCHANGE,
-	"ident",	KPRAGMA,	ISKW,	/* treat like pragma (ignored) */
 	"__LINE__",	KLINENO,	ISMAC+ISUNCHANGE,
 	"__FILE__",	KFILE,		ISMAC+ISUNCHANGE,
 	"__DATE__",	KDATE,		ISMAC+ISUNCHANGE,

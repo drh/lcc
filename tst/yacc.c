@@ -26,7 +26,7 @@ YYSTYPE yylval, yyval;
 # define YYSTATE (yyestate-yysvec-1)
 # define YYOPTIM 1
 # define YYLMAX 200
-# define output(c) (void)putc(c,yyout)
+# define output(c) putc(c,yyout)
 # define input() (((yytchar=yysptr>yysbuf?U(*--yysptr):getc(yyin))==10?(yylineno++,yytchar):yytchar)==EOF?0:yytchar)
 # define unput(c) {yytchar= (c);if(yytchar=='\n')yylineno--;*yysptr++=yytchar;}
 # define yymore() (yymorfg=1)
@@ -36,7 +36,7 @@ int yyleng; extern char yytext[];
 int yymorfg;
 extern char *yysptr, yysbuf[];
 int yytchar;
-FILE *yyin = NULL, *yyout = NULL;
+FILE *yyin ={stdin}, *yyout ={stdout};
 extern int yylineno;
 struct yysvf { 
 	struct yywork *yystoff;
@@ -349,14 +349,13 @@ yyunput(c)
 	}
 
 main() {
-	yyin = stdin; yyout = stdout;
-	yyparse();
+        yyparse();
 	return 0;
 }
 
 /* yyerror - issue error message */
 yyerror(s) char *s; {
-        printf("%s\n", s);
+        printf("%s\n");
 }
 short yyexca[] ={
 -1, 1,
@@ -457,7 +456,7 @@ yyparse() {
 #ifdef YYDEBUG
 	if( yydebug  ) printf( "state %d, char 0%o\n", yystate, yychar );
 #endif
-		if( ++yyps> &yys[YYMAXDEPTH-1] ) { yyerror( "yacc stack overflow" ); return(1); }
+		if( ++yyps> &yys[YYMAXDEPTH] ) { yyerror( "yacc stack overflow" ); return(1); }
 		*yyps = yystate;
 		++yypv;
 		*yypv = yyval;

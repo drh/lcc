@@ -42,9 +42,8 @@ jal putchar
 L.3:
 la $30,1($30)
 L.5:
-move $24,$30
-la $15,10
-bltu $24,$15,L.2
+la $24,10
+bltu $30,$24,L.2
 move $2,$0
 L.1:
 lw $25,16($sp)
@@ -84,7 +83,6 @@ la $24,10
 rem $24,$30,$24
 la $4,48($24)
 jal putchar
-move $2,$0
 L.6:
 lw $25,16($sp)
 lw $30,20($sp)
@@ -97,30 +95,29 @@ j $31
 .align 2
 .ent sort
 sort:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
-sw $4,32($sp)
-sw $5,36($sp)
-lw $24,0+32($sp)
+sw $4,24($sp)
+sw $5,28($sp)
+lw $24,0+24($sp)
 sw $24,xx
 move $4,$24
 move $5,$0
-lw $24,4+32($sp)
+lw $24,4+24($sp)
 subu $24,$24,1
-sw $24,4+32($sp)
+sw $24,4+24($sp)
 move $6,$24
 jal quick
-move $2,$0
 L.11:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end sort
 .globl quick
@@ -128,12 +125,12 @@ j $31
 .align 2
 .ent quick
 quick:
-.frame $sp,48,$31
+.frame $sp,40,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-48
-.mask 0xc2e00000,-12
+addu $sp,$sp,-40
+.mask 0xc2e00000,-4
 sw $21,16($sp)
 sw $22,20($sp)
 sw $23,24($sp)
@@ -143,10 +140,9 @@ sw $31,36($sp)
 move $30,$4
 move $23,$5
 move $22,$6
-blt $23,$22,L.13
-move $2,$0
-b L.12
-L.13:
+blt $23,$22,L.15
+b L.14
+L.15:
 move $4,$30
 move $5,$23
 move $6,$22
@@ -160,15 +156,14 @@ move $4,$30
 la $5,1($21)
 move $6,$22
 jal quick
-move $2,$0
-L.12:
+L.14:
 lw $21,16($sp)
 lw $22,20($sp)
 lw $23,24($sp)
 lw $25,28($sp)
 lw $30,32($sp)
 lw $31,36($sp)
-addu $sp,$sp,48
+addu $sp,$sp,40
 j $31
 .end quick
 .globl partition
@@ -197,42 +192,42 @@ move $20,$23
 sll $24,$20,2
 addu $24,$24,$30
 lw $21,($24)
-b L.17
-L.16:
-la $23,1($23)
 b L.20
 L.19:
 la $23,1($23)
-L.20:
+b L.23
+L.22:
+la $23,1($23)
+L.23:
 sll $24,$23,2
 addu $24,$24,$30
 lw $24,($24)
-blt $24,$21,L.19
+blt $24,$21,L.22
 subu $22,$22,1
-b L.23
-L.22:
+b L.26
+L.25:
 subu $22,$22,1
-L.23:
+L.26:
 sll $24,$22,2
 addu $24,$24,$30
 lw $24,($24)
-bgt $24,$21,L.22
-bge $23,$22,L.25
+bgt $24,$21,L.25
+bge $23,$22,L.28
 sll $24,$23,2
 addu $4,$24,$30
 sll $24,$22,2
 addu $5,$24,$30
 jal exchange
-L.25:
-L.17:
-blt $23,$22,L.16
+L.28:
+L.20:
+blt $23,$22,L.19
 sll $24,$20,2
 addu $4,$24,$30
 sll $24,$22,2
 addu $5,$24,$30
 jal exchange
 move $2,$22
-L.15:
+L.18:
 lw $20,16($sp)
 lw $21,20($sp)
 lw $22,24($sp)
@@ -248,48 +243,45 @@ j $31
 .align 2
 .ent exchange
 exchange:
-.frame $sp,48,$31
+.frame $sp,40,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-48
-.mask 0xc2800000,-20
+addu $sp,$sp,-40
+.mask 0xc2800000,-12
 sw $23,16($sp)
 .cprestore 20
 sw $30,24($sp)
 sw $31,28($sp)
 move $30,$4
 move $23,$5
-la $4,L.28
+la $4,L.33
 lw $24,xx
 la $15,4
-move $14,$30
-subu $14,$14,$24
+subu $14,$30,$24
 div $5,$14,$15
-move $14,$23
-subu $24,$14,$24
+subu $24,$23,$24
 div $6,$24,$15
 jal printf
 lw $24,($30)
-sw $24,-4+48($sp)
+sw $24,-4+40($sp)
 lw $24,($23)
 sw $24,($30)
-lw $24,-4+48($sp)
+lw $24,-4+40($sp)
 sw $24,($23)
-move $2,$0
-L.27:
+L.32:
 lw $23,16($sp)
 lw $25,20($sp)
 lw $30,24($sp)
 lw $31,28($sp)
-addu $sp,$sp,48
+addu $sp,$sp,40
 j $31
 .end exchange
 .globl xx
 .comm xx,4
 .rdata
 .align 0
-L.28:
+L.33:
 .byte 101
 .byte 120
 .byte 99

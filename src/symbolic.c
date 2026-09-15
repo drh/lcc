@@ -1,307 +1,208 @@
-#include <time.h>
-#include <ctype.h>
 #include "c.h"
 
-#define I(f) s_##f
-static char rcsid[] = "$Id$";
-
 static Node *tail;
-static int off, maxoff, uid = 0, verbose = 0, html = 0;
 
-static const char *yyBEGIN(const char *tag) {
-	if (html)
-		print("<%s>", tag);
-	return tag;
-}
+static Node gen0 ARGS((Node));
+static int gen1 ARGS((Node, int));
+static void address ARGS((Symbol, Symbol, int));
+static void defaddress ARGS((Symbol));
+static void defconst ARGS((int, Value));
+static void defstring ARGS((int, char *));
+static void defsymbol ARGS((Symbol));
+static void emit0 ARGS((Node));
+static void export ARGS((Symbol));
+static void function ARGS((Symbol, Symbol [], Symbol [], int));
+static void global ARGS((Symbol));
+static void import ARGS((Symbol));
+static void local ARGS((Symbol));
+static void progbeg ARGS((int, char **));
+static void progend ARGS((void));
+static void segment ARGS((int));
+static void space ARGS((int));
+static void stabend ARGS((Coordinate *, Symbol, Coordinate **, Symbol *, Symbol *));
+static void stabline ARGS((Coordinate *));
+static void sym ARGS((char *, Symbol, char *));
+static void symname ARGS((Symbol));
 
-static void yyEND(const char *tag) {
-	if (html)
-		print("</%s>", tag);
-	if (isupper(*tag))
-		print("\n");
-}
-
-#define BEGIN(tag) do { const char *yytag=yyBEGIN(#tag)
-#define END yyEND(yytag); } while (0)
-#define ITEM BEGIN(li)
-#define START BEGIN(LI)
-#define ANCHOR(attr,code) do { const char *yytag="a"; if (html) { printf("<a " #attr "=\""); code; print("\">"); }
-#define NEWLINE print(html ? "<br>\n" : "\n")
-
-static void emitCoord(Coordinate src) {
-	if (src.file && *src.file) {
-		ANCHOR(href,print("%s", src.file)); print("%s", src.file); END;
-		print(":");
-	}
-	print("%d.%d", src.y, src.x);
-}
-
-static void emitString(int len, const char *s) {
-	for ( ; len-- > 0; s++)
-		if (*s == '&' && html)
-			print("&amp;");
-		else if (*s == '<' && html)
-			print("&lt;");
-		else if (*s == '>' && html)
-			print("&lt;");
-		else if (*s == '"' || *s == '\\')
-			print("\\%c", *s);
-		else if (*s >= ' ' && *s < 0177)
-			print("%c", *s);
-		else
-			print("\\%d%d%d", (*s>>6)&3, (*s>>3)&7, *s&7);
-}
-
-static void emitSymRef(Symbol p) {
-	(*IR->defsymbol)(p);
-	ANCHOR(href,print("#%s", p->x.name)); BEGIN(code); print("%s", p->name); END; END;
-}
-
-static void emitSymbol(Symbol p) {
-	(*IR->defsymbol)(p);
-	ANCHOR(name,print("%s", p->x.name)); BEGIN(code); print("%s", p->name); END; END;
-	BEGIN(ul);
-#define xx(field,code) ITEM; if (!html) print(" "); print(#field "="); code; END
-	if (verbose && (src.y || src.x))
-		xx(src,emitCoord(p->src));
-	xx(type,print("%t", p->type));
-	xx(sclass,print("%k", p->sclass));
-	switch (p->scope) {
-	case CONSTANTS: xx(scope,print("CONSTANTS")); break;
-	case LABELS:    xx(scope,print("LABELS"));    break;
-	case GLOBAL:    xx(scope,print("GLOBAL"));    break;
-	case PARAM:     xx(scope,print("PARAM"));     break;
-	case LOCAL:     xx(scope,print("LOCAL"));     break;
-	default:
-		if (p->scope > LOCAL)
-			xx(scope,print("LOCAL+%d", p->scope-LOCAL));
-		else
-			xx(scope,print("%d", p->scope));
-	}
-	ITEM;
-	int n = 0;
-	if (!html)
-		print(" ");
-	print("flags=");
-#define yy(f) if (p->f) { if (n++) print("|"); print(#f); }
-	yy(structarg)
-	yy(addressed)
-	yy(computed)
-	yy(temporary)
-	yy(generated)
-#undef yy
-	if (n == 0)
-		print("0");
-	END;
-	if (p->scope >= PARAM && p->sclass != STATIC)
-		xx(offset,print("%d", p->x.offset));
-	xx(ref,print("%f", p->ref));
-	if (p->temporary && p->u.t.cse)
-		xx(u.t.cse,print("%p", p->u.t.cse));
-	END;
-#undef xx
-}
+Interface symbolicIR = {
+	1, 1, 0,	/* char */
+	2, 2, 0,	/* short */
+	4, 4, 0,	/* int */
+	4, 4, 1,	/* float */
+	8, 4, 1,	/* double */
+	4, 4, 0,	/* T* */
+	0, 4, 0,	/* struct */
+	0,		/* little_endian */
+	0,		/* mulops_calls */
+	0,		/* wants_callb */
+	1,		/* wants_argb */
+	1,		/* left_to_right */
+	1,		/* wants_dag */
+	address,
+	blockbeg,
+	blockend,
+	defaddress,
+	defconst,
+	defstring,
+	defsymbol,
+	emit0,
+	export,
+	function,
+	gen0,
+	global,
+	import,
+	local,
+	progbeg,
+	progend,
+	segment,
+	space,
+	0,	/* stabblock */
+	stabend,
+	0,	/* stabfend */
+	0,	/* stabinit */
+	stabline,
+	0,	/* stabsym */
+	0,	/* stabtype */
+};
 
 /* address - initialize q for addressing expression p+n */
-static void I(address)(Symbol q, Symbol p, long n) {
-	q->name = stringf("%s%s%D", p->name, n > 0 ? "+" : "", n);
-	(*IR->defsymbol)(q);
-	START; print("address "); emitSymbol(q); END;
-}
-
-/* blockbeg - start a block */
-static void I(blockbeg)(Env *e) {
-	e->offset = off;
-	START; print("blockbeg off=%d", off); END;
-}
-
-/* blockend - start a block */
-static void I(blockend)(Env *e) {
-	if (off > maxoff)
-		maxoff = off;
-	START; print("blockend off=%d", off); END;
-	off = e->offset;
+static void address(q, p, n) Symbol q, p; int n; {
+	q->x.name = stringf("%s%s%d", p->x.name, n > 0 ? "+" : "", n);
 }
 
 /* defaddress - initialize an address */
-static void I(defaddress)(Symbol p){
-	START; print("defaddress "); emitSymRef(p); END;
+static void defaddress(p) Symbol p; {
+	print("defaddress %s\n", p->x.name);
 }
 
 /* defconst - define a constant */
-static void I(defconst)(int suffix, int size, Value v) {
-	START;
+static void defconst(ty, v) int ty; Value v; {
 	print("defconst ");
-	switch (suffix) {
-	case I:
-		print("int.%d ", size);
-		BEGIN(code);
-		if (size > sizeof (int))
-			print("%D", v.i);
-		else
-			print("%d", (int)v.i);
-		END;
+	switch (ty) {
+	case C: print("char %d\n",       v.uc); break;
+	case S: print("short %d\n",      v.ss); break;
+	case I: print("int %d\n",        v.i ); break;
+	case U: print("unsigned 0x%x\n", v.u ); break;
+	case P: print("void* 0x%x\n",    v.p ); break;
+	case F: {
+		char buf[MAXLINE];
+		sprintf(buf, "float %.8e\n", v.f);  /* fix */
+		outs(buf);
 		break;
-	case U:
-		print("unsigned.%d ", size);
-		BEGIN(code);
-		if (size > sizeof (unsigned))
-			print("%U", v.u);
-		else
-			print("%u", (unsigned)v.u);
-		END;
+		}
+	case D: {
+		char buf[MAXLINE];
+		sprintf(buf, "double %.18e\n", v.d);  /* fix */
+		outs(buf);
 		break;
-	case P: print("void*.%d ", size); BEGIN(code); print("%p", v.p); END; break;
-	case F:
-		print("float.%d ", size);
-		BEGIN(code);
-			double d = v.d;
-			if (d == 0.0) {
-				static union { int x; char endian; } little = { 1 };
-				signed char *b = (signed char *)&d;
-				if (!little.endian && b[0] < 0
-				||   little.endian && b[sizeof (d)-1] < 0)
-					print("-0.0");
-				else
-					print("0.0");
-			} else
-				print("%g", d);
-		END;
-		break;
+		}
 	default: assert(0);
 	}
-	END;
 }
 
 /* defstring - emit a string constant */
-static void I(defstring)(int len, char *s) {
-	START; print("defstring ");
-	BEGIN(code); print("\""); emitString(len, s); print("\""); END;
-	END;
+static void defstring(len, s) int len; char *s; {
+	int n;
+
+	print("defstring \"");
+	for (n = 0; len-- > 0; s++) {
+		if (n >= 72) {
+			print("\n");
+			n = 0;
+		}
+		if (*s == '"' || *s == '\\') {
+			print("\\%c", *s);
+			n += 2;
+		} else if (*s >= ' ' && *s < 0177) {
+			*bp++ = *s;
+			n += 1;
+		} else {
+			print("\\%d%d%d", (*s>>6)&3, (*s>>3)&7, *s&7);
+			n += 4;
+		}
+	}
+	print("\"\n");
 }
 
 /* defsymbol - define a symbol: initialize p->x */
-static void I(defsymbol)(Symbol p) {
-	if (p->x.name == NULL)
-		p->x.name = stringd(++uid);
+static void defsymbol(p) Symbol p; {
+	if (p->scope == CONSTANTS)
+		switch (ttob(p->type)) {
+		case U: p->x.name = stringf("0x%x", p->u.c.v.u); break;
+		case C: p->x.name = stringf("'\\x%x'", p->u.c.v.uc); break;
+		case S: p->x.name = stringd(p->u.c.v.ss); break;
+		case I: p->x.name = stringd(p->u.c.v.i); break;
+		case P: p->x.name = stringf("0x%x", p->u.c.v.p); break;
+		default: assert(0);
+		}
+	else
+		p->x.name = p->name;
+	if (glevel > 2 && p->scope >= LOCAL && p->type && isfunc(p->type))
+		sym("extern", p, "\n");
 }
 
-/* emit - emit the dags on list p */
-static void I(emit)(Node p){
-	ITEM;
-	if (!html)
-		print(" ");
-	for (; p; p = p->x.next) {
+/* emit0 - emit the dags on list p */
+static void emit0(p) Node p; {
+	for (; p; p = p->x.next)
 		if (p->op == LABEL+V) {
 			assert(p->syms[0]);
-			ANCHOR(name,print("%s", p->syms[0]->x.name));
-			BEGIN(code); print("%s", p->syms[0]->name); END;
-			END;
-			print(":");
+			print("%s:\n", p->syms[0]->x.name);
 		} else {
 			int i;
-			if (p->x.listed) {
-				BEGIN(strong); print("%d", p->x.inst); END; print("'");
-				print(" %s", opname(p->op));
-			} else
-				print("%d. %s", p->x.inst, opname(p->op));
-			if (p->count > 1)
-				print(" count=%d", p->count);
+			print("node%c%d %s count=%d", p->x.listed ? '\'' : '#', p->x.inst,
+				opname(p->op), p->count);
 			for (i = 0; i < NELEMS(p->kids) && p->kids[i]; i++)
 				print(" #%d", p->kids[i]->x.inst);
+			for (i = 0; i < NELEMS(p->syms) && p->syms[i]; i++) {
+				if (p->syms[i]->x.name)
+					print(" %s", p->syms[i]->x.name);
+				if (p->syms[i]->name != p->syms[i]->x.name)
+					print(" (%s)", p->syms[i]->name);
+			}
 			if (generic(p->op) == CALL && p->syms[0] && p->syms[0]->type)
 				print(" {%t}", p->syms[0]->type);
-			else
-				for (i = 0; i < NELEMS(p->syms) && p->syms[i]; i++) {
-					print(" ");
-					if (p->syms[i]->scope == CONSTANTS)
-						print(p->syms[i]->name);
-					else
-						emitSymRef(p->syms[i]);
-				}
+			print("\n");
 		}
-		NEWLINE;
-	}
-	END;
 }
 
 /* export - announce p as exported */
-static void I(export)(Symbol p) {
-	START; print("export "); emitSymRef(p); END;
+static void export(p) Symbol p; {
+	print("export %s\n", p->x.name);
 }
 
 /* function - generate code for a function */
-static void I(function)(Symbol f, Symbol caller[], Symbol callee[], int ncalls) {
+static void function(f, caller, callee, ncalls)
+Symbol f, caller[], callee[]; int ncalls; {
 	int i;
 
-	(*IR->defsymbol)(f);
-	off = 0;
-	for (i = 0; caller[i] && callee[i]; i++) {
-		off = roundup(off, caller[i]->type->align);
-		caller[i]->x.offset = callee[i]->x.offset = off;
-		off += caller[i]->type->size;
-	}
-	if (!html) {
-		print("function ");
-		emitSymbol(f);
+	sym("function", f, ncalls ? (char *)0 : "\n");
+	if (ncalls)
 		print(" ncalls=%d\n", ncalls);
-		for (i = 0; caller[i]; i++)
-			START; print("caller "); emitSymbol(caller[i]); END;
-		for (i = 0; callee[i]; i++)
-			START; print("callee "); emitSymbol(callee[i]); END;
-	} else {
-		START;
-		print("function");
-		BEGIN(UL);
-#define xx(field,code) ITEM; print(#field "="); code; END
-		xx(f,emitSymbol(f));
-		xx(ncalls,print("%d", ncalls));
-		if (caller[0]) {
-			ITEM; print("caller"); BEGIN(OL);
-			for (i = 0; caller[i]; i++)
-				ITEM; emitSymbol(caller[i]); END;
-			END; END;
-			ITEM; print("callee"); BEGIN(OL);
-			for (i = 0; callee[i]; i++)
-				ITEM; emitSymbol(callee[i]); END;
-			END; END;
-		} else {
-			xx(caller,BEGIN(em); print("empty"); END);
-			xx(callee,BEGIN(em); print("empty"); END);
-		}
-		END;
-		END;
+	offset = 0;
+	for (i = 0; caller[i] && callee[i]; i++) {
+		offset = roundup(offset, caller[i]->type->align);
+		caller[i]->x.name = caller[i]->name;
+		callee[i]->x.name = callee[i]->name;
+		caller[i]->x.offset = callee[i]->x.offset = offset;
+		sym("caller's parameter", caller[i], "\n");
+		sym("callee's parameter", callee[i], "\n");
+		offset += caller[i]->type->size;
 	}
-	maxoff = off = 0;
+	maxoffset = offset = 0;
 	gencode(caller, callee);
-	if (html)
-		START; print("emitcode"); BEGIN(ul); emitcode(); END; END;
-	else
-		emitcode();
-	START; print("maxoff=%d", maxoff); END;
-#undef xx
-}
-
-/* visit - generate code for *p */
-static int visit(Node p, int n) {
-	if (p && p->x.inst == 0) {
-		p->x.inst = ++n;
-		n = visit(p->kids[0], n);
-		n = visit(p->kids[1], n);
-		*tail = p;
-		tail = &p->x.next;
-	}
-	return n;
+	print("maxoffset=%d\n", maxoffset);
+	emitcode();
+	print("end %s\n", f->x.name);
 }
 
 /* gen0 - generate code for the dags on list p */
-static Node I(gen)(Node p) {
+static Node gen0(p) Node p; {
 	int n;
 	Node nodelist;
 
 	tail = &nodelist;
 	for (n = 0; p; p = p->link) {
-		switch (generic(p->op)) {	/* check for valid forest */
+		switch (generic(p->op)) {	/* check for valid nodelist */
 		case CALL:
 			assert(IR->wants_dag || p->count == 0);
 			break;
@@ -316,210 +217,135 @@ static Node I(gen)(Node p) {
 		default:
 			assert(0);
 		}
-		check(p);
 		p->x.listed = 1;
-		n = visit(p, n);
+		n = gen1(p, n);
 	}
 	*tail = 0;
 	return nodelist;
 }
 
+/* gen1 - generate code for *p */
+static int gen1(p, n) Node p; int n; {
+	if (p && p->x.inst == 0) {
+		p->x.inst = ++n;
+		n = gen1(p->kids[0], n);
+		n = gen1(p->kids[1], n);
+		*tail = p;
+		tail = &p->x.next;
+	}
+	return n;
+}
+
 /* global - announce a global */
-static void I(global)(Symbol p) {
-	START; print("global "); emitSymbol(p); END;
+static void global(p) Symbol p; {
+	sym("global", p, "\n");
 }
 
 /* import - import a symbol */
-static void I(import)(Symbol p) {
-	START; print("import "); emitSymRef(p); END;
+static void import(p) Symbol p; {
+	print("import %s\n", p->x.name);
 }
 
 /* local - local variable */
-static void I(local)(Symbol p) {
-	if (p->temporary)
-		p->name = stringf("t%s", p->name);
-	(*IR->defsymbol)(p);
-	off = roundup(off, p->type->align);
-	p->x.offset = off;
-	off += p->type->size;
-	START; print(p->temporary ? "temporary " : "local "); emitSymbol(p); END;
+static void local(p) Symbol p; {
+	offset = roundup(offset, p->type->align);
+	p->x.name = p->name;
+	p->x.offset = offset;
+	sym("local", p, "\n");
+	offset += p->type->size;
 }
 
 /* progbeg - beginning of program */
-static void I(progbeg)(int argc, char *argv[]) {
+static void progbeg(argc, argv) int argc; char *argv[]; {
 	int i;
 
-	for (i = 1; i < argc; i++)
-		if (strcmp(argv[i], "-v") == 0)
-			verbose++;
-		else if (strcmp(argv[i], "-html") == 0)
-			html++;
-	if (html) {
-		print("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n");
-		print("<html>");
-		BEGIN(head);
-		if (firstfile && *firstfile)
-			BEGIN(title); emitString(strlen(firstfile), firstfile);	END;
-		print("<link rev=made href=\"mailto:drh@microsoft.com\">\n");
-		END;
-		print("<body>\n");
-		if (firstfile && *firstfile)
-			BEGIN(h1); emitString(strlen(firstfile), firstfile); END;
-		BEGIN(P); BEGIN(em);
-		print("Links lead from uses of identifiers and labels to their definitions.");
-		END; END;
-		print("<ul>\n");
-		START;
-		print("progbeg");
-		BEGIN(ol);
-		for (i = 1; i < argc; i++) {
-			ITEM;
-			BEGIN(code); print("\""); emitString(strlen(argv[i]), argv[i]); print("\""); END;
-			END;
-		}
-		END;
-		END;
-	}
+	for (i = 0; i < argc; i++)
+		if (strncmp(argv[i], "-little_endian=", 15) == 0)
+			IR->little_endian = argv[i][15] - '0';
+		else if (strncmp(argv[i], "-mulops_calls=", 18) == 0)
+			IR->mulops_calls = argv[i][18] - '0';
+		else if (strncmp(argv[i], "-wants_callb=", 13) == 0)
+			IR->wants_callb = argv[i][13] - '0';
+		else if (strncmp(argv[i], "-wants_argb=", 12) == 0)
+			IR->wants_argb = argv[i][12] - '0';
+		else if (strncmp(argv[i], "-left_to_right=", 15) == 0)
+			IR->left_to_right = argv[i][15] - '0';
+		else if (strncmp(argv[i], "-wants_dag=", 11) == 0)
+			IR->wants_dag = argv[i][11] - '0';
 }
 
 /* progend - end of program */
-static void I(progend)(void) {
-	START; print("progend"); END;
-	if (html) {
-		time_t t;
-		print("</ul>\n");
-		time(&t);
-		print("<hr><address>%s</address>\n", ctime(&t));
-		print("</body></html>\n");
-	}
-}
+static void progend() {}
 
 /* segment - switch to segment s */
-static void I(segment)(int s) {
-	START; print("segment %s", &"text\0bss\0.data\0lit\0.sym\0."[5*s-5]); END;
+static void segment(s) int s; {
+	print("segment %s\n", &"text\0bss\0.data\0lit\0.sym\0."[5*s-5]);
 }
 
 /* space - initialize n bytes of space */
-static void I(space)(int n) {
-	START; print("space %d", n); END;
+static void space(n) int n; {
+	print("space %d\n", n);
 }
 
-static void I(stabblock)(int brace, int lev, Symbol *p) {}
+/* sym - print symbol table entry for p, followed by str */
+static void sym(kind, p, str) char *kind, *str; Symbol p; {
+	assert(kind);
+	if (glevel > 2) {
+		print("%s ", kind);
+		symname(p);
+	} else
+		print("%s %s", kind, p->name);
+	if (p->name != p->x.name)
+		print(" (%s)", p->x.name);
+	print(" type=%t class=%k scope=", p->type, p->sclass);
+	switch (p->scope) {
+	case CONSTANTS: print("CONSTANTS"); break;
+	case LABELS:    print("LABELS");    break;
+	case GLOBAL:    print("GLOBAL");    break;
+	case PARAM:     print("PARAM");     break;
+	case LOCAL:     print("LOCAL");     break;
+	default:
+		if (p->scope > LOCAL)
+			print("LOCAL+%d", p->scope - LOCAL);
+		else
+			print("%d", p->scope);
+	}
+	if (p->scope >= PARAM && p->sclass != STATIC)
+		print(" offset=%d", p->x.offset);
+	print(" ref=%d", (int)(1000*p->ref));
+	if (glevel > 2) {
+		print(" up=");
+		symname(p->up);
+	}
+	if (str)
+		print(str);
+}
+
+/* symname - print prefix, p's name, declaration source coordinate, suffix */
+static void symname(p) Symbol p; {
+	if (p)
+		print("%s@%w.%d", p->name, &p->src, p->src.x);
+	else
+		print("0");
+}
 
 /* stabend - finalize stab output */
-static void I(stabend)(Coordinate *cp, Symbol p, Coordinate **cpp, Symbol *sp, Symbol *stab) {
+static void stabend(cp, p, cpp, sp, stab) Coordinate *cp, **cpp; Symbol p, *sp, *stab; {
 	int i;
 
-	if (p)
-		emitSymRef(p);
+	symname(p);
 	print("\n");
 	if (cpp && sp)
 		for (i = 0; cpp[i] && sp[i]; i++) {
 			print("%w.%d: ", cpp[i], cpp[i]->x);
-			emitSymRef(sp[i]);
+			symname(sp[i]);
 			print("\n");
 		}
 }
 
-static void I(stabfend)(Symbol p, int lineno) {}
-static void I(stabinit)(char *file, int argc, char *argv[]) {}
-
 /* stabline - emit line number information for source coordinate *cp */
-static void I(stabline)(Coordinate *cp) {
+static void stabline(cp) Coordinate *cp; {
 	if (cp->file)
 		print("%s:", cp->file);
 	print("%d.%d:\n", cp->y, cp->x);
 }
-
-static void I(stabsym)(Symbol p) {}
-static void I(stabtype)(Symbol p) {}
-
-Interface symbolicIR = {
-	1, 1, 0,	/* char */
-	2, 2, 0,	/* short */
-	4, 4, 0,	/* int */
-	4, 4, 0,	/* long */
-	4, 4, 0,	/* long long */
-	4, 4, 1,	/* float */
-	8, 8, 1,	/* double */
-	8, 8, 1,	/* long double */
-	4, 4, 0,	/* T* */
-	0, 4, 0,	/* struct */
-	0,		/* little_endian */
-	0,		/* mulops_calls */
-	0,		/* wants_callb */
-	1,		/* wants_argb */
-	1,		/* left_to_right */
-	1,		/* wants_dag */
-	0,		/* unsigned_char */
-	I(address),
-	I(blockbeg),
-	I(blockend),
-	I(defaddress),
-	I(defconst),
-	I(defstring),
-	I(defsymbol),
-	I(emit),
-	I(export),
-	I(function),
-	I(gen),
-	I(global),
-	I(import),
-	I(local),
-	I(progbeg),
-	I(progend),
-	I(segment),
-	I(space),
-	I(stabblock),
-	I(stabend),
-	I(stabfend),
-	I(stabinit),
-	I(stabline),
-	I(stabsym),
-	I(stabtype)
-};
-
-Interface symbolic64IR = {
-	1, 1, 0,	/* char */
-	2, 2, 0,	/* short */
-	4, 4, 0,	/* int */
-	8, 8, 0,	/* long */
-	8, 8, 0,	/* long long */
-	4, 4, 1,	/* float */
-	8, 8, 1,	/* double */
-	8, 8, 1,	/* long double */
-	8, 8, 0,	/* T* */
-	0, 1, 0,	/* struct */
-	1,		/* little_endian */
-	0,		/* mulops_calls */
-	0,		/* wants_callb */
-	1,		/* wants_argb */
-	1,		/* left_to_right */
-	1,		/* wants_dag */
-	0,		/* unsigned_char */
-	I(address),
-	I(blockbeg),
-	I(blockend),
-	I(defaddress),
-	I(defconst),
-	I(defstring),
-	I(defsymbol),
-	I(emit),
-	I(export),
-	I(function),
-	I(gen),
-	I(global),
-	I(import),
-	I(local),
-	I(progbeg),
-	I(progend),
-	I(segment),
-	I(space),
-	I(stabblock),
-	I(stabend),
-	I(stabfend),
-	I(stabinit),
-	I(stabline),
-	I(stabsym),
-	I(stabtype)
-};
