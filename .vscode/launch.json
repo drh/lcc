@@ -1,0 +1,51 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "LCC: Debug CPP (Preprocessor)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build-ubuntu24/lcc-build/cpp",
+      "args": [
+        "${workspaceFolder}/hello.c",
+        "${workspaceFolder}/hello.i"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty printing",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "LCC: Debug RCC (preprocessed C -> assembly)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build-ubuntu24/lcc-build/rcc",
+      "args": [
+        "-target=x86/nasm",
+        "-g",
+        "${workspaceFolder}/hello.i",
+        "${workspaceFolder}/hello.s"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty printing",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

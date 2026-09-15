@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "cpp.h"
@@ -136,10 +135,6 @@ eval(Tokenrow *trp, int kw)
 		case STRING:
 			if (rand)
 				goto syntax;
-			if (vp == &vals[NSTAK]) {
-				error(ERROR, "Eval botch (stack overflow)");
-				return 0;
-			}
 			*vp++ = tokval(tp);
 			rand = 1;
 			continue;
@@ -381,10 +376,6 @@ evalop(struct pri pri)
 /*lint +e574 +e644 */
 		v1.val = rv1;
 		v1.type = rtype;
-		if (vp == &vals[NSTAK]) {
-			error(ERROR, "Eval botch (stack overflow)");
-			return 0;
-		}
 		*vp++ = v1;
 	}
 	return 0;

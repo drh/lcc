@@ -9,22 +9,16 @@
 #define UINT_MAX	(~0U)
 #define ULONG_MAX	(~0UL)
 
+#define CHAR_MAX	SCHAR_MAX
 #define SCHAR_MAX	0x7f
 #define SHRT_MAX	0x7fff
 #define INT_MAX		0x7fffffff
 #define LONG_MAX	0x7fffffffL
 
+#define CHAR_MIN	SCHAR_MIN
 #define SCHAR_MIN	(-SCHAR_MAX-1)
 #define SHRT_MIN	(-SHRT_MAX-1)
 #define INT_MIN		(-INT_MAX-1)
 #define LONG_MIN	(-LONG_MAX-1)
-
-#ifdef __CHAR_UNSIGNED__
-#define CHAR_MAX	UCHAR_MAX
-#define CHAR_MIN	0
-#else
-#define CHAR_MAX	SCHAR_MAX
-#define CHAR_MIN	SCHAR_MIN
-#endif
 
 #endif /* __LIMITS */

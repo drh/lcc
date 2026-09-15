@@ -1,8 +1,5 @@
 #include "c.h"
-#include <float.h>
 #include <errno.h>
-
-static char rcsid[] = "$Id$";
 
 #define MAXTOKEN 32
 
@@ -137,23 +134,16 @@ static unsigned char map[256] = { /* 000 nul */	0,
 				   /* 175 }   */	OTHER,
 				   /* 176 ~   */	OTHER, };
 static struct symbol tval;
-static char cbuf[BUFSIZE+1];
-static unsigned int wcbuf[BUFSIZE+1];
-
+static int backslash ARGS((int q));
+static Symbol fcon ARGS((void));
+static Symbol icon ARGS((unsigned int, int, int));
+static void ppnumber ARGS((char *));
 Coordinate src;		/* current source coordinate */
 int t;
 char *token;		/* current token */
 Symbol tsym;		/* symbol table entry for current token */
 
-static void *cput(int c, void *cl);
-static void *wcput(int c, void *cl);
-static void *scon(int q, void *put(int c, void *cl), void *cl);
-static int backslash(int q);
-static Symbol fcon(void);
-static Symbol icon(unsigned long, int, int);
-static void ppnumber(char *);
-
-int gettok(void) {
+int gettok() {
 	for (;;) {
 		register unsigned char *rcp = cp;
 		while (map[*rcp]&BLANK)
@@ -189,27 +179,39 @@ int gettok(void) {
 			  	continue;
 			  }
 			  return '/';
-		case '<':
-			if (*rcp == '=') return cp++, LEQ;
-			if (*rcp == '<') return cp++, LSHIFT;
-			return '<';
-		case '>':
-			if (*rcp == '=') return cp++, GEQ;
-			if (*rcp == '>') return cp++, RSHIFT;
-			return '>';
-		case '-':
-			if (*rcp == '>') return cp++, DEREF;
-			if (*rcp == '-') return cp++, DECR;
-			return '-';
-		case '=': return *rcp == '=' ? cp++, EQL    : '=';
-		case '!': return *rcp == '=' ? cp++, NEQ    : '!';
-		case '|': return *rcp == '|' ? cp++, OROR   : '|';
-		case '&': return *rcp == '&' ? cp++, ANDAND : '&';
-		case '+': return *rcp == '+' ? cp++, INCR   : '+';
-		case ';': case ',': case ':':
-		case '*': case '~': case '%': case '^': case '?':
-		case '[': case ']': case '{': case '}': case '(': case ')': 
-			return rcp[-1];
+		case 'L': if (*rcp == '\'') {
+			  	int t = gettok();
+			  	assert(t == ICON);
+			  	src.x--;
+			  	tval.type = unsignedchar;
+			  	tval.u.c.v.uc = tval.u.c.v.i;
+			  	return t;
+			  }
+			  if (*rcp != '"')
+			  	goto id;
+			  cp = rcp + 1;
+			  goto scon;
+case '<':
+	if (*rcp == '=') return cp++, LEQ;
+	if (*rcp == '<') return cp++, LSHIFT;
+	return '<';
+case '>':
+	if (*rcp == '=') return cp++, GEQ;
+	if (*rcp == '>') return cp++, RSHIFT;
+	return '>';
+case '-':
+	if (*rcp == '>') return cp++, DEREF;
+	if (*rcp == '-') return cp++, DECR;
+	return '-';
+case '=': return *rcp == '=' ? cp++, EQL    : '=';
+case '!': return *rcp == '=' ? cp++, NEQ    : '!';
+case '|': return *rcp == '|' ? cp++, OROR   : '|';
+case '&': return *rcp == '&' ? cp++, ANDAND : '&';
+case '+': return *rcp == '+' ? cp++, INCR   : '+';
+case ';': case ',': case ':':
+case '*': case '~': case '%': case '^': case '?':
+case '[': case ']': case '{': case '}': case '(': case ')': 
+	return rcp[-1];
 		case '\n': case '\v': case '\r': case '\f':
 			nextline();
 			if (cp == limit) {
@@ -238,7 +240,7 @@ int gettok(void) {
 		case 'G': case 'H': case 'I': case 'J': case 'K':
 		case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
 		case 'S': case 'T': case 'U': case 'V': case 'W': case 'X':
-		case 'Y': case 'Z':
+		case 'Y': case 'Z': case '_':
 		id:
 			if (limit - rcp < MAXLINE) {
 				cp = rcp - 1;
@@ -255,7 +257,7 @@ int gettok(void) {
 			return ID;
 		case '0': case '1': case '2': case '3': case '4':
 		case '5': case '6': case '7': case '8': case '9': {
-			unsigned long n = 0;
+			unsigned int n = 0;
 			if (limit - rcp < MAXLINE) {
 				cp = rcp - 1;
 				fillbuf();
@@ -274,7 +276,7 @@ int gettok(void) {
 						d = *rcp - 'A' + 10;
 					else
 						break;
-					if (n&~(~0UL >> 4))
+					if (n&~((unsigned)-1 >> 4))
 						overflow = 1;
 					else
 						n = (n<<4) + d;
@@ -288,16 +290,16 @@ int gettok(void) {
 				for ( ; map[*rcp]&DIGIT; rcp++) {
 					if (*rcp == '8' || *rcp == '9')
 						err = 1;
-					if (n&~(~0UL >> 3))
+					if (n&~((unsigned)-1 >> 3))
 						overflow = 1;
 					else
-						n = (n<<3) + (*rcp - '0');
+						n = (n<<3) + (unsigned)(*rcp - '0');
 				}
-				if (*rcp == '.' || *rcp == 'e' || *rcp == 'E') {
-					cp = rcp;
-					tsym = fcon();
-					return FCON;
-				}
+if (*rcp == '.' || *rcp == 'e' || *rcp == 'E') {
+	cp = rcp;
+	tsym = fcon();
+	return FCON;
+}
 				cp = rcp;
 				tsym = icon(n, overflow, 8);
 				if (err)
@@ -306,16 +308,16 @@ int gettok(void) {
 				int overflow = 0;
 				for (n = *token - '0'; map[*rcp]&DIGIT; ) {
 					int d = *rcp++ - '0';
-					if (n > (ULONG_MAX - d)/10)
+					if (n > ((unsigned)UINT_MAX - d)/10)
 						overflow = 1;
 					else
 						n = 10*n + d;
 				}
-				if (*rcp == '.' || *rcp == 'e' || *rcp == 'E') {
-					cp = rcp;
-					tsym = fcon();
-					return FCON;
-				}
+if (*rcp == '.' || *rcp == 'e' || *rcp == 'E') {
+	cp = rcp;
+	tsym = fcon();
+	return FCON;
+}
 				cp = rcp;
 				tsym = icon(n, overflow, 10);
 			}
@@ -338,42 +340,72 @@ int gettok(void) {
 			token = (char *)cp;
 			tsym = fcon();
 			return FCON;
-		case 'L':
-			if (*rcp == '\'') {
-				unsigned int *s = scon(*cp, wcput, wcbuf);
-				if (s - wcbuf > 2)
-					warning("excess characters in wide-character literal ignored\n");
-				tval.type = widechar;
-				tval.u.c.v.u = wcbuf[0];
-				tsym = &tval;
-				return ICON;
-			} else if (*rcp == '"') {
-				unsigned int *s = scon(*cp, wcput, wcbuf);
-				tval.type = array(widechar, s - wcbuf, 0);
-				tval.u.c.v.p = wcbuf;
-				tsym = &tval;
+		scon:
+		case '\'': case '"': {
+			static char cbuf[BUFSIZE+1];
+			char *s = cbuf;
+			int nbad = 0;
+			*s++ = *--cp;
+			do {
+				cp++;
+				while (*cp != cbuf[0]) {
+					int c;
+					if (map[*cp]&NEWLINE) {
+						if (cp < limit)
+							break;
+						cp++;
+						nextline();
+						if (cp == limit)
+							break;
+						continue;
+					}
+					c = *cp++;
+					if (c == '\\') {
+						if (map[*cp]&NEWLINE) {
+							if (cp < limit)
+								break;
+							cp++;
+							nextline();
+						}
+						if (limit - cp < MAXTOKEN)
+							fillbuf();
+						c = backslash(cbuf[0]);
+					} else if (map[c] == 0)
+						nbad++;
+					if (s < &cbuf[sizeof cbuf] - 2)
+						*s++ = c;
+				}
+				if (*cp == cbuf[0])
+					cp++;
+				else
+					error("missing %c\n", cbuf[0]);
+			} while (cbuf[0] == '"' && getchr() == '"');
+			*s++ = 0;
+			if (s >= &cbuf[sizeof cbuf])
+				error("%s literal too long\n",
+					cbuf[0] == '"' ? "string" : "character");
+			if (Aflag >= 2 && cbuf[0] == '"' && s - cbuf - 1 > 509)
+				warning("more than 509 characters in a string literal\n");
+			if (Aflag >= 2 && nbad)
+				warning("%s literal contains non-portable characters\n",
+					cbuf[0] == '"' ? "string" : "character");
+			token = cbuf;
+			tsym = &tval;
+			if (cbuf[0] == '"') {
+				tval.type = array(chartype, s - cbuf - 1, 0);
+				tval.u.c.v.p = cbuf + 1;
 				return SCON;
-			} else
-				goto id;
-		case '\'': {
-			char *s = scon(*--cp, cput, cbuf);
-			if (s - cbuf > 2)
-				warning("excess characters in multibyte character literal ignored\n");
-			tval.type = inttype;
-			if (chartype->op == INT)
-				tval.u.c.v.i = extend(cbuf[0], chartype);
-			else
-				tval.u.c.v.i = cbuf[0]&0xFF;
-			tsym = &tval;
-			return ICON;
+			} else {
+				if (s - cbuf > 3)
+					warning("excess characters in multibyte character literal `%S' ignored\n", token, (char*)cp-token);
+
+				else if (s - cbuf <= 2)
+					error("missing '\n");
+				tval.type = inttype;
+				tval.u.c.v.i = cbuf[1];
+				return ICON;
 			}
-		case '"': {
-			char *s = scon(*--cp, cput, cbuf);
-			tval.type = array(chartype, s - cbuf, 0);
-			tval.u.c.v.p = cbuf;
-			tsym = &tval;
-			return SCON;
-			}
+		}
 		case 'a':
 			if (rcp[0] == 'u'
 			&&  rcp[1] == 't'
@@ -513,6 +545,7 @@ int gettok(void) {
 			&&  rcp[2] == 'g'
 			&& !(map[rcp[3]]&(DIGIT|LETTER))) {
 				cp = rcp + 3;
+				tsym = longtype->u.sym;
 				return LONG;
 			}
 			goto id;
@@ -545,6 +578,7 @@ int gettok(void) {
 			&&  rcp[3] == 't'
 			&& !(map[rcp[4]]&(DIGIT|LETTER))) {
 				cp = rcp + 4;
+				tsym = shorttype->u.sym;
 				return SHORT;
 			}
 			if (rcp[0] == 'i'
@@ -657,34 +691,6 @@ int gettok(void) {
 				return WHILE;
 			}
 			goto id;
-		case '_':
-			if (rcp[0] == '_'
-			&&  rcp[1] == 't'
-			&&  rcp[2] == 'y'
-			&&  rcp[3] == 'p'
-			&&  rcp[4] == 'e'
-			&&  rcp[5] == 'c'
-			&&  rcp[6] == 'o'
-			&&  rcp[7] == 'd'
-			&&  rcp[8] == 'e'
-			&& !(map[rcp[9]]&(DIGIT|LETTER))) {
-				cp = rcp + 9;
-				return TYPECODE;
-			}
-			if (rcp[0] == '_'
-			&&  rcp[1] == 'f'
-			&&  rcp[2] == 'i'
-			&&  rcp[3] == 'r'
-			&&  rcp[4] == 's'
-			&&  rcp[5] == 't'
-			&&  rcp[6] == 'a'
-			&&  rcp[7] == 'r'
-			&&  rcp[8] == 'g'
-			&& !(map[rcp[9]]&(DIGIT|LETTER))) {
-				cp = rcp + 9;
-				return FIRSTARG;
-			}
-			goto id;
 		default:
 			if ((map[cp[-1]]&BLANK) == 0)
 				if (cp[-1] < ' ' || cp[-1] >= 0177)
@@ -694,54 +700,41 @@ int gettok(void) {
 		}
 	}
 }
-static Symbol icon(unsigned long n, int overflow, int base) {
+static Symbol icon(n, overflow, base)
+unsigned n; int overflow, base; {
 	if ((*cp=='u'||*cp=='U') && (cp[1]=='l'||cp[1]=='L')
 	||  (*cp=='l'||*cp=='L') && (cp[1]=='u'||cp[1]=='U')) {
 		tval.type = unsignedlong;
 		cp += 2;
 	} else if (*cp == 'u' || *cp == 'U') {
-		if (overflow || n > unsignedtype->u.sym->u.limits.max.i)
-			tval.type = unsignedlong;
-		else
-			tval.type = unsignedtype;
+		tval.type = unsignedtype;
 		cp += 1;
 	} else if (*cp == 'l' || *cp == 'L') {
-		if (overflow || n > longtype->u.sym->u.limits.max.i)
+		if (n > (unsigned)~(1<<8*longtype->size - 1))
 			tval.type = unsignedlong;
 		else
 			tval.type = longtype;
 		cp += 1;
-	} else if (overflow || n > longtype->u.sym->u.limits.max.i)
+	} else if (base == 10 && n > (unsigned)~(1<<8*longtype->size - 1))
 		tval.type = unsignedlong;
-	else if (n > inttype->u.sym->u.limits.max.i)
-		tval.type = longtype;
-	else if (base != 10 && n > inttype->u.sym->u.limits.max.i)
+	else if (n > (unsigned)~(1<<8*inttype->size - 1))
 		tval.type = unsignedtype;
 	else
 		tval.type = inttype;
-	switch (tval.type->op) {
-	case INT:
-		if (overflow || n > tval.type->u.sym->u.limits.max.i) {
-			warning("overflow in constant `%S'\n", token,
-				(char*)cp - token);
-			tval.u.c.v.i = tval.type->u.sym->u.limits.max.i;
-		} else
-			tval.u.c.v.i = n;
-		break;
-	case UNSIGNED:
-		if (overflow || n > tval.type->u.sym->u.limits.max.u) {
-			warning("overflow in constant `%S'\n", token,
-				(char*)cp - token);
-			tval.u.c.v.u = tval.type->u.sym->u.limits.max.u;
-		} else
-			tval.u.c.v.u = n;
-		break;
-	default: assert(0);
+	if (overflow) {
+		warning("overflow in constant `%S'\n", token,
+			(char*)cp - token);
+		n = ~(1<<8*longtype->size - 1);
+		tval.type = longtype;
 	}
+	if (isunsigned(tval.type))
+		tval.u.c.v.u = n;
+	else
+		tval.u.c.v.i = n;		
 	ppnumber("integer");
 	return &tval;
 }
-static void ppnumber(char *which) {
+static void ppnumber(which) char *which; {
 	unsigned char *rcp = cp--;
 
 	for ( ; (map[*cp]&(DIGIT|LETTER)) || *cp == '.'; cp++)
@@ -753,7 +746,7 @@ static void ppnumber(char *which) {
 
 			(char*)cp-token, which);
 }
-static Symbol fcon(void) {
+static Symbol fcon() {
 	if (*cp == '.')
 		do
 			cp++;
@@ -777,92 +770,21 @@ static Symbol fcon(void) {
 			(char*)cp - token);
 	if (*cp == 'f' || *cp == 'F') {
 		++cp;
-		if (tval.u.c.v.d > floattype->u.sym->u.limits.max.d)
+		if (tval.u.c.v.d > FLT_MAX)
 			warning("overflow in floating constant `%S'\n", token,
 				(char*)cp - token);
 		tval.type = floattype;
+		tval.u.c.v.f = tval.u.c.v.d;
 	} else if (*cp == 'l' || *cp == 'L') {
 		cp++;
 		tval.type = longdouble;
-	} else {
-		if (tval.u.c.v.d > doubletype->u.sym->u.limits.max.d)
-			warning("overflow in floating constant `%S'\n", token,
-				(char*)cp - token);
+	} else
 		tval.type = doubletype;
-	}
 	ppnumber("floating");
 	return &tval;
 }
 
-static void *cput(int c, void *cl) {
-	char *s = cl;
-
-	if (c < 0 || c > 255)
-		warning("overflow in escape sequence with resulting value `%d'\n", c);
-	*s++ = c;
-	return s;
-}
-
-static void *wcput(int c, void *cl) {
-	unsigned int *s = cl;
-
-	*s++ = c;
-	return s;
-}
-
-static void *scon(int q, void *put(int c, void *cl), void *cl) {
-	int n = 0, nbad = 0;
-
-	do {
-		cp++;
-		while (*cp != q) {
-			int c;
-			if (map[*cp]&NEWLINE) {
-				if (cp < limit)
-					break;
-				cp++;
-				nextline();
-				if (cp == limit)
-					break;
-				continue;
-			}
-			c = *cp++;
-			if (c == '\\') {
-				if (map[*cp]&NEWLINE) {
-					if (cp++ < limit)
-						continue;
-					nextline();
-				}
-				if (limit - cp < MAXTOKEN)
-					fillbuf();
-				c = backslash(q);
-			} else if (c < 0 || c > 255 || map[c] == 0)
-				nbad++;
-			if (n++ < BUFSIZE)
-				cl = put(c, cl);
-		}
-		if (*cp == q)
-			cp++;
-		else
-			error("missing %c\n", q);
-		if (q == '"' && put == wcput && getchr() == 'L') {
-			if (limit - cp < 2)
-				fillbuf();
-			if (cp[1] == '"')
-				cp++;
-		}
-	} while (q == '"' && getchr() == '"');
-	cl = put(0, cl);
-	if (n >= BUFSIZE)
-		error("%s literal too long\n", q == '"' ? "string" : "character");
-	if (Aflag >= 2 && q == '"' && n > 509)
-		warning("more than 509 characters in a string literal\n");
-	if (Aflag >= 2 && nbad > 0)
-		warning("%s literal contains non-portable characters\n",
-			q == '"' ? "string" : "character");
-	return cl;
-}
-int getchr(void) {
+int getchr() {
 	for (;;) {
 		while (map[*cp]&BLANK)
 			cp++;
@@ -874,8 +796,8 @@ int getchr(void) {
 			return EOI;
 	}
 }
-static int backslash(int q) {
-	unsigned int c;
+static int backslash(q) int q; {
+	int c;
 
 	switch (*cp++) {
 	case 'a': return 7;
@@ -898,16 +820,16 @@ static int backslash(int q) {
 			return 0;
 		}
 		for (c = 0; map[*cp]&(DIGIT|HEX); cp++) {
-			if (c >> (8*widechar->size - 4))
-				overflow = 1;
+			if (c&~((unsigned)-1 >> 4))
+				overflow++;
 			if (map[*cp]&DIGIT)
 				c = (c<<4) + *cp - '0';
 			else
 				c = (c<<4) + (*cp&~040) - 'A' + 10;
 		}
-		if (overflow)
+		if (c&~0377 || overflow)
 			warning("overflow in hexadecimal escape sequence\n");
-		return c&ones(8*widechar->size);
+		return c&0377;
 		}
 	case '0': case '1': case '2': case '3':
 	case '4': case '5': case '6': case '7':
@@ -917,7 +839,9 @@ static int backslash(int q) {
 			if (*cp >= '0' && *cp <= '7')
 				c = (c<<3) + *cp++ - '0';
 		}
-		return c;
+		if (c&~0377)
+			warning("overflow in octal escape sequence\n");
+		return c&0377;
 	default:
 		if (cp[-1] < ' ' || cp[-1] >= 0177)
 			warning("unrecognized character escape sequence\n");

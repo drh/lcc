@@ -1,7 +1,5 @@
 #include "c.h"
 
-static char rcsid[] = "$Id$";
-
 static struct string {
 	char *str;
 	int len;
@@ -61,19 +59,19 @@ static int scatter[] = {	/* map characters to random values */
 	92778659, 1856406685, 1884137923, 53392249, 1735424165,
 	1602280572
 };
-char *string(const char *str) {
-	const char *s;
+char *string(str) char *str; {
+	char *s;
 
 	for (s = str; *s; s++)
 		;
 	return stringn(str, s - str);
 }
-char *stringd(long n) {
+char *stringd(n) int n; {
 	char str[25], *s = str + sizeof (str);
-	unsigned long m;
+	unsigned m;
 
-	if (n == LONG_MIN)
-		m = (unsigned long)LONG_MAX + 1;
+	if (n == INT_MIN)
+		m = (unsigned)INT_MAX + 1;
 	else if (n < 0)
 		m = -n;
 	else
@@ -85,10 +83,10 @@ char *stringd(long n) {
 		*--s = '-';
 	return stringn(s, str + sizeof (str) - s);
 }
-char *stringn(const char *str, int len) {
+char *stringn(str, len) char *str; int len; {
 	int i;
 	unsigned int h;
-	const char *end;
+	char *end;
 	struct string *p;
 
 	assert(str);
@@ -97,8 +95,7 @@ char *stringn(const char *str, int len) {
 	h &= NELEMS(buckets)-1;
 	for (p = buckets[h]; p; p = p->link)
 		if (len == p->len) {
-			const char *s1 = str;
-			char *s2 = p->str;
+			char *s1 = str, *s2 = p->str;
 			do {
 				if (s1 == end)
 					return p->str;

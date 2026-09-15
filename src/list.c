@@ -1,11 +1,9 @@
 #include "c.h"
 
-static char rcsid[] = "$Id$";
-
 static List freenodes;		/* free list nodes */
 
 /* append - append x to list, return new list */
-List append(void *x, List list) {
+List append(x, list) void *x; List list; {
 	List new;
 
 	if ((new = freenodes) != NULL)
@@ -22,7 +20,7 @@ List append(void *x, List list) {
 }
 
 /* length - # elements in list */
-int length(List list) {
+int length(list) List list; {
 	int n = 0;
 
 	if (list) {
@@ -35,7 +33,7 @@ int length(List list) {
 }
 
 /* ltov - convert list to an NULL-terminated vector allocated in arena */
-void *ltov(List *list, unsigned arena) {
+void *ltov(list, arena) List *list; unsigned arena; {
 	int i = 0;
 	void **array = newarray(length(*list) + 1, sizeof array[0], arena);
 

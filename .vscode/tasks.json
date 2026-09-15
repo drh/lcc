@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "LCC: Bootstrap Build",
+      "type": "shell",
+      "command": "${workspaceFolder}/BUILD-UBUNTU24.sh",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "LCC: Preprocess hello.c",
+      "type": "shell",
+      "command": "${workspaceFolder}/build-ubuntu24/lcc-build/lcc -E ${workspaceFolder}/hello.c > ${workspaceFolder}/hello.i",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "LCC: Bootstrap Build",
+      "problemMatcher": []
+    },
+    {
+      "label": "LCC: Prepare CPP study input",
+      "type": "shell",
+      "command": "printf '%s\\n' 'int add(int a, int b) { return a + b; }' 'int main(void) { return add(2, 3); }' > ${workspaceFolder}/cpp-study.c",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "LCC: RCC compile hello.i",
+      "type": "shell",
+      "command": "${workspaceFolder}/build-ubuntu24/lcc-build/rcc -target=x86/nasm -g ${workspaceFolder}/hello.i ${workspaceFolder}/hello.s",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "LCC: Preprocess hello.c",
+      "problemMatcher": []
+    }
+  ]
+}

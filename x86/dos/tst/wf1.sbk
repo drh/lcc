@@ -1,0 +1,450 @@
+.486
+.model small
+extrn __turboFloat:near
+extrn __setargv:near
+public _main
+_TEXT segment
+_main:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+sub esp,24
+mov dword ptr -24[ebp],00H
+mov dword ptr _next,0
+jmp L3
+L2:
+lea edi,-24[ebp]
+push edi
+lea edi,-20[ebp]
+push edi
+call _lookup
+add esp,8
+inc dword ptr [eax]
+L3:
+lea edi,-20[ebp]
+push edi
+call _getword
+add esp,4
+cmp eax,0
+jne L2
+mov edi,dword ptr -24[ebp]
+push edi
+call _tprint
+add esp,4
+mov eax,0
+L1:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _err
+_err:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+mov edi,dword ptr 20[ebp]
+push edi
+lea edi,L9
+push edi
+call _printf
+add esp,8
+push 1
+call _exit
+add esp,4
+L8:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _getword
+_getword:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+sub esp,8
+L11:
+L12:
+call _getchar
+add esp,0
+mov dword ptr -4[ebp],eax
+cmp eax,-1
+je L14
+mov edi,dword ptr -4[ebp]
+push edi
+call _isletter
+add esp,4
+cmp eax,0
+je L11
+L14:
+mov edi,dword ptr 20[ebp]
+mov dword ptr -8[ebp],edi
+jmp L18
+L15:
+mov edi,dword ptr -8[ebp]
+lea esi,1[edi]
+mov dword ptr -8[ebp],esi
+mov esi,dword ptr -4[ebp]
+mov bx,si
+mov byte ptr [edi],bl
+L16:
+call _getchar
+add esp,0
+mov dword ptr -4[ebp],eax
+L18:
+mov edi,dword ptr -4[ebp]
+push edi
+call _isletter
+add esp,4
+mov dword ptr -4[ebp],eax
+cmp eax,0
+jne L15
+mov edi,dword ptr -8[ebp]
+mov byte ptr [edi],0
+mov edi,dword ptr -8[ebp]
+mov esi,dword ptr 20[ebp]
+cmp edi,esi
+jbe L19
+mov eax,1
+jmp L10
+L19:
+mov eax,0
+L10:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _isletter
+_isletter:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+mov edi,dword ptr 20[ebp]
+cmp edi,65
+jl L27
+cmp edi,90
+jg L27
+add dword ptr 20[ebp],32
+L27:
+mov edi,dword ptr 20[ebp]
+cmp edi,97
+jl L29
+cmp edi,122
+jg L29
+mov eax,dword ptr 20[ebp]
+jmp L26
+L29:
+mov eax,0
+L26:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _lookup
+_lookup:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+sub esp,4
+mov edi,dword ptr 24[ebp]
+mov edi,dword ptr [edi]
+cmp edi,0
+je L34
+mov edi,dword ptr 24[ebp]
+mov edi,dword ptr [edi]
+mov edi,dword ptr 12[edi]
+push edi
+mov edi,dword ptr 20[ebp]
+push edi
+call _strcmp
+add esp,8
+mov dword ptr -4[ebp],eax
+cmp dword ptr -4[ebp],0
+jge L36
+mov edi,dword ptr 24[ebp]
+mov edi,dword ptr [edi]
+lea edi,4[edi]
+push edi
+mov edi,dword ptr 20[ebp]
+push edi
+call _lookup
+add esp,8
+mov edi,eax
+jmp L33
+L36:
+cmp dword ptr -4[ebp],0
+jle L38
+mov edi,dword ptr 24[ebp]
+mov edi,dword ptr [edi]
+lea edi,8[edi]
+push edi
+mov edi,dword ptr 20[ebp]
+push edi
+call _lookup
+add esp,8
+mov edi,eax
+jmp L33
+L38:
+mov edi,dword ptr 24[ebp]
+mov edi,dword ptr [edi]
+mov eax,edi
+jmp L33
+L34:
+cmp dword ptr _next,2000
+jl L40
+lea edi,L42
+push edi
+call _err
+add esp,4
+L40:
+mov edi,dword ptr _next
+sal edi,4
+mov dword ptr _words[edi],0
+mov edi,dword ptr _next
+sal edi,4
+mov dword ptr _words+8[edi],00H
+mov dword ptr _words+4[edi],00H
+mov edi,dword ptr 20[ebp]
+push edi
+call _strlen
+add esp,4
+lea edi,1[eax]
+push edi
+call _malloc
+add esp,4
+mov esi,dword ptr _next
+sal esi,4
+mov dword ptr _words+12[esi],eax
+mov edi,dword ptr _next
+sal edi,4
+mov edi,dword ptr _words+12[edi]
+cmp edi,0
+jne L46
+lea edi,L49
+push edi
+call _err
+add esp,4
+L46:
+mov edi,dword ptr 20[ebp]
+push edi
+mov edi,dword ptr _next
+sal edi,4
+mov edi,dword ptr _words+12[edi]
+push edi
+call _strcpy
+add esp,8
+mov edi,dword ptr _next
+lea esi,1[edi]
+mov dword ptr _next,esi
+sal edi,4
+lea edi,_words[edi]
+mov esi,dword ptr 24[ebp]
+mov dword ptr [esi],edi
+mov eax,edi
+L33:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _tprint
+_tprint:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+mov edi,dword ptr 20[ebp]
+cmp edi,0
+je L62
+mov edi,dword ptr 20[ebp]
+mov edi,dword ptr 4[edi]
+push edi
+call _tprint
+add esp,4
+mov edi,dword ptr 20[ebp]
+mov esi,dword ptr 12[edi]
+push esi
+mov edi,dword ptr [edi]
+push edi
+lea edi,L64
+push edi
+call _printf
+add esp,12
+mov edi,dword ptr 20[ebp]
+mov edi,dword ptr 8[edi]
+push edi
+call _tprint
+add esp,4
+L62:
+L61:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+public _strcmp
+_strcmp:
+push ebx
+push esi
+push edi
+push ebp
+mov ebp,esp
+jmp L68
+L67:
+mov edi,dword ptr 20[ebp]
+lea esi,1[edi]
+mov dword ptr 20[ebp],esi
+movsx edi,byte ptr [edi]
+cmp edi,0
+jne L70
+mov eax,0
+jmp L66
+L70:
+inc dword ptr 24[ebp]
+L68:
+mov edi,dword ptr 20[ebp]
+movsx edi,byte ptr [edi]
+mov esi,dword ptr 24[ebp]
+movsx esi,byte ptr [esi]
+cmp edi,esi
+je L67
+mov edi,dword ptr 20[ebp]
+movsx edi,byte ptr [edi]
+cmp edi,0
+jne L72
+mov eax,-1
+jmp L66
+L72:
+mov edi,dword ptr 24[ebp]
+movsx edi,byte ptr [edi]
+cmp edi,0
+jne L74
+mov eax,1
+jmp L66
+L74:
+mov edi,dword ptr 20[ebp]
+movsx edi,byte ptr [edi]
+mov esi,dword ptr 24[ebp]
+movsx esi,byte ptr [esi]
+mov eax,edi
+sub eax,esi
+L66:
+mov esp,ebp
+pop ebp
+pop edi
+pop esi
+pop ebx
+ret
+_TEXT ends
+extrn _strcpy:near
+_TEXT segment
+_TEXT ends
+extrn _strlen:near
+_TEXT segment
+_TEXT ends
+extrn _malloc:near
+_TEXT segment
+_TEXT ends
+extrn _getchar:near
+_TEXT segment
+_TEXT ends
+extrn _exit:near
+_TEXT segment
+_TEXT ends
+extrn _printf:near
+_TEXT segment
+_TEXT ends
+_DATA segment
+public _next
+align 4
+_next label byte
+db 4 dup (0)
+public _words
+align 4
+_words label byte
+db 32000 dup (0)
+_DATA ends
+_DATA segment
+align 1
+L64 label byte
+db 37
+db 100
+db 9
+db 37
+db 115
+db 10
+db 0
+align 1
+L49 label byte
+db 111
+db 117
+db 116
+db 32
+db 111
+db 102
+db 32
+db 119
+db 111
+db 114
+db 100
+db 32
+db 115
+db 116
+db 111
+db 114
+db 97
+db 103
+db 101
+db 0
+align 1
+L42 label byte
+db 111
+db 117
+db 116
+db 32
+db 111
+db 102
+db 32
+db 110
+db 111
+db 100
+db 101
+db 32
+db 115
+db 116
+db 111
+db 114
+db 97
+db 103
+db 101
+db 0
+align 1
+L9 label byte
+db 63
+db 32
+db 37
+db 115
+db 10
+db 0
+_DATA ends
+end
