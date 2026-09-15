@@ -7,6 +7,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/build-ubuntu24/lcc-build/cpp",
       "args": [
+        "-I${workspaceFolder}/build-ubuntu24/lcc-build/include",
         "${workspaceFolder}/hello.c",
         "${workspaceFolder}/hello.i"
       ],
