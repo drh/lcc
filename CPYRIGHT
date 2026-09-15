@@ -1,8 +1,8 @@
 The authors of this software are Christopher W. Fraser and
 David R. Hanson.
 
-Copyright (c) 1991,1992,1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
-by AT&T, Christopher W. Fraser, and David R. Hanson. All Rights Reserved.
+Copyright (c) 1991,1992,1993,1994,1995 by AT&T, Christopher W. Fraser,
+and David R. Hanson. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software for any
 purpose, subject to the provisions described below, without fee is
@@ -15,6 +15,7 @@ THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
 WARRANTY. IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
 REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
 OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+
 
 lcc is not public-domain software, shareware, and it is not protected
 by a `copyleft' agreement, like the code from the Free Software
@@ -49,12 +50,12 @@ profit from what is primarily our work, requires a license agreement
 with Addison-Wesley.  Per-copy and unlimited use licenses are
 available; for more information, contact
 
-   Kim Boedigheimer
-   Addison Wesley
-   75 Arlington St., Suite 300
-   Boston, MA 02116
-   617/848-6559 kim.boedigheimer@pearsoned.com
+	J. Carter Shanklin
+	Addison Wesley Longman, Inc. 
+	2725 Sand Hill Rd.
+	Menlo Park, CA 94025
+	415/854-0300 x2478 FAX: 415/614-2930 jcs@aw.com
 -----
-Chris Fraser / cwf@aya.yale.edu
-David Hanson / drh@drhanson.net
+Chris Fraser / cwfraser@microsoft.com
+David Hanson / drh@cs.princeton.edu
 $Revision$ $Date$

@@ -1,0 +1,135 @@
+.global _main
+.seg "text"
+.align 4
+.proc 4
+_main:
+save %sp,-96,%sp
+mov %g0,%i5
+L2:
+sll %i5,2,%i4
+set 1,%i3
+set _down,%i2
+st %i3,[%i4+%i2]
+set _up,%i2
+st %i3,[%i4+%i2]
+L3:
+add %i5,1,%i5
+cmp %i5,15; bl L2; nop
+mov %g0,%i5
+L6:
+sll %i5,2,%i4
+set _rows,%i3
+set 1,%i2
+st %i2,[%i4+%i3]
+L7:
+add %i5,1,%i5
+cmp %i5,8; bl L6; nop
+mov %g0,%o0
+call _queens; nop
+mov %g0,%i0
+L1:
+ret; restore
+.global _queens
+.align 4
+.proc 4
+_queens:
+save %sp,-96,%sp
+mov %g0,%i5
+L13:
+sll %i5,2,%i3
+set _rows,%i2
+ld [%i3+%i2],%i3
+cmp %i3,%g0; be L17; nop
+sub %i5,%i0,%i3
+sll %i3,2,%i3
+set _up+28,%i2
+ld [%i3+%i2],%i3
+cmp %i3,%g0; be L17; nop
+add %i5,%i0,%i3
+sll %i3,2,%i3
+set _down,%i2
+ld [%i3+%i2],%i3
+cmp %i3,%g0; be L17; nop
+add %i5,%i0,%i3
+sll %i3,2,%i3
+set _down,%i2
+st %g0,[%i3+%i2]
+sub %i5,%i0,%i3
+sll %i3,2,%i3
+set _up+28,%i2
+st %g0,[%i3+%i2]
+sll %i5,2,%i3
+set _rows,%i2
+st %g0,[%i3+%i2]
+sll %i0,2,%i4
+set _x,%i3
+st %i5,[%i4+%i3]
+cmp %i0,7; bne L21; nop
+call _print; nop
+ba L22; nop
+L21:
+add %i0,1,%o0
+call _queens; nop
+L22:
+set 1,%i4
+add %i5,%i0,%i3
+sll %i3,2,%i3
+set _down,%i2
+st %i4,[%i3+%i2]
+sub %i5,%i0,%i3
+sll %i3,2,%i3
+set _up+28,%i2
+st %i4,[%i3+%i2]
+sll %i5,2,%i3
+set _rows,%i2
+st %i4,[%i3+%i2]
+L17:
+L14:
+add %i5,1,%i5
+cmp %i5,8; bl L13; nop
+L12:
+ret; restore
+.global _print
+.align 4
+.proc 4
+_print:
+save %sp,-96,%sp
+mov %g0,%i5
+L31:
+set L35,%o0
+sll %i5,2,%i4
+set _x,%i3
+ld [%i4+%i3],%i4
+add %i4,49,%o1
+call _printf; nop
+L32:
+add %i5,1,%i5
+cmp %i5,8; bl L31; nop
+set L36,%o0
+call _printf; nop
+L30:
+ret; restore
+.seg "bss"
+.global _x
+.align 4
+.common _x,32
+.global _rows
+.align 4
+.common _rows,32
+.global _down
+.align 4
+.common _down,60
+.global _up
+.align 4
+.common _up,60
+.seg "text"
+.align 1
+L36:
+.byte 10
+.byte 0
+.align 1
+L35:
+.byte 37
+.byte 99
+.byte 32
+.byte 0

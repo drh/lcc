@@ -1,34 +1,47 @@
 #include "c.h"
 
-static char rcsid[] = "$Id$";
-
 #define SWSIZE 512
 
 #define den(i,j) ((j-buckets[i]+1.0)/(v[j]-v[buckets[i]]+1))
 
+struct swtch {
+	Symbol sym;
+	int lab;
+	Symbol deflab;
+	int ncases;
+	int size;
+	int *values;
+	Symbol *labels;
+};
 struct code codehead = { Start };
 Code codelist = &codehead;
 float density = 0.5;
 Table stmtlabs;
 
-static int foldcond(Tree e1, Tree e2);
-static void caselabel(Swtch, long, int);
-static void cmp(int, Symbol, long, int);
-static Tree conditional(int);
-static void dostmt(int, Swtch, int);
-static int equal(Symbol, Symbol);
-static void forstmt(int, Swtch, int);
-static void ifstmt(int, int, Swtch, int);
-static Symbol localaddr(Tree);
-static void stmtlabel(void);
-static void swstmt(int, int, int);
-static void whilestmt(int, Swtch, int);
-Code code(int kind) {
+static int foldcond ARGS((Tree e1, Tree e2));
+static void branch ARGS((int));
+static void caselabel ARGS((Swtch, int, int));
+static void cmp ARGS((int, Symbol, int, int));
+static Tree conditional ARGS((int));
+static void dostmt ARGS((int, Swtch, int));
+static int equal ARGS((Symbol, Symbol));
+static void forstmt ARGS((int, Swtch, int));
+static void ifstmt ARGS((int, int, Swtch, int));
+static Symbol localaddr ARGS((Tree));
+static void stmtlabel ARGS((void));
+static void swcode ARGS((Swtch, int *, int, int));
+static void swgen ARGS((Swtch));
+static void swstmt ARGS((int, int, int));
+static void whilestmt ARGS((int, Swtch, int));
+Code code(kind) int kind; {
 	Code cp;
 
-	if (!reachable(kind))
-		warning("unreachable code\n");
-
+	if (kind > Start) {
+		for (cp = codelist; cp->kind < Label; )
+			cp = cp->prev;
+		if (cp->kind == Jump || cp->kind == Switch)
+			warning("unreachable code\n");
+	}
 	NEW(cp, FUNC);
 	cp->kind = kind;
 	cp->prev = codelist;
@@ -37,24 +50,14 @@ Code code(int kind) {
 	codelist = cp;
 	return cp;
 }
-int reachable(int kind) {
-	if (kind > Start) {
-		Code cp;
-		for (cp = codelist; cp->kind < Label; )
-			cp = cp->prev;
-		if (cp->kind == Jump || cp->kind == Switch)
-			return 0;
-	}
-	return 1;
-}
-void addlocal(Symbol p) {
+void addlocal(p) Symbol p; {
 	if (!p->defined) {
 		code(Local)->u.var = p;
 		p->defined = 1;
 		p->scope = level;
 	}
 }
-void definept(Coordinate *p) {
+void definept(p) Coordinate *p; {
 	Code cp = code(Defpoint);
 
 	cp->u.point.src = p ? *p : src;
@@ -62,11 +65,11 @@ void definept(Coordinate *p) {
 	if (ncalled > 0) {
 		int n = findcount(cp->u.point.src.file,
 			cp->u.point.src.x, cp->u.point.src.y);
-		if (n > 0)
+		if (n >= 0)
 			refinc = (float)n/ncalled;
 	}
 	if (glevel > 2)	locus(identifiers, &cp->u.point.src);
-	if (events.points && reachable(Gen))
+	if (events.points)
 		{
 			Tree e = NULL;
 			apply(events.points, &cp->u.point.src, &e);
@@ -74,7 +77,7 @@ void definept(Coordinate *p) {
 				listnodes(e, 0, 0);
 		}
 }
-void statement(int loop, Swtch swp, int lev) {
+void statement(loop, swp, lev) int loop, lev; Swtch swp; {
 	float ref = refinc;
 
 	if (Aflag >= 2 && lev == 15)
@@ -124,8 +127,6 @@ void statement(int loop, Swtch swp, int lev) {
 		       			if (swp) {
 		       				needconst++;
 		       				p = cast(p, swp->sym->type);
-		       				if (p->type->op == UNSIGNED)
-		       					p->u.v.i = extend(p->u.v.u, p->type);
 		       				needconst--;
 		       				caselabel(swp, p->u.v.i, lab);
 		       			}
@@ -159,11 +160,9 @@ void statement(int loop, Swtch swp, int lev) {
 		       		} else
 		       			retcode(expr(0));
 		       	else {
-		       		if (rty != voidtype) {
+		       		if (rty != voidtype)
 		       			warning("missing return value\n");
-		       			retcode(cnsttree(inttype, 0L));
-		       		} else
-		       			retcode(NULL);
+		       		retcode(NULL);
 		       	}
 		       	branch(cfunc->u.f.label);
 		       } expect(';');
@@ -218,7 +217,8 @@ void statement(int loop, Swtch swp, int lev) {
 	refinc = ref;
 }
 
-static void ifstmt(int lab, int loop, Swtch swp, int lev) {
+static void ifstmt(lab, loop, swp, lev)
+int lab, loop, lev; Swtch swp; {
 	t = gettok();
 	expect('(');
 	definept(NULL);
@@ -235,7 +235,7 @@ static void ifstmt(int lab, int loop, Swtch swp, int lev) {
 	} else
 		definelab(lab);
 }
-static Tree conditional(int tok) {
+static Tree conditional(tok) int tok; {
 	Tree p = expr(tok);
 
 	if (Aflag > 1 && isfunc(p->type))
@@ -243,7 +243,7 @@ static Tree conditional(int tok) {
 			funcname(p));
 	return cond(p);
 }
-static void stmtlabel(void) {
+static void stmtlabel() {
 	Symbol p = lookup(token, stmtlabs);
 
 	if (p == NULL) {
@@ -260,7 +260,8 @@ static void stmtlabel(void) {
 	t = gettok();
 	expect(':');
 }
-static void forstmt(int lab, Swtch swp, int lev) {
+static void forstmt(lab, swp, lev)
+int lab, lev; Swtch swp; {
 	int once = 0;
 	Tree e1 = NULL, e2 = NULL, e3 = NULL;
 	Coordinate pt2, pt3;
@@ -309,7 +310,7 @@ static void forstmt(int lab, Swtch swp, int lev) {
 	if (findlabel(lab + 2)->ref)
 		definelab(lab + 2);
 }
-static void swstmt(int loop, int lab, int lev) {
+static void swstmt(loop, lab, lev) int loop, lab, lev; {
 	Tree e;
 	struct swtch sw;
 	Code head, tail;
@@ -361,12 +362,13 @@ static void swstmt(int loop, int lab, int lev) {
 	codelist->next = head->next;
 	codelist = tail;
 }
-static void caselabel(Swtch swp, long val, int lab) {
+static void caselabel(swp, val, lab)
+Swtch swp; int val, lab; {
 	int k;
 
 	if (swp->ncases >= swp->size)
 		{
-		long   *vals = swp->values;
+		int    *vals = swp->values;
 		Symbol *labs = swp->labels;
 		swp->size *= 2;
 		swp->values = newarray(swp->size, sizeof *swp->values, FUNC);
@@ -389,9 +391,8 @@ static void caselabel(Swtch swp, long val, int lab) {
 	if (Aflag >= 2 && swp->ncases == 258)
 		warning("more than 257 cases in a switch\n");
 }
-void swgen(Swtch swp) {
-	int *buckets, k, n;
-	long *v = swp->values;
+static void swgen(swp) Swtch swp; {
+	int *buckets, k, n, *v = swp->values;
 
 	buckets = newarray(swp->ncases + 1,
 		sizeof *buckets, FUNC);
@@ -403,9 +404,10 @@ void swgen(Swtch swp) {
 	buckets[n] = swp->ncases;
 	swcode(swp, buckets, 0, n - 1);
 }
-void swcode(Swtch swp, int b[], int lb, int ub) {
+static void swcode(swp, b, lb, ub)
+Swtch swp; int b[]; int lb, ub; {
 	int hilab, lolab, l, u, k = (lb + ub)/2;
-	long *v = swp->values;
+	int *v = swp->values;
 
 	if (k > lb && k < ub) {
 		lolab = genlabel(1);
@@ -437,19 +439,16 @@ void swcode(Swtch swp, int b[], int lb, int ub) {
 			walk(NULL, 0, 0);
 		}
 	else {
-		Tree e;
-		Type ty = signedint(swp->sym->type);
 		Symbol table = genident(STATIC,
-			array(voidptype, u - l + 1, 0), GLOBAL);
+			array(voidptype, u - l + 1, 0), LABELS);
 		(*IR->defsymbol)(table);
 		cmp(LT, swp->sym, v[l], lolab);
 		cmp(GT, swp->sym, v[u], hilab);
-		e = (*optree['-'])(SUB, cast(idtree(swp->sym), ty), cnsttree(ty, v[l]));
-		if (e->type->size < signedptr->size)
-			e = cast(e, longtype);
 		walk(tree(JUMP, voidtype,
-			rvalue((*optree['+'])(ADD, pointer(idtree(table)), e)), NULL),
-			0, 0);
+			rvalue((*optree['+'])(ADD, pointer(idtree(table)),
+				(*optree['-'])(SUB,
+					cast(idtree(swp->sym), inttype),
+					consttree(v[l], inttype)))), NULL), 0, 0);
 		code(Switch);
 		codelist->u.swtch.table = table;
 		codelist->u.swtch.sym = swp->sym;
@@ -471,15 +470,13 @@ void swcode(Swtch swp, int b[], int lb, int ub) {
 		swcode(swp, b, k + 1, ub);
 	}
 }
-static void cmp(int op, Symbol p, long n, int lab) {
-	Type ty = signedint(p->type);
-
+static void cmp(op, p, n, lab) int op, n, lab; Symbol p; {
 	listnodes(eqtree(op,
-			cast(idtree(p), ty),
-			cnsttree(ty, n)),
+			cast(idtree(p), inttype),
+			consttree(n, inttype)),
 		lab, 0);
 }
-void retcode(Tree p) {
+void retcode(p) Tree p; {
 	Type ty;
 
 	if (p == NULL) {
@@ -502,16 +499,8 @@ void retcode(Tree p) {
 					tree(CALL+B, p->type,
 						p->kids[0]->kids[0], idtree(retv)),
 					rvalue(idtree(retv)));
-			else {
-				Type ty = retv->type->type;
-				assert(isstruct(ty));
-				if (ty->u.sym->u.s.cfields) {
-					ty->u.sym->u.s.cfields = 0;
-					p = asgntree(ASGN, rvalue(idtree(retv)), p);
-					ty->u.sym->u.s.cfields = 1;
-				} else
-					p = asgntree(ASGN, rvalue(idtree(retv)), p);
-			}
+			else
+				p = asgntree(ASGN, rvalue(idtree(retv)), p);
 			walk(p, 0, 0);
 			if (events.returns)
 				apply(events.returns, cfunc, rvalue(idtree(retv)));
@@ -525,32 +514,31 @@ void retcode(Tree p) {
 			apply(events.returns, cfunc, idtree(t1));
 			p = idtree(t1);
 		}
-	if (!isfloat(p->type))
-		p = cast(p, promote(p->type));
-	if (isptr(p->type))
-		{
-			Symbol q = localaddr(p);
-			if (q && (q->computed || q->generated))
-				warning("pointer to a %s is an illegal return value\n",
-					q->scope == PARAM ? "parameter" : "local");
-			else if (q)
-				warning("pointer to %s `%s' is an illegal return value\n",
-					q->scope == PARAM ? "parameter" : "local", q->name);
-		}
-	walk(tree(mkop(RET,p->type), p->type, p, NULL), 0, 0);
+	p = cast(p, promote(p->type));
+	if (isptr(p->type)) {
+		Symbol q = localaddr(p);
+		if (q && (q->computed || q->generated))
+			warning("pointer to a %s is an illegal return value\n",
+				q->scope == PARAM ? "parameter" : "local");
+		else if (q)
+			warning("pointer to %s `%s' is an illegal return value\n",
+				q->scope == PARAM ? "parameter" : "local", q->name);
+		p = cast(p, unsignedtype);
+	}
+	walk(tree(RET + widen(p->type), p->type, p, NULL), 0, 0);
 }
-void definelab(int lab) {
+void definelab(lab) int lab; {
 	Code cp;
 	Symbol p = findlabel(lab);
 
 	assert(lab);
 	walk(NULL, 0, 0);
-	code(Label)->u.forest = newnode(LABEL+V, NULL, NULL, p);
+	code(Label)->u.forest = newnode(LABELV, NULL, NULL, p);
 	for (cp = codelist->prev; cp->kind <= Label; )
 		cp = cp->prev;
 	while (   cp->kind == Jump
 	       && cp->u.forest->kids[0]
-	       && specific(cp->u.forest->kids[0]->op) == ADDRG+P
+	       && cp->u.forest->kids[0]->op == ADDRGP
 	       && cp->u.forest->kids[0]->syms[0] == p) {
 		assert(cp->u.forest->kids[0]->syms[0]->u.l.label == lab);
 		p->ref--;
@@ -563,14 +551,14 @@ void definelab(int lab) {
 			cp = cp->prev;
 	}
 }
-Node jump(int lab) {
+Node jump(lab) int lab; {
 	Symbol p = findlabel(lab);
 
 	p->ref++;
-	return newnode(JUMP+V, newnode(ADDRG+ttob(voidptype), NULL, NULL, p),
+	return newnode(JUMPV, newnode(ADDRGP, NULL, NULL, p),
 		NULL, NULL);
 }
-void branch(int lab) {
+static void branch(lab) int lab; {
 	Code cp;
 	Symbol p = findlabel(lab);
 
@@ -580,7 +568,7 @@ void branch(int lab) {
 	for (cp = codelist->prev; cp->kind < Label; )
 		cp = cp->prev;
 	while (   cp->kind == Label
-	       && cp->u.forest->op == LABEL+V
+	       && cp->u.forest->op == LABELV
 	       && !equal(cp->u.forest->syms[0], p)) {
 		equatelab(cp->u.forest->syms[0], p);
 		assert(cp->next);
@@ -598,17 +586,17 @@ void branch(int lab) {
 	} else {
 		codelist->kind = Jump;
 		if (cp->kind == Label
-		&&  cp->u.forest->op == LABEL+V
+		&&  cp->u.forest->op == LABELV
 		&&  equal(cp->u.forest->syms[0], p))
-			warning("source code specifies an infinite loop\n");
+			warning("source code specifies an infinite loop");
 	}
 }
-void equatelab(Symbol old, Symbol new) {
+void equatelab(old, new) Symbol old, new; {
 	assert(old->u.l.equatedto == NULL);
 	old->u.l.equatedto = new;
 	new->ref++;
 }
-static int equal(Symbol lprime, Symbol dst) {
+static int equal(lprime, dst) Symbol lprime, dst; {
 	assert(dst && lprime);
 	for ( ; dst; dst = dst->u.l.equatedto)
 		if (lprime == dst)
@@ -616,7 +604,7 @@ static int equal(Symbol lprime, Symbol dst) {
 	return 0;
 }
 /* dostmt - do statement while ( expression ) */
-static void dostmt(int lab, Swtch swp, int lev) {
+static void dostmt(lab, swp, lev) int lab, lev; Swtch swp; {
 	refinc *= 10.0;
 	t = gettok();
 	definelab(lab);
@@ -631,7 +619,7 @@ static void dostmt(int lab, Swtch swp, int lev) {
 }
 
 /* foldcond - check if initial test in for(e1;e2;e3) S is necessary */
-static int foldcond(Tree e1, Tree e2) {
+static int foldcond(e1, e2) Tree e1, e2; {
 	int op = generic(e2->op);
 	Symbol v;
 
@@ -655,7 +643,7 @@ static int foldcond(Tree e1, Tree e2) {
 }
 
 /* localaddr - returns q if p yields the address of local/parameter q; otherwise returns 0 */
-static Symbol localaddr(Tree p) {
+static Symbol localaddr(p) Tree p; {
 	if (p == NULL)
 		return NULL;
 	switch (generic(p->op)) {
@@ -684,7 +672,7 @@ static Symbol localaddr(Tree p) {
 }
 
 /* whilestmt - while ( expression ) statement */
-static void whilestmt(int lab, Swtch swp, int lev) {
+static void whilestmt(lab, swp, lev) int lab, lev; Swtch swp; {
 	Coordinate pt;
 	Tree e;
 

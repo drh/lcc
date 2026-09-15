@@ -8,7 +8,7 @@ union align {
 	long l;
 	char *p;
 	double d;
-	int (*f)(void);
+	int (*f) ARGS((void));
 };
 union header {
 	struct block b;
@@ -17,7 +17,7 @@ union header {
 #ifdef PURIFY
 union header *arena[3];
 
-void *allocate(unsigned long n, unsigned a) {
+void *allocate(n, a) unsigned long n; unsigned a; {
 	union header *new = malloc(sizeof *new + n);
 
 	assert(a < NELEMS(arena));
@@ -30,7 +30,7 @@ void *allocate(unsigned long n, unsigned a) {
 	return new + 1;
 }
 
-void deallocate(unsigned a) {
+void deallocate(a) unsigned a; {
 	union header *p, *q;
 
 	assert(a < NELEMS(arena));
@@ -41,7 +41,7 @@ void deallocate(unsigned a) {
 	arena[a] = NULL;
 }
 
-void *newarray(unsigned long m, unsigned long n, unsigned a) {
+void *newarray(m, n, a) unsigned long m, n; unsigned a; {
 	return allocate(m*n, a);
 }
 #else
@@ -50,7 +50,7 @@ static struct block
 	*arena[] = { &first[0], &first[1], &first[2] };
 static struct block *freeblocks;
 
-void *allocate(unsigned long n, unsigned a) {
+void *allocate(n, a) unsigned long n; unsigned a; {
 	struct block *ap;
 
 	assert(a < NELEMS(arena));
@@ -63,7 +63,7 @@ void *allocate(unsigned long n, unsigned a) {
 			ap = ap->next;
 		} else
 			{
-				unsigned m = sizeof (union header) + n + roundup(10*1024, sizeof (union align));
+				unsigned m = sizeof (union header) + n + 10*1024;
 				ap->next = malloc(m);
 				ap = ap->next;
 				if (ap == NULL) {
@@ -81,10 +81,10 @@ void *allocate(unsigned long n, unsigned a) {
 	return ap->avail - n;
 }
 
-void *newarray(unsigned long m, unsigned long n, unsigned a) {
+void *newarray(m, n, a) unsigned long m, n; unsigned a; {
 	return allocate(m*n, a);
 }
-void deallocate(unsigned a) {
+void deallocate(a) unsigned a; {
 	assert(a < NELEMS(arena));
 	arena[a]->next = freeblocks;
 	freeblocks = first[a].next;

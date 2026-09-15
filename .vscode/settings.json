@@ -1,0 +1,16 @@
+{
+  "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+  "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
+  "C_Cpp.default.cStandard": "c89",
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/src",
+    "${workspaceFolder}/cpp",
+    "${workspaceFolder}/lburg"
+  ],
+  "files.associations": {
+    "*.md": "plaintext"
+  },
+  "search.exclude": {
+    "**/build-ubuntu24/lcc-build": true
+  }
+}

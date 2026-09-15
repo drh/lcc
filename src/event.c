@@ -1,14 +1,12 @@
 #include "c.h"
 
-static char rcsid[] = "$Id$";
-
 struct entry {
 	Apply func;
 	void *cl;
 };
 
 Events events;
-void attach(Apply func, void *cl, List *list) {
+void attach(func, cl, list) Apply func; void *cl; List *list; {
 	struct entry *p;
 
 	NEW(p, PERM);
@@ -16,7 +14,7 @@ void attach(Apply func, void *cl, List *list) {
 	p->cl = cl;
 	*list = append(p, *list);
 }
-void apply(List event, void *arg1, void *arg2) {
+void apply(event, arg1, arg2) List event; void *arg1, *arg2; {
 	if (event) {
 		List lp = event;
 		do {

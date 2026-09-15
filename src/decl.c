@@ -1,8 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id$";
-
-#define add(x,n) (x > inttype->u.sym->u.limits.max.i-(n) ? (overflow=1,x) : x+(n))
+#define add(x,n) (x > INT_MAX-(n) ? (overflow=1,x) : x+(n))
 #define chkoverflow(x,n) ((void)add(x,n))
 #define bits2bytes(n) (((n) + 7)/8)
 static int regcount;
@@ -11,26 +9,26 @@ static List autos, registers;
 Symbol cfunc;		/* current function */
 Symbol retv;		/* return value location for structs */
 
-static void checkref(Symbol, void *);
-static Symbol dclglobal(int, char *, Type, Coordinate *);
-static Symbol dcllocal(int, char *, Type, Coordinate *);
-static Symbol dclparam(int, char *, Type, Coordinate *);
-static Type dclr(Type, char **, Symbol **, int);
-static Type dclr1(char **, Symbol **, int);
-static void decl(Symbol (*)(int, char *, Type, Coordinate *));
-extern void doconst(Symbol, void *);
-static void doglobal(Symbol, void *);
-static void doextern(Symbol, void *);
-static void exitparams(Symbol []);
-static void fields(Type);
-static void funcdefn(int, char *, Type, Symbol [], Coordinate);
-static void initglobal(Symbol, int);
-static void oldparam(Symbol, void *);
-static Symbol *parameters(Type);
-static Type specifier(int *);
-static Type structdcl(int);
-static Type tnode(int, Type);
-void program(void) {
+static void checkref ARGS((Symbol, void *));
+static Symbol dclglobal ARGS((int, char *, Type, Coordinate *));
+static Symbol dcllocal ARGS((int, char *, Type, Coordinate *));
+static Symbol dclparam ARGS((int, char *, Type, Coordinate *));
+static Type dclr ARGS((Type, char **, Symbol **, int));
+static Type dclr1 ARGS((char **, Symbol **, int));
+static void decl ARGS((Symbol (*)(int, char *, Type, Coordinate *)));
+extern void doconst ARGS((Symbol, void *));
+static void doglobal ARGS((Symbol, void *));
+static void doextern ARGS((Symbol, void *));
+static void exitparams ARGS((Symbol []));
+static void fields ARGS((Type));
+static void funcdefn ARGS((int, char *, Type, Symbol [], Coordinate));
+static void initglobal ARGS((Symbol, int));
+static void oldparam ARGS((Symbol, void *));
+static Symbol *parameters ARGS((Type));
+static Type specifier ARGS((int *));
+static Type structdcl ARGS((int));
+static Type tnode ARGS((int, Type));
+void program() {
 	int n;
 	
 	level = GLOBAL;
@@ -51,7 +49,7 @@ void program(void) {
 	if (n == 0)
 		warning("empty input file\n");
 }
-static Type specifier(int *sclass) {
+static Type specifier(sclass) int *sclass; {
 	int cls, cons, sign, size, type, vol;
 	Type ty = NULL;
 
@@ -71,11 +69,7 @@ static Type specifier(int *sclass) {
 		case VOLATILE: p = &vol;  t = gettok();      break;
 		case SIGNED:
 		case UNSIGNED: p = &sign; t = gettok();      break;
-		case LONG:     if (size == LONG) {
-		                       size = 0;
-		                       tt = LONG+LONG;
-		               }
-		               p = &size; t = gettok();      break;
+		case LONG:
 		case SHORT:    p = &size; t = gettok();      break;
 		case VOID: case CHAR: case INT: case FLOAT:
 		case DOUBLE:   p = &type; ty = tsym->type;
@@ -116,9 +110,8 @@ static Type specifier(int *sclass) {
 		type = INT;
 		ty = inttype;
 	}
-	if (size == SHORT     && type != INT
-	||  size == LONG+LONG && type != INT
-	||  size == LONG      && type != INT && type != DOUBLE
+	if (size == SHORT && type != INT
+	||  size == LONG  && type != INT && type != DOUBLE
 	||  sign && type != INT && type != CHAR)
 		error("invalid type specification\n");
 	if (type == CHAR && sign)
@@ -127,11 +120,7 @@ static Type specifier(int *sclass) {
 		ty = sign == UNSIGNED ? unsignedshort : shorttype;
 	else if (size == LONG && type == DOUBLE)
 		ty = longdouble;
-	else if (size == LONG+LONG) {
-		ty = sign == UNSIGNED ? unsignedlonglong : longlong;
-		if (Aflag >= 1)
-			warning("`%t' is a non-ANSI type\n", ty);
-	} else if (size == LONG)
+	else if (size == LONG)
 		ty = sign == UNSIGNED ? unsignedlong : longtype;
 	else if (sign == UNSIGNED && type == INT)
 		ty = unsignedtype;
@@ -141,7 +130,8 @@ static Type specifier(int *sclass) {
 		ty = qual(VOLATILE, ty);
 	return ty;
 }
-static void decl(Symbol (*dcl)(int, char *, Type, Coordinate *)) {
+static void decl(dcl)
+Symbol (*dcl) ARGS((int, char *, Type, Coordinate *)); {
 	int sclass;
 	Type ty, ty1;
 	static char stop[] = { CHAR, STATIC, ID, 0 };
@@ -201,7 +191,8 @@ static void decl(Symbol (*dcl)(int, char *, Type, Coordinate *)) {
 		error("empty declaration\n");
 	test(';', stop);
 }
-static Symbol dclglobal(int sclass, char *id, Type ty, Coordinate *pos) {
+static Symbol dclglobal(sclass, id, ty, pos)
+int sclass; char *id; Type ty; Coordinate *pos; {
 	Symbol p;
 
 	if (sclass == 0)
@@ -228,42 +219,38 @@ static Symbol dclglobal(int sclass, char *id, Type ty, Coordinate *pos) {
 
 	}
 	if (p == NULL || p->scope != GLOBAL) {
-		Symbol q = lookup(id, externals);
-		if (q) {
-			if (sclass == STATIC || !eqtype(ty, q->type, 1))
-				warning("declaration of `%s' does not match previous declaration at %w\n", id, &q->src);
-
-			p = relocate(id, externals, globals);
-			p->sclass = sclass;
-		} else {
-			p = install(id, &globals, GLOBAL, PERM);
-			p->sclass = sclass;
-			(*IR->defsymbol)(p);
-		}
+		p = install(id, &globals, GLOBAL, PERM);
+		p->sclass = sclass;
 		if (p->sclass != STATIC) {
 			static int nglobals;
 			nglobals++;
 			if (Aflag >= 2 && nglobals == 512)
 				warning("more than 511 external identifiers\n");
 		}
+		(*IR->defsymbol)(p);
 	} else if (p->sclass == EXTERN)
 		p->sclass = sclass;
 	p->type = ty;
 	p->src = *pos;
+	{
+		Symbol q = lookup(p->name, externals);
+		if (q && (p->sclass == STATIC
+		          || !eqtype(p->type, q->type, 1)))
+			warning("declaration of `%s' does not match previous declaration at %w\n", p->name, &q->src);
+
+	}
 	if (t == '=' && isfunc(p->type)) {
 		error("illegal initialization for `%s'\n", p->name);
 		t = gettok();
 		initializer(p->type, 0);
-	} else if (t == '=') {
+	} else if (t == '=')
 		initglobal(p, 0);
-		if (glevel > 0 && IR->stabsym) {
-			(*IR->stabsym)(p); swtoseg(p->u.seg); }
-	} else if (p->sclass == STATIC && !isfunc(p->type)
+	else if (p->sclass == STATIC && !isfunc(p->type)
 	&& p->type->size == 0)
 		error("undefined size for `%t %s'\n", p->type, p->name);
 	return p;
 }
-static void initglobal(Symbol p, int flag) {
+static void initglobal(p, flag) Symbol p; int flag; {
 	Type ty;
 
 	if (t == '=' || flag) {
@@ -280,18 +267,21 @@ static void initglobal(Symbol p, int flag) {
 			p->type = ty;
 		if (p->sclass == EXTERN)
 			p->sclass = AUTO;
+		p->defined = 1;
 	}
 }
-void defglobal(Symbol p, int seg) {
+void defglobal(p, seg) Symbol p; int seg; {
 	p->u.seg = seg;
 	swtoseg(p->u.seg);
 	if (p->sclass != STATIC)
 		(*IR->export)(p);
+	if (level == GLOBAL && glevel > 0 && IR->stabsym) {
+		(*IR->stabsym)(p); swtoseg(p->u.seg); }
 	(*IR->global)(p);
-	p->defined = 1;
 }
 
-static Type dclr(Type basety, char **id, Symbol **params, int abstract) {
+static Type dclr(basety, id, params, abstract)
+Type basety; char **id; Symbol **params; int abstract; {
 	Type ty = dclr1(id, params, abstract);
 
 	for ( ; ty; ty = ty->type)
@@ -315,7 +305,7 @@ static Type dclr(Type basety, char **id, Symbol **params, int abstract) {
 		warning("more than 32767 bytes in `%t'\n", basety);
 	return basety;
 }
-static Type tnode(int op, Type type) {
+static Type tnode(op, type) int op; Type type; {
 	Type ty;
 
 	NEW0(ty, STMT);
@@ -323,7 +313,8 @@ static Type tnode(int op, Type type) {
 	ty->type = type;
 	return ty;
 }
-static Type dclr1(char **id, Symbol **params, int abstract) {
+static Type dclr1(id, params, abstract)
+char **id; Symbol **params; int abstract; {
 	Type ty = NULL;
 
 	switch (t) {
@@ -365,9 +356,9 @@ static Type dclr1(char **id, Symbol **params, int abstract) {
 		switch (t) {
 		case '(': t = gettok(); { Symbol *args;
 					  ty = tnode(FUNCTION, ty);
-					  enterscope();
-					  if (level > PARAM)
-					  	enterscope();
+enterscope();
+if (level > PARAM)
+	enterscope();
 					  args = parameters(ty);
 					  if (params && *params == NULL)
 					  	*params = args;
@@ -390,7 +381,7 @@ static Type dclr1(char **id, Symbol **params, int abstract) {
 		}
 	return ty;
 }
-static Symbol *parameters(Type fty) {
+static Symbol *parameters(fty) Type fty; {
 	List list = NULL;
 	Symbol *params;
 
@@ -432,12 +423,12 @@ static Symbol *parameters(Type fty) {
 				break;
 			t = gettok();
 		}
-		fty->u.f.proto = newarray(length(list) + 1,
-			sizeof (Type *), PERM);
-		params = ltov(&list, FUNC);
-		for (n = 0; params[n]; n++)
-			fty->u.f.proto[n] = params[n]->type;
-		fty->u.f.proto[n] = NULL;
+fty->u.f.proto = newarray(length(list) + 1,
+	sizeof (Type *), PERM);
+params = ltov(&list, FUNC);
+for (n = 0; params[n]; n++)
+	fty->u.f.proto[n] = params[n]->type;
+fty->u.f.proto[n] = NULL;
 		fty->u.f.oldstyle = 0;
 	} else {
 		if (t == ID)
@@ -468,7 +459,7 @@ static Symbol *parameters(Type fty) {
 		t = gettok();
 	return params;
 }
-static void exitparams(Symbol params[]) {
+static void exitparams(params) Symbol params[]; {
 	assert(params);
 	if (params[0] && !params[0]->defined)
 		error("extraneous old-style parameter list\n");
@@ -477,7 +468,8 @@ static void exitparams(Symbol params[]) {
 	exitscope();
 }
 
-static Symbol dclparam(int sclass, char *id, Type ty, Coordinate *pos) {
+static Symbol dclparam(sclass, id, ty, pos)
+int sclass; char *id; Type ty; Coordinate *pos; {
 	Symbol p;
 
 	if (isfunc(ty))
@@ -513,7 +505,7 @@ static Symbol dclparam(int sclass, char *id, Type ty, Coordinate *pos) {
 	}
 	return p;
 }
-static Type structdcl(int op) {
+static Type structdcl(op) int op; {
 	char *tag;
 	Type ty;
 	Symbol p;
@@ -553,7 +545,7 @@ static Type structdcl(int op) {
 		use(ty->u.sym, pos);
 	return ty;
 }
-static void fields(Type ty) {
+static void fields(ty) Type ty; {
 	{ int n = 0;
 	  while (istypename(t, tsym)) {
 	  	static char stop[] = { IF, CHAR, '}', 0 };
@@ -650,11 +642,12 @@ static void fields(Type ty) {
 	  chkoverflow(ty->size, ty->align - 1);
 	  ty->size = roundup(ty->size, ty->align);
 	  if (overflow) {
-	  	error("size of `%t' exceeds %d bytes\n", ty, inttype->u.sym->u.limits.max.i);
-	  	ty->size = inttype->u.sym->u.limits.max.i&(~(ty->align - 1));
+	  	error("size of `%t' exceeds %d bytes\n", ty, INT_MAX);
+	  	ty->size = INT_MAX&(~(ty->align - 1));
 	  } }
 }
-static void funcdefn(int sclass, char *id, Type ty, Symbol params[], Coordinate pt) {
+static void funcdefn(sclass, id, ty, params, pt) int sclass;
+char *id; Type ty; Symbol params[]; Coordinate pt; {
 	int i, n;
 	Symbol *callee, *caller, p;
 	Type rty = freturn(ty);
@@ -668,8 +661,6 @@ static void funcdefn(int sclass, char *id, Type ty, Symbol params[], Coordinate 
 	if (Aflag >= 2 && n > 31)
 		warning("more than 31 parameters in function `%s'\n", id);
 	if (ty->u.f.oldstyle) {
-		if (Aflag >= 1)
-			warning("old-style function definition for `%s'\n", id);
 		caller = params;
 		callee = newarray(n + 1, sizeof *callee, FUNC);
 		memcpy(callee, caller, (n+1)*sizeof *callee);
@@ -684,7 +675,10 @@ static void funcdefn(int sclass, char *id, Type ty, Symbol params[], Coordinate 
 				callee[i] = dclparam(0, p->name, inttype, &p->src);
 			*caller[i] = *p;
 			caller[i]->sclass = AUTO;
-			caller[i]->type = promote(p->type);
+			if (unqual(p->type) == floattype)
+				caller[i]->type = doubletype;
+			else
+				caller[i]->type = promote(p->type);
 		}
 		p = lookup(id, identifiers);
 		if (p && p->scope == GLOBAL && isfunc(p->type)
@@ -695,9 +689,6 @@ static void funcdefn(int sclass, char *id, Type ty, Symbol params[], Coordinate 
 				if (eqtype(isenum(ty) ? ty->type : ty,
 					unqual(caller[i]->type), 1) == 0)
 					break;
-				else if (isenum(ty) && !isenum(unqual(caller[i]->type)))
-					warning("compatibility of `%t' and `%t' is compiler dependent\n",
-						proto[i], caller[i]->type);
 			}
 			if (proto[i] || caller[i])
 				error("conflicting argument declarations for function `%s'\n", id);
@@ -718,8 +709,7 @@ static void funcdefn(int sclass, char *id, Type ty, Symbol params[], Coordinate 
 		for (i = 0; (p = callee[i]) != NULL && p->name; i++) {
 			NEW(caller[i], FUNC);
 			*caller[i] = *p;
-			if (isint(p->type))
-				caller[i]->type = promote(p->type);
+			caller[i]->type = promote(p->type);
 			caller[i]->sclass = AUTO;
 			if ('1' <= *p->name && *p->name <= '9')
 				error("missing name for parameter %d to function `%s'\n", i + 1, id);
@@ -733,13 +723,13 @@ static void funcdefn(int sclass, char *id, Type ty, Symbol params[], Coordinate 
 				p->type, p->name);
 			caller[i]->type = p->type = inttype;
 		}
-	if (Aflag >= 2 && sclass != STATIC && strcmp(id, "main") == 0) {
+	if (Aflag >= 2 && strcmp(id, "main") == 0) {
 		if (ty->u.f.oldstyle)
 			warning("`%t %s()' is a non-ANSI definition\n", rty, id);
 		else if (!(rty == inttype
 			&& (n == 0 && callee[0] == NULL
 			||  n == 2 && callee[0]->type == inttype
-			&& isptr(callee[1]->type) && callee[1]->type->type == charptype
+			&& isptr(callee[1]->type) && callee[1]->type->type == ptr(chartype)
 			&& !variadic(ty))))
 			warning("`%s' is a non-ANSI definition\n", typestring(ty, id));
 	}
@@ -764,11 +754,23 @@ static void funcdefn(int sclass, char *id, Type ty, Symbol params[], Coordinate 
 	regcount = 0;
 	codelist = &codehead;
 	codelist->next = NULL;
+	definept(NULL);
 	if (!IR->wants_callb && isstruct(rty))
-		retv = genident(AUTO, ptr(unqual(rty)), PARAM);
+		retv = genident(AUTO, ptr(rty), PARAM);
 	compound(0, NULL, 0);
 
+	{
+		Code cp;
+		for (cp = codelist; cp->kind < Label; cp = cp->prev)
+			;
+		if (cp->kind != Jump) {
+			if (rty != voidtype)
+				warning("missing return value\n");
+			retcode(NULL);
+		}
+	}
 	definelab(cfunc->u.f.label);
+	definept(NULL);
 	if (events.exit)
 		apply(events.exit, cfunc, NULL);
 	walk(NULL, 0, 0);
@@ -803,6 +805,7 @@ static void funcdefn(int sclass, char *id, Type ty, Symbol params[], Coordinate 
 	(*IR->function)(cfunc, caller, callee, cfunc->u.f.ncalls);
 	if (glevel && IR->stabfend)
 		(*IR->stabfend)(cfunc, lineno);
+	outflush();
 	foreach(stmtlabs, LABELS, checklab, NULL);
 	exitscope();
 	expect('}');
@@ -810,7 +813,7 @@ static void funcdefn(int sclass, char *id, Type ty, Symbol params[], Coordinate 
 	retv  = NULL;
 	cfunc = NULL;
 }
-static void oldparam(Symbol p, void *cl) {
+static void oldparam(p, cl) Symbol p; void *cl; {
 	int i;
 	Symbol *callee = cl;
 
@@ -821,7 +824,8 @@ static void oldparam(Symbol p, void *cl) {
 		}
 	error("declared parameter `%s' is missing\n", p->name);
 }
-void compound(int loop, struct swtch *swp, int lev) {
+void compound(loop, swp, lev)
+int loop, lev; struct swtch *swp; {
 	Code cp;
 	int nregs;
 
@@ -829,18 +833,17 @@ void compound(int loop, struct swtch *swp, int lev) {
 	cp = code(Blockbeg);
 	enterscope();
 	assert(level >= LOCAL);
-	if (level == LOCAL && events.entry)
-		apply(events.entry, cfunc, NULL);
-	definept(NULL);
-	expect('{');
 	autos = registers = NULL;
 	if (level == LOCAL && IR->wants_callb
 	&& isstruct(freturn(cfunc->type))) {
-		retv = genident(AUTO, ptr(unqual(freturn(cfunc->type))), level);
+		retv = genident(AUTO, ptr(freturn(cfunc->type)), level);
 		retv->defined = 1;
 		retv->ref = 1;
 		registers = append(retv, registers);
 	}
+	if (level == LOCAL && events.entry)
+		apply(events.entry, cfunc, NULL);
+	expect('{');
 	while (kind[t] == CHAR || kind[t] == STATIC
 	|| istypename(t, tsym) && getchr() != ':')
 		decl(dcllocal);
@@ -852,8 +855,6 @@ void compound(int loop, struct swtch *swp, int lev) {
 			registers = append(a[i], registers);
 		cp->u.block.locals = ltov(&registers, FUNC);
 	}
-	if (events.blockentry)
-		apply(events.blockentry, cp->u.block.locals, NULL);
 	while (kind[t] == IF || kind[t] == ID)
 		statement(loop, swp, lev);
 	walk(NULL, 0, 0);
@@ -868,32 +869,16 @@ void compound(int loop, struct swtch *swp, int lev) {
 			cp->u.block.locals[j] = p;
 		}
 	}
-	if (level == LOCAL) {
-		Code cp;
-		for (cp = codelist; cp->kind < Label; cp = cp->prev)
-			;
-		if (cp->kind != Jump) {
-			if (freturn(cfunc->type) != voidtype) {
-				warning("missing return value\n");
-				retcode(cnsttree(inttype, 0L));
-			} else
-				retcode(NULL);
-		}
-	}
-	if (events.blockexit)
-		apply(events.blockexit, cp->u.block.locals, NULL);
 	cp->u.block.level = level;
 	cp->u.block.identifiers = identifiers;
 	cp->u.block.types = types;
 	code(Blockend)->u.begin = cp;
-	if (reachable(Gen))
-		definept(NULL);
 	if (level > LOCAL) {
 		exitscope();
 		expect('}');
 	}
 }
-static void checkref(Symbol p, void *cl) {
+static void checkref(p, cl) Symbol p; void *cl; {
 	if (p->scope >= PARAM
 	&& (isvolatile(p->type) || isfunc(p->type)))
 		p->addressed = 1;
@@ -913,12 +898,18 @@ static void checkref(Symbol p, void *cl) {
 	 || p->scope  >= LOCAL)
 	&& !p->addressed && isscalar(p->type) && p->ref >= 3.0)
 		p->sclass = REGISTER;
+	if (p->scope >= LOCAL && p->sclass == EXTERN) {
+		Symbol q = lookup(p->name, externals);
+		assert(q);
+		q->ref += p->ref;
+	}
 	if (level == GLOBAL && p->sclass == STATIC && !p->defined
 	&& isfunc(p->type) && p->ref)
 		error("undefined static `%t %s'\n", p->type, p->name);
 	assert(!(level == GLOBAL && p->sclass == STATIC && !p->defined && !isfunc(p->type)));
 }
-static Symbol dcllocal(int sclass, char *id, Type ty, Coordinate *pos) {
+static Symbol dcllocal(sclass, id, ty, pos)
+int sclass; char *id; Type ty; Coordinate *pos; {
 	Symbol p, q;
 
 	if (sclass == 0)
@@ -943,26 +934,34 @@ static Symbol dcllocal(int sclass, char *id, Type ty, Coordinate *pos) {
 			error("redeclaration of `%s' previously declared at %w\n", q->name, &q->src);
 
 	assert(level >= LOCAL);
-	p = install(id, &identifiers, level, sclass == STATIC || sclass == EXTERN ? PERM : FUNC);
+	p = install(id, &identifiers, level, FUNC);
 	p->type = ty;
 	p->sclass = sclass;
 	p->src = *pos;
 	switch (sclass) {
-	case EXTERN:   q = lookup(id, globals);
-		       if (q == NULL || q->sclass == TYPEDEF || q->sclass == ENUM) {
-		       	q = lookup(id, externals);
-		       	if (q == NULL) {
-		       		q = install(p->name, &externals, GLOBAL, PERM);
-		       		q->type = p->type;
-		       		q->sclass = EXTERN;
-		       		q->src = src;
-		       		(*IR->defsymbol)(q);
+	case EXTERN:   if (q && q->scope == GLOBAL && q->sclass == STATIC) {
+		       	p->sclass = STATIC;
+		       	p->scope = GLOBAL;
+		       	(*IR->defsymbol)(p);
+		       	p->sclass = EXTERN;
+		       	p->scope = level;
+		       } else
+		       	(*IR->defsymbol)(p);
+		       {
+		       	Symbol r = lookup(id, externals);
+		       	if (r == NULL) {
+		       		r = install(p->name, &externals, GLOBAL, PERM);
+		       		r->src = p->src;
+		       		r->type = p->type;
+		       		r->sclass = p->sclass;
+		       		q = lookup(id, globals);
+		       		if (q && q->sclass != TYPEDEF && q->sclass != ENUM)
+		       			r = q;
 		       	}
-		       }
-		       if (!eqtype(p->type, q->type, 1))
-		       	warning("declaration of `%s' does not match previous declaration at %w\n", q->name, &q->src);
+		       	if (r && !eqtype(r->type, p->type, 1))
+		       		warning("declaration of `%s' does not match previous declaration at %w\n", r->name, &r->src);
 
-		       p->u.alias = q; break;
+		       } break;
 	case STATIC:   (*IR->defsymbol)(p);
 		       initglobal(p, 0);
 		       if (!p->defined)
@@ -978,9 +977,7 @@ static Symbol dcllocal(int sclass, char *id, Type ty, Coordinate *pos) {
 		       p->defined = 1;
  break;
 	case AUTO:     autos = append(p, autos);
-		       p->defined = 1;
-		       if (isarray(ty))
-		       	p->addressed = 1; break;
+		       p->defined = 1; break;
 	default: assert(0);
 	}
 	if (t == '=') {
@@ -1019,16 +1016,23 @@ static Symbol dcllocal(int sclass, char *id, Type ty, Coordinate *pos) {
 		error("undefined size for `%t %s'\n", p->type, id);
 	return p;
 }
-void finalize(void) {
+void finalize() {
 	foreach(externals,   GLOBAL,    doextern, NULL);
 	foreach(identifiers, GLOBAL,    doglobal, NULL);
 	foreach(identifiers, GLOBAL,    checkref, NULL);
 	foreach(constants,   CONSTANTS, doconst,  NULL);
 }
-static void doextern(Symbol p, void *cl) {
-	(*IR->import)(p);
+static void doextern(p, cl) Symbol p; void *cl; {
+	Symbol q = lookup(p->name, identifiers);
+
+	if (q)
+		q->ref += p->ref;
+	else {
+		(*IR->defsymbol)(p);
+		(*IR->import)(p);
+	}
 }
-static void doglobal(Symbol p, void *cl) {
+static void doglobal(p, cl) Symbol p; void *cl; {
 	if (!p->defined && (p->sclass == EXTERN
 	|| isfunc(p->type) && p->sclass == AUTO))
 		(*IR->import)(p);
@@ -1040,8 +1044,6 @@ static void doglobal(Symbol p, void *cl) {
 		if (p->type->size > 0) {
 			defglobal(p, BSS);
 			(*IR->space)(p->type->size);
-			if (glevel > 0 && IR->stabsym)
-				(*IR->stabsym)(p);
 		} else
 			error("undefined size for `%t %s'\n",
 				p->type, p->name);
@@ -1052,32 +1054,25 @@ static void doglobal(Symbol p, void *cl) {
 	&& !p->generated && p->sclass != EXTERN)
 		printdecl(p, p->type);
 }
-void doconst(Symbol p, void *cl) {
+void doconst(p, cl) Symbol p; void *cl; {
 	if (p->u.c.loc) {
 		assert(p->u.c.loc->u.seg == 0); 
 		defglobal(p->u.c.loc, LIT);
-		if (isarray(p->type) && p->type->type == widechar) {
-			unsigned int *s = p->u.c.v.p;
-			int n = p->type->size/widechar->size;
-			while (n-- > 0) {
-				Value v;
-				v.u = *s++;
-				(*IR->defconst)(widechar->op, widechar->size, v);
-			}
-		} else if (isarray(p->type))
+		if (isarray(p->type))
 			(*IR->defstring)(p->type->size, p->u.c.v.p);
 		else
-			(*IR->defconst)(p->type->op, p->type->size, p->u.c.v);
+			(*IR->defconst)(ttob(p->type), p->u.c.v);
+		p->u.c.loc->defined = 1;
 		p->u.c.loc = NULL;
 	}
 }
-void checklab(Symbol p, void *cl) {
+void checklab(p, cl) Symbol p; void *cl; {
 	if (!p->defined)
 		error("undefined label `%s'\n", p->name);
 	p->defined = 1;
 }
 
-Type enumdcl(void) {
+Type enumdcl() {
 	char *tag;
 	Type ty;
 	Symbol p;
@@ -1092,8 +1087,7 @@ Type enumdcl(void) {
 		tag = "";
 	if (t == '{') {
 		static char follow[] = { IF, 0 };
-		int n = 0;
-		long k = -1;
+		int n = 0, k = -1;
 		List idlist = 0;
 		ty = newstruct(ENUM, tag);
 		t = gettok();
@@ -1111,7 +1105,7 @@ Type enumdcl(void) {
 				t = gettok();
 				k = intexpr(0, 0);
 			} else {
-				if (k == inttype->u.sym->u.limits.max.i)
+				if (k == INT_MAX)
 					error("overflow in value for enumeration constant `%s'\n", id);
 				k++;
 			}
@@ -1150,7 +1144,7 @@ Type enumdcl(void) {
 	return ty;
 }
 
-Type typename(void) {
+Type typename() {
 	Type ty = specifier(NULL);
 
 	if (t == '*' || t == '(' || t == '[') {

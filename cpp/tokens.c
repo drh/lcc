@@ -93,8 +93,6 @@ growtokenrow(Tokenrow *trp)
 
 	trp->max = 3*trp->max/2 + 1;
 	trp->bp = (Token *)realloc(trp->bp, trp->max*sizeof(Token));
-	if (trp->bp == NULL)
-		error(FATAL, "Out of memory from realloc");
 	trp->lp = &trp->bp[nlast];
 	trp->tp = &trp->bp[ncur];
 	return trp->lp;
@@ -303,24 +301,17 @@ puttokens(Tokenrow *trp)
 			tp++;
 			len += tp->wslen+tp->len;
 		}
-		if (len>OBS/2) {		/* handle giant token */
-			if (wbp > wbuf)
-				fwrite(wbuf, 1, wbp-wbuf, stdout);
-			fwrite((char *)p, 1, len, stdout);
-			wbp = wbuf;
-		} else {	
-			memcpy(wbp, p, len);
-			wbp += len;
-		}
+		memcpy(wbp, p, len);
+		wbp += len;
 		if (wbp >= &wbuf[OBS]) {
-			fwrite(wbuf, 1, OBS, stdout);
+			write(1, wbuf, OBS);
 			if (wbp > &wbuf[OBS])
 				memcpy(wbuf, wbuf+OBS, wbp - &wbuf[OBS]);
 			wbp -= OBS;
 		}
 	}
 	trp->tp = tp;
-	if (cursource->fd==stdin)
+	if (cursource->fd==0)
 		flushout();
 }
 
@@ -328,8 +319,7 @@ void
 flushout(void)
 {
 	if (wbp>wbuf) {
-		fwrite(wbuf, 1, wbp-wbuf, stdout);
-		fflush(stdout);
+		write(1, wbuf, wbp-wbuf);
 		wbp = wbuf;
 	}
 }

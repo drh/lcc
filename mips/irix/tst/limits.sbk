@@ -5,12 +5,12 @@
 .align 2
 .ent main
 main:
-.frame $sp,32,$31
+.frame $sp,24,$31
 .set noreorder
 .cpload $25
 .set reorder
-addu $sp,$sp,-32
-.mask 0x82000000,-12
+addu $sp,$sp,-24
+.mask 0x82000000,-4
 .cprestore 16
 sw $31,20($sp)
 la $4,L.2
@@ -87,7 +87,7 @@ move $2,$0
 L.1:
 lw $25,16($sp)
 lw $31,20($sp)
-addu $sp,$sp,32
+addu $sp,$sp,24
 j $31
 .end main
 .rdata

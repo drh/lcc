@@ -1,261 +1,36 @@
-#if defined(__STDC__) || defined(__cplusplus)
-#define YYCONST const
-#define YYPARAMS(x) x
-#define YYDEFUN(name, arglist, args) name(args)
-#define YYAND ,
-#define YYPTR void *
-#else
-#define YYCONST
-#define YYPARAMS(x) ()
-#define YYDEFUN(name, arglist, args) name arglist args;
-#define YYAND ;
-#define YYPTR char *
-#endif
-#ifndef lint
-YYCONST static char yysccsid[] = "@(#)yaccpar	1.8 (Berkeley +Cygnus.28) 01/20/91";
-#endif
-#define YYBYACC 1
-#ifndef YYDONT_INCLUDE_STDIO
-#include <stdio.h>
-#endif
-#ifdef __cplusplus
-#include <stdlib.h> /* for malloc/realloc/free */
-#endif
-#line 2 "lburg/gram.y"
+
+# line 2 "lburg/gram.y"
 #include <stdio.h>
 #include "lburg.h"
 static char rcsid[] = "$Id$";
 /*lint -e616 -e527 -e652 -esym(552,yynerrs) -esym(563,yynewstate,yyerrlab) */
-static int yylineno = 0;
-#line 8 "lburg/gram.y"
-typedef union {
+
+# line 7 "lburg/gram.y"
+typedef union  {
 	int n;
 	char *string;
 	Tree tree;
 } YYSTYPE;
-#line 37 "y.tab.c"
-#define TERMINAL 257
-#define START 258
-#define PPERCENT 259
-#define ID 260
-#define TEMPLATE 261
-#define CODE 262
-#define INT 263
-#define YYERRCODE 256
-static YYCONST short yylhs[] = {                                        -1,
-    0,    0,    4,    4,    6,    6,    6,    6,    7,    7,
-    5,    5,    5,    5,    1,    3,    3,    3,    2,
-};
-static YYCONST short yylen[] = {                                         2,
-    3,    1,    0,    2,    3,    3,    1,    2,    0,    4,
-    0,    7,    2,    3,    1,    1,    4,    6,    1,
-};
-static YYCONST short yydefred[] = {                                      3,
-    0,    0,    0,    9,    0,   11,    7,    4,    8,    0,
-   15,    0,    0,    0,    5,    6,    0,   13,    0,    0,
-   14,    0,   10,    0,    0,    0,    0,    0,   19,    0,
-   17,    0,   12,    0,   18,
-};
-static YYCONST short yydgoto[] = {                                       1,
-   12,   30,   25,    2,   13,    8,   10,
-};
-static YYCONST short yysindex[] = {                                      0,
-    0,   -4,   -2,    0, -250,    0,    0,    0,    0,   -9,
-    0,    1,  -10,  -49,    0,    0,    3,    0,  -44, -248,
-    0, -244,    0,  -22, -242, -244, -245,  -37,    0,   10,
-    0, -244,    0,  -20,    0,
-};
-static YYCONST short yyrindex[] = {                                      0,
-    0,   22,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,   23,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,  -39,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,
-};
-static YYCONST short yygindex[] = {                                      0,
-   11,    0,  -23,    0,    0,    0,    0,
-};
-#define YYTABLESIZE 255
-static YYCONST short yytable[] = {                                      18,
-   15,   16,   28,   31,   16,    7,   32,    9,   34,   11,
-   16,   20,   21,   22,   23,   24,   29,   26,   27,   33,
-   35,    2,    1,   19,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,   16,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,   17,    0,    0,    0,   11,
-   14,    3,    4,    5,    6,
-};
-static YYCONST short yycheck[] = {                                      10,
-   10,   41,   26,   41,   44,   10,   44,   10,   32,  260,
-   10,   61,   10,   58,  263,  260,  262,   40,  261,   10,
-   41,    0,    0,   13,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,  261,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,  256,   -1,   -1,   -1,  260,
-  260,  256,  257,  258,  259,
-};
-#define YYFINAL 1
-#ifndef YYDEBUG
-#define YYDEBUG 0
-#endif
-#define YYMAXTOKEN 263
-#if YYDEBUG
-static YYCONST char *YYCONST yyname[] = {
-"end-of-file",0,0,0,0,0,0,0,0,0,"'\\n'",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,"'('","')'",0,0,"','",0,0,0,0,0,0,0,0,0,0,0,0,0,"':'",0,0,
-"'='",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-"TERMINAL","START","PPERCENT","ID","TEMPLATE","CODE","INT",
-};
-static YYCONST char *YYCONST yyrule[] = {
-"$accept : spec",
-"spec : decls PPERCENT rules",
-"spec : decls",
-"decls :",
-"decls : decls decl",
-"decl : TERMINAL blist '\\n'",
-"decl : START nonterm '\\n'",
-"decl : '\\n'",
-"decl : error '\\n'",
-"blist :",
-"blist : blist ID '=' INT",
-"rules :",
-"rules : rules nonterm ':' tree TEMPLATE cost '\\n'",
-"rules : rules '\\n'",
-"rules : rules error '\\n'",
-"nonterm : ID",
-"tree : ID",
-"tree : ID '(' tree ')'",
-"tree : ID '(' tree ',' tree ')'",
-"cost : CODE",
-};
-#endif
-#define YYLEX yylex()
-#define YYEMPTY -1
-#define yyclearin (yychar=(YYEMPTY))
-#define yyerrok (yyerrflag=0)
-#ifndef YYINITDEPTH
-#define YYINITDEPTH 200
-#endif
-#ifdef YYSTACKSIZE
+# define TERM 257
+# define START 258
+# define PPERCENT 259
+# define ID 260
+# define TEMPLATE 261
+# define CODE 262
+# define INT 263
+#define yyclearin yychar = -1
+#define yyerrok yyerrflag = 0
+extern int yychar;
+extern int yyerrflag;
 #ifndef YYMAXDEPTH
-#define YYMAXDEPTH YYSTACKSIZE
+#define YYMAXDEPTH 150
 #endif
-#else
-#ifdef YYMAXDEPTH
-#define YYSTACKSIZE YYMAXDEPTH
-#else
-#define YYSTACKSIZE 500
-#define YYMAXDEPTH 500
-#endif
-#endif
-#ifndef YYMAXSTACKSIZE
-#define YYMAXSTACKSIZE 10000
-#endif
-int yydebug;
-int yynerrs;
-int yyerrflag;
-int yychar;
-YYSTYPE yyval;
-YYSTYPE yylval;
-static short *yyss;
-static YYSTYPE *yyvs;
-static int yystacksize;
-#define yyfree(x) free(x)
-extern int yylex();
+YYSTYPE yylval, yyval;
+typedef int yytabelem;
+# define YYERRCODE 256
 
-static YYPTR
-YYDEFUN (yymalloc, (bytes), unsigned bytes)
-{
-    YYPTR ptr = (YYPTR) malloc (bytes);
-    if (ptr != 0) return (ptr);
-    yyerror ("yyparse: memory exhausted");
-    return (0);
-}
+# line 58 "lburg/gram.y"
 
-static YYPTR
-YYDEFUN (yyrealloc, (old, bytes), YYPTR old YYAND unsigned bytes)
-{
-    YYPTR ptr = (YYPTR) realloc (old, bytes);
-    if (ptr != 0) return (ptr);
-    yyerror ("yyparse: memory exhausted");
-    return (0);
-}
-
-static int
-#ifdef __GNUC__
-inline
-#endif
-yygrow ()
-{
-    int old_stacksize = yystacksize;
-    short *new_yyss;
-    YYSTYPE *new_yyvs;
-
-    if (yystacksize == YYMAXSTACKSIZE)
-        return (1);
-    yystacksize += (yystacksize + 1 ) / 2;
-    if (yystacksize > YYMAXSTACKSIZE)
-        yystacksize = YYMAXSTACKSIZE;
-#if YYDEBUG
-    if (yydebug)
-        printf("yydebug: growing stack size from %d to %d\n",
-               old_stacksize, yystacksize);
-#endif
-    new_yyss = (short *) yyrealloc ((char *)yyss, yystacksize * sizeof (short));
-    if (new_yyss == 0)
-        return (1);
-    new_yyvs = (YYSTYPE *) yyrealloc ((char *)yyvs, yystacksize * sizeof (YYSTYPE));
-    if (new_yyvs == 0)
-    {
-        yyfree (new_yyss);
-        return (1);
-    }
-    yyss = new_yyss;
-    yyvs = new_yyvs;
-    return (0);
-}
-#line 60 "lburg/gram.y"
 #include <assert.h>
 #include <stdarg.h>
 #include <ctype.h>
@@ -266,15 +41,15 @@ int errcnt = 0;
 FILE *infp = NULL;
 FILE *outfp = NULL;
 static char buf[BUFSIZ], *bp = buf;
+static int yylineno = 0;
 static int ppercent = 0;
 static int code = 0;
 
 static int get(void) {
 	if (*bp == 0) {
-		bp = buf;
-		*bp = 0;
 		if (fgets(buf, sizeof buf, infp) == NULL)
 			return EOF;
+		bp = buf;
 		yylineno++;
 		while (buf[0] == '%' && buf[1] == '{' && buf[2] == '\n') {
 			for (;;) {
@@ -305,7 +80,6 @@ void yyerror(char *fmt, ...) {
 	if (fmt[strlen(fmt)-1] != '\n')
 		 fprintf(stderr, "\n");
 	errcnt++;
-	va_end(ap);
 }
 
 int yylex(void) {
@@ -315,8 +89,6 @@ int yylex(void) {
 		char *p;
 		bp += strspn(bp, " \t\f");
 		p = strchr(bp, '\n');
-		if (p == NULL)
-			p = strchr(bp, '\n');
 		while (p > bp && isspace(p[-1]))
 			p--;
 		yylval.string = alloc(p - bp + 1);
@@ -341,7 +113,7 @@ int yylex(void) {
 		} else if (c == '%' && strncmp(bp, "term", 4) == 0
 		&& isspace(bp[4])) {
 			bp += 4;
-			return TERMINAL;
+			return TERM;
 		} else if (c == '%' && strncmp(bp, "start", 5) == 0
 		&& isspace(bp[5])) {
 			bp += 5;
@@ -351,8 +123,6 @@ int yylex(void) {
 			if (p == NULL) {
 				yyerror("missing \" in assembler template\n");
 				p = strchr(bp, '\n');
-				if (p == NULL)
-					p = strchr(bp, '\0');
 			}
 			assert(p);
 			yylval.string = alloc(p - bp + 1);
@@ -370,22 +140,23 @@ int yylex(void) {
 				else
 					n = 10*n + d;
 				c = get();
-			} while (c != EOF && isdigit(c));
+			} while (isdigit(c));
 			bp--;
 			yylval.n = n;
 			return INT;
 		} else if (isalpha(c)) {
 			char *p = bp - 1;
-			while (isalpha(*bp) || isdigit(*bp) || *bp == '_')
-				bp++;
+			while (isalpha(c) || isdigit(c) || c == '_')
+				c = get();
+			bp--;
 			yylval.string = alloc(bp - p + 1);
 			strncpy(yylval.string, p, bp - p);
 			yylval.string[bp - p] = 0;
 			return ID;
 		} else if (isprint(c))
-			yyerror("invalid character `%c'\n", c);
+			yyerror("illegal character `%c'\n", c);
 		else
-			yyerror("invalid character `\\%03o'\n", (unsigned char)c);
+			yyerror("illegal character `\0%o'\n", c);
 	}
 	return 0;
 }
@@ -399,283 +170,594 @@ void yywarn(char *fmt, ...) {
 	fprintf(stderr, "warning: ");
 	vfprintf(stderr, fmt, ap);
 }
-#line 403 "y.tab.c"
-#define YYABORT goto yyabort
-#define YYACCEPT goto yyaccept
-#define YYERROR goto yyerrlab
+static yytabelem yyexca[] ={
+-1, 1,
+	0, -1,
+	-2, 0,
+-1, 2,
+	0, 2,
+	-2, 0,
+-1, 9,
+	0, 1,
+	-2, 0,
+	};
+# define YYNPROD 20
+# define YYLAST 256
+static yytabelem yyact[]={
+
+    25,     7,    29,    26,    17,    15,    24,    12,    22,    20,
+    32,    35,    27,    33,    23,    31,    21,    19,    13,    11,
+    10,     4,     9,     2,     1,    28,     0,     0,     0,    14,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,    30,     0,     0,     0,     0,     0,    34,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     8,     5,     6,
+     3,    16,     0,     0,    18,    12 };
+static yytabelem yypact[]={
+
+ -1000, -1000,    -9, -1000, -1000, -1000,  -253, -1000,     8,    -5,
+    -6,     7, -1000, -1000,   -49, -1000,     6, -1000,   -53, -1000,
+  -254, -1000,  -263,  -258,   -28, -1000,  -260,  -254,     5, -1000,
+   -31, -1000, -1000,  -254,   -30, -1000 };
+static yytabelem yypgo[]={
+
+     0,    19,    25,    14,    24,    23,    22,    21,    20 };
+static yytabelem yyr1[]={
+
+     0,     4,     4,     5,     5,     7,     7,     7,     7,     8,
+     8,     6,     6,     6,     6,     1,     3,     3,     3,     2 };
+static yytabelem yyr2[]={
+
+     0,     7,     3,     0,     4,     6,     7,     2,     5,     0,
+     9,     0,    15,     4,     7,     3,     3,     9,    13,     3 };
+static yytabelem yychk[]={
+
+ -1000,    -4,    -5,   259,    -7,   257,   258,    10,   256,    -6,
+    -8,    -1,   260,    10,    -1,    10,   256,    10,   260,    10,
+    58,    10,    61,    -3,   260,   263,   261,    40,    -2,   262,
+    -3,    10,    41,    44,    -3,    41 };
+static yytabelem yydef[]={
+
+     3,    -2,    -2,    11,     4,     9,     0,     7,     0,    -2,
+     0,     0,    15,     8,     0,    13,     0,     5,     0,     6,
+     0,    14,     0,     0,    16,    10,     0,     0,     0,    19,
+     0,    12,    17,     0,     0,    18 };
+typedef struct { char *t_name; int t_val; } yytoktype;
+#ifndef YYDEBUG
+#	define YYDEBUG	0	/* don't allow debugging */
+#endif
 
 #if YYDEBUG
-#ifdef __cplusplus
-extern "C" char *getenv();
+
+yytoktype yytoks[] =
+{
+	"TERM",	257,
+	"START",	258,
+	"PPERCENT",	259,
+	"ID",	260,
+	"TEMPLATE",	261,
+	"CODE",	262,
+	"INT",	263,
+	"-unknown-",	-1	/* ends search */
+};
+
+char * yyreds[] =
+{
+	"-no such reduction-",
+      "spec : decls PPERCENT rules",
+      "spec : decls",
+      "decls : /* empty */",
+      "decls : decls decl",
+      "decl : TERM blist '\n'",
+      "decl : START nonterm '\n'",
+      "decl : '\n'",
+      "decl : error '\n'",
+      "blist : /* empty */",
+      "blist : blist ID '=' INT",
+      "rules : /* empty */",
+      "rules : rules nonterm ':' tree TEMPLATE cost '\n'",
+      "rules : rules '\n'",
+      "rules : rules error '\n'",
+      "nonterm : ID",
+      "tree : ID",
+      "tree : ID '(' tree ')'",
+      "tree : ID '(' tree ',' tree ')'",
+      "cost : CODE",
+};
+#endif /* YYDEBUG */
+/*
+ * (c) Copyright 1990, OPEN SOFTWARE FOUNDATION, INC.
+ * ALL RIGHTS RESERVED
+ */
+/*
+ * OSF/1 Release 1.0
+ */
+/* @(#)yaccpar	1.3  com/cmd/lang/yacc,3.1, 9/7/89 18:46:37 */
+/*
+** Skeleton parser driver for yacc output
+*/
+
+/*
+** yacc user known macros and defines
+*/
+#ifdef YYSPLIT
+#   define YYERROR	return(-2)
 #else
-extern char *getenv();
-#endif
+#   define YYERROR	goto yyerrlab
 #endif
 
+#define YYACCEPT	return(0)
+#define YYABORT		return(1)
+#define YYBACKUP( newtoken, newvalue )\
+{\
+	if ( yychar >= 0 || ( yyr2[ yytmp ] >> 1 ) != 1 )\
+	{\
+		yyerror( "syntax error - cannot backup" );\
+		goto yyerrlab;\
+	}\
+	yychar = newtoken;\
+	yystate = *yyps;\
+	yylval = newvalue;\
+	goto yynewstate;\
+}
+#define YYRECOVERING()	(!!yyerrflag)
+#ifndef YYDEBUG
+#	define YYDEBUG	1	/* make debugging available */
+#endif
+
+/*
+** user known globals
+*/
+int yydebug;			/* set to 1 to get debugging */
+
+/*
+** driver internal defines
+*/
+#define YYFLAG		(-1000)
+
+#ifdef YYSPLIT
+#   define YYSCODE { \
+			extern int (*yyf[])(); \
+			register int yyret; \
+			if (yyf[yytmp]) \
+			    if ((yyret=(*yyf[yytmp])()) == -2) \
+				    goto yyerrlab; \
+				else if (yyret>=0) return(yyret); \
+		   }
+#endif
+
+/*
+** global variables used by the parser
+*/
+YYSTYPE yyv[ YYMAXDEPTH ];	/* value stack */
+int yys[ YYMAXDEPTH ];		/* state stack */
+
+YYSTYPE *yypv;			/* top of value stack */
+YYSTYPE *yypvt;			/* top of value stack for $vars */
+int *yyps;			/* top of state stack */
+
+int yystate;			/* current state */
+int yytmp;			/* extra var (lasts between blocks) */
+
+int yynerrs;			/* number of errors */
+int yyerrflag;			/* error recovery flag */
+int yychar;			/* current input token number */
+
+
+
+/*
+** yyparse - return 0 if worked, 1 if syntax error not recovered from
+*/
 int
 yyparse()
 {
-    register int yym, yyn, yystate;
-    register YYSTYPE *yyvsp;
-    register short *yyssp;
-    short *yysse;
-#if YYDEBUG
-    register YYCONST char *yys;
+	/*
+	** Initialize externals - yyparse may be called more than once
+	*/
+	yypv = &yyv[-1];
+	yyps = &yys[-1];
+	yystate = 0;
+	yytmp = 0;
+	yynerrs = 0;
+	yyerrflag = 0;
+	yychar = -1;
 
-    if (yys = getenv("YYDEBUG"))
-    {
-        yyn = *yys;
-        if (yyn >= '0' && yyn <= '9')
-            yydebug = yyn - '0';
-    }
-#endif
+	goto yystack;
+	{
+		register YYSTYPE *yy_pv;	/* top of value stack */
+		register int *yy_ps;		/* top of state stack */
+		register int yy_state;		/* current state */
+		register int  yy_n;		/* internal state number info */
 
-    yynerrs = 0;
-    yyerrflag = 0;
-    yychar = (-1);
+		/*
+		** get globals into registers.
+		** branch to here only if YYBACKUP was called.
+		*/
+	yynewstate:
+		yy_pv = yypv;
+		yy_ps = yyps;
+		yy_state = yystate;
+		goto yy_newstate;
 
-    if (yyss == 0)
-    {
-        yyss = (short *) yymalloc (YYSTACKSIZE * sizeof (short));
-        if (yyss == 0)
-          goto yyabort;
-        yyvs = (YYSTYPE *) yymalloc (YYSTACKSIZE * sizeof (YYSTYPE));
-        if (yyvs == 0)
-        {
-            yyfree (yyss);
-            goto yyabort;
-        }
-        yystacksize = YYSTACKSIZE;
-    }
-    yysse = yyss + yystacksize - 1;
-    yyssp = yyss;
-    yyvsp = yyvs;
-    *yyssp = yystate = 0;
-    goto yyloop;
+		/*
+		** get globals into registers.
+		** either we just started, or we just finished a reduction
+		*/
+	yystack:
+		yy_pv = yypv;
+		yy_ps = yyps;
+		yy_state = yystate;
 
-yypush_lex:
-    yyval = yylval;
-    yystate = yytable[yyn];
-yypush:
-    if (yyssp >= yysse)
-    {
-        int depth = yyssp - yyss;
-        if (yygrow() != 0)
-             goto yyoverflow;
-        yysse = yyss + yystacksize -1;
-        yyssp = depth + yyss;
-        yyvsp = depth + yyvs;
-    }
-    *++yyssp = yystate;
-    *++yyvsp = yyval;
+		/*
+		** top of for (;;) loop while no reductions done
+		*/
+	yy_stack:
+		/*
+		** put a state and value onto the stacks
+		*/
+#if YYDEBUG
+		/*
+		** if debugging, look up token value in list of value vs.
+		** name pairs.  0 and negative (-1) are special values.
+		** Note: linear search is used since time is not a real
+		** consideration while debugging.
+		*/
+		if ( yydebug )
+		{
+			register int yy_i;
 
-yyloop:
-    if (yyn = yydefred[yystate]) goto yyreduce;
-    yyn = yysindex[yystate];
-    if (yychar < 0)
-    {
-        if ((yychar = yylex()) < 0) yychar = 0;
-#if YYDEBUG
-        if (yydebug)
-        {
-            yys = 0;
-            if (yychar <= YYMAXTOKEN) yys = yyname[yychar];
-            if (!yys) yys = "illegal-symbol";
-            printf("yydebug: state %d, reading %d (%s)\n", yystate,
-                    yychar, yys);
-        }
-#endif
-    }
-    if (yyn != 0
-        && ((yyn += yychar), ((unsigned)yyn <= (unsigned)YYTABLESIZE))
-        && yycheck[yyn] == yychar)
-    {
-#if YYDEBUG
-        if (yydebug)
-            printf("yydebug: state %d, shifting to state %d\n",
-                    yystate, yytable[yyn]);
-#endif
-        if (yyerrflag > 0)  --yyerrflag;
-        yychar = (-1);
-        goto yypush_lex;
-    }
-    yyn = yyrindex[yystate];
-    if (yyn != 0
-        && ((yyn += yychar), ((unsigned)yyn <= (unsigned)YYTABLESIZE))
-        && yycheck[yyn] == yychar)
-    {
-        yyn = yytable[yyn];
-        goto yyreduce;
-    }
-    if (yyerrflag) goto yyinrecovery;
-#ifdef lint
-    goto yynewerror;
-#endif
-yynewerror:
-    yyerror("syntax error");
-#ifdef lint
-    goto yyerrlab;
-#endif
-yyerrlab:
-    ++yynerrs;
-yyinrecovery:
-    if (yyerrflag < 3)
-    {
-        yyerrflag = 3;
-        for (;;)
-        {
-            yyn = yysindex[*yyssp];
-            if (yyn != 0
-                && ((yyn += YYERRCODE), ((unsigned)yyn <= (unsigned)YYTABLESIZE))
-                && yycheck[yyn] == YYERRCODE)
-            {
-#if YYDEBUG
-                if (yydebug)
-                    printf("yydebug: state %d, error recovery shifting\
- to state %d\n", *yyssp, yytable[yyn]);
-#endif
-                goto yypush_lex;
-            }
-            else
-            {
-#if YYDEBUG
-                if (yydebug)
-                    printf("yydebug: error recovery discarding state %d\n",
-                            *yyssp);
-#endif
-                if (yyssp <= yyss) goto yyabort;
-                --yyssp;
-                --yyvsp;
-            }
-        }
-    }
-    else
-    {
-        if (yychar == 0) goto yyabort;
-#if YYDEBUG
-        if (yydebug)
-        {
-            yys = 0;
-            if (yychar <= YYMAXTOKEN) yys = yyname[yychar];
-            if (!yys) yys = "illegal-symbol";
-            printf("yydebug: state %d, error recovery discards token %d (%s)\n",
-                    yystate, yychar, yys);
-        }
-#endif
-        yychar = (-1);
-        goto yyloop;
-    }
-yyreduce:
-#if YYDEBUG
-    if (yydebug)
-        printf("yydebug: state %d, reducing by rule %d (%s)\n",
-                yystate, yyn, yyrule[yyn]);
-#endif
-    yym = yylen[yyn];
-    yyval = yyvsp[1-yym];
-    switch (yyn)
-    {
-case 1:
-#line 22 "lburg/gram.y"
-{ yylineno = 0; }
-break;
-case 2:
-#line 23 "lburg/gram.y"
-{ yylineno = 0; }
-break;
-case 6:
-#line 31 "lburg/gram.y"
-{
-		if (nonterm(yyvsp[-1].string)->number != 1)
-			yyerror("redeclaration of the start symbol\n");
+			printf( "State %d, token ", yy_state );
+			if ( yychar == 0 )
+				printf( "end-of-file\n" );
+			else if ( yychar < 0 )
+				printf( "-none-\n" );
+			else
+			{
+				for ( yy_i = 0; yytoks[yy_i].t_val >= 0;
+					yy_i++ )
+				{
+					if ( yytoks[yy_i].t_val == yychar )
+						break;
+				}
+				printf( "%s\n", yytoks[yy_i].t_name );
+			}
 		}
-break;
+#endif /* YYDEBUG */
+		if ( ++yy_ps >= &yys[ YYMAXDEPTH ] )	/* room on stack? */
+		{
+			yyerror( "yacc stack overflow" );
+			YYABORT;
+		}
+		*yy_ps = yy_state;
+		*++yy_pv = yyval;
+
+		/*
+		** we have a new state - find out what to do
+		*/
+	yy_newstate:
+		if ( ( yy_n = yypact[ yy_state ] ) <= YYFLAG )
+			goto yydefault;		/* simple state */
+#if YYDEBUG
+		/*
+		** if debugging, need to mark whether new token grabbed
+		*/
+		yytmp = yychar < 0;
+#endif
+		if ( ( yychar < 0 ) && ( ( yychar = yylex() ) < 0 ) )
+			yychar = 0;		/* reached EOF */
+#if YYDEBUG
+		if ( yydebug && yytmp )
+		{
+			register int yy_i;
+
+			printf( "Received token " );
+			if ( yychar == 0 )
+				printf( "end-of-file\n" );
+			else if ( yychar < 0 )
+				printf( "-none-\n" );
+			else
+			{
+				for ( yy_i = 0; yytoks[yy_i].t_val >= 0;
+					yy_i++ )
+				{
+					if ( yytoks[yy_i].t_val == yychar )
+						break;
+				}
+				printf( "%s\n", yytoks[yy_i].t_name );
+			}
+		}
+#endif /* YYDEBUG */
+		if ( ( ( yy_n += yychar ) < 0 ) || ( yy_n >= YYLAST ) )
+			goto yydefault;
+		if ( yychk[ yy_n = yyact[ yy_n ] ] == yychar )	/*valid shift*/
+		{
+			yychar = -1;
+			yyval = yylval;
+			yy_state = yy_n;
+			if ( yyerrflag > 0 )
+				yyerrflag--;
+			goto yy_stack;
+		}
+
+	yydefault:
+		if ( ( yy_n = yydef[ yy_state ] ) == -2 )
+		{
+#if YYDEBUG
+			yytmp = yychar < 0;
+#endif
+			if ( ( yychar < 0 ) && ( ( yychar = yylex() ) < 0 ) )
+				yychar = 0;		/* reached EOF */
+#if YYDEBUG
+			if ( yydebug && yytmp )
+			{
+				register int yy_i;
+
+				printf( "Received token " );
+				if ( yychar == 0 )
+					printf( "end-of-file\n" );
+				else if ( yychar < 0 )
+					printf( "-none-\n" );
+				else
+				{
+					for ( yy_i = 0;
+						yytoks[yy_i].t_val >= 0;
+						yy_i++ )
+					{
+						if ( yytoks[yy_i].t_val
+							== yychar )
+						{
+							break;
+						}
+					}
+					printf( "%s\n", yytoks[yy_i].t_name );
+				}
+			}
+#endif /* YYDEBUG */
+			/*
+			** look through exception table
+			*/
+			{
+				register int *yyxi = yyexca;
+
+				while ( ( *yyxi != -1 ) ||
+					( yyxi[1] != yy_state ) )
+				{
+					yyxi += 2;
+				}
+				while ( ( *(yyxi += 2) >= 0 ) &&
+					( *yyxi != yychar ) )
+					;
+				if ( ( yy_n = yyxi[1] ) < 0 )
+					YYACCEPT;
+			}
+		}
+
+		/*
+		** check for syntax error
+		*/
+		if ( yy_n == 0 )	/* have an error */
+		{
+			/* no worry about speed here! */
+			switch ( yyerrflag )
+			{
+			case 0:		/* new error */
+				yyerror( "syntax error" );
+				goto skip_init;
+			yyerrlab:
+				/*
+				** get globals into registers.
+				** we have a user generated syntax type error
+				*/
+				yy_pv = yypv;
+				yy_ps = yyps;
+				yy_state = yystate;
+				yynerrs++;
+			skip_init:
+			case 1:
+			case 2:		/* incompletely recovered error */
+					/* try again... */
+				yyerrflag = 3;
+				/*
+				** find state where "error" is a legal
+				** shift action
+				*/
+				while ( yy_ps >= yys )
+				{
+					yy_n = yypact[ *yy_ps ] + YYERRCODE;
+					if ( yy_n >= 0 && yy_n < YYLAST &&
+						yychk[yyact[yy_n]] == YYERRCODE)					{
+						/*
+						** simulate shift of "error"
+						*/
+						yy_state = yyact[ yy_n ];
+						goto yy_stack;
+					}
+					/*
+					** current state has no shift on
+					** "error", pop stack
+					*/
+#if YYDEBUG
+#	define _POP_ "Error recovery pops state %d, uncovers state %d\n"
+					if ( yydebug )
+						printf( _POP_, *yy_ps,
+							yy_ps[-1] );
+#	undef _POP_
+#endif
+					yy_ps--;
+					yy_pv--;
+				}
+				/*
+				** there is no state on stack with "error" as
+				** a valid shift.  give up.
+				*/
+				YYABORT;
+			case 3:		/* no shift yet; eat a token */
+#if YYDEBUG
+				/*
+				** if debugging, look up token in list of
+				** pairs.  0 and negative shouldn't occur,
+				** but since timing doesn't matter when
+				** debugging, it doesn't hurt to leave the
+				** tests here.
+				*/
+				if ( yydebug )
+				{
+					register int yy_i;
+
+					printf( "Error recovery discards " );
+					if ( yychar == 0 )
+						printf( "token end-of-file\n" );
+					else if ( yychar < 0 )
+						printf( "token -none-\n" );
+					else
+					{
+						for ( yy_i = 0;
+							yytoks[yy_i].t_val >= 0;
+							yy_i++ )
+						{
+							if ( yytoks[yy_i].t_val
+								== yychar )
+							{
+								break;
+							}
+						}
+						printf( "token %s\n",
+							yytoks[yy_i].t_name );
+					}
+				}
+#endif /* YYDEBUG */
+				if ( yychar == 0 )	/* reached EOF. quit */
+					YYABORT;
+				yychar = -1;
+				goto yy_newstate;
+			}
+		}/* end if ( yy_n == 0 ) */
+		/*
+		** reduction by production yy_n
+		** put stack tops, etc. so things right after switch
+		*/
+#if YYDEBUG
+		/*
+		** if debugging, print the string that is the user's
+		** specification of the reduction which is just about
+		** to be done.
+		*/
+		if ( yydebug )
+			printf( "Reduce by (%d) \"%s\"\n",
+				yy_n, yyreds[ yy_n ] );
+#endif
+		yytmp = yy_n;			/* value to switch over */
+		yypvt = yy_pv;			/* $vars top of value stack */
+		/*
+		** Look in goto table for next state
+		** Sorry about using yy_state here as temporary
+		** register variable, but why not, if it works...
+		** If yyr2[ yy_n ] doesn't have the low order bit
+		** set, then there is no action to be done for
+		** this reduction.  So, no saving & unsaving of
+		** registers done.  The only difference between the
+		** code just after the if and the body of the if is
+		** the goto yy_stack in the body.  This way the test
+		** can be made before the choice of what to do is needed.
+		*/
+		{
+			/* length of production doubled with extra bit */
+			register int yy_len = yyr2[ yy_n ];
+
+			if ( !( yy_len & 01 ) )
+			{
+				yy_len >>= 1;
+				yyval = ( yy_pv -= yy_len )[1];	/* $$ = $1 */
+				yy_state = yypgo[ yy_n = yyr1[ yy_n ] ] +
+					*( yy_ps -= yy_len ) + 1;
+				if ( yy_state >= YYLAST ||
+					yychk[ yy_state =
+					yyact[ yy_state ] ] != -yy_n )
+				{
+					yy_state = yyact[ yypgo[ yy_n ] ];
+				}
+				goto yy_stack;
+			}
+			yy_len >>= 1;
+			yyval = ( yy_pv -= yy_len )[1];	/* $$ = $1 */
+			yy_state = yypgo[ yy_n = yyr1[ yy_n ] ] +
+				*( yy_ps -= yy_len ) + 1;
+			if ( yy_state >= YYLAST ||
+				yychk[ yy_state = yyact[ yy_state ] ] != -yy_n )
+			{
+				yy_state = yyact[ yypgo[ yy_n ] ];
+			}
+		}
+					/* save until reenter driver code */
+		yystate = yy_state;
+		yyps = yy_ps;
+		yypv = yy_pv;
+	}
+	/*
+	** code supplied by user is placed in this switch
+	*/
+
+		switch(yytmp){
+
+case 1:
+# line 21 "lburg/gram.y"
+{ yylineno = 0; } /*NOTREACHED*/ break;
+case 2:
+# line 22 "lburg/gram.y"
+{ yylineno = 0; } /*NOTREACHED*/ break;
+case 6:
+# line 30 "lburg/gram.y"
+{
+		if (nonterm(yypvt[-1].string)->number != 1)
+			yyerror("redeclaration of the start symbol\n");
+		} /*NOTREACHED*/ break;
 case 8:
-#line 36 "lburg/gram.y"
-{ yyerrok; }
-break;
+# line 35 "lburg/gram.y"
+{ yyerrok; } /*NOTREACHED*/ break;
 case 10:
-#line 40 "lburg/gram.y"
-{ term(yyvsp[-2].string, yyvsp[0].n); }
-break;
+# line 39 "lburg/gram.y"
+{ term(yypvt[-2].string, yypvt[-0].n); } /*NOTREACHED*/ break;
 case 12:
-#line 44 "lburg/gram.y"
-{ rule(yyvsp[-5].string, yyvsp[-3].tree, yyvsp[-2].string, yyvsp[-1].string); }
-break;
+# line 43 "lburg/gram.y"
+{ rule(yypvt[-5].string, yypvt[-3].tree, yypvt[-2].string, yypvt[-1].string); } /*NOTREACHED*/ break;
 case 14:
-#line 46 "lburg/gram.y"
-{ yyerrok; }
-break;
+# line 45 "lburg/gram.y"
+{ yyerrok; } /*NOTREACHED*/ break;
 case 15:
-#line 49 "lburg/gram.y"
-{ nonterm(yyval.string = yyvsp[0].string); }
-break;
+# line 48 "lburg/gram.y"
+{ nonterm(yyval.string = yypvt[-0].string); } /*NOTREACHED*/ break;
 case 16:
-#line 52 "lburg/gram.y"
-{ yyval.tree = tree(yyvsp[0].string,  0,  0); }
-break;
+# line 51 "lburg/gram.y"
+{ yyval.tree = tree(yypvt[-0].string,  0,  0); } /*NOTREACHED*/ break;
 case 17:
-#line 53 "lburg/gram.y"
-{ yyval.tree = tree(yyvsp[-3].string, yyvsp[-1].tree,  0); }
-break;
+# line 52 "lburg/gram.y"
+{ yyval.tree = tree(yypvt[-3].string, yypvt[-1].tree,  0); } /*NOTREACHED*/ break;
 case 18:
-#line 54 "lburg/gram.y"
-{ yyval.tree = tree(yyvsp[-5].string, yyvsp[-3].tree, yyvsp[-1].tree); }
-break;
+# line 53 "lburg/gram.y"
+{ yyval.tree = tree(yypvt[-5].string, yypvt[-3].tree, yypvt[-1].tree); } /*NOTREACHED*/ break;
 case 19:
-#line 57 "lburg/gram.y"
-{ if (*yyvsp[0].string == 0) yyval.string = "0"; }
-break;
-#line 630 "y.tab.c"
-    }
-    yyssp -= yym;
-    yyvsp -= yym;
-    yym = yylhs[yyn];
-    yystate = *yyssp;
-    if (yystate == 0 && yym == 0)
-    {
-#if YYDEBUG
-        if (yydebug)
-            printf("yydebug: after reduction, shifting from state 0 to\
- state %d\n", YYFINAL);
-#endif
-        yystate = YYFINAL;
-        *++yyssp = YYFINAL;
-        *++yyvsp = yyval;
-        if (yychar < 0)
-        {
-            if ((yychar = yylex()) < 0) yychar = 0;
-#if YYDEBUG
-            if (yydebug)
-            {
-                yys = 0;
-                if (yychar <= YYMAXTOKEN) yys = yyname[yychar];
-                if (!yys) yys = "illegal-symbol";
-                printf("yydebug: state %d, reading %d (%s)\n",
-                        YYFINAL, yychar, yys);
-            }
-#endif
-        }
-        if (yychar == 0) goto yyaccept;
-        goto yyloop;
-    }
-    yyn = yygindex[yym];
-	 if (yyn != 0
-        && ((yyn += yystate), ((unsigned)yyn <= (unsigned)YYTABLESIZE))
-        && yycheck[yyn] == yystate)
-        yystate = yytable[yyn];
-    else
-        yystate = yydgoto[yym];
-#if YYDEBUG
-    if (yydebug)
-        printf("yydebug: after reduction, shifting from state %d \
-to state %d\n", *yyssp, yystate);
-#endif
-    goto yypush;
-yyoverflow:
-    yyerror("yacc stack overflow");
-yyabort:
-    return (1);
-yyaccept:
-    return (0);
+# line 56 "lburg/gram.y"
+{ if (*yypvt[-0].string == 0) yyval.string = "0"; } /*NOTREACHED*/ break;
+}
+
+
+	goto yystack;		/* reset registers in driver code */
 }

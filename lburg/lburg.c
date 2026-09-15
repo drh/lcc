@@ -35,6 +35,7 @@ static void emitrule(Nonterm nts);
 static void emitlabel(Term terms, Nonterm start, int ntnumber);
 static void emitstring(Rule rules);
 static void emitstruct(Nonterm nts, int ntnumber);
+static void emitterms(Term terms);
 static void emittest(Tree t, char *v, char *suffix);
 
 int main(int argc, char *argv[]) {
@@ -49,7 +50,7 @@ int main(int argc, char *argv[]) {
 		else if (strncmp(argv[i], "-p", 2) == 0 && i + 1 < argc)
 			prefix = argv[++i];
 		else if (*argv[i] == '-' && argv[i][1]) {
-			yyerror("usage: %s [-T | -p prefix]... [ [ input ] output ] \n",
+			yyerror("usage: %s [-T | -p prefix]... [ [ input ] output \n",
 				argv[0]);
 			exit(1);
 		} else if (infp == NULL) {
@@ -74,16 +75,14 @@ int main(int argc, char *argv[]) {
 	yyparse();
 	if (start)
 		ckreach(start);
-	for (p = nts; p; p = p->link) {
-		if (p->rules == NULL)
-			yyerror("undefined nonterminal `%s'\n", p->name);
+	for (p = nts; p; p = p->link)
 		if (!p->reached)
 			yyerror("can't reach nonterminal `%s'\n", p->name);
-	}
 	emitheader();
 	emitdefs(nts, ntnumber);
 	emitstruct(nts, ntnumber);
 	emitnts(rules, nrules);
+	emitterms(terms);
 	emitstring(rules);
 	emitrule(nts);
 	emitclosure(nts);
@@ -169,12 +168,12 @@ static void *install(char *name) {
 Nonterm nonterm(char *id) {
 	Nonterm p = lookup(id), *q = &nts;
 
-	if (p && p->kind == NONTERM)
+	if (p && p->kind == BURG_NONTERM)
 		return p;
-	if (p && p->kind == TERM)
+	if (p && p->kind == BURG_TERM)
 		yyerror("`%s' is a terminal\n", id);
 	p = install(id);
-	p->kind = NONTERM;
+	p->kind = BURG_NONTERM;
 	p->number = ++ntnumber;
 	if (p->number == 1)
 		start = p;
@@ -194,7 +193,7 @@ Term term(char *id, int esn) {
 		yyerror("redefinition of terminal `%s'\n", id);
 	else
 		p = install(id);
-	p->kind = TERM;
+	p->kind = BURG_TERM;
 	p->esn = esn;
 	p->arity = -1;
 	while (*q && (*q)->esn < p->esn)
@@ -222,16 +221,16 @@ Tree tree(char *id, Tree left, Tree right) {
 		p = term(id, -1);
 	} else if (p == NULL && arity == 0)
 		p = (Term)nonterm(id);
-	else if (p && p->kind == NONTERM && arity > 0) {
+	else if (p && p->kind == BURG_NONTERM && arity > 0) {
 		yyerror("`%s' is a nonterminal\n", id);
 		p = term(id, -1);
 	}
-	if (p->kind == TERM && p->arity == -1)
+	if (p->kind == BURG_TERM && p->arity == -1)
 		p->arity = arity;
-	if (p->kind == TERM && arity != p->arity)
+	if (p->kind == BURG_TERM && arity != p->arity)
 		yyerror("inconsistent arity for terminal `%s'\n", id);
 	t->op = p;
-	t->nterms = p->kind == TERM;
+	t->nterms = p->kind == BURG_TERM;
 	if ((t->left = left) != NULL)
 		t->nterms += left->nterms;
 	if ((t->right = right) != NULL)
@@ -259,7 +258,7 @@ Rule rule(char *id, Tree pattern, char *template, char *code) {
 		r->cost = -1;
 		r->code = stringf("(%s)", code);
 	}
-	if (p->kind == TERM) {
+	if (p->kind == BURG_TERM) {
 		for (q = &p->rules; *q; q = &(*q)->next)
 			;
 		*q = r;
@@ -302,11 +301,7 @@ static void print(char *fmt, ...) {
 				print("%S: %T", r->lhs, r->pattern);
 				break;
 				}
-			case 'S': {
-				Term t = va_arg(ap, Term);
-				fputs(t->name, outfp);
-				break;
-				}
+			case 'S': fputs(va_arg(ap, Term)->name, outfp); break;
 			case '1': case '2': case '3': case '4': case '5': {
 				int n = *fmt - '0';
 				while (n-- > 0)
@@ -324,7 +319,7 @@ static void print(char *fmt, ...) {
 static void reach(Tree t) {
 	Nonterm p = t->op;
 
-	if (p->kind == NONTERM)
+	if (p->kind == BURG_NONTERM)
 		if (!p->reached)
 			ckreach(p);
 	if (t->left)
@@ -418,12 +413,12 @@ static void emitclosure(Nonterm nts) {
 
 	for (p = nts; p; p = p->link)
 		if (p->chain)
-			print("static void %Pclosure_%S(NODEPTR_TYPE, int);\n", p);
+			print("static void %Pclosure_%S ARGS((NODEPTR_TYPE, int));\n", p);
 	print("\n");
 	for (p = nts; p; p = p->link)
 		if (p->chain) {
 			Rule r;
-			print("static void %Pclosure_%S(NODEPTR_TYPE a, int c) {\n"
+			print("static void %Pclosure_%S(a, c) NODEPTR_TYPE a; int c; {\n"
 "%1struct %Pstate *p = STATE_LABEL(a);\n", p);
 			for (r = p->chain; r; r = r->chain)
 				emitrecord("\t", r, "c", r->cost);
@@ -435,7 +430,7 @@ static void emitclosure(Nonterm nts) {
 static void emitcost(Tree t, char *v) {
 	Nonterm p = t->op;
 
-	if (p->kind == TERM) {
+	if (p->kind == BURG_TERM) {
 		if (t->left)
 			emitcost(t->left,  stringf("LEFT_CHILD(%s)",  v));
 		if (t->right)
@@ -462,16 +457,16 @@ static void emitheader(void) {
 	time_t timer = time(NULL);
 
 	print("/*\ngenerated at %sby %s\n*/\n", ctime(&timer), rcsid);
-	print("static void %Pkids(NODEPTR_TYPE, int, NODEPTR_TYPE[]);\n");
-	print("static void %Plabel(NODEPTR_TYPE);\n");
-	print("static int %Prule(void*, int);\n\n");
+	print("static void %Pkids ARGS((NODEPTR_TYPE, int, NODEPTR_TYPE[]));\n");
+	print("static void %Plabel ARGS((NODEPTR_TYPE));\n");
+	print("static int %Prule ARGS((void*, int));\n\n");
 }
 
 /* computekids - compute paths to kids in tree t */
 static char *computekids(Tree t, char *v, char *bp, int *ip) {
 	Term p = t->op;
 
-	if (p->kind == NONTERM) {
+	if (p->kind == BURG_NONTERM) {
 		sprintf(bp, "\t\tkids[%d] = %s;\n", (*ip)++, v);
 		bp += strlen(bp);
 	} else if (p->arity > 0) {
@@ -499,7 +494,7 @@ static void emitkids(Rule rules, int nrules) {
 		r->kids = rc[j];
 		rc[j] = r;
 	}
-	print("static void %Pkids(NODEPTR_TYPE p, int eruleno, NODEPTR_TYPE kids[]) {\n"
+	print("static void %Pkids(p, eruleno, kids) NODEPTR_TYPE p, kids[]; int eruleno; {\n"
 "%1if (!p)\n%2fatal(\"%Pkids\", \"Null tree\\n\", 0);\n"
 "%1if (!kids)\n%2fatal(\"%Pkids\", \"Null kids\\n\", 0);\n"
 "%1switch (eruleno) {\n");
@@ -516,7 +511,7 @@ static void emitlabel(Term terms, Nonterm start, int ntnumber) {
 	int i;
 	Term p;
 
-	print("static void %Plabel(NODEPTR_TYPE a) {\n%1int c;\n"
+	print("static void %Plabel(a) NODEPTR_TYPE a; {\n%1int c;\n"
 "%1struct %Pstate *p;\n\n"
 "%1if (!a)\n%2fatal(\"%Plabel\", \"Null tree\\n\", 0);\n");
 	print("%1STATE_LABEL(a) = p = allocate(sizeof *p, FUNC);\n"
@@ -534,7 +529,7 @@ static void emitlabel(Term terms, Nonterm start, int ntnumber) {
 static char *computents(Tree t, char *bp) {
 	if (t) {
 		Nonterm p = t->op;
-		if (p->kind == NONTERM) {
+		if (p->kind == BURG_NONTERM) {
 			sprintf(bp, "%s_%s_NT, ", prefix, p->name);
 			bp += strlen(bp);
 		} else
@@ -571,8 +566,8 @@ static void emitnts(Rule rules, int nrules) {
 
 /* emitrecalc - emit code that tests for recalculation of INDIR?(VREGP) */
 static void emitrecalc(char *pre, Term root, Term kid) {
-	if (root->kind == TERM && strncmp(root->name, "INDIR", 5) == 0
-	&&   kid->kind == TERM &&  strcmp(kid->name,  "VREGP"   ) == 0) {
+	if (root->kind == BURG_TERM && strncmp(root->name, "INDIR", 5) == 0
+	&&   kid->kind == BURG_TERM &&  strcmp(kid->name,  "VREGP"   ) == 0) {
 		Nonterm p;
 		print("%sif (mayrecalc(a)) {\n", pre);
 		print("%s%1struct %Pstate *q = a->syms[RX]->u.t.cse->x.state;\n", pre);
@@ -612,7 +607,7 @@ static void emitrule(Nonterm nts) {
 			print("%1%d,\n", r->ern);
 		print("};\n\n");
 	}
-	print("static int %Prule(void *state, int goalnt) {\n"
+	print("static int %Prule(state, goalnt) void *state; int goalnt; {\n"
 "%1if (goalnt < 1 || goalnt > %d)\n%2fatal(\"%Prule\", \"Bad goal nonterminal %%d\\n\", goalnt);\n"
 "%1if (!state)\n%2return 0;\n%1switch (goalnt) {\n", ntnumber);
 	for (p = nts; p; p = p->link)
@@ -658,11 +653,32 @@ static void emitstruct(Nonterm nts, int ntnumber) {
 	print("%1} rule;\n};\n\n");
 }
 
+/* emitterms - emit terminal data structures */
+static void emitterms(Term terms) {
+	Term p;
+	int k;
+
+	print("static char %Parity[] = {\n");
+	for (k = 0, p = terms; p; p = p->link) {
+		for ( ; k < p->esn; k++)
+			print("%10,%1/* %d */\n", k);
+		print("%1%d,%1/* %d=%S */\n", p->arity < 0 ? 0 : p->arity, k++, p);
+	}
+	print("};\n\n");
+	print("static char *%Popname[] = {\n");
+	for (k = 0, p = terms; p; p = p->link) {
+		for ( ; k < p->esn; k++)
+			print("/* %d */%10,\n", k);
+		print("/* %d */%1\"%S\",\n", k++, p);
+	}
+	print("};\n\n");
+}
+
 /* emittest - emit clause for testing a match */
 static void emittest(Tree t, char *v, char *suffix) {
 	Term p = t->op;
 
-	if (p->kind == TERM) {
+	if (p->kind == BURG_TERM) {
 		print("%3%s->op == %d%s/* %S */\n", v, p->esn,
 			t->nterms > 1 ? " && " : suffix, p);
 		if (t->left)

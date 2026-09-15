@@ -1,8 +1,6 @@
 #include "c.h"
 
-static char rcsid[] = "$Id$";
-
-static void printtoken(void);
+static void printtoken ARGS((void));
 int errcnt   = 0;
 int errlimit = 20;
 char kind[] = {
@@ -12,7 +10,7 @@ char kind[] = {
 };
 int wflag;		/* != 0 to suppress warning messages */
 
-void test(int tok, char set[]) {
+void test(tok, set) int tok; char set[]; {
 	if (t == tok)
 		t = gettok();
 	else {
@@ -22,16 +20,17 @@ void test(int tok, char set[]) {
 			t = gettok();
 	}
 }
-void expect(int tok) {
+void expect(tok) int tok; {
 	if (t == tok)
 		t = gettok();
 	else {
 		error("syntax error; found");
 		printtoken();
-		fprint(stderr, " expecting `%k'\n", tok);
+		fprint(2, " expecting `%k'\n", tok);
 	}
 }
-void error(const char *fmt, ...) {
+void error VARARGS((char *fmt, ...),
+(fmt, va_alist),char *fmt; va_dcl) {
 	va_list ap;
 
 	if (errcnt++ >= errlimit) {
@@ -39,15 +38,15 @@ void error(const char *fmt, ...) {
 		error("too many errors\n");
 		exit(1);
 	}
-	va_start(ap, fmt);
+	va_init(ap, fmt);
 	if (firstfile != file && firstfile && *firstfile)
-		fprint(stderr, "%s: ", firstfile);
-	fprint(stderr, "%w: ", &src);
-	vfprint(stderr, NULL, fmt, ap);
+		fprint(2, "%s: ", firstfile);
+	fprint(2, "%w: ", &src);
+	vfprint(2, fmt, ap);
 	va_end(ap);
 }
 
-void skipto(int tok, char set[]) {
+void skipto(tok, set) int tok; char set[]; {
 	int n;
 	char *s;
 
@@ -62,77 +61,66 @@ void skipto(int tok, char set[]) {
 		if (n <= 8)
 			printtoken();
 		else if (n == 9)
-			fprint(stderr, " ...");
+			fprint(2, " ...");
 	}
 	if (n > 8) {
-		fprint(stderr, " up to");
+		fprint(2, " up to");
 		printtoken();
 	}
 	if (n > 0)
-		fprint(stderr, "\n");
+		fprint(2, "\n");
 }
 /* fatal - issue fatal error message and exit */
-int fatal(const char *name, const char *fmt, int n) {
-	print("\n");
+int fatal(name, fmt, n) char *name, *fmt; int n; {
+	*bp++ = '\n';
+	outflush();
 	errcnt = -1;
 	error("compiler error in %s--", name);
-	fprint(stderr, fmt, n);
-	exit(EXIT_FAILURE);
+	fprint(2, fmt, n);
+	exit(1);
 	return 0;
 }
 
 /* printtoken - print current token preceeded by a space */
-static void printtoken(void) {
+static void printtoken() {
 	switch (t) {
-	case ID: fprint(stderr, " `%s'", token); break;
+	case ID: fprint(2, " `%s'", token); break;
 	case ICON:
-		fprint(stderr, " `%s'", vtoa(tsym->type, tsym->u.c.v));
-		break;
-	case SCON: {
-		int i, n;
-		if (ischar(tsym->type->type)) {
-			char *s = tsym->u.c.v.p;
-			n = tsym->type->size;
-			fprint(stderr, " \"");
-			for (i = 0; i < 20 && i < n && *s; s++, i++)
+		if (*token == '\'') {
+			char *s;
+	case SCON:	fprint(2, " ");
+			for (s = token; *s && s - token < 20; s++)
 				if (*s < ' ' || *s >= 0177)
-					fprint(stderr, "\\%o", *s);
+					fprint(2, "\\%o", *s);
 				else
-					fprint(stderr, "%c", *s);
-		} else {	/* wchar_t string */
-			unsigned int *s = tsym->u.c.v.p;
-			assert(tsym->type->type->size == widechar->size);
-			n = tsym->type->size/widechar->size;
-			fprint(stderr, " L\"");
-			for (i = 0; i < 20 && i < n && *s; s++, i++)
-				if (*s < ' ' || *s >= 0177)
-					fprint(stderr, "\\x%x", *s);
-				else
-					fprint(stderr, "%c", *s);
-		}
-		if (i < n)
-			fprint(stderr, " ...");
-		else
-			fprint(stderr, "\"");
+					fprint(2, "%c", *s);
+			if (*s)
+				fprint(2, " ...");
+			else
+				fprint(2, "%c", *token);
+			break;
+		} /* else fall thru */
+	case FCON: {
+		char c = *cp;
+		*cp = 0;
+		fprint(2, " `%s'", token);
+		*cp = c;
 		break;
 		}
-	case FCON:
-		fprint(stderr, " `%S'", token, (char*)cp - token);
-		break;
-	case '`': case '\'': fprint(stderr, " \"%k\"", t); break;
-	default: fprint(stderr, " `%k'", t);
+	case '`': case '\'': fprint(2, " \"%k\"", t); break;
+	default: fprint(2, " `%k'", t);
 	}
 }
 
 /* warning - issue warning error message */
-void warning(const char *fmt, ...) {
+void warning VARARGS((char *fmt, ...),(fmt, va_alist),char *fmt; va_dcl) {
 	va_list ap;
 
-	va_start(ap, fmt);
+	va_init(ap, fmt);
 	if (wflag == 0) {
 		errcnt--;
 		error("warning: ");
-		vfprint(stderr, NULL, fmt, ap);
+		vfprint(2, fmt, ap);
 	}
 	va_end(ap);
 }

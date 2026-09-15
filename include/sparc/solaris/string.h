@@ -1,14 +1,11 @@
 #ifndef __STRING
 #define __STRING
 
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
+#define NULL 0
 
-#if !defined(_SIZE_T) && !defined(_SIZE_T_) && !defined(_SIZE_T_DEFINED)
+#if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #define _SIZE_T
 #define _SIZE_T_
-#define _SIZE_T_DEFINED
 typedef unsigned long size_t;
 #endif
 

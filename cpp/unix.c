@@ -15,8 +15,7 @@ int	Cplusplus = 1;
 void
 setup(int argc, char **argv)
 {
-	int c, i;
-	FILE *fd;
+	int c, fd, i;
 	char *fp, *dp;
 	Tokenrow tr;
 	extern void setup_kwtab(void);
@@ -42,7 +41,7 @@ setup(int argc, char **argv)
 			break;
 		case 'D':
 		case 'U':
-			setsource("<cmdarg>", NULL, optarg);
+			setsource("<cmdarg>", -1, optarg);
 			maketokenrow(3, &tr);
 			gettokens(&tr, 1);
 			doadefine(&tr, c);
@@ -65,7 +64,7 @@ setup(int argc, char **argv)
 		}
 	dp = ".";
 	fp = "<stdin>";
-	fd = stdin;
+	fd = 0;
 	if (optind<argc) {
 		if ((fp = strrchr(argv[optind], '/')) != NULL) {
 			int len = fp - argv[optind];
@@ -73,13 +72,14 @@ setup(int argc, char **argv)
 			dp[len] = '\0';
 		}
 		fp = (char*)newstring((uchar*)argv[optind], strlen(argv[optind]), 0);
-		if ((fd = fopen(fp, "r")) == NULL)
+		if ((fd = open(fp, 0)) <= 0)
 			error(FATAL, "Can't open input file %s", fp);
 	}
 	if (optind+1<argc) {
-		FILE *fdo = freopen(argv[optind+1], "w", stdout);
-		if (fdo == NULL)
+		int fdo = creat(argv[optind+1], 0666);
+		if (fdo<0)
 			error(FATAL, "Can't open output file %s", argv[optind+1]);
+		dup2(fdo, 1);
 	}
 	if(Mflag)
 		setobjname(fp);
@@ -97,7 +97,7 @@ memmove(void *dp, const void *sp, size_t n)
 {
 	unsigned char *cdp, *csp;
 
-	if (n==0)
+	if (n<=0)
 		return 0;
 	cdp = dp;
 	csp = (unsigned char *)sp;

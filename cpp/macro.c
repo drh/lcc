@@ -92,8 +92,7 @@ void
 doadefine(Tokenrow *trp, int type)
 {
 	Nlist *np;
-	static unsigned char one[] = "1";
-	static Token onetoken[1] = {{ NUMBER, 0, 0, 0, 1, one }};
+	static Token onetoken[1] = {{ NUMBER, 0, 0, 0, 1, (uchar*)"1" }};
 	static Tokenrow onetr = { onetoken, onetoken, onetoken+1, 1 };
 
 	trp->tp = trp->bp;
@@ -136,7 +135,7 @@ expandrow(Tokenrow *trp, char *flag)
 	Nlist *np;
 
 	if (flag)
-		setsource(flag, NULL, "");
+		setsource(flag, -1, "");
 	for (tp = trp->tp; tp<trp->lp; ) {
 		if (tp->type!=NAME
 		 || quicklook(tp->t[0], tp->len>1?tp->t[1]:0)==0
@@ -189,10 +188,8 @@ expand(Tokenrow *trp, Nlist *np)
 		ntokc = 1;
 	else {
 		ntokc = gatherargs(trp, atr, &narg);
-		if (narg<0) {			/* not actually a call (no '(') */
-			/* gatherargs has already pushed trp->tr to the next token */
+		if (narg<0)			/* not actually a call (no '(') */
 			return;
-		}
 		if (narg != rowlen(np->ap)) {
 			error(ERROR, "Disagreement in number of macro arguments");
 			trp->tp->hideset = newhideset(trp->tp->hideset, np);
@@ -235,7 +232,6 @@ gatherargs(Tokenrow *trp, Tokenrow **atr, int *narg)
 	Token *bp, *lp;
 	Tokenrow ttr;
 	int ntokp;
-	int needspace;
 
 	*narg = -1;			/* means that there is no macro call */
 	/* look for the ( */
@@ -260,14 +256,9 @@ gatherargs(Tokenrow *trp, Tokenrow **atr, int *narg)
 	ntokp = ntok;
 	trp->tp++;
 	/* search for the terminating ), possibly extending the row */
-	needspace = 0;
 	while (parens>0) {
 		if (trp->tp >= trp->lp)
 			gettokens(trp, 0);
-		if (needspace) {
-			needspace = 0;
-			makespace(trp);
-		}
 		if (trp->tp->type==END) {
 			trp->lp -= 1;
 			trp->tp -= ntok;
@@ -279,7 +270,6 @@ gatherargs(Tokenrow *trp, Tokenrow **atr, int *narg)
 			adjustrow(trp, -1);
 			trp->tp -= 1;
 			makespace(trp);
-			needspace = 1;
 			continue;
 		}
 		if (trp->tp->type==LP)
@@ -339,8 +329,8 @@ substargs(Nlist *np, Tokenrow *rtr, Tokenrow **atr)
 		}
 		if (rtr->tp->type==NAME
 		 && (argno = lookuparg(np, rtr->tp)) >= 0) {
-			if ((rtr->tp+1)<rtr->lp && (rtr->tp+1)->type==DSHARP /* don't look beyond end */
-			 || rtr->tp!=rtr->bp && (rtr->tp-1)->type==DSHARP) /* don't look before beginning */
+			if ((rtr->tp+1)->type==DSHARP
+			 || rtr->tp!=rtr->bp && (rtr->tp-1)->type==DSHARP)
 				insertrow(rtr, 1, atr[argno]);
 			else {
 				copytokenrow(&tatr, atr[argno]);
@@ -379,7 +369,7 @@ doconcat(Tokenrow *trp)
 			strncpy((char*)tt, (char*)ltp->t, ltp->len);
 			strncpy((char*)tt+ltp->len, (char*)ntp->t, ntp->len);
 			tt[len] = '\0';
-			setsource("<##>", NULL, tt);
+			setsource("<##>", -1, tt);
 			maketokenrow(3, &ntr);
 			gettokens(&ntr, 1);
 			unsetsource();
@@ -465,7 +455,7 @@ builtin(Tokenrow *trp, int biname)
 	trp->tp++;
 	/* need to find the real source */
 	s = cursource;
-	while (s && s->fd==NULL)
+	while (s && s->fd==-1)
 		s = s->next;
 	if (s==NULL)
 		s = cursource;
