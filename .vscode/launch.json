@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "LCC: Debug CPP (Preprocessor)",
+      "name": "LCC: Debug CPP (C -> preprocessed C)",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build-ubuntu24/lcc-build/cpp",
@@ -15,15 +15,9 @@
       "cwd": "${workspaceFolder}",
       "externalConsole": false,
       "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty printing",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ]
+      "miDebuggerPath": "/usr/bin/gdb"
     },
+
     {
       "name": "LCC: Debug RCC (preprocessed C -> assembly)",
       "type": "cppdbg",
@@ -39,14 +33,40 @@
       "cwd": "${workspaceFolder}",
       "externalConsole": false,
       "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty printing",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ]
+      "miDebuggerPath": "/usr/bin/gdb"
+    },
+
+    {
+      "name": "LCC: Assembly -> Object (NASM)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "/usr/bin/nasm",
+      "args": [
+        "-f",
+        "elf32",
+        "${workspaceFolder}/hello.s",
+        "-o",
+        "${workspaceFolder}/hello.o"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "externalConsole": false
+    },
+
+    {
+      "name": "LCC: Link Object -> ELF",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "/usr/bin/gcc",
+      "args": [
+        "-m32",
+        "${workspaceFolder}/hello.o",
+        "-o",
+        "${workspaceFolder}/hello"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "externalConsole": false
     }
   ]
 }
