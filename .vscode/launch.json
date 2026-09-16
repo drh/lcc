@@ -37,7 +37,7 @@
     },
 
     {
-      "name": "LCC: Assembly -> Object (NASM)",
+      "name": "LCC: Run NASM (Assembling: assembly -> object)",
       "type": "cppdbg",
       "request": "launch",
       "program": "/usr/bin/nasm",
@@ -50,11 +50,13 @@
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "externalConsole": false
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb"
     },
 
     {
-      "name": "LCC: Link Object -> ELF",
+      "name": "LCC: Run GCC (Linking: object -> executable)",
       "type": "cppdbg",
       "request": "launch",
       "program": "/usr/bin/gcc",
@@ -66,7 +68,9 @@
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "externalConsole": false
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb"
     }
   ]
 }
